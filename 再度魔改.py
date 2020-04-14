@@ -41,10 +41,11 @@ apikey = "TQS79U4MT11jswCLHq7G260XzXU0JhGC"  ##보안코드
 exit_calc = 0
 save_name_list = []
 save_select = 0
-count_num = 0
-count_all = 0
+count_valid = 0
+count_invalid = 0
 show_number = 0
 all_list_num = 0
+count_start_time = datetime.now() # 开始计算的时间点
 
 self = tkinter.Tk()
 self.title("一键史诗搭配计算器")
@@ -315,9 +316,9 @@ def calc():
     ele_in = (int(db_preset["B14"].value) + int(db_preset["B15"].value) + int(db_preset["B16"].value) +
               int(ele_skill) - int(db_preset["B18"].value) + int(db_preset["B19"].value) + 13)
 
-    global count_num, count_all, show_number, all_list_num, max_setopt
-    count_num = 0;
-    count_all = 0;
+    global count_valid, count_invalid, show_number, all_list_num, max_setopt, count_start_time
+    count_valid = 0;
+    count_invalid = 0;
     show_number = 0
 
     if jobup_select.get()[-4:] == "(奶系)":
@@ -564,9 +565,10 @@ def calc():
     all_list_num = len(list11) * len(list12) * len(list13) * len(list14) * len(list15) * len(list21) * len(
         list22) * len(list23) * len(list31) * len(list32) * len(list33)
     if all_list_num > 500000000:
-        tkinter.messagebox.showerror('提示', "组合超过5亿种.\n无法进行.\n请关闭一定史诗")
-        showsta(text='已终止')
-        return
+        ask_msg2 = tkinter.messagebox.askquestion('确认', "情况的数量超过5亿种.\可能需要非常非常久.\n确定进行吗？")
+        if ask_msg2 == 'no':
+            showsta(text='已终止')
+            return
     elif all_list_num > 100000000:
         ask_msg2 = tkinter.messagebox.askquestion('确认', "情况的数量超过1亿种.\可能需要30分钟以上.\n确定进行吗？")
         if ask_msg2 == 'no':
@@ -583,13 +585,16 @@ def calc():
         return
 
     try:
-        all_list = list(itertools.product(*items))
         showsta(text='开始计算')
+        count_start_time = datetime.now() # 开始计时
     except MemoryError as error:
         tkinter.messagebox.showerror('内存误差', "已超过可用内存.")
         showsta(text='已中止')
         return
+
     global exit_calc
+    exit_calc = 0
+
     if jobup_select.get()[4:7] != "奶爸" and jobup_select.get()[4:7] != "奶妈" and jobup_select.get()[4:7] != "奶萝":
 
         # 代码名称
@@ -601,7 +606,7 @@ def calc():
         save_list = {}
         max_setopt = 0
         show_number = 1
-        for calc_now in all_list:
+        for calc_now in itertools.product(*items):
             if exit_calc == 1:
                 showsta(text='已终止')
                 return
@@ -712,11 +717,11 @@ def calc():
 
                     base_array[4] = real_bon
                     save_list[damage] = [calc_wep, base_array]
-                    count_num = count_num + 1
+                    count_valid = count_valid + 1
                 else:
-                    count_all = count_all + 1
+                    count_invalid = count_invalid + 1
             else:
-                count_all = count_all + 1
+                count_invalid = count_invalid + 1
         show_number = 0
         showsta(text='结果统计中')
 
@@ -759,7 +764,7 @@ def calc():
         setget = opt_buf.get
         max_setopt = 0
         show_number = 1
-        for calc_now in all_list:
+        for calc_now in itertools.product(*items):
             if exit_calc == 1:
                 showsta(text='已终止')
                 return
@@ -890,11 +895,11 @@ def calc():
                                                                                                                 save2,
                                                                                                                 pas1_out]]
 
-                    count_num = count_num + 1
+                    count_valid = count_valid + 1
                 else:
-                    count_all = count_all + 1
+                    count_invalid = count_invalid + 1
             else:
-                count_all = count_all + 1
+                count_invalid = count_invalid + 1
         show_number = 0
         showsta(text='结果统计中')
 
@@ -1824,10 +1829,26 @@ def change_savelist(in1, in2, in3, in4, in5, in6, in7, in8, in9, in10):
 
 
 def update_count():
-    global count_num, count_all, show_number
-    global showcon, all_list_num
+    global count_valid, count_invalid, show_number
+    global showcon, all_list_num, count_start_time
+    global exit_calc
+    hours = 0
+    minutes = 0
+    seconds = 0
+    remaining_time_str = "0s"
     while True:
-        showcon(text=str(count_num) + "有效搭配/" + str(count_all) + "无效\n" + str(all_list_num) + "整体")
+        using_time = datetime.now() - count_start_time
+        if exit_calc == 0:
+            remaining_time = (all_list_num - count_valid - count_invalid) / (count_valid + count_invalid+1) * using_time
+            hours, remainder = divmod(remaining_time.seconds, 3600)
+            minutes, seconds = divmod(remainder, 60)
+            remaining_time_str = ""
+            if hours > 0:
+                remaining_time_str += "{}h".format(hours)
+            if hours > 0 or minutes > 0:
+                remaining_time_str += "{}m".format(minutes)
+            remaining_time_str += "{}s".format(seconds)
+        showcon(text=str(count_valid) + "有效搭配/" + str(count_invalid) + "无效\n" + remaining_time_str + "剩余时间")
         time.sleep(0.1)
 
 
@@ -1938,7 +1959,7 @@ def update_count2():
 
         a_num_all = a_num[0] * a_num[1] * a_num[2] * a_num[3] * a_num[4] * a_num[5] * a_num[6] * a_num[7] * a_num[8] * \
                     a_num[9] * a_num[10]
-        showcon2(text="时数（1秒刷新）= " + str(a_num_all))
+        showcon2(text="当前总组合数=" + str(a_num_all))
         if a_num_all > 10000000:
             show_count2['fg'] = "red"
         else:
@@ -2831,11 +2852,10 @@ def toggle_cha_swi():
 def stop_calc():
     global exit_calc
     exit_calc = 1
-    time.sleep(1)
-    exit_calc = 0
 
 
 ## 내부 구조 ##
+know_list=['13390150','22390240','23390450','33390750','21400340','31400540','32410650']
 image_list = {}
 image_list2 = {}
 image_list_set = {}
