@@ -21,7 +21,8 @@ import numpy as np
 from collections import Counter
 from math import floor
 import webbrowser
-
+import os
+from datetime import datetime
 
 # https://dunfaoff.com/DawnClass.df
 
@@ -2835,28 +2836,24 @@ def stop_calc():
 
 
 ## 내부 구조 ##
-know_list = ['13390150', '22390240', '23390450', '33390750', '21400340', '31400540', '32410650']
 image_list = {}
 image_list2 = {}
 image_list_set = {}
 image_list_set2 = {}
-for i in know_list:
-    image_list[i] = eval('PhotoImage(file="image/{}n.png")'.format(i))
-    image_list2[i] = eval('PhotoImage(file="image/{}f.png")'.format(i))
-for i in range(1101, 3339):
-    try:
-        image_list[str(i) + "0"] = eval('PhotoImage(file="image/{}0n.png")'.format(i))
-    except TclError as error:
-        passss = 1
-    try:
-        image_list2[str(i) + "0"] = eval('PhotoImage(file="image/{}0f.png")'.format(i))
-    except TclError as error:
-        passss = 1
-    try:
-        image_list[str(i) + "1"] = eval('PhotoImage(file="image/{}1n.gif")'.format(i))
-        image_list2[str(i) + "1"] = eval('PhotoImage(file="image/{}1f.png")'.format(i))
-    except TclError as error:
-        passss = 1
+
+# 读取装备图片
+# 通过遍历文件夹来实现加载所需的图片，而不是穷举所有可能，最后导致启动时要卡顿两秒，根据测试，目前读取图片共使用0:00:01.780298秒, 总共尝试加载6749个， 有效的加载为351个
+image_directory = "image"
+for filename in os.listdir(image_directory):
+    # 示例文件：22390240f.png
+    index = filename[:-5]  # 装备的key(除去后五位后剩余的字符串)：22390240
+    newImage = PhotoImage(file="image/{}".format(filename)) #
+    if filename[-5] == "n": # 根据倒数第五位决定使用哪个list
+        image_list[index] = newImage
+    else:
+        image_list2[index] = newImage
+
+# 读取套装图片
 for i in range(1, 36):
     image_list_set[str(100 + i)] = eval('PhotoImage(file="set_name/{}.png")'.format(i + 100))
     image_list_set2[str(100 + i)] = eval('PhotoImage(file="set_name/{}f.png")'.format(i + 100))
@@ -3823,20 +3820,6 @@ version = tkinter.Label(self, text='V ' + str(now_version) + '\n' + ver_time, fo
 maker.place(x=625, y=590)
 version.place(x=630, y=650)
 
-try:
-    html_version = requests.get('https://dunfaoff.com/DawnClass.df')
-    soup_version = BeautifulSoup(html_version.content, 'html.parser')
-    now_version_num = int(now_version[0] + now_version[2] + now_version[4])
-    net_version = str(soup_version)[2:]
-    net_version_num = int(net_version[0] + net_version[2] + net_version[4])
-    if now_version_num < now_version_num:
-        ask_update = tkinter.messagebox.askquestion('업데이트', "最新版本이 존재합니다. 이동하시겠습니까?")
-        if ask_update == 'yes':
-            webbrowser.open('https://drive.google.com/open?id=1p8ZdzW_NzGKHHOtfPTuZSr1YgSEVtYCj')
-    else:
-        print("最新版本")
-except:
-    print("更新检查失败（网络错误）")
 
 if __name__ == "__main__":
     update_thread()
