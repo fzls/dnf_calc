@@ -26,10 +26,6 @@ import webbrowser
 import os
 from datetime import datetime
 
-import io
-import sys
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf8') #改变标准输出的默认编码
-
 # https://dunfaoff.com/DawnClass.df
 
 def _from_rgb(rgb):
@@ -599,6 +595,7 @@ def calc():
         return
 
     global exit_calc
+    # 开始计算
     exit_calc = 0
 
     if jobup_select.get()[4:7] != "奶爸" and jobup_select.get()[4:7] != "奶妈" and jobup_select.get()[4:7] != "奶萝":
@@ -942,6 +939,8 @@ def calc():
         show_result(ranking, 'buf', ele_skill)
     load_excel.close()
     showsta(text='输出完成')
+    # 结束计算
+    exit_calc = 1
     # print("时间 = " + str(time.time() - start_time) + "秒")
 
 
