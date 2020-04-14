@@ -1652,17 +1652,18 @@ def save_custom(ele_type, cool_con, cus1, cus2, cus3, cus4, cus6, cus7, cus8, cu
 
 
 # 自定义存档的列定义
-g_col_custom_save_key = 15
-g_col_custom_save_value = 16
+g_col_custom_save_key = 14
+g_col_custom_save_value_begin = 15
 
 # 自定义存档的行定义
-g_row_custom_save_weapon = 1  # 武器
-g_row_custom_save_job = 2  # 职业选择
-g_row_custom_save_fight_time = 3  # 输出时间
-g_row_custom_save_title = 4  # 称号选择
-g_row_custom_save_pet = 5  # 宠物选择
-g_row_custom_save_cd = 6  # 冷却补正
-g_row_custom_save_speed = 7  # 选择速度
+g_row_custom_save_save_name = 1 # 存档名
+g_row_custom_save_weapon = 2  # 武器
+g_row_custom_save_job = 3  # 职业选择
+g_row_custom_save_fight_time = 4  # 输出时间
+g_row_custom_save_title = 5  # 称号选择
+g_row_custom_save_pet = 6  # 宠物选择
+g_row_custom_save_cd = 7  # 冷却补正
+g_row_custom_save_speed = 8  # 选择速度
 
 
 def load_checklist():
@@ -1692,22 +1693,24 @@ def load_checklist_noconfirm(ssnum1):
                 passss = 1
 
     # 增加读取武器、职业等选项
-    wep_select.set(load_cell(g_row_custom_save_weapon, g_col_custom_save_value).value)
-    jobup_select.set(load_cell(g_row_custom_save_job, g_col_custom_save_value).value)
-    time_select.set(load_cell(g_row_custom_save_fight_time, g_col_custom_save_value).value)
-    style_select.set(load_cell(g_row_custom_save_title, g_col_custom_save_value).value)
-    creature_select.set(load_cell(g_row_custom_save_pet, g_col_custom_save_value).value)
-    req_cool.set(load_cell(g_row_custom_save_cd, g_col_custom_save_value).value)
-    select_perfect.set(load_cell(g_row_custom_save_speed, g_col_custom_save_value).value)
+    col_custom_save_value = g_col_custom_save_value_begin + ssnum1
+    wep_select.set(load_cell(g_row_custom_save_weapon, col_custom_save_value).value)
+    jobup_select.set(load_cell(g_row_custom_save_job, col_custom_save_value).value)
+    time_select.set(load_cell(g_row_custom_save_fight_time, col_custom_save_value).value)
+    style_select.set(load_cell(g_row_custom_save_title, col_custom_save_value).value)
+    creature_select.set(load_cell(g_row_custom_save_pet, col_custom_save_value).value)
+    req_cool.set(load_cell(g_row_custom_save_cd, col_custom_save_value).value)
+    select_perfect.set(load_cell(g_row_custom_save_speed, col_custom_save_value).value)
 
     load_preset3.close()
     check_equipment()
     for i in range(101, 136):
         check_set(i)
 
-def save_my_custom(sc, row, name, value):
+# save_idx为存档的下标，从0到9
+def save_my_custom(sc, row, col_custom_save_value, name, value):
     sc(row, g_col_custom_save_key).value = name
-    sc(row, g_col_custom_save_value).value = value
+    sc(row, col_custom_save_value).value = value
 
 
 def save_checklist():
@@ -1742,13 +1745,15 @@ def save_checklist():
                 passss = 1
 
             # 增加保存武器、职业等选项
-            save_my_custom(save_cell, g_row_custom_save_weapon, "武器", wep_select.get())
-            save_my_custom(save_cell, g_row_custom_save_job, "职业选择", jobup_select.get())
-            save_my_custom(save_cell, g_row_custom_save_fight_time, "输出时间", time_select.get())
-            save_my_custom(save_cell, g_row_custom_save_title, "称号选择", style_select.get())
-            save_my_custom(save_cell, g_row_custom_save_pet, "宠物选择", creature_select.get())
-            save_my_custom(save_cell, g_row_custom_save_cd, "冷却补正", req_cool.get())
-            save_my_custom(save_cell, g_row_custom_save_speed, "选择速度", select_perfect.get())
+            col_custom_save_value = g_col_custom_save_value_begin + ssnum2
+            save_my_custom(save_cell, g_row_custom_save_save_name, col_custom_save_value, "存档名", save_select.get())
+            save_my_custom(save_cell, g_row_custom_save_weapon, col_custom_save_value, "武器", wep_select.get())
+            save_my_custom(save_cell, g_row_custom_save_job, col_custom_save_value, "职业选择", jobup_select.get())
+            save_my_custom(save_cell, g_row_custom_save_fight_time, col_custom_save_value, "输出时间", time_select.get())
+            save_my_custom(save_cell, g_row_custom_save_title, col_custom_save_value, "称号选择", style_select.get())
+            save_my_custom(save_cell, g_row_custom_save_pet, col_custom_save_value, "宠物选择", creature_select.get())
+            save_my_custom(save_cell, g_row_custom_save_cd, col_custom_save_value, "冷却补正", req_cool.get())
+            save_my_custom(save_cell, g_row_custom_save_speed, col_custom_save_value, "选择速度", select_perfect.get())
 
             load_preset4.save("preset.xlsx")
             load_preset4.close()
@@ -1802,7 +1807,7 @@ def change_list_name():
     entry10.place(x=95, y=237);
     entry10.insert(END, save_name_list[9])
 
-    tkinter.Button(change_window, text="저장", font=mid_font,
+    tkinter.Button(change_window, text="保存", font=mid_font,
                    command=lambda: change_savelist(entry1.get(), entry2.get(), entry3.get(), entry4.get(), entry5.get(),
                                                    entry6.get(), entry7.get(), entry8.get(), entry9.get(),
                                                    entry10.get())).place(x=60, y=270)
