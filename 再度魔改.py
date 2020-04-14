@@ -1645,6 +1645,20 @@ def save_custom(ele_type, cool_con, cus1, cus2, cus3, cus4, cus6, cus7, cus8, cu
         tkinter.messagebox.showerror("错误", "请重试")
 
 
+# 自定义存档的列定义
+g_col_custom_save_key = 15
+g_col_custom_save_value = 16
+
+# 自定义存档的行定义
+g_row_custom_save_weapon = 1  # 武器
+g_row_custom_save_job = 2  # 职业选择
+g_row_custom_save_fight_time = 3  # 输出时间
+g_row_custom_save_title = 4  # 称号选择
+g_row_custom_save_pet = 5  # 宠物选择
+g_row_custom_save_cd = 6  # 冷却补正
+g_row_custom_save_speed = 7  # 选择速度
+
+
 def load_checklist():
     ask_msg1 = tkinter.messagebox.askquestion('确认', "找回保存明细？")
     for snum in range(0, 10):
@@ -1654,6 +1668,7 @@ def load_checklist():
         load_preset3 = load_workbook("preset.xlsx")
         db_load_check = load_preset3["one"]
         load_cell = db_load_check.cell
+        # 读取各个装备的点亮情况
         k = 1
         for i in range(1, 264):
             if load_cell(i, 2 + ssnum1).value == 1:
@@ -1666,10 +1681,24 @@ def load_checklist():
                     select_item['tg{}'.format(load_cell(i, 1).value)] = 0
                 except KeyError as error:
                     passss = 1
+
+        # 增加读取武器、职业等选项
+        wep_select.set(load_cell(g_row_custom_save_weapon, g_col_custom_save_value).value)
+        jobup_select.set(load_cell(g_row_custom_save_job, g_col_custom_save_value).value)
+        time_select.set(load_cell(g_row_custom_save_fight_time, g_col_custom_save_value).value)
+        style_select.set(load_cell(g_row_custom_save_title, g_col_custom_save_value).value)
+        creature_select.set(load_cell(g_row_custom_save_pet, g_col_custom_save_value).value)
+        req_cool.set(load_cell(g_row_custom_save_cd, g_col_custom_save_value).value)
+        select_perfect.set(load_cell(g_row_custom_save_speed, g_col_custom_save_value).value)
+
         load_preset3.close()
         check_equipment()
         for i in range(101, 136):
             check_set(i)
+
+def save_my_custom(sc, row, name, value):
+    sc(row, g_col_custom_save_key).value = name
+    sc(row, g_col_custom_save_value).value = value
 
 
 def save_checklist():
@@ -1682,7 +1711,9 @@ def save_checklist():
             load_preset4 = load_workbook("preset.xlsx")
             db_save_check = load_preset4["one"]
             save_cell = db_save_check.cell
-            opt_save = {}
+
+            # 保存装备按钮的点亮情况
+            opt_save = {}  # 装备按钮的index => 对应的行号（1-263）
             for i in range(1, 264):
                 opt_save[save_cell(i, 1).value] = i
 
@@ -1700,6 +1731,16 @@ def save_checklist():
                     passss1 = 1
 
                 passss = 1
+
+            # 增加保存武器、职业等选项
+            save_my_custom(save_cell, g_row_custom_save_weapon, "武器", wep_select.get())
+            save_my_custom(save_cell, g_row_custom_save_job, "职业选择", jobup_select.get())
+            save_my_custom(save_cell, g_row_custom_save_fight_time, "输出时间", time_select.get())
+            save_my_custom(save_cell, g_row_custom_save_title, "称号选择", style_select.get())
+            save_my_custom(save_cell, g_row_custom_save_pet, "宠物选择", creature_select.get())
+            save_my_custom(save_cell, g_row_custom_save_cd, "冷却补正", req_cool.get())
+            save_my_custom(save_cell, g_row_custom_save_speed, "选择速度", select_perfect.get())
+
             load_preset4.save("preset.xlsx")
             load_preset4.close()
             tkinter.messagebox.showinfo("通知", "保存完成")
