@@ -26,6 +26,10 @@ import webbrowser
 import os
 from datetime import datetime
 
+import io
+import sys
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf8') #改变标准输出的默认编码
+
 # https://dunfaoff.com/DawnClass.df
 
 def _from_rgb(rgb):
@@ -40,7 +44,7 @@ dark_blue = _from_rgb((29, 30, 36))
 
 apikey = "TQS79U4MT11jswCLHq7G260XzXU0JhGC"  ##보안코드
 
-exit_calc = 0
+exit_calc = 1
 save_name_list = []
 save_select = 0
 count_valid = 0
@@ -83,16 +87,19 @@ db_job = load_excel1["lvl"]
 opt_job = {}
 opt_job_ele = {}
 u = 1
+jobs = []
 for row in db_job.rows:
     row_value = []
     for cell in row:
         row_value.append(cell.value)
-    opt_job[db_job.cell(u, 1).value] = row_value[3:]
-    opt_job_ele[db_job.cell(u, 1).value] = row_value[:3]
+    job = db_job.cell(u, 1).value
+    opt_job[job] = row_value[3:]
+    opt_job_ele[job] = row_value[:3]
+    if job != "empty" and job != "직업명":
+        jobs.append(job)
     u = u + 1
 del opt_job["empty"]
 del opt_job["직업명"]
-jobs = list(opt_job.keys())
 
 load_preset0 = load_workbook("preset.xlsx", data_only=True)
 db_custom = load_preset0["custom"]
@@ -314,7 +321,11 @@ def calc():
 
     load_presetc = load_workbook("preset.xlsx", data_only=True)
     db_preset = load_presetc["custom"]
-    ele_skill = int(opt_job_ele[jobup_select.get()][1])
+    try:
+        ele_skill = int(opt_job_ele[jobup_select.get()][1])
+    except KeyError as error:
+        tkinter.messagebox.showerror('部分参数有误', "未选择职业或职业非法")
+        return
     ele_in = (int(db_preset["B14"].value) + int(db_preset["B15"].value) + int(db_preset["B16"].value) +
               int(ele_skill) - int(db_preset["B18"].value) + int(db_preset["B19"].value) + 13)
 
@@ -547,9 +558,14 @@ def calc():
     if len(list33) == 0:
         list33.append('33380')
 
+    valid_weapon = False
     for i in range(0, 75):
         if wep_select.get() == wep_list[i]:
             wep_num = (str(i + 111001),)
+            valid_weapon = True
+    if not valid_weapon:
+        tkinter.messagebox.showerror('部分参数有误', "未选择武器或武器非法")
+        return
 
     items = [list11, list12, list13, list14, list15, list21, list22, list23, list31, list32, list33]
     all_list_num = len(list11) * len(list12) * len(list13) * len(list14) * len(list15) * len(list21) * len(
