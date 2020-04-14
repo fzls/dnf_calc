@@ -1665,36 +1665,39 @@ def load_checklist():
         if save_select.get() == save_name_list[snum]:
             ssnum1 = snum
     if ask_msg1 == 'yes':
-        load_preset3 = load_workbook("preset.xlsx")
-        db_load_check = load_preset3["one"]
-        load_cell = db_load_check.cell
-        # 读取各个装备的点亮情况
-        k = 1
-        for i in range(1, 264):
-            if load_cell(i, 2 + ssnum1).value == 1:
-                try:
-                    select_item['tg{}'.format(load_cell(i, 1).value)] = 1
-                except KeyError as error:
-                    passss = 1
-            elif load_cell(i, 2 + ssnum1).value == 0:
-                try:
-                    select_item['tg{}'.format(load_cell(i, 1).value)] = 0
-                except KeyError as error:
-                    passss = 1
+        load_checklist_noconfirm(ssnum1)
 
-        # 增加读取武器、职业等选项
-        wep_select.set(load_cell(g_row_custom_save_weapon, g_col_custom_save_value).value)
-        jobup_select.set(load_cell(g_row_custom_save_job, g_col_custom_save_value).value)
-        time_select.set(load_cell(g_row_custom_save_fight_time, g_col_custom_save_value).value)
-        style_select.set(load_cell(g_row_custom_save_title, g_col_custom_save_value).value)
-        creature_select.set(load_cell(g_row_custom_save_pet, g_col_custom_save_value).value)
-        req_cool.set(load_cell(g_row_custom_save_cd, g_col_custom_save_value).value)
-        select_perfect.set(load_cell(g_row_custom_save_speed, g_col_custom_save_value).value)
+def load_checklist_noconfirm(ssnum1):
+    load_preset3 = load_workbook("preset.xlsx")
+    db_load_check = load_preset3["one"]
+    load_cell = db_load_check.cell
+    # 读取各个装备的点亮情况
+    k = 1
+    for i in range(1, 264):
+        if load_cell(i, 2 + ssnum1).value == 1:
+            try:
+                select_item['tg{}'.format(load_cell(i, 1).value)] = 1
+            except KeyError as error:
+                passss = 1
+        elif load_cell(i, 2 + ssnum1).value == 0:
+            try:
+                select_item['tg{}'.format(load_cell(i, 1).value)] = 0
+            except KeyError as error:
+                passss = 1
 
-        load_preset3.close()
-        check_equipment()
-        for i in range(101, 136):
-            check_set(i)
+    # 增加读取武器、职业等选项
+    wep_select.set(load_cell(g_row_custom_save_weapon, g_col_custom_save_value).value)
+    jobup_select.set(load_cell(g_row_custom_save_job, g_col_custom_save_value).value)
+    time_select.set(load_cell(g_row_custom_save_fight_time, g_col_custom_save_value).value)
+    style_select.set(load_cell(g_row_custom_save_title, g_col_custom_save_value).value)
+    creature_select.set(load_cell(g_row_custom_save_pet, g_col_custom_save_value).value)
+    req_cool.set(load_cell(g_row_custom_save_cd, g_col_custom_save_value).value)
+    select_perfect.set(load_cell(g_row_custom_save_speed, g_col_custom_save_value).value)
+
+    load_preset3.close()
+    check_equipment()
+    for i in range(101, 136):
+        check_set(i)
 
 def save_my_custom(sc, row, name, value):
     sc(row, g_col_custom_save_key).value = name
@@ -3837,6 +3840,9 @@ except:
 
 if __name__ == "__main__":
     update_thread()
+    # 启动时自动读取第一个配置
+    load_checklist_noconfirm(0)
+
 self.mainloop()
 
 self.quit()
