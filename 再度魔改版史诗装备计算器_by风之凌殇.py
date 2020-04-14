@@ -1849,11 +1849,14 @@ def update_count():
     while True:
         using_time = datetime.now() - count_start_time
         if exit_calc == 0:
-            remaining_time = (all_list_num - count_valid - count_invalid) / (count_valid + count_invalid+1) * using_time
-            hours, remainder = divmod(remaining_time.seconds, 3600)
+            remaining_time = (all_list_num - count_valid - count_invalid) / (count_valid + count_invalid+1) * using_time.seconds
+            days, remainder = divmod(remaining_time, 86400)
+            hours, remainder = divmod(remainder, 3600)
             minutes, seconds = divmod(remainder, 60)
             remaining_time_str = ""
-            if hours > 0:
+            if days > 0:
+                remaining_time_str += "{}d".format(days)
+            if days > 0 or hours > 0:
                 remaining_time_str += "{}h".format(hours)
             if hours > 0 or minutes > 0:
                 remaining_time_str += "{}m".format(minutes)
