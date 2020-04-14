@@ -1,4 +1,6 @@
-﻿now_version = "2.0.3"
+﻿#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+now_version = "2.0.3"
 ver_time = '200308'
 
 ## 코드를 무단으로 복제하여 개조 및 배포하지 말 것##
@@ -101,10 +103,10 @@ for i in range(1, 11):
 
 ########## 버전 최초 구동 프리셋 업데이트 ###########
 try:
-    print("DATABASE 버전= " + str(db_custom['K1'].value))
-    print("클라이언트 버전= " + now_version)
+    # print("DATABASE 버전= " + str(db_custom['K1'].value))
+    # print("클라이언트 버전= " + now_version)
     if str(db_custom['K1'].value) != now_version:
-        print("DB 업데이트")
+        # print("DB 업데이트")
         db_custom['K1'] = now_version
     if db_custom['H1'].value == None:
         db_custom['G1'] = "up_stat"
@@ -545,18 +547,6 @@ def calc():
     if len(list33) == 0:
         list33.append('33380')
 
-    # print(list11)
-    # print(list12)
-    # print(list13)
-    # print(list14)
-    # print(list15)
-    # print(list21)
-    # print(list22)
-    # print(list23)
-    # print(list31)
-    # print(list32)
-    # print(list33)
-
     for i in range(0, 75):
         if wep_select.get() == wep_list[i]:
             wep_num = (str(i + 111001),)
@@ -575,7 +565,7 @@ def calc():
             showsta(text='已终止')
             return
     elif all_list_num > 30000000:
-        ask_msg2 = tkinter.messagebox.askquestion('确认', "情况的数量超过3000种.\n可能需要很长时间.\n确定进行吗？")
+        ask_msg2 = tkinter.messagebox.askquestion('确认', "情况的数量超过3千万种.\n可能需要很长时间.\n确定进行吗？")
         if ask_msg2 == 'no':
             showsta(text='已终止')
             return
@@ -936,7 +926,7 @@ def calc():
         show_result(ranking, 'buf', ele_skill)
     load_excel.close()
     showsta(text='输出完成')
-    print("时间 = " + str(time.time() - start_time) + "秒")
+    # print("时间 = " + str(time.time() - start_time) + "秒")
 
 
 def calc_thread():
@@ -2009,8 +1999,8 @@ def show_timeline(name, server):
         cha_id = cha_id_dic['rows'][0]['characterId']
 
         ##
-        print(sever_code)
-        print(cha_id)
+        # print(sever_code)
+        # print(cha_id)
         time.sleep(0.3)
         start_time = '20200101T0000'
         now = time.strftime('%Y%m%dT%H%M', time.localtime(time.time()))
@@ -2297,8 +2287,8 @@ def calc_my_cha(cha_name, serv_name, job_name):
                 cha_name) + '&apikey=' + apikey)
         cha_id_dic = loads(cha_id_api.read().decode("utf-8"))
         cha_id = cha_id_dic['rows'][0]['characterId']
-        print(sever_code)
-        print(cha_id)
+        # print(sever_code)
+        # print(cha_id)
         cha_image(cha_id, sever_code)
         time.sleep(0.3)
 
@@ -2795,7 +2785,7 @@ def show_my_cha(equipment, final_list, type_code, job_name, wep_name, ele_skill,
         canvas.create_text(123, 377, text="칭호/크리쳐는 메인창에서 선택하세요.", font=guide_font, fill='red')
 
     if type_code == 'buf':
-        print(equipment2)
+        # print(equipment2)
         global image_on2
         image_on2 = {}
         for i in [11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33]:
