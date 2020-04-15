@@ -1855,12 +1855,12 @@ def update_count():
             minutes, seconds = divmod(remainder, 60)
             remaining_time_str = ""
             if days > 0:
-                remaining_time_str += "{}d".format(days)
+                remaining_time_str += "{}d".format(int(days))
             if days > 0 or hours > 0:
-                remaining_time_str += "{}h".format(hours)
+                remaining_time_str += "{:02}h".format(int(hours))
             if hours > 0 or minutes > 0:
-                remaining_time_str += "{}m".format(minutes)
-            remaining_time_str += "{}s".format(seconds)
+                remaining_time_str += "{:02}m".format(int(minutes))
+            remaining_time_str += "{:02}s".format(int(seconds))
         showcon(text=str(count_valid) + "有效搭配/" + str(count_invalid) + "无效\n" + remaining_time_str + "剩余时间")
         time.sleep(0.1)
 
