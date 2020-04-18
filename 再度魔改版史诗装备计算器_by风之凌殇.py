@@ -253,6 +253,21 @@ def inc_invalid_cnt_func(cnt):
     global count_invalid
     count_invalid+=cnt
 
+def format_time(ftime):
+    days, remainder = divmod(ftime, 86400)
+    hours, remainder = divmod(remainder, 3600)
+    minutes, seconds = divmod(remainder, 60)
+    remaining_time_str = ""
+    if days > 0:
+        remaining_time_str += "{}d".format(int(days))
+    if days > 0 or hours > 0:
+        remaining_time_str += "{:02}h".format(int(hours))
+    if hours > 0 or minutes > 0:
+        remaining_time_str += "{:02}m".format(int(minutes))
+    remaining_time_str += "{:02}s".format(int(seconds))
+
+    return remaining_time_str
+
 ## 计算函数##
 def calc():
     global result_window
@@ -1012,7 +1027,7 @@ def calc():
         ranking = [ranking1, ranking2, ranking3]
         show_result(ranking, 'buf', ele_skill)
     load_excel.close()
-    showsta(text='输出完成' + "时间 = " + str(time.time() - start_time) + "秒")
+    showsta(text='输出完成' + "时间 = " + format_time(time.time() - start_time))
     # 结束计算
     exit_calc = 1
     # print("时间 = " + str(time.time() - start_time) + "秒")
@@ -1924,17 +1939,7 @@ def update_count():
         using_time = datetime.now() - count_start_time
         if exit_calc == 0:
             remaining_time = (all_list_num - count_valid - count_invalid) / (count_valid + count_invalid+1) * using_time.seconds
-            days, remainder = divmod(remaining_time, 86400)
-            hours, remainder = divmod(remainder, 3600)
-            minutes, seconds = divmod(remainder, 60)
-            remaining_time_str = ""
-            if days > 0:
-                remaining_time_str += "{}d".format(int(days))
-            if days > 0 or hours > 0:
-                remaining_time_str += "{:02}h".format(int(hours))
-            if hours > 0 or minutes > 0:
-                remaining_time_str += "{:02}m".format(int(minutes))
-            remaining_time_str += "{:02}s".format(int(seconds))
+            remaining_time_str = format_time(remaining_time)
         showcon(text=str(count_valid) + "有效搭配/" + str(count_invalid) + "无效\n" + remaining_time_str + "剩余时间")
         time.sleep(0.1)
 
