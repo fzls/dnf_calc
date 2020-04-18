@@ -762,8 +762,6 @@ def calc():
         max_setopt = 0
         show_number = 1
 
-        has_god_combination = False
-
         def process(calc_now, baibianguai):
             set_list=["1"+str(calc_now[x][2:4]) for x in range(0,11)]
             set_on = [];
@@ -911,142 +909,128 @@ def calc():
         setget = opt_buf.get
         max_setopt = 0
         show_number = 1
-        for calc_now in itertools.product(*items):
-            if exit_calc == 1:
-                showsta(text='已终止')
-                return
+        def process(calc_now, baibianguai):
+            set_list = ["1" + str(calc_now[x][2:4]) for x in range(0, 11)]
+            set_val = Counter(set_list)
+            del set_val['136', '137', '138']
+            set_on = [];
+            setapp = set_on.append
+            setcount = set_list.count
+            for i in range(101, 136):
+                if setcount(str(i)) == 2:
+                    setapp(str(i) + "1")
+                if 4 >= setcount(str(i)) >= 3:
+                    setapp(str(i) + "2")
+                if setcount(str(i)) == 5:
+                    setapp(str(i) + "3")
+            for i in range(136, 139):
+                if setcount(str(i)) == 2:
+                    setapp(str(i) + "0")
+                if 4 >= setcount(str(i)) >= 3:
+                    setapp(str(i) + "1")
+                if setcount(str(i)) == 5:
+                    setapp(str(i) + "2")
+
+            calc_wep = wep_num + tuple(calc_now)
             base_array = np.array(
-                [base_stat_h, base_stat_s, 0, 0, 0, 0, 0, 0, base_b, base_c, 0, base_pas0, base_pas0_1, 0, 0, 0, 0, 0,
+                [base_stat_h, base_stat_s, 0, 0, 0, 0, 0, 0, base_b, base_c, 0, base_pas0, base_pas0_1, 0, 0, 0,
+                 0, 0,
                  0, 0, 0])
-            calc_wep = wep_num + calc_now
-            god = 0
-            for o in calc_now:
-                god = god + int(o[-1])
 
-            if god < 2:
-                set_list = ["1" + str(calc_now[x][2:4]) for x in range(0, 11)]
-                set_val = Counter(set_list)
-                del set_val['136', '137', '138']
-                setopt_num = sum([floor(x * 0.7) for x in set_val.values()]) + god
-                if setopt_num >= max_setopt - set_perfect:
-                    set_on = [];
-                    setapp = set_on.append
-                    setcount = set_list.count
-                    for i in range(101, 136):
-                        if setcount(str(i)) == 2:
-                            setapp(str(i) + "1")
-                        if 4 >= setcount(str(i)) >= 3:
-                            setapp(str(i) + "2")
-                        if setcount(str(i)) == 5:
-                            setapp(str(i) + "3")
-                    for i in range(136, 139):
-                        if setcount(str(i)) == 2:
-                            setapp(str(i) + "0")
-                        if 4 >= setcount(str(i)) >= 3:
-                            setapp(str(i) + "1")
-                        if setcount(str(i)) == 5:
-                            setapp(str(i) + "2")
-                    if max_setopt <= setopt_num - god * set_perfect:
-                        max_setopt = setopt_num - god * set_perfect
-                    b_stat = 10.24  ##탈리스만
-                    b_phy = 0
-                    b_mag = 0
-                    b_ind = 0
-                    c_per = 0
-                    for_calc = tuple(set_on) + calc_wep
-                    oneone = len(for_calc)
-                    oneonelist = []
-                    for i in range(oneone):
-                        no_cut = np.array(setget(for_calc[i]))  ## 2 3 4 5 7
-                        base_array = base_array + no_cut
-                        b_stat = (b_stat / 100 + 1) * (no_cut[2] / 100 + 1) * 100 - 100
-                        b_phy = (b_phy / 100 + 1) * (no_cut[3] / 100 + 1) * 100 - 100
-                        b_mag = (b_mag / 100 + 1) * (no_cut[4] / 100 + 1) * 100 - 100
-                        b_ind = (b_ind / 100 + 1) * (no_cut[5] / 100 + 1) * 100 - 100
-                        c_per = (c_per / 100 + 1) * (no_cut[7] / 100 + 1) * 100 - 100
-                        oneonelist.append(no_cut)
+            b_stat = 10.24  ##탈리스만
+            b_phy = 0
+            b_mag = 0
+            b_ind = 0
+            c_per = 0
+            for_calc = tuple(set_on) + calc_wep
+            oneone = len(for_calc)
+            oneonelist = []
+            for i in range(oneone):
+                no_cut = np.array(setget(for_calc[i]))  ## 2 3 4 5 7
+                base_array = base_array + no_cut
+                b_stat = (b_stat / 100 + 1) * (no_cut[2] / 100 + 1) * 100 - 100
+                b_phy = (b_phy / 100 + 1) * (no_cut[3] / 100 + 1) * 100 - 100
+                b_mag = (b_mag / 100 + 1) * (no_cut[4] / 100 + 1) * 100 - 100
+                b_ind = (b_ind / 100 + 1) * (no_cut[5] / 100 + 1) * 100 - 100
+                c_per = (c_per / 100 + 1) * (no_cut[7] / 100 + 1) * 100 - 100
+                oneonelist.append(no_cut)
 
-                    # 0 체정 1 지능
-                    # 祝福 2 스탯% 3 물공% 4 마공% 5 독공%
-                    # 아포 6 고정 7 스탯%
-                    # 8 축렙 9 포렙
-                    # 10 아리아/보징증폭
-                    # 11 전직패 12 보징 13 각패1 14 각패2 15 二觉 16 각패3
-                    # 17 깡신념 18 깡신실 19 아리아쿨 20 하베쿨
-                    if jobup_select.get()[4:7] == "奶爸":
-                        b_base_att = lvlget('hol_b_atta')[int(base_array[8])]
-                        stat_pas0lvl_b = lvlget('pas0')[int(base_array[11]) + base_pas0_b] + lvlget('hol_pas0_1')[
-                            int(base_array[12])]
-                        stat_pas0lvl_c = lvlget('pas0')[int(base_array[11]) + base_pas0_c] + lvlget('hol_pas0_1')[
-                            int(base_array[12])]
-                        stat_pas1lvl = lvlget('hol_pas1')[int(base_array[13])]
-                        stat_pas2lvl = lvlget('hol_act2')[int(base_array[15])]
-                        stat_pas3lvl = lvlget('pas3')[int(base_array[16])]
-                        stat_b = base_array[0] + stat_pas0lvl_b + stat_pas1lvl + stat_pas2lvl + stat_pas3lvl + 19 * \
-                                 base_array[10] + base_stat_d
-                        stat_c = base_array[0] + stat_pas0lvl_c + stat_pas1lvl + stat_pas2lvl + stat_pas3lvl + 19 * \
-                                 base_array[10]
-                        b_stat_calc = int(
-                            int(lvlget('hol_b_stat')[int(base_array[8])] * (b_stat / 100 + 1)) * (stat_b / 630 + 1))
-                        b_phy_calc = int(int(b_base_att * (b_phy / 100 + 1)) * (stat_b / 630 + 1))
-                        b_mag_calc = int(int(b_base_att * (b_mag / 100 + 1)) * (stat_b / 630 + 1))
-                        b_ind_calc = int(int(b_base_att * (b_ind / 100 + 1)) * (stat_b / 630 + 1))
-                        b_average = int((b_phy_calc + b_mag_calc + b_ind_calc) / 3)
-                        c_calc = int(int((lvlget('c_stat')[int(base_array[9])] + base_array[6]) * (c_per / 100 + 1)) * (
-                                    stat_c / 750 + 1))
-                        pas1_calc = int(lvlget('hol_pas1_out')[int(base_array[13])] + 213 + base_array[17])
-                        pas1_out = str(
-                            int(lvlget('hol_pas1_out')[int(base_array[13])] + 213 + base_array[17])) + "  (" + str(
-                            int(20 + base_array[13])) + "렙)"
-                        save1 = str(b_stat_calc) + "/" + str(b_average) + "   [" + str(int(stat_b)) + "(" + str(
-                            int(base_array[8])) + "렙)]"
+            # 0 체정 1 지능
+            # 祝福 2 스탯% 3 물공% 4 마공% 5 독공%
+            # 아포 6 고정 7 스탯%
+            # 8 축렙 9 포렙
+            # 10 아리아/보징증폭
+            # 11 전직패 12 보징 13 각패1 14 각패2 15 二觉 16 각패3
+            # 17 깡신념 18 깡신실 19 아리아쿨 20 하베쿨
+            if jobup_select.get()[4:7] == "奶爸":
+                b_base_att = lvlget('hol_b_atta')[int(base_array[8])]
+                stat_pas0lvl_b = lvlget('pas0')[int(base_array[11]) + base_pas0_b] + lvlget('hol_pas0_1')[
+                    int(base_array[12])]
+                stat_pas0lvl_c = lvlget('pas0')[int(base_array[11]) + base_pas0_c] + lvlget('hol_pas0_1')[
+                    int(base_array[12])]
+                stat_pas1lvl = lvlget('hol_pas1')[int(base_array[13])]
+                stat_pas2lvl = lvlget('hol_act2')[int(base_array[15])]
+                stat_pas3lvl = lvlget('pas3')[int(base_array[16])]
+                stat_b = base_array[0] + stat_pas0lvl_b + stat_pas1lvl + stat_pas2lvl + stat_pas3lvl + 19 * \
+                         base_array[10] + base_stat_d
+                stat_c = base_array[0] + stat_pas0lvl_c + stat_pas1lvl + stat_pas2lvl + stat_pas3lvl + 19 * \
+                         base_array[10]
+                b_stat_calc = int(
+                    int(lvlget('hol_b_stat')[int(base_array[8])] * (b_stat / 100 + 1)) * (stat_b / 630 + 1))
+                b_phy_calc = int(int(b_base_att * (b_phy / 100 + 1)) * (stat_b / 630 + 1))
+                b_mag_calc = int(int(b_base_att * (b_mag / 100 + 1)) * (stat_b / 630 + 1))
+                b_ind_calc = int(int(b_base_att * (b_ind / 100 + 1)) * (stat_b / 630 + 1))
+                b_average = int((b_phy_calc + b_mag_calc + b_ind_calc) / 3)
+                c_calc = int(int((lvlget('c_stat')[int(base_array[9])] + base_array[6]) * (c_per / 100 + 1)) * (
+                            stat_c / 750 + 1))
+                pas1_calc = int(lvlget('hol_pas1_out')[int(base_array[13])] + 213 + base_array[17])
+                pas1_out = str(
+                    int(lvlget('hol_pas1_out')[int(base_array[13])] + 213 + base_array[17])) + "  (" + str(
+                    int(20 + base_array[13])) + "렙)"
+                save1 = str(b_stat_calc) + "/" + str(b_average) + "   [" + str(int(stat_b)) + "(" + str(
+                    int(base_array[8])) + "렙)]"
 
-                    else:
-                        if jobup_select.get()[4:7] == "奶妈":
-                            b_value = 675
-                            aria = 1.25 + 0.05 * base_array[10]
-                        if jobup_select.get()[4:7] == "奶萝":
-                            b_value = 665
-                            aria = (1.20 + 0.05 * base_array[10]) * 1.20
-
-                        b_base_att = lvlget('se_b_atta')[int(base_array[8])]
-                        stat_pas0lvl_b = lvlget('pas0')[int(base_array[11]) + int(base_pas0_b)]
-                        stat_pas0lvl_c = lvlget('pas0')[int(base_array[11]) + int(base_pas0_c)]
-                        stat_pas1lvl = lvlget('se_pas1')[int(base_array[13])] + base_array[18]
-                        stat_pas2lvl = lvlget('se_pas2')[int(base_array[14])]
-                        stat_pas3lvl = lvlget('pas3')[int(base_array[16])]
-                        stat_b = base_array[
-                                     1] + stat_pas0lvl_b + stat_pas1lvl + stat_pas2lvl + stat_pas3lvl + base_stat_d
-                        stat_c = base_array[1] + stat_pas0lvl_c + stat_pas1lvl + stat_pas2lvl + stat_pas3lvl
-                        b_stat_calc = int(int(lvlget('se_b_stat')[int(base_array[8])] * (b_stat / 100 + 1)) * (
-                                    stat_b / b_value + 1) * aria)
-                        b_phy_calc = int(int(b_base_att * (b_phy / 100 + 1) * (stat_b / b_value + 1)) * aria)
-                        b_mag_calc = int(int(b_base_att * (b_mag / 100 + 1) * (stat_b / b_value + 1)) * aria)
-                        b_ind_calc = int(int(b_base_att * (b_ind / 100 + 1) * (stat_b / b_value + 1)) * aria)
-                        b_average = int((b_phy_calc + b_mag_calc + b_ind_calc) / 3)
-                        c_calc = int(int((lvlget('c_stat')[int(base_array[9])] + base_array[6]) * (c_per / 100 + 1)) * (
-                                    stat_c / 750 + 1))
-                        pas1_calc = int(stat_pas1lvl + 442)
-                        pas1_out = str(int(stat_pas1lvl + 442)) + "  (" + str(int(20 + base_array[13])) + "렙)"
-                        save1 = str(b_stat_calc) + "(" + str(int(b_stat_calc / aria)) + ")/ " + str(
-                            b_average) + "(" + str(int(b_average / aria)) + ")\n                  [" + str(
-                            int(stat_b)) + "(" + str(int(base_array[8])) + "렙)]"
-
-                    save2 = str(c_calc) + "    [" + str(int(stat_c)) + "(" + str(int(base_array[9])) + "렙)]"
-                    ##1축 2포 3합
-                    save_list1[((15000 + b_stat_calc) / 250 + 1) * (2650 + b_average)] = [calc_wep,
-                                                                                          [save1, save2, pas1_out]]
-                    save_list2[((15000 + c_calc) / 250 + 1) * 2650] = [calc_wep, [save1, save2, pas1_out]]
-                    save_list3[((15000 + pas1_calc + c_calc + b_stat_calc) / 250 + 1) * (2650 + b_average)] = [calc_wep,
-                                                                                                               [save1,
-                                                                                                                save2,
-                                                                                                                pas1_out]]
-
-                    count_valid = count_valid + 1
-                else:
-                    count_invalid = count_invalid + 1
             else:
-                count_invalid = count_invalid + 1
+                if jobup_select.get()[4:7] == "奶妈":
+                    b_value = 675
+                    aria = 1.25 + 0.05 * base_array[10]
+                if jobup_select.get()[4:7] == "奶萝":
+                    b_value = 665
+                    aria = (1.20 + 0.05 * base_array[10]) * 1.20
+
+                b_base_att = lvlget('se_b_atta')[int(base_array[8])]
+                stat_pas0lvl_b = lvlget('pas0')[int(base_array[11]) + int(base_pas0_b)]
+                stat_pas0lvl_c = lvlget('pas0')[int(base_array[11]) + int(base_pas0_c)]
+                stat_pas1lvl = lvlget('se_pas1')[int(base_array[13])] + base_array[18]
+                stat_pas2lvl = lvlget('se_pas2')[int(base_array[14])]
+                stat_pas3lvl = lvlget('pas3')[int(base_array[16])]
+                stat_b = base_array[
+                             1] + stat_pas0lvl_b + stat_pas1lvl + stat_pas2lvl + stat_pas3lvl + base_stat_d
+                stat_c = base_array[1] + stat_pas0lvl_c + stat_pas1lvl + stat_pas2lvl + stat_pas3lvl
+                b_stat_calc = int(int(lvlget('se_b_stat')[int(base_array[8])] * (b_stat / 100 + 1)) * (
+                            stat_b / b_value + 1) * aria)
+                b_phy_calc = int(int(b_base_att * (b_phy / 100 + 1) * (stat_b / b_value + 1)) * aria)
+                b_mag_calc = int(int(b_base_att * (b_mag / 100 + 1) * (stat_b / b_value + 1)) * aria)
+                b_ind_calc = int(int(b_base_att * (b_ind / 100 + 1) * (stat_b / b_value + 1)) * aria)
+                b_average = int((b_phy_calc + b_mag_calc + b_ind_calc) / 3)
+                c_calc = int(int((lvlget('c_stat')[int(base_array[9])] + base_array[6]) * (c_per / 100 + 1)) * (
+                            stat_c / 750 + 1))
+                pas1_calc = int(stat_pas1lvl + 442)
+                pas1_out = str(int(stat_pas1lvl + 442)) + "  (" + str(int(20 + base_array[13])) + "렙)"
+                save1 = str(b_stat_calc) + "(" + str(int(b_stat_calc / aria)) + ")/ " + str(
+                    b_average) + "(" + str(int(b_average / aria)) + ")\n                  [" + str(
+                    int(stat_b)) + "(" + str(int(base_array[8])) + "렙)]"
+
+            save2 = str(c_calc) + "    [" + str(int(stat_c)) + "(" + str(int(base_array[9])) + "렙)]"
+            ##1축 2포 3합
+            save_list1[((15000 + b_stat_calc) / 250 + 1) * (2650 + b_average)] = [calc_wep, [save1, save2, pas1_out], baibianguai]
+            save_list2[((15000 + c_calc) / 250 + 1) * 2650] = [calc_wep, [save1, save2, pas1_out], baibianguai]
+            save_list3[((15000 + pas1_calc + c_calc + b_stat_calc) / 250 + 1) * (2650 + b_average)] = [calc_wep, [save1, save2, pas1_out], baibianguai]
+
+            global count_valid
+            count_valid = count_valid + 1
+
+        cartesianProduct(0, False, None, [], process)
         show_number = 0
         showsta(text='结果统计中')
 
@@ -1114,9 +1098,9 @@ def show_result(rank_list, job_type, ele_skill):
     if job_type == 'deal':  ###########################
 
         global result_image_on, rank_dam, rank_stat, rank_stat2, req_cool, res_dam, res_stat, res_stat2
+        rank_baibiaoguai = [0, 0, 0, 0, 0]
         rank_dam = [0, 0, 0, 0, 0]
         rank_setting = [0, 0, 0, 0, 0]
-        rank_baibiaoguai = [0, 0, 0, 0, 0]
         rss = [0, 0, 0, 0, 0]
         result_image_on = [{}, {}, {}, {}, {}]
         try:
@@ -1258,6 +1242,9 @@ def show_result(rank_list, job_type, ele_skill):
         r_preset = load_presetr["custom"]
         global result_image_on1, result_image_on2, result_image_on3, rank_buf1, rank_buf2, rank_buf3, rank_type_buf, res_buf, res_img_list, res_buf_list, res_buf_ex1, res_buf_ex2, res_buf_ex3, rank_buf_ex1, rank_buf_ex2, rank_buf_ex3, res_buf_type_what
         rank_type_buf = 3
+        rank_baibiaoguai1 = [0, 0, 0, 0, 0]
+        rank_baibiaoguai2 = [0, 0, 0, 0, 0]
+        rank_baibiaoguai3 = [0, 0, 0, 0, 0]
         rank_setting1 = [0, 0, 0, 0, 0]
         rank_setting2 = [0, 0, 0, 0, 0]
         rank_setting3 = [0, 0, 0, 0, 0]
@@ -1275,6 +1262,11 @@ def show_result(rank_list, job_type, ele_skill):
         ## b: 0=계수,1=스펙or증가량
         ## c: b에서 1 선택시, 0=스펙, 1=증가량
         try:
+            # ranking = [ranking1, ranking2, ranking3]
+            # ranking1 = rank => [score, [calc_wep, [save1, save2, pas1_out], baibianguai]]
+            rank_baibiaoguai3[0] = rank_list[2][0][1][2]
+            rank_baibiaoguai2[0] = rank_list[1][0][1][2]
+            rank_baibiaoguai1[0] = rank_list[0][0][1][2]
             rank_setting3[0] = rank_list[2][0][1][0]  ##2번째 숫자가 랭킹임
             rank_setting2[0] = rank_list[1][0][1][0]
             rank_setting1[0] = rank_list[0][0][1][0]
@@ -1297,6 +1289,16 @@ def show_result(rank_list, job_type, ele_skill):
                     if len(j) != 6:
                         if j[0:2] == str(i):
                             result_image_on1[0][str(i)] = image_list[j]  ##
+            if rank_baibiaoguai3[0] is not None:
+                result_image_on3[0]["bbg"] = image_list[rank_baibiaoguai3[0]]
+            if rank_baibiaoguai2[0] is not None:
+                result_image_on2[0]["bbg"] = image_list[rank_baibiaoguai2[0]]
+            if rank_baibiaoguai1[0] is not None:
+                result_image_on1[0]["bbg"] = image_list[rank_baibiaoguai1[0]]
+
+            rank_baibiaoguai3[1] = rank_list[2][1][1][2]
+            rank_baibiaoguai2[1] = rank_list[1][1][1][2]
+            rank_baibiaoguai1[1] = rank_list[0][1][1][2]
             rank_setting3[1] = rank_list[2][1][1][0]
             rank_setting2[1] = rank_list[1][1][1][0]
             rank_setting1[1] = rank_list[0][1][1][0]
@@ -1319,6 +1321,16 @@ def show_result(rank_list, job_type, ele_skill):
                     if len(j) != 6:
                         if j[0:2] == str(i):
                             result_image_on1[1][str(i)] = image_list[j]  ##
+            if rank_baibiaoguai3[1] is not None:
+                result_image_on3[1]["bbg"] = image_list[rank_baibiaoguai3[1]]
+            if rank_baibiaoguai2[1] is not None:
+                result_image_on2[1]["bbg"] = image_list[rank_baibiaoguai2[1]]
+            if rank_baibiaoguai1[1] is not None:
+                result_image_on1[1]["bbg"] = image_list[rank_baibiaoguai1[1]]
+
+            rank_baibiaoguai3[2] = rank_list[2][2][1][2]
+            rank_baibiaoguai2[2] = rank_list[1][2][1][2]
+            rank_baibiaoguai1[2] = rank_list[0][2][1][2]
             rank_setting3[2] = rank_list[2][2][1][0]
             rank_setting2[2] = rank_list[1][2][1][0]
             rank_setting1[2] = rank_list[0][2][1][0]
@@ -1341,6 +1353,16 @@ def show_result(rank_list, job_type, ele_skill):
                     if len(j) != 6:
                         if j[0:2] == str(i):
                             result_image_on1[2][str(i)] = image_list[j]  ##
+            if rank_baibiaoguai3[2] is not None:
+                result_image_on3[2]["bbg"] = image_list[rank_baibiaoguai3[2]]
+            if rank_baibiaoguai2[2] is not None:
+                result_image_on2[2]["bbg"] = image_list[rank_baibiaoguai2[2]]
+            if rank_baibiaoguai1[2] is not None:
+                result_image_on1[2]["bbg"] = image_list[rank_baibiaoguai1[2]]
+
+            rank_baibiaoguai3[3] = rank_list[2][3][1][2]
+            rank_baibiaoguai2[3] = rank_list[1][3][1][2]
+            rank_baibiaoguai1[3] = rank_list[0][3][1][2]
             rank_setting3[3] = rank_list[2][3][1][0]
             rank_setting2[3] = rank_list[1][3][1][0]
             rank_setting1[3] = rank_list[0][3][1][0]
@@ -1363,6 +1385,16 @@ def show_result(rank_list, job_type, ele_skill):
                     if len(j) != 6:
                         if j[0:2] == str(i):
                             result_image_on1[3][str(i)] = image_list[j]  ##
+            if rank_baibiaoguai3[3] is not None:
+                result_image_on3[3]["bbg"] = image_list[rank_baibiaoguai3[3]]
+            if rank_baibiaoguai2[3] is not None:
+                result_image_on2[3]["bbg"] = image_list[rank_baibiaoguai2[3]]
+            if rank_baibiaoguai1[3] is not None:
+                result_image_on1[3]["bbg"] = image_list[rank_baibiaoguai1[3]]
+
+            rank_baibiaoguai3[4] = rank_list[2][4][1][2]
+            rank_baibiaoguai2[4] = rank_list[1][4][1][2]
+            rank_baibiaoguai1[4] = rank_list[0][4][1][2]
             rank_setting3[4] = rank_list[2][4][1][0]
             rank_setting2[4] = rank_list[1][4][1][0]
             rank_setting1[4] = rank_list[0][4][1][0]
@@ -1385,6 +1417,12 @@ def show_result(rank_list, job_type, ele_skill):
                     if len(j) != 6:
                         if j[0:2] == str(i):
                             result_image_on1[4][str(i)] = image_list[j]  ##
+            if rank_baibiaoguai3[4] is not None:
+                result_image_on3[4]["bbg"] = image_list[rank_baibiaoguai3[4]]
+            if rank_baibiaoguai2[4] is not None:
+                result_image_on2[4]["bbg"] = image_list[rank_baibiaoguai2[4]]
+            if rank_baibiaoguai1[4] is not None:
+                result_image_on1[4]["bbg"] = image_list[rank_baibiaoguai1[4]]
         except IndexError as error:
             c = 1
 
@@ -1412,6 +1450,9 @@ def show_result(rank_list, job_type, ele_skill):
         res_img31 = canvas_res.create_image(189, 87, image=result_image_on3[0]['31'])
         res_img32 = canvas_res.create_image(219, 117, image=result_image_on3[0]['32'])
         res_img33 = canvas_res.create_image(189, 117, image=result_image_on3[0]['33'])
+        if 'bbg' in result_image_on3[0]:
+            res_txtbbg = canvas_res.create_text(178, 147, text="百变怪=>", fill='white')
+            res_imgbbg = canvas_res.create_image(219, 147, image=result_image_on3[0]['bbg']) # 百变怪
         cn1 = 0
         res_img_list = {}
         res_buf_list = {}
@@ -1421,6 +1462,9 @@ def show_result(rank_list, job_type, ele_skill):
                     temp_res = canvas_res.create_image(268 + cn1 * 29, 67 + 78 * j, image=result_image_on3[j][str(i)])
                     res_img_list[str(j) + str(i)] = temp_res
                     cn1 = cn1 + 1
+                if 'bbg' in result_image_on3[j]:
+                    canvas_res.create_text(268 + 5 * 29 + 14, 38 + 78 * j, text="百变怪=>", font=guide_font, fill='white')
+                    canvas_res.create_image(268 + 7 * 29, 37 + 78 * j, image=result_image_on3[j]['bbg'])
                 cn1 = 0
                 temp_buf = canvas_res.create_text(346, 34 + 78 * j, text=rank_buf3[j], font=mid_font, fill='white')
                 res_buf_list[j] = temp_buf
@@ -1539,6 +1583,13 @@ def change_rank(now, job_type):
             canvas_res.itemconfig(res_img31, image=image_changed['31'])
             canvas_res.itemconfig(res_img32, image=image_changed['32'])
             canvas_res.itemconfig(res_img33, image=image_changed['33'])
+            if res_txtbbg is not None:
+                canvas_res.delete(res_txtbbg)
+            if res_imgbbg is not None:
+                canvas_res.delete(res_imgbbg)
+            if 'bbg' in image_changed:
+                res_txtbbg = canvas_res.create_text(178, 147, text="百变怪=>", fill='white')
+                res_imgbbg = canvas_res.create_image(219, 147, image=image_changed['bbg']) # 百变怪
         except KeyError as error:
             c = 1
 
@@ -1583,12 +1634,22 @@ def change_rank_type(in_type):
     canvas_res.itemconfig(res_img31, image=image_changed['31'])
     canvas_res.itemconfig(res_img32, image=image_changed['32'])
     canvas_res.itemconfig(res_img33, image=image_changed['33'])
+    if res_txtbbg is not None:
+        canvas_res.delete(res_txtbbg)
+    if res_imgbbg is not None:
+        canvas_res.delete(res_imgbbg)
+    if 'bbg' in image_changed:
+        res_txtbbg = canvas_res.create_text(178, 147, text="百变怪=>", fill='white')
+        res_imgbbg = canvas_res.create_image(219, 147, image=image_changed['bbg']) # 百变怪
     cn2 = 0
     for j in range(0, 5):
         try:
             for i in [11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33]:
                 canvas_res.itemconfig(res_img_list[str(j) + str(i)], image=image_changed_all[j][str(i)])
                 cn2 = cn2 + 2
+            if 'bbg' in image_changed_all[j]:
+                canvas_res.create_text(268 + 5 * 29 + 14, 38 + 78 * j, text="百变怪=>", font=guide_font, fill='white')
+                canvas_res.create_image(268 + 7 * 29, 37 + 78 * j, image=image_changed_all[j]['bbg'])
             cn2 = 0
             canvas_res.itemconfig(res_buf_list[j], text=rank_changed[j], font=mid_font, fill='white')
         except KeyError as error:
