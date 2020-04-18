@@ -247,8 +247,6 @@ except PermissionError as error:
 load_excel1.close()
 load_preset0.close()
 
-has_god_combination = False
-
 def inc_invalid_cnt_func(cnt):
     global count_invalid
     count_invalid+=cnt
@@ -267,6 +265,10 @@ def format_time(ftime):
     remaining_time_str += "{:02}s".format(int(seconds))
 
     return remaining_time_str
+
+# 装备编号的最后一位表示是否是神话装备，eg：33341
+def is_god(equip):
+    return int(equip[-1]) == 1
 
 ## 计算函数##
 def calc():
@@ -412,11 +414,25 @@ def calc():
     list33 = []
     list_setnum = [];
     list_godnum = []
+    # 未选中的装备
+    listns11 = [];
+    listns12 = [];
+    listns13 = [];
+    listns14 = [];
+    listns15 = []
+    listns21 = [];
+    listns22 = [];
+    listns23 = [];
+    listns31 = [];
+    listns32 = [];
+    listns33 = []
     for i in range(1010, 1999):
         try:
             if eval('select_item["tg1{}"]'.format(i)) == 1:
                 list11.append('1' + str(i))
                 list_setnum.append(str(i)[1:])
+            elif eval('select_item["tg1{}"]'.format(i)) == 0 and not is_god('1' + str(i)):
+                listns11.append('1' + str(i))
         except KeyError as error:
             c = 1
     for i in range(2010, 2999):
@@ -424,6 +440,8 @@ def calc():
             if eval('select_item["tg1{}"]'.format(i)) == 1:
                 list12.append('1' + str(i))
                 list_setnum.append(str(i)[1:])
+            elif eval('select_item["tg1{}"]'.format(i)) == 0 and not is_god('1' + str(i)):
+                listns12.append('1' + str(i))
         except KeyError as error:
             c = 1
     for i in range(3010, 3999):
@@ -431,6 +449,8 @@ def calc():
             if eval('select_item["tg1{}"]'.format(i)) == 1:
                 list13.append('1' + str(i))
                 list_setnum.append(str(i)[1:])
+            elif eval('select_item["tg1{}"]'.format(i)) == 0 and not is_god('1' + str(i)):
+                listns13.append('1' + str(i))
         except KeyError as error:
             c = 1
     for i in range(4010, 4999):
@@ -438,6 +458,8 @@ def calc():
             if eval('select_item["tg1{}"]'.format(i)) == 1:
                 list14.append('1' + str(i))
                 list_setnum.append(str(i)[1:])
+            elif eval('select_item["tg1{}"]'.format(i)) == 0 and not is_god('1' + str(i)):
+                listns14.append('1' + str(i))
         except KeyError as error:
             c = 1
     for i in range(5010, 5999):
@@ -445,6 +467,8 @@ def calc():
             if eval('select_item["tg1{}"]'.format(i)) == 1:
                 list15.append('1' + str(i))
                 list_setnum.append(str(i)[1:])
+            elif eval('select_item["tg1{}"]'.format(i)) == 0 and not is_god('1' + str(i)):
+                listns15.append('1' + str(i))
         except KeyError as error:
             c = 1
     for i in range(1010, 1999):
@@ -452,6 +476,8 @@ def calc():
             if eval('select_item["tg2{}"]'.format(i)) == 1:
                 list21.append('2' + str(i))
                 list_setnum.append(str(i)[1:])
+            elif eval('select_item["tg2{}"]'.format(i)) == 0 and not is_god('2' + str(i)):
+                listns21.append('2' + str(i))
         except KeyError as error:
             c = 1
     for i in range(2010, 2999):
@@ -459,6 +485,8 @@ def calc():
             if eval('select_item["tg2{}"]'.format(i)) == 1:
                 list22.append('2' + str(i))
                 list_setnum.append(str(i)[1:])
+            elif eval('select_item["tg2{}"]'.format(i)) == 0 and not is_god('2' + str(i)):
+                listns22.append('2' + str(i))
         except KeyError as error:
             c = 1
     for i in range(3010, 3999):
@@ -466,6 +494,8 @@ def calc():
             if eval('select_item["tg2{}"]'.format(i)) == 1:
                 list23.append('2' + str(i))
                 list_setnum.append(str(i)[1:])
+            elif eval('select_item["tg2{}"]'.format(i)) == 0 and not is_god('2' + str(i)):
+                listns23.append('2' + str(i))
         except KeyError as error:
             c = 1
     for i in range(1010, 1999):
@@ -473,6 +503,8 @@ def calc():
             if eval('select_item["tg3{}"]'.format(i)) == 1:
                 list31.append('3' + str(i))
                 list_setnum.append(str(i)[1:])
+            elif eval('select_item["tg3{}"]'.format(i)) == 0 and not is_god('3' + str(i)):
+                listns31.append('3' + str(i))
         except KeyError as error:
             c = 1
     for i in range(2010, 2999):
@@ -480,6 +512,8 @@ def calc():
             if eval('select_item["tg3{}"]'.format(i)) == 1:
                 list32.append('3' + str(i))
                 list_setnum.append(str(i)[1:])
+            elif eval('select_item["tg3{}"]'.format(i)) == 0 and not is_god('3' + str(i)):
+                listns32.append('3' + str(i))
         except KeyError as error:
             c = 1
     for i in range(3010, 3999):
@@ -487,6 +521,8 @@ def calc():
             if eval('select_item["tg3{}"]'.format(i)) == 1:
                 list33.append('3' + str(i))
                 list_setnum.append(str(i)[1:])
+            elif eval('select_item["tg3{}"]'.format(i)) == 0 and not is_god('3' + str(i)):
+                listns33.append('3' + str(i))
         except KeyError as error:
             c = 1
     algo_list = ['11', '12', '13', '14', '15', '21', '22', '23', '31', '32', '33']
@@ -587,6 +623,18 @@ def calc():
     items = [list11, list21, list33, list12, list13, list14, list15, list22, list23, list31, list32]
     all_list_num = len(list11) * len(list12) * len(list13) * len(list14) * len(list15) * len(list21) * len(
         list22) * len(list23) * len(list31) * len(list32) * len(list33)
+
+    # 百变怪的各部位可选装备需要与上面的部位顺序一致
+    not_select_items = [listns11, listns21, listns33, listns12, listns13, listns14, listns15, listns22, listns23, listns31, listns32]
+    bbg_add_num = 0
+    for i in range (0, len(not_select_items)):
+        bbg_add_num += all_list_num/len(items[i])*len(not_select_items[i])
+
+    has_baibainguai = baibianguai_select.get() == txt_has_baibianguai
+    if has_baibainguai:
+        all_list_num += bbg_add_num
+
+
     if all_list_num > 500000000:
         ask_msg2 = tkinter.messagebox.askquestion('确认', "情况的数量超过5亿种.\可能需要非常非常久.\n确定进行吗？")
         if ask_msg2 == 'no':
@@ -619,23 +667,19 @@ def calc():
     # 开始计算
     exit_calc = 0
 
-    global has_god_combination
-    has_god_combination = False
     # 看了看，主要性能瓶颈在于直接使用了itertools.product遍历所有的笛卡尔积组合，导致无法提前剪枝，只能在每个组合计算前通过条件判断是否要跳过
     # 背景，假设当前处理到下标n（0-10）的装备，前面装备已选择的组合为selected_combination(of size n)，未处理装备为后面11-n-1个，其对应组合数为rcp=len(Cartesian Product(后面11-n-1个装备部位))
-    def cartesianProduct(current_index, has_god, selected_combination, process_func):
-        global has_god_combination, max_setopt
-
+    def cartesianProduct(current_index, has_god, baibianguai, selected_combination, process_func):
         invalid_cnt = 1
         for i in range(current_index+1, len(items)):
             invalid_cnt *= len(items[i])
 
-        # 考虑当前部位的每一件可选装备
-        for equip in items[current_index]:
+        def try_equip(equip):
+            global max_setopt
             # 剪枝条件1：若当前组合序列已经有神话装备（god），且当前这个部位遍历到的仍是一个神话装备，则可以直接跳过rcp个组合，当前部位之前处理下一个备选装备
             if has_god and is_god(equip):
                 inc_invalid_cnt_func(invalid_cnt)
-                continue
+                return
 
             # re：剪枝条件2：预计算出后面装备部位能够获得的最大价值量，若当前已有价值量与之相加低于已处理的最高价值量，则剪枝
             # 这个问题其实等价于能否找到后面部分的一个尽可能精确的上限
@@ -648,10 +692,7 @@ def calc():
             selected_combination.append(equip)
 
             if current_index < len(items) - 1:
-                cartesianProduct(current_index+1, has_god or is_god(equip), selected_combination, process_func)
-                if exit_calc == 1:
-                    showsta(text='已终止')
-                    return
+                cartesianProduct(current_index+1, has_god or is_god(equip), baibianguai, selected_combination, process_func)
             else: # 符合条件的装备搭配
                 god=0
                 if has_god or is_god(equip):
@@ -665,15 +706,29 @@ def calc():
                 if setopt_num >= max_setopt-set_perfect :
                     if max_setopt <= setopt_num - god * set_perfect:
                         max_setopt = setopt_num - god * set_perfect
-                    process_func(selected_combination)
+                    process_func(selected_combination, baibianguai)
                 else:
                     inc_invalid_cnt_func(1)
 
             selected_combination.pop()
 
-    # 装备编号的最后一位表示是否是神话装备，eg：33341
-    def is_god(equip):
-        return int(equip[-1]) == 1
+        # 考虑当前部位的每一件可选装备
+        for equip in items[current_index]:
+            if exit_calc == 1:
+                showsta(text='已终止')
+                return
+            try_equip(equip)
+
+        # 当拥有百变怪，且目前的尝试序列尚未使用到百变怪的时候考虑使用百变怪充当当前部位
+        if has_baibainguai and baibianguai is None:
+            for equip in not_select_items[current_index]:
+                if exit_calc == 1:
+                    showsta(text='已终止')
+                    return
+                baibianguai = equip
+                try_equip(equip)
+                baibianguai = None
+
 
     # items = [list11, list12, list13, list14, list15, list21, list22, list23, list31, list32, list33]
     # 预处理，计算每个部位是否拥有神话装备
@@ -709,7 +764,7 @@ def calc():
 
         has_god_combination = False
 
-        def process(calc_now):
+        def process(calc_now, baibianguai):
             set_list=["1"+str(calc_now[x][2:4]) for x in range(0,11)]
             set_on = [];
             setapp = set_on.append
@@ -806,12 +861,12 @@ def calc():
                                   1.05 + 0.0045 * int(ele_skill)))
 
             base_array[4] = real_bon
-            save_list[damage] = [calc_wep, base_array]
+            save_list[damage] = [calc_wep, base_array, baibianguai]
 
             global count_valid
             count_valid = count_valid + 1
 
-        cartesianProduct(0, False, [], process)
+        cartesianProduct(0, False, None, [], process)
 
         show_number = 0
         showsta(text='结果统计中')
@@ -1054,16 +1109,19 @@ def show_result(rank_list, job_type, ele_skill):
     canvas_res.create_image(293, 202, image=result_bg)
 
     global image_list
-    global res_img11, res_img12, res_img13, res_img14, res_img15, res_img21, res_img22, res_img23, res_img31, res_img32, res_img33, wep_select, jobup_select
+    global res_img11, res_img12, res_img13, res_img14, res_img15, res_img21, res_img22, res_img23, res_img31, res_img32, res_img33, res_txtbbg, res_imgbbg, wep_select, jobup_select
 
     if job_type == 'deal':  ###########################
 
         global result_image_on, rank_dam, rank_stat, rank_stat2, req_cool, res_dam, res_stat, res_stat2
         rank_dam = [0, 0, 0, 0, 0]
         rank_setting = [0, 0, 0, 0, 0]
+        rank_baibiaoguai = [0, 0, 0, 0, 0]
         rss = [0, 0, 0, 0, 0]
         result_image_on = [{}, {}, {}, {}, {}]
         try:
+            # rank => [score, [calc_wep, base_array, baibianguai]]
+            rank_baibiaoguai[0] = rank_list[0][1][2]
             rank_dam[0] = str(int(100 * rank_list[0][0])) + "%"
             rank_setting[0] = rank_list[0][1][0]  ##0号是排名
             rss[0] = rank_list[0][1][1]
@@ -1072,6 +1130,10 @@ def show_result(rank_list, job_type, ele_skill):
                     if len(j) != 6:
                         if j[0:2] == str(i):
                             result_image_on[0][str(i)] = image_list[j]
+            if rank_baibiaoguai[0] is not None:
+                result_image_on[0]["bbg"] = image_list[rank_baibiaoguai[0]]
+
+            rank_baibiaoguai[1] = rank_list[1][1][2]
             rank_dam[1] = str(int(100 * rank_list[1][0])) + "%"
             rank_setting[1] = rank_list[1][1][0]
             rss[1] = rank_list[1][1][1]
@@ -1080,6 +1142,10 @@ def show_result(rank_list, job_type, ele_skill):
                     if len(j) != 6:
                         if j[0:2] == str(i):
                             result_image_on[1][str(i)] = image_list[j]
+            if rank_baibiaoguai[1] is not None:
+                result_image_on[1]["bbg"] = image_list[rank_baibiaoguai[1]]
+
+            rank_baibiaoguai[2] = rank_list[2][1][2]
             rank_dam[2] = str(int(100 * rank_list[2][0])) + "%"
             rank_setting[2] = rank_list[2][1][0]
             rss[2] = rank_list[2][1][1]
@@ -1088,6 +1154,10 @@ def show_result(rank_list, job_type, ele_skill):
                     if len(j) != 6:
                         if j[0:2] == str(i):
                             result_image_on[2][str(i)] = image_list[j]
+            if rank_baibiaoguai[2] is not None:
+                result_image_on[2]["bbg"] = image_list[rank_baibiaoguai[2]]
+
+            rank_baibiaoguai[3] = rank_list[3][1][2]
             rank_dam[3] = str(int(100 * rank_list[3][0])) + "%"
             rank_setting[3] = rank_list[3][1][0]
             rss[3] = rank_list[3][1][1]
@@ -1096,6 +1166,10 @@ def show_result(rank_list, job_type, ele_skill):
                     if len(j) != 6:
                         if j[0:2] == str(i):
                             result_image_on[3][str(i)] = image_list[j]
+            if rank_baibiaoguai[3] is not None:
+                result_image_on[3]["bbg"] = image_list[rank_baibiaoguai[3]]
+
+            rank_baibiaoguai[4] = rank_list[4][1][2]
             rank_dam[4] = str(int(100 * rank_list[4][0])) + "%"
             rank_setting[4] = rank_list[4][1][0]
             rss[4] = rank_list[4][1][1]
@@ -1104,6 +1178,8 @@ def show_result(rank_list, job_type, ele_skill):
                     if len(j) != 6:
                         if j[0:2] == str(i):
                             result_image_on[4][str(i)] = image_list[j]
+            if rank_baibiaoguai[4] is not None:
+                result_image_on[4]["bbg"] = image_list[rank_baibiaoguai[4]]
         except IndexError as error:
             c = 1
 
@@ -1148,23 +1224,29 @@ def show_result(rank_list, job_type, ele_skill):
         res_stat = canvas_res.create_text(65, 293, text=rank_stat[0], fill='white')
         res_stat2 = canvas_res.create_text(185, 293, text=rank_stat2[0], fill='white')
 
-        res_img11 = canvas_res.create_image(57, 57, image=result_image_on[0]['11'])
-        res_img12 = canvas_res.create_image(27, 87, image=result_image_on[0]['12'])
-        res_img13 = canvas_res.create_image(27, 57, image=result_image_on[0]['13'])
-        res_img14 = canvas_res.create_image(57, 87, image=result_image_on[0]['14'])
-        res_img15 = canvas_res.create_image(27, 117, image=result_image_on[0]['15'])
-        res_img21 = canvas_res.create_image(189, 57, image=result_image_on[0]['21'])
-        res_img22 = canvas_res.create_image(219, 57, image=result_image_on[0]['22'])
-        res_img23 = canvas_res.create_image(219, 87, image=result_image_on[0]['23'])
-        res_img31 = canvas_res.create_image(189, 87, image=result_image_on[0]['31'])
-        res_img32 = canvas_res.create_image(219, 117, image=result_image_on[0]['32'])
-        res_img33 = canvas_res.create_image(189, 117, image=result_image_on[0]['33'])
+        res_img11 = canvas_res.create_image(57, 57, image=result_image_on[0]['11']) # 上衣
+        res_img12 = canvas_res.create_image(27, 87, image=result_image_on[0]['12']) # 裤子
+        res_img13 = canvas_res.create_image(27, 57, image=result_image_on[0]['13']) # 头肩
+        res_img14 = canvas_res.create_image(57, 87, image=result_image_on[0]['14']) # 腰带
+        res_img15 = canvas_res.create_image(27, 117, image=result_image_on[0]['15']) # 鞋子
+        res_img21 = canvas_res.create_image(189, 57, image=result_image_on[0]['21']) # 手镯
+        res_img22 = canvas_res.create_image(219, 57, image=result_image_on[0]['22']) # 项链
+        res_img23 = canvas_res.create_image(219, 87, image=result_image_on[0]['23']) # 戒指
+        res_img31 = canvas_res.create_image(189, 87, image=result_image_on[0]['31']) # 辅助装备
+        res_img32 = canvas_res.create_image(219, 117, image=result_image_on[0]['32']) # 魔法石
+        res_img33 = canvas_res.create_image(189, 117, image=result_image_on[0]['33']) # 耳环
+        if 'bbg' in result_image_on[0]:
+            res_txtbbg = canvas_res.create_text(178, 147, text="百变怪=>", fill='white')
+            res_imgbbg = canvas_res.create_image(219, 147, image=result_image_on[0]['bbg']) # 百变怪
         cn1 = 0
         for j in range(0, 5):
             try:
                 for i in [11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33]:
                     canvas_res.create_image(268 + cn1 * 29, 67 + 78 * j, image=result_image_on[j][str(i)])
                     cn1 = cn1 + 1
+                if 'bbg' in result_image_on[j]:
+                    canvas_res.create_text(268 + 5 * 29 + 14, 38 + 78 * j, text="百变怪=>", font=guide_font, fill='white')
+                    canvas_res.create_image(268 + 7 * 29, 37 + 78 * j, image=result_image_on[j]['bbg'])
                 cn1 = 0
                 canvas_res.create_text(346, 34 + 78 * j, text=rank_dam[j], font=mid_font, fill='white')
             except KeyError as error:
@@ -1398,7 +1480,7 @@ def show_result(rank_list, job_type, ele_skill):
 
 
 def change_rank(now, job_type):
-    global image_list, canvas_res, res_img11, res_img12, res_img13, res_img14, res_img15, res_img21, res_img22, res_img23, res_img31, res_img32, res_img33
+    global image_list, canvas_res, res_img11, res_img12, res_img13, res_img14, res_img15, res_img21, res_img22, res_img23, res_img31, res_img32, res_img33, res_txtbbg, res_imgbbg
     if job_type == 'deal':
         global res_dam, res_stat, res_stat2, rank_stat, rank_stat2, result_image_on
         try:
@@ -1414,6 +1496,13 @@ def change_rank(now, job_type):
             canvas_res.itemconfig(res_img31, image=image_changed['31'])
             canvas_res.itemconfig(res_img32, image=image_changed['32'])
             canvas_res.itemconfig(res_img33, image=image_changed['33'])
+            if res_txtbbg is not None:
+                canvas_res.delete(res_txtbbg)
+            if res_imgbbg is not None:
+                canvas_res.delete(res_imgbbg)
+            if 'bbg' in image_changed:
+                res_txtbbg = canvas_res.create_text(178, 147, text="百变怪=>", fill='white')
+                res_imgbbg = canvas_res.create_image(219, 147, image=image_changed['bbg']) # 百变怪
             canvas_res.itemconfig(res_dam, text=rank_dam[now])
             canvas_res.itemconfig(res_stat, text=rank_stat[now])
             canvas_res.itemconfig(res_stat2, text=rank_stat2[now])
@@ -1455,7 +1544,7 @@ def change_rank(now, job_type):
 
 
 def change_rank_type(in_type):
-    global image_list, canvas_res, res_img11, res_img12, res_img13, res_img14, res_img15, res_img21, res_img22, res_img23, res_img31, res_img32, res_img33
+    global image_list, canvas_res, res_img11, res_img12, res_img13, res_img14, res_img15, res_img21, res_img22, res_img23, res_img31, res_img32, res_img33, res_txtbbg, res_imgbbg
     global result_image_on1, result_image_on2, result_image_on3, rank_buf1, rank_buf2, rank_buf3, rank_type_buf, res_img_list, res_buf_list, res_buf_ex1, res_buf_ex2, res_buf_ex3, rank_buf_ex1, rank_buf_ex2, rank_buf_ex3, res_buf_type_what
     if in_type == 1:
         rank_type_buf = 1
@@ -1758,6 +1847,7 @@ g_row_custom_save_title = 5  # 称号选择
 g_row_custom_save_pet = 6  # 宠物选择
 g_row_custom_save_cd = 7  # 冷却补正
 g_row_custom_save_speed = 8  # 选择速度
+g_row_custom_save_has_baibianguai = 9 # 是否拥有百变怪
 
 
 def load_checklist():
@@ -1795,6 +1885,7 @@ def load_checklist_noconfirm(ssnum1):
     creature_select.set(load_cell(g_row_custom_save_pet, col_custom_save_value).value)
     req_cool.set(load_cell(g_row_custom_save_cd, col_custom_save_value).value)
     select_perfect.set(load_cell(g_row_custom_save_speed, col_custom_save_value).value)
+    baibianguai_select.set(load_cell(g_row_custom_save_has_baibianguai, col_custom_save_value).value or txt_no_baibianguai)
 
     load_preset3.close()
     check_equipment()
@@ -1848,6 +1939,7 @@ def save_checklist():
             save_my_custom(save_cell, g_row_custom_save_pet, col_custom_save_value, "宠物选择", creature_select.get())
             save_my_custom(save_cell, g_row_custom_save_cd, col_custom_save_value, "冷却补正", req_cool.get())
             save_my_custom(save_cell, g_row_custom_save_speed, col_custom_save_value, "选择速度", select_perfect.get())
+            save_my_custom(save_cell, g_row_custom_save_has_baibianguai, col_custom_save_value, "是否拥有百变怪", baibianguai_select.get())
 
             load_preset4.save("preset.xlsx")
             load_preset4.close()
@@ -1949,49 +2041,99 @@ def update_count2():
         global select_item
         a_num_all = 0
         a_num = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        a_not_select_num_all = 0
+        a_not_select_num = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         for i in range(101, 136):
             try:
-                a_num[0] = a_num[0] + select_item['tg1{}0'.format(i)] + select_item['tg1{}1'.format(i)]
+                if select_item['tg1{}0'.format(i)] == 1:
+                    a_num[0]+=1
+                elif select_item['tg1{}0'.format(i)] == 0:
+                    a_not_select_num[0]+=1
+
+                if select_item['tg1{}1'.format(i)] == 1:
+                    a_num[0]+=1
+                elif select_item['tg1{}1'.format(i)] == 0:
+                    a_not_select_num[0]+=1
             except KeyError as error:
                 p = 0
             try:
-                a_num[1] = a_num[1] + select_item['tg1{}0'.format(i + 100)]
+                if select_item['tg1{}0'.format(i + 100)] == 1:
+                    a_num[1]+=1
+                elif select_item['tg1{}0'.format(i + 100)] == 0:
+                    a_not_select_num[1]+=1
             except KeyError as error:
                 p = 0
             try:
-                a_num[2] = a_num[2] + select_item['tg1{}0'.format(i + 200)]
+                if select_item['tg1{}0'.format(i + 200)] == 1:
+                    a_num[2]+=1
+                elif select_item['tg1{}0'.format(i + 200)] == 0:
+                    a_not_select_num[2]+=1
             except KeyError as error:
                 p = 0
             try:
-                a_num[3] = a_num[3] + select_item['tg1{}0'.format(i + 300)]
+                if select_item['tg1{}0'.format(i + 300)] == 1:
+                    a_num[3]+=1
+                elif select_item['tg1{}0'.format(i + 300)] == 0:
+                    a_not_select_num[3]+=1
             except KeyError as error:
                 p = 0
             try:
-                a_num[4] = a_num[4] + select_item['tg1{}0'.format(i + 400)]
+                if select_item['tg1{}0'.format(i + 400)] == 1:
+                    a_num[4]+=1
+                elif select_item['tg1{}0'.format(i + 400)] == 0:
+                    a_not_select_num[4]+=1
             except KeyError as error:
                 p = 0
             try:
-                a_num[5] = a_num[5] + select_item['tg2{}0'.format(i)] + select_item['tg2{}1'.format(i)]
+                if select_item['tg2{}0'.format(i)] == 1:
+                    a_num[5]+=1
+                elif select_item['tg2{}0'.format(i)] == 0:
+                    a_not_select_num[5]+=1
+
+                if select_item['tg2{}1'.format(i)] == 1:
+                    a_num[5]+=1
+                elif select_item['tg2{}1'.format(i)] == 0:
+                    a_not_select_num[5]+=1
             except KeyError as error:
                 p = 0
             try:
-                a_num[6] = a_num[6] + select_item['tg2{}0'.format(i + 100)]
+                if select_item['tg2{}0'.format(i + 100)] == 1:
+                    a_num[6]+=1
+                elif select_item['tg2{}0'.format(i + 100)] == 0:
+                    a_not_select_num[6]+=1
             except KeyError as error:
                 p = 0
             try:
-                a_num[7] = a_num[7] + select_item['tg2{}0'.format(i + 200)]
+                if select_item['tg2{}0'.format(i + 200)] == 1:
+                    a_num[7]+=1
+                elif select_item['tg2{}0'.format(i + 200)] == 0:
+                    a_not_select_num[7]+=1
             except KeyError as error:
                 p = 0
             try:
-                a_num[8] = a_num[8] + select_item['tg3{}0'.format(i)]
+                if select_item['tg3{}0'.format(i)] == 1:
+                    a_num[8]+=1
+                elif select_item['tg3{}0'.format(i)] == 0:
+                    a_not_select_num[8]+=1
             except KeyError as error:
                 p = 0
             try:
-                a_num[9] = a_num[9] + select_item['tg3{}0'.format(i + 100)]
+                if select_item['tg3{}0'.format(i + 100)] == 1:
+                    a_num[9]+=1
+                elif select_item['tg3{}0'.format(i + 100)] == 0:
+                    a_not_select_num[9]+=1
             except KeyError as error:
                 p = 0
             try:
-                a_num[10] = a_num[10] + select_item['tg3{}0'.format(i + 200)] + select_item['tg3{}1'.format(i + 200)]
+                if select_item['tg3{}0'.format(i + 200)] == 1:
+                    a_num[10]+=1
+                elif select_item['tg3{}0'.format(i + 200)] == 0:
+                    a_not_select_num[10]+=1
+
+                if select_item['tg3{}1'.format(i + 200)] == 1:
+                    a_num[10] += 1
+                elif select_item['tg3{}1'.format(i + 200)] == 0:
+                    a_not_select_num[10] += 1
             except KeyError as error:
                 p = 0
 
@@ -2051,7 +2193,20 @@ def update_count2():
 
         a_num_all = a_num[0] * a_num[1] * a_num[2] * a_num[3] * a_num[4] * a_num[5] * a_num[6] * a_num[7] * a_num[8] * \
                     a_num[9] * a_num[10]
-        showcon2(text="当前总组合数=" + str(a_num_all))
+
+        # 百变怪的各部位可选装备需要与上面的部位顺序一致
+        a_not_select_num_all = 0
+        for i in range(0, len(a_not_select_num)):
+            a_not_select_num_all += a_num_all / a_num[i] * a_not_select_num[i]
+
+        has_baibainguai = baibianguai_select.get() == txt_has_baibianguai
+        if has_baibainguai:
+            a_num_all += a_not_select_num_all
+
+        show_txt = "当前总组合数=" + str(a_num_all)
+        if has_baibainguai:
+            show_txt = "(计入百变怪)" + show_txt
+        showcon2(text=show_txt)
         if a_num_all > 10000000:
             show_count2['fg'] = "red"
         else:
@@ -3041,10 +3196,19 @@ change_name_img = PhotoImage(file="ext_img/name_change.png")
 change_list_but = tkinter.Button(self, image=change_name_img, borderwidth=0, activebackground=dark_main,
                                  command=change_list_name, bg=dark_sub)
 change_list_but.place(x=435 + 165, y=405 - 100)
-calc_me_img = PhotoImage(file="ext_img/calc_me.png")
-calc_me = tkinter.Button(self, image=calc_me_img, borderwidth=0, activebackground=dark_main,
-                         command=lambda: cha_select(jobs), bg=dark_sub)
-calc_me.place(x=300, y=400)
+
+txt_no_baibianguai = 'No(没有百变怪)'
+txt_has_baibianguai = 'Yes(拥有百变怪)'
+baibianguai_txt = tkinter.Label(self, text="  百变怪  ", font=guide_font, fg="white", bg=dark_sub)
+baibianguai_txt.place(x=300, y=400)
+baibianguai_select = tkinter.ttk.Combobox(self, width=13, values=[txt_no_baibianguai, txt_has_baibianguai])
+baibianguai_select.set(txt_no_baibianguai)
+baibianguai_select.place(x=373, y=400)
+
+# calc_me_img = PhotoImage(file="ext_img/calc_me.png")
+# calc_me = tkinter.Button(self, image=calc_me_img, borderwidth=0, activebackground=dark_main,
+#                          command=lambda: cha_select(jobs), bg=dark_sub)
+# calc_me.place(x=300, y=400)
 
 show_count = tkinter.Label(self, font=guide_font, fg="white", bg=dark_sub)
 show_count.place(x=490, y=40)
