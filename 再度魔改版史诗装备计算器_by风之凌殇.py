@@ -247,6 +247,11 @@ except PermissionError as error:
 load_excel1.close()
 load_preset0.close()
 
+has_god_combination = False
+
+def inc_invalid_cnt_func(cnt):
+    global count_invalid
+    count_invalid+=cnt
 
 ## 计算函数##
 def calc():
@@ -563,7 +568,8 @@ def calc():
         tkinter.messagebox.showerror('部分参数有误', "未选择武器或武器非法")
         return
 
-    items = [list11, list12, list13, list14, list15, list21, list22, list23, list31, list32, list33]
+    # 优化：由于装备顺序不影响最终计算结果，所以把神话装备先放到前面，那么剪枝可以更高效
+    items = [list11, list21, list33, list12, list13, list14, list15, list22, list23, list31, list32]
     all_list_num = len(list11) * len(list12) * len(list13) * len(list14) * len(list15) * len(list21) * len(
         list22) * len(list23) * len(list31) * len(list32) * len(list33)
     if all_list_num > 500000000:
@@ -598,6 +604,82 @@ def calc():
     # 开始计算
     exit_calc = 0
 
+    global has_god_combination
+    has_god_combination = False
+    # 看了看，主要性能瓶颈在于直接使用了itertools.product遍历所有的笛卡尔积组合，导致无法提前剪枝，只能在每个组合计算前通过条件判断是否要跳过
+    # 背景，假设当前处理到下标n（0-10）的装备，前面装备已选择的组合为selected_combination(of size n)，未处理装备为后面11-n-1个，其对应组合数为rcp=len(Cartesian Product(后面11-n-1个装备部位))
+    def cartesianProduct(current_index, has_god, selected_combination, process_func):
+        global has_god_combination, max_setopt
+
+        invalid_cnt = 1
+        for i in range(current_index+1, len(items)):
+            invalid_cnt *= len(items[i])
+
+        # 考虑当前部位的每一件可选装备
+        for equip in items[current_index]:
+            # 剪枝条件1：若当前组合序列已经有神话装备（god），且当前这个部位遍历到的仍是一个神话装备，则可以直接跳过rcp个组合，当前部位之前处理下一个备选装备
+            if has_god and is_god(equip):
+                inc_invalid_cnt_func(invalid_cnt)
+                continue
+
+            # re：剪枝条件2：预计算出后面装备部位能够获得的最大价值量，若当前已有价值量与之相加低于已处理的最高价值量，则剪枝
+            # 这个问题其实等价于能否找到后面部分的一个尽可能精确的上限
+            # note: 思路一：计算n个序列所能产生的价值量最大增益，1=0,2=1,3=2,4=2,5=3，所以
+            #  range(1) = [0, 1]
+            #  range(2) = [todo:...........
+            # note: 思路二：进一步降低上限，在当前已有序列的各套装个数的前提下，计算任意n个序列所能产生的价值量最大增益
+            # note：思路三：进一步降低上限，在当前已有序列的各套装个数的前提下，计算后面n个序列的各套装配置下所能产生的价值量最大增益
+
+            selected_combination.append(equip)
+
+            if current_index < len(items) - 1:
+                cartesianProduct(current_index+1, has_god or is_god(equip), selected_combination, process_func)
+                if exit_calc == 1:
+                    showsta(text='已终止')
+                    return
+            else: # 符合条件的装备搭配
+                god=0
+                if has_god or is_god(equip):
+                    god = 1
+                set_list = ["1" + str(selected_combination[x][2:4]) for x in range(0, 11)]
+                set_val = Counter(set_list)
+                del set_val['136', '137', '138']
+                # 1件价值量=0，两件=1，三件、四件=2，五件=3，神话额外增加1价值量
+                setopt_num = sum([floor(x * 0.7) for x in set_val.values()]) + god
+
+                if setopt_num >= max_setopt-set_perfect :
+                    if max_setopt <= setopt_num - god * set_perfect:
+                        max_setopt = setopt_num - god * set_perfect
+                    process_func(selected_combination)
+                else:
+                    inc_invalid_cnt_func(1)
+
+            selected_combination.pop()
+
+    # 装备编号的最后一位表示是否是神话装备，eg：33341
+    def is_god(equip):
+        return int(equip[-1]) == 1
+
+    # items = [list11, list12, list13, list14, list15, list21, list22, list23, list31, list32, list33]
+    # 预处理，计算每个部位是否拥有神话装备
+    slot_has_god = []
+    for slot_equips in items:
+        hg = False
+        for equip in slot_equips:
+            if is_god(equip):
+                hg=True
+                break
+
+        slot_has_god.append(hg)
+
+    def has_no_god_since(idx):
+        for i in range(idx, len(slot_has_god)):
+            if slot_has_god[i]:
+                return False
+
+        return True
+
+
     if jobup_select.get()[4:7] != "奶爸" and jobup_select.get()[4:7] != "奶妈" and jobup_select.get()[4:7] != "奶萝":
 
         # 代码名称
@@ -609,125 +691,117 @@ def calc():
         save_list = {}
         max_setopt = 0
         show_number = 1
-        for calc_now in itertools.product(*items):
-            if exit_calc == 1:
-                showsta(text='已终止')
-                return
-            god = 0
-            for o in calc_now:
-                god = god + int(o[-1])
-            if god < 2:
-                set_list = ["1" + str(calc_now[x][2:4]) for x in range(0, 11)]
-                set_val = Counter(set_list)
-                del set_val['136', '137', '138']
-                setopt_num = sum([floor(x * 0.7) for x in set_val.values()]) + god
-                if setopt_num >= max_setopt - set_perfect:
-                    set_on = [];
-                    setapp = set_on.append
-                    setcount = set_list.count
-                    set_oncount = set_on.count
-                    onecount = calc_now.count
-                    for i in range(101, 136):
-                        if setcount(str(i)) == 2:
-                            setapp(str(i) + "1")
-                        if 4 >= setcount(str(i)) >= 3:
-                            setapp(str(i) + "2")
-                        if setcount(str(i)) == 5:
-                            setapp(str(i) + "3")
-                    for i in range(136, 139):
-                        if setcount(str(i)) == 2:
-                            setapp(str(i) + "0")
-                        if 4 >= setcount(str(i)) >= 3:
-                            setapp(str(i) + "1")
-                        if setcount(str(i)) == 5:
-                            setapp(str(i) + "2")
-                    if onecount('32410650') == 1:
-                        if onecount('21400340') == 1:
-                            setapp('1401')
-                        elif onecount('31400540') == 1:
-                            setapp('1401')
-                    if max_setopt <= setopt_num - god * set_perfect:
-                        max_setopt = setopt_num - god * set_perfect
-                    calc_wep = wep_num + calc_now
-                    damage = 0
-                    base_array = np.array(
-                        [0, 0, extra_dam, extra_cri, extra_bon, 0, extra_all, extra_att, extra_sta, ele_in, 0, 1, 0, 0,
-                         0, 0, 0, 0, extra_pas2, 0, 0, 0, 0, 0, 0, 0, 0, 0])
 
-                    skiper = 0
-                    for_calc = tuple(set_on) + calc_wep
-                    oneone = len(for_calc)
-                    oneonelist = []
-                    for i in range(oneone):
-                        no_cut = getone(for_calc[i])  ## 11번 스증
-                        cut = np.array(no_cut[0:20] + no_cut[22:23] + no_cut[34:35] + no_cut[38:44])
-                        skiper = (skiper / 100 + 1) * (cut[11] / 100 + 1) * 100 - 100
-                        oneonelist.append(cut)
-                    for i in range(oneone):
-                        base_array = base_array + oneonelist[i]
-                    # 코드 이름
-                    # 0추스탯 1추공 2증 3크 4추 5속추
-                    # 6모 7공 8스탯 9속강 10지속 11스증 12특수
-                    # 13공속 14크확 / 15 특수액티브 / 16~19 패시브 /20 쿨감보정/21 2각캐특수액티브 /22~27 액티브레벨링
+        has_god_combination = False
 
-                    if set_oncount('1201') == 1 and onecount('32200') == 1:
-                        base_array[3] = base_array[3] - 5
-                    if onecount('33230') == 1 or onecount('33231') == 1:
-                        if onecount('31230') == 0:
-                            base_array[4] = base_array[4] - 10
-                        if onecount('32230') == 0:
-                            base_array[9] = base_array[9] - 40
-                    if onecount('15340') == 1 or onecount('23340') == 1 or onecount('33340') == 1 or onecount(
-                            '33341') == 1:
-                        if set_oncount('1341') == 0 and set_oncount('1342') == 0:
-                            if onecount('15340') == 1:
-                                base_array[9] = base_array[9] - 20
-                            elif onecount('23340') == 1:
-                                base_array[2] = base_array[2] - 10
-                            elif onecount('33340') == 1:
-                                base_array[6] = base_array[6] - 5
-                            else:
-                                base_array[9] = base_array[9] - 4
-                                base_array[2] = base_array[2] - 2
-                                base_array[6] = base_array[6] - 1
-                                base_array[8] = base_array[8] - 1.93
-                    if onecount('11111') == 1:
-                        if set_oncount('1112') == 1 or set_oncount('1113') == 1:
-                            base_array[20] = base_array[20] + 10
-                    if onecount('11301') == 1:
-                        if onecount('22300') != 1:
-                            base_array[4] = base_array[4] - 10
-                            base_array[7] = base_array[7] + 10
-                        if onecount('31300') != 1:
-                            base_array[4] = base_array[4] - 10
-                            base_array[7] = base_array[7] + 10
+        def process(calc_now):
+            set_list=["1"+str(calc_now[x][2:4]) for x in range(0,11)]
+            set_on = [];
+            setapp = set_on.append
+            setcount = set_list.count
+            set_oncount = set_on.count
+            onecount = calc_now.count
+            for i in range(101, 136):
+                if setcount(str(i)) == 2:
+                    setapp(str(i) + "1")
+                if 4 >= setcount(str(i)) >= 3:
+                    setapp(str(i) + "2")
+                if setcount(str(i)) == 5:
+                    setapp(str(i) + "3")
+            for i in range(136, 139):
+                if setcount(str(i)) == 2:
+                    setapp(str(i) + "0")
+                if 4 >= setcount(str(i)) >= 3:
+                    setapp(str(i) + "1")
+                if setcount(str(i)) == 5:
+                    setapp(str(i) + "2")
+            if onecount('32410650') == 1:
+                if onecount('21400340') == 1:
+                    setapp('1401')
+                elif onecount('31400540') == 1:
+                    setapp('1401')
+            calc_wep = wep_num + tuple(calc_now)
+            damage = 0
+            base_array = np.array(
+                [0, 0, extra_dam, extra_cri, extra_bon, 0, extra_all, extra_att, extra_sta, ele_in, 0, 1, 0, 0,
+                 0, 0, 0, 0, extra_pas2, 0, 0, 0, 0, 0, 0, 0, 0, 0])
 
-                    base_array[11] = skiper
-                    real_bon = base_array[4] + base_array[5] * (base_array[9] * 0.0045 + 1.05)
-                    actlvl = ((base_array[active_eff_one] + base_array[22] * job_lv1 + base_array[23] * job_lv2 +
-                               base_array[24] * job_lv3 +
-                               base_array[25] * job_lv4 + base_array[26] * job_lv5 + base_array[
-                                   27] * job_lv6) / 100 + 1)
-                    paslvl = ((100 + base_array[16] * job_pas0) / 100) * ((100 + base_array[17] * job_pas1) / 100) * (
-                                (100 + base_array[18] * job_pas2) / 100) * ((100 + base_array[19] * job_pas3) / 100)
-                    damage = ((base_array[2] / 100 + 1) * (base_array[3] / 100 + 1) * (real_bon / 100 + 1) * (
-                                base_array[6] / 100 + 1) * (base_array[7] / 100 + 1) *
-                              (base_array[8] / 100 + 1) * (base_array[9] * 0.0045 + 1.05) * (
-                                          base_array[10] / 100 + 1) * (skiper / 100 + 1) * (base_array[12] / 100 + 1) *
-                              actlvl * paslvl * ((54500 + 3.31 * base_array[0]) / 54500) * (
-                                          (4800 + base_array[1]) / 4800) * (1 + cool_on * base_array[20] / 100) / (
-                                          1.05 + 0.0045 * int(ele_skill)))
+            skiper = 0
+            for_calc = tuple(set_on) + calc_wep
+            oneone = len(for_calc)
+            oneonelist = []
+            for i in range(oneone):
+                no_cut = getone(for_calc[i])  ## 11번 스증
+                cut = np.array(no_cut[0:20] + no_cut[22:23] + no_cut[34:35] + no_cut[38:44])
+                skiper = (skiper / 100 + 1) * (cut[11] / 100 + 1) * 100 - 100
+                oneonelist.append(cut)
+            for i in range(oneone):
+                base_array = base_array + oneonelist[i]
+            # 코드 이름
+            # 0추스탯 1추공 2증 3크 4추 5속추
+            # 6모 7공 8스탯 9속강 10지속 11스증 12특수
+            # 13공속 14크확 / 15 특수액티브 / 16~19 패시브 /20 쿨감보정/21 2각캐특수액티브 /22~27 액티브레벨링
 
-                    base_array[4] = real_bon
-                    save_list[damage] = [calc_wep, base_array]
-                    count_valid = count_valid + 1
-                else:
-                    count_invalid = count_invalid + 1
-            else:
-                count_invalid = count_invalid + 1
+            if set_oncount('1201') == 1 and onecount('32200') == 1:
+                base_array[3] = base_array[3] - 5
+            if onecount('33230') == 1 or onecount('33231') == 1:
+                if onecount('31230') == 0:
+                    base_array[4] = base_array[4] - 10
+                if onecount('32230') == 0:
+                    base_array[9] = base_array[9] - 40
+            if onecount('15340') == 1 or onecount('23340') == 1 or onecount('33340') == 1 or onecount(
+                    '33341') == 1:
+                if set_oncount('1341') == 0 and set_oncount('1342') == 0:
+                    if onecount('15340') == 1:
+                        base_array[9] = base_array[9] - 20
+                    elif onecount('23340') == 1:
+                        base_array[2] = base_array[2] - 10
+                    elif onecount('33340') == 1:
+                        base_array[6] = base_array[6] - 5
+                    else:
+                        base_array[9] = base_array[9] - 4
+                        base_array[2] = base_array[2] - 2
+                        base_array[6] = base_array[6] - 1
+                        base_array[8] = base_array[8] - 1.93
+            if onecount('11111') == 1:
+                if set_oncount('1112') == 1 or set_oncount('1113') == 1:
+                    base_array[20] = base_array[20] + 10
+            if onecount('11301') == 1:
+                if onecount('22300') != 1:
+                    base_array[4] = base_array[4] - 10
+                    base_array[7] = base_array[7] + 10
+                if onecount('31300') != 1:
+                    base_array[4] = base_array[4] - 10
+                    base_array[7] = base_array[7] + 10
+
+            base_array[11] = skiper
+            real_bon = base_array[4] + base_array[5] * (base_array[9] * 0.0045 + 1.05)
+            actlvl = ((base_array[active_eff_one] + base_array[22] * job_lv1 + base_array[23] * job_lv2 +
+                       base_array[24] * job_lv3 +
+                       base_array[25] * job_lv4 + base_array[26] * job_lv5 + base_array[
+                           27] * job_lv6) / 100 + 1)
+            paslvl = ((100 + base_array[16] * job_pas0) / 100) * ((100 + base_array[17] * job_pas1) / 100) * (
+                        (100 + base_array[18] * job_pas2) / 100) * ((100 + base_array[19] * job_pas3) / 100)
+            damage = ((base_array[2] / 100 + 1) * (base_array[3] / 100 + 1) * (real_bon / 100 + 1) * (
+                        base_array[6] / 100 + 1) * (base_array[7] / 100 + 1) *
+                      (base_array[8] / 100 + 1) * (base_array[9] * 0.0045 + 1.05) * (
+                                  base_array[10] / 100 + 1) * (skiper / 100 + 1) * (base_array[12] / 100 + 1) *
+                      actlvl * paslvl * ((54500 + 3.31 * base_array[0]) / 54500) * (
+                                  (4800 + base_array[1]) / 4800) * (1 + cool_on * base_array[20] / 100) / (
+                                  1.05 + 0.0045 * int(ele_skill)))
+
+            base_array[4] = real_bon
+            save_list[damage] = [calc_wep, base_array]
+
+            global count_valid
+            count_valid = count_valid + 1
+
+        cartesianProduct(0, False, [], process)
+
         show_number = 0
         showsta(text='结果统计中')
 
+        # todo: 既然只用五个，可以改用最小堆来实现
         ranking = []
         for j in range(0, 5):
             try:
@@ -938,7 +1012,7 @@ def calc():
         ranking = [ranking1, ranking2, ranking3]
         show_result(ranking, 'buf', ele_skill)
     load_excel.close()
-    showsta(text='输出完成')
+    showsta(text='输出完成' + "时间 = " + str(time.time() - start_time) + "秒")
     # 结束计算
     exit_calc = 1
     # print("时间 = " + str(time.time() - start_time) + "秒")
