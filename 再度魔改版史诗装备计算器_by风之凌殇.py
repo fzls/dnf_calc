@@ -262,7 +262,7 @@ def format_time(ftime):
         remaining_time_str += "{:02}h".format(int(hours))
     if hours > 0 or minutes > 0:
         remaining_time_str += "{:02}m".format(int(minutes))
-    remaining_time_str += "{:02}s".format(int(seconds))
+    remaining_time_str += "{:02.2f}s".format(seconds)
 
     return remaining_time_str
 
@@ -759,13 +759,10 @@ def calc():
         return not has_god_since(idx)
 
     # 为当前已选择序列和后续剩余可选序列计算出一个尽可能精确的上限
-    # note: 思路二：计算n个序列所能产生的价值量最大增益，1=0,2=1,3=2,4=2,5=3，所以
-    #  range(1) = [0, 1]
-    #  range(2) = [todo:....................
     # note: 思路三：进一步降低上限，在当前已有序列的各套装个数的前提下，计算任意n个序列所能产生的价值量最大增益
     # note：思路四：进一步降低上限，在当前已有序列的各套装个数的前提下，计算后面n个序列的各套装配置下所能产生的价值量最大增益
     def upper_bound(selected_combination, selected_has_god, remaining_start_index):
-        return upper_bound_1(selected_combination, selected_has_god, remaining_start_index)
+        return upper_bound_2(selected_combination, selected_has_god, remaining_start_index)
 
     # 对照组：也就是后续
     def upper_bound_none(selected_combination, selected_has_god, remaining_start_index):
@@ -777,6 +774,49 @@ def calc():
         current_value = calc_equip_value(selected_combination, selected_has_god)
         # 后续按最大价值量计算，即每个槽位按能产生1点增益计算
         remaining_max_value = len(items) - remaining_start_index
+        hg = has_god_since(remaining_start_index)
+        if hg:
+            remaining_max_value+=1
+
+        ub = current_value + remaining_max_value
+        return ub
+
+    # n个装备所能产生的最大价值量（不计入神话）
+    # max_values[n] = max(max_values[i] + max_values[n-i]) for i [1, n//2]
+    max_values = [0 for i in range(11 + 1)]
+    max_values[1] = 0
+    max_values[2] = 1
+    max_values[3] = 2
+    # iter
+    for n in range(4, 11 + 1):
+        maxv = 0
+        for i in range(1, n // 2 + 1):
+            v = max_values[i] + max_values[n - i]
+            if v > maxv:
+                maxv = v
+        max_values[n] = maxv
+
+    # print(max_values)
+
+    # 新增k个装备所能产生的最大价值量（不计入神话）
+    # max_inc_values[k] = max(max_values[i+k] - max_values[i]) for i [1, n-i-k]
+    max_inc_values = [0 for i in range(11 + 1)]
+    for k in range(1, 11 + 1):
+        max_incv = 0
+        for i in range(0, 11 - k + 1):
+            incv = max_values[i + k] - max_values[i]
+            if incv > max_incv:
+                max_incv = incv
+        max_inc_values[k] = max_incv
+
+    # print(max_inc_values)
+
+    # note: 思路二：计算新增k个序列所能产生的价值量最大增益
+    def upper_bound_2(selected_combination, selected_has_god, remaining_start_index):
+        # 计算至今为止已有的价值量
+        current_value = calc_equip_value(selected_combination, selected_has_god)
+        # 后续按最大价值量计算，即每个槽位按能产生1点增益计算
+        remaining_max_value = max_inc_values[len(items) - remaining_start_index]
         hg = has_god_since(remaining_start_index)
         if hg:
             remaining_max_value+=1
