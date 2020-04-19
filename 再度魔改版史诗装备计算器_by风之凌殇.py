@@ -781,35 +781,19 @@ def calc():
         ub = current_value + remaining_max_value
         return ub
 
-    # n个装备所能产生的最大价值量（不计入神话）
-    # max_values[n] = max(max_values[i] + max_values[n-i]) for i [1, n//2]
-    max_values = [0 for i in range(11 + 1)]
-    max_values[1] = 0
-    max_values[2] = 1
-    max_values[3] = 2
-    # iter
-    for n in range(4, 11 + 1):
-        maxv = 0
-        for i in range(1, n // 2 + 1):
-            v = max_values[i] + max_values[n - i]
-            if v > maxv:
-                maxv = v
-        max_values[n] = maxv
-
-    # print(max_values)
-
     # 新增k个装备所能产生的最大价值量（不计入神话）
-    # max_inc_values[k] = max(max_values[i+k] - max_values[i]) for i [1, n-i-k]
     max_inc_values = [0 for i in range(11 + 1)]
-    for k in range(1, 11 + 1):
-        max_incv = 0
-        for i in range(0, 11 - k + 1):
-            incv = max_values[i + k] - max_values[i]
-            if incv > max_incv:
-                max_incv = incv
-        max_inc_values[k] = max_incv
-
-    # print(max_inc_values)
+    max_inc_values[1] = 1 # 2=>3
+    max_inc_values[2] = 2 # 1,1 => 2,2
+    max_inc_values[3] = 3 # 1,1,1 => 2,2,2
+    max_inc_values[4] = 4 # 1,1,1,1 => 2,2,2,2
+    max_inc_values[5] = 5 # 1,1,1,1 => 2,2,2,3
+    max_inc_values[6] = 6 # 1,1,1,1 => 2,2,3,3
+    max_inc_values[7] = 7 # 1,1,1,1 => 2,3,3,3
+    max_inc_values[8] = 7 # upper limit = 533->7
+    max_inc_values[9] = 7 # upper limit = 533->7
+    max_inc_values[10] = 7 # upper limit = 533->7
+    max_inc_values[11] = 7 # upper limit = 533->7
 
     # note: 思路二：计算新增k个序列所能产生的价值量最大增益
     def upper_bound_2(selected_combination, selected_has_god, remaining_start_index):
