@@ -1,7 +1,7 @@
 ﻿#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-now_version = "3.2.3"
-ver_time = '200308'
+now_version = "3.2.4"
+ver_time = '2020-04-19'
 
 ## 코드를 무단으로 복제하여 개조 및 배포하지 말 것##
 
@@ -26,6 +26,23 @@ import webbrowser
 import os
 from datetime import datetime
 
+from heapq import heapify, heappush, heappushpop
+
+class MaxHeap():
+    def __init__(self, top_n):
+        self.h = []
+        self.length = top_n
+        heapify( self.h)
+
+    def add(self, element):
+        if len(self.h) < self.length:
+            heappush(self.h, element)
+        else:
+            heappushpop(self.h, element)
+
+    def getTop(self):
+        return sorted(self.h, reverse=True)
+
 # https://dunfaoff.com/DawnClass.df
 
 def _from_rgb(rgb):
@@ -44,6 +61,7 @@ exit_calc = 1
 save_name_list = []
 save_select = 0
 count_valid = 0
+unique_index = 0
 count_invalid = 0
 show_number = 0
 all_list_num = 0
@@ -347,7 +365,7 @@ def calc():
     ele_in = (int(db_preset["B14"].value) + int(db_preset["B15"].value) + int(db_preset["B16"].value) +
               int(ele_skill) - int(db_preset["B18"].value) + int(db_preset["B19"].value) + 13)
 
-    global count_valid, count_invalid, show_number, all_list_num, max_setopt, count_start_time
+    global count_valid, count_invalid, show_number, all_list_num, max_setopt, count_start_time, unique_index
     count_valid = 0;
     count_invalid = 0;
     show_number = 0
@@ -831,7 +849,8 @@ def calc():
         # 13공속 14크확 / 15 액티브 / 16~19 패시브 /20 신화여부/21세트코드/22쿨감보정/23 원쿨감
         # 단품:24~33 저장소 / 34 二觉캐액티브
         getone = opt_one.get
-        save_list = {}
+        maxheap = MaxHeap(5)
+        unique_index = 0
         max_setopt = 0
         show_number = 1
 
@@ -932,7 +951,9 @@ def calc():
                                   1.05 + 0.0045 * int(ele_skill)))
 
             base_array[4] = real_bon
-            save_list[damage] = [calc_wep, base_array, baibianguai]
+            global unique_index
+            unique_index+=1
+            maxheap.add((damage, unique_index, [calc_wep, base_array, baibianguai]))
 
             global count_valid
             count_valid = count_valid + 1
@@ -942,17 +963,12 @@ def calc():
         show_number = 0
         showsta(text='结果统计中')
 
-        # todo: 既然只用五个，可以改用最小堆来实现
         ranking = []
-        for j in range(0, 5):
-            try:
-                for i in save_list.keys():
-                    if max(list(save_list.keys())) == i:
-                        ranking.append((i, save_list.get(i)))
-                        del save_list[i]
-                        showsta(text='结果统计中' + str(j) + " / 5")
-            except RuntimeError as error:
-                passss = 1
+        for rank, data in enumerate(maxheap.getTop()):
+            damage = data[0]
+            value = data[2]
+            ranking.append((damage, value))
+            showsta(text='结果统计中' + str(rank+1) + " / 5")
 
         show_result(ranking, 'deal', ele_skill)
 
@@ -976,9 +992,10 @@ def calc():
         # 10 아리아/보징증폭
         # 11 전직패 12 보징 13 각패1 14 각패2 15 二觉 16 각패3
         # 17 깡신념 18 깡신실 19 아리아쿨 20 하베쿨
-        save_list1 = {}
-        save_list2 = {}
-        save_list3 = {}
+        maxheap1 = MaxHeap(5)
+        maxheap2 = MaxHeap(5)
+        maxheap3 = MaxHeap(5)
+        unique_index = 0
         setget = opt_buf.get
         max_setopt = 0
         show_number = 1
@@ -1096,9 +1113,12 @@ def calc():
 
             save2 = str(c_calc) + "    [" + str(int(stat_c)) + "(" + str(int(base_array[9])) + "렙)]"
             ##1축 2포 3합
-            save_list1[((15000 + b_stat_calc) / 250 + 1) * (2650 + b_average)] = [calc_wep, [save1, save2, pas1_out], baibianguai]
-            save_list2[((15000 + c_calc) / 250 + 1) * 2650] = [calc_wep, [save1, save2, pas1_out], baibianguai]
-            save_list3[((15000 + pas1_calc + c_calc + b_stat_calc) / 250 + 1) * (2650 + b_average)] = [calc_wep, [save1, save2, pas1_out], baibianguai]
+            global unique_index
+            unique_index+=1
+            save_data = [calc_wep, [save1, save2, pas1_out], baibianguai]
+            maxheap1.add((((15000 + b_stat_calc) / 250 + 1) * (2650 + b_average), unique_index, save_data))
+            maxheap2.add((((15000 + c_calc) / 250 + 1) * 2650, unique_index, save_data))
+            maxheap3.add((((15000 + pas1_calc + c_calc + b_stat_calc) / 250 + 1) * (2650 + b_average), unique_index, save_data))
 
             global count_valid
             count_valid = count_valid + 1
@@ -1110,32 +1130,19 @@ def calc():
         ranking1 = [];
         ranking2 = [];
         ranking3 = []
-        for j in range(0, 5):
-            try:
-                for i in save_list1.keys():
-                    if max(list(save_list1.keys())) == i:
-                        ranking1.append((i, save_list1.get(i)))
-                        del save_list1[i]
-            except RuntimeError as error:
-                passss = 1
+        for rank, data in enumerate(maxheap1.getTop()):
+            damage = data[0]
+            value = data[2]
+            ranking1.append((damage, value))
+        for rank, data in enumerate(maxheap2.getTop()):
+            damage = data[0]
+            value = data[2]
+            ranking2.append((damage, value))
+        for rank, data in enumerate(maxheap3.getTop()):
+            damage = data[0]
+            value = data[2]
+            ranking3.append((damage, value))
 
-        for j in range(0, 5):
-            try:
-                for i in save_list2.keys():
-                    if max(list(save_list2.keys())) == i:
-                        ranking2.append((i, save_list2.get(i)))
-                        del save_list2[i]
-            except RuntimeError as error:
-                passss = 1
-
-        for j in range(0, 5):
-            try:
-                for i in save_list3.keys():
-                    if max(list(save_list3.keys())) == i:
-                        ranking3.append((i, save_list3.get(i)))
-                        del save_list3[i]
-            except RuntimeError as error:
-                passss = 1
         ranking = [ranking1, ranking2, ranking3]
         show_result(ranking, 'buf', ele_skill)
     load_excel.close()
