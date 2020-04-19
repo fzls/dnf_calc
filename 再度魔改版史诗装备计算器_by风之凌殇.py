@@ -1,6 +1,6 @@
 ﻿#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-now_version = "3.2.4"
+now_version = "3.2.5"
 ver_time = '2020-04-19'
 
 ## 코드를 무단으로 복제하여 개조 및 배포하지 말 것##
@@ -1076,9 +1076,9 @@ def calc():
                 pas1_calc = int(lvlget('hol_pas1_out')[int(base_array[13])] + 213 + base_array[17])
                 pas1_out = str(
                     int(lvlget('hol_pas1_out')[int(base_array[13])] + 213 + base_array[17])) + "  (" + str(
-                    int(20 + base_array[13])) + "렙)"
+                    int(20 + base_array[13])) + "级)"
                 save1 = str(b_stat_calc) + "/" + str(b_average) + "   [" + str(int(stat_b)) + "(" + str(
-                    int(base_array[8])) + "렙)]"
+                    int(base_array[8])) + "级)]"
 
             else:
                 if jobup_select.get()[4:7] == "奶妈":
@@ -1106,12 +1106,12 @@ def calc():
                 c_calc = int(int((lvlget('c_stat')[int(base_array[9])] + base_array[6]) * (c_per / 100 + 1)) * (
                             stat_c / 750 + 1))
                 pas1_calc = int(stat_pas1lvl + 442)
-                pas1_out = str(int(stat_pas1lvl + 442)) + "  (" + str(int(20 + base_array[13])) + "렙)"
+                pas1_out = str(int(stat_pas1lvl + 442)) + "  (" + str(int(20 + base_array[13])) + "级)"
                 save1 = str(b_stat_calc) + "(" + str(int(b_stat_calc / aria)) + ")/ " + str(
                     b_average) + "(" + str(int(b_average / aria)) + ")\n                  [" + str(
-                    int(stat_b)) + "(" + str(int(base_array[8])) + "렙)]"
+                    int(stat_b)) + "(" + str(int(base_array[8])) + "级)]"
 
-            save2 = str(c_calc) + "    [" + str(int(stat_c)) + "(" + str(int(base_array[9])) + "렙)]"
+            save2 = str(c_calc) + "    [" + str(int(stat_c)) + "(" + str(int(base_array[9])) + "级)]"
             ##1축 2포 3합
             global unique_index
             unique_index+=1
@@ -1266,23 +1266,24 @@ def show_result(rank_list, job_type, ele_skill):
                                 "%\n特殊= " + str(int(rss[i][12])) +
                                 "%\n\n速度= " + str(int(rss[i][13])) +
                                 "%\n暴击= " + str(int(rss[i][14])) + "%")
-                rank_stat2[i] = ("   <액티브>\n 1~45제= " + str(round(rss[i][22], 1)) +
-                                 "렙\n  50等级= " + str(int(rss[i][23])) +
-                                 "렙\n60~80等级= " + str(round(rss[i][24], 1)) +
-                                 "렙\n  85等级= " + str(int(rss[i][25])) +
-                                 "렙\n  95等级= " + str(int(rss[i][26])) +
-                                 "렙\n 100等级= " + str(int(rss[i][27])) +
-                                 "렙\n\n   <패시브>\n 전직패= " + str(round(rss[i][16], 1)) +
-                                 "렙\n  一觉= " + str(int(rss[i][17])) +
-                                 "렙\n  二觉= " + str(int(rss[i][18])) +
-                                 "렙\n  三觉= " + str(int(rss[i][19])) + "렙")
+                rank_stat2[i] = ("   <主动>"
+                                 "\n  1~45技能= " + str(round(rss[i][22], 1)) + "级"
+                                 "\n    50技能= " + str(int(rss[i][23])) + "级"
+                                 "\n 60~80技能= " + str(round(rss[i][24], 1)) + "级"
+                                 "\n    85技能= " + str(int(rss[i][25])) + "级"
+                                 "\n    95技能= " + str(int(rss[i][26])) + "级"
+                                 "\n   100技能= " + str(int(rss[i][27])) + "级"
+                                 "\n\n   <被动>\n 前失败者(机翻)= " + str(round(rss[i][16], 1)) + "级"
+                                 "\n  一觉= " + str(int(rss[i][17])) + "级"
+                                 "\n  二觉= " + str(int(rss[i][18])) + "级"
+                                 "\n  三觉= " + str(int(rss[i][19])) + "级")
             except TypeError as error:
                 c = 1
 
         cool_check = req_cool.get()[2:6]
         canvas_res.create_text(122, 145, text=cool_check, font=guide_font, fill='white')
         if int(ele_skill) != 0:
-            canvas_res.create_text(122, 170, text="技能属强补正=" + str(int(ele_skill)) + " / 역보정%=" + str(
+            canvas_res.create_text(122, 170, text="技能属强补正=" + str(int(ele_skill)) + " / 逆校正%=" + str(
                 round(100 * (1.05 / (1.05 + int(ele_skill) * 0.0045) - 1), 1)) + "%", font=guide_font, fill='white')
         res_dam = canvas_res.create_text(122, 125, text=rank_dam[0], font=mid_font, fill='white')
         res_stat = canvas_res.create_text(65, 293, text=rank_stat[0], fill='white')
@@ -1506,13 +1507,13 @@ def show_result(rank_list, job_type, ele_skill):
         except IndexError as error:
             c = 1
 
-        canvas_res.create_text(122, 193, text="커스텀 祝福+" + str(
+        canvas_res.create_text(122, 193, text="自定义 祝福+" + str(
             int(r_preset['H2'].value) + int(r_preset['H4'].value) + int(
-                r_preset['H5'].value)) + "렙 / " + "커스텀 一觉+" + str(int(r_preset['H3'].value)) + "렙\n祝福스탯+" + str(
-            int(r_preset['H6'].value)) + " / 一觉 스탯+" + str(int(r_preset['H1'].value)), font=guide_font, fill='white')
+                r_preset['H5'].value)) + "级 / " + "自定义 一觉+" + str(int(r_preset['H3'].value)) + "级\n祝福数据+" + str(
+            int(r_preset['H6'].value)) + " / 一觉数据+" + str(int(r_preset['H1'].value)), font=guide_font, fill='white')
 
         res_buf = canvas_res.create_text(122, 125, text=rank_buf3[0], font=mid_font, fill='white')
-        res_buf_type_what = canvas_res.create_text(122, 145, text="총합 기준", font=guide_font, fill='white')
+        res_buf_type_what = canvas_res.create_text(122, 145, text="综合标准", font=guide_font, fill='white')
         res_buf_ex1 = canvas_res.create_text(123, 247, text="祝福=" + rank_buf_ex3[0][0], font=guide_font, fill='white')
         res_buf_ex2 = canvas_res.create_text(123 - 17, 282, text="一觉=" + rank_buf_ex3[0][1], font=guide_font,
                                              fill='white')
@@ -1570,12 +1571,10 @@ def show_result(rank_list, job_type, ele_skill):
         load_presetr.close()
 
     wep_name = wep_select.get()
-    job_name = jobup_select.get()[:-4]
-    job_up_name = jobup_select.get()[-4:]
+    job_name = jobup_select.get()
     canvas_res.create_text(122, 20, text=wep_name, font=guide_font, fill='white')
-    canvas_res.create_text(122, 50, text="<직업>", font=guide_font, fill='white')
-    canvas_res.create_text(122, 70, text=job_name, font=guide_font, fill='white')
-    canvas_res.create_text(122, 87, text=job_up_name, font=guide_font, fill='white')
+    canvas_res.create_text(122, 50, text="<职业>", font=guide_font, fill='white')
+    canvas_res.create_text(122, 87, text=job_name, font=guide_font, fill='white')
 
     show_detail_img = tkinter.PhotoImage(file='ext_img/show_detail.png')
 
@@ -1683,21 +1682,21 @@ def change_rank_type(in_type):
         image_changed_all = result_image_on1
         rank_changed = rank_buf1
         rank_buf_ex_changed = rank_buf_ex1
-        type_changed = "祝福 기준"
+        type_changed = "祝福标准"
     elif in_type == 2:
         rank_type_buf = 2
         image_changed = result_image_on2[0]
         image_changed_all = result_image_on2
         rank_changed = rank_buf2
         rank_buf_ex_changed = rank_buf_ex2
-        type_changed = "一觉 기준"
+        type_changed = "一觉标准"
     elif in_type == 3:
         rank_type_buf = 3
         image_changed = result_image_on3[0]
         image_changed_all = result_image_on3
         rank_changed = rank_buf3
         rank_buf_ex_changed = rank_buf_ex3
-        type_changed = "총합 기준"
+        type_changed = "综合标准"
     canvas_res.itemconfig(res_buf_type_what, text=type_changed)
     canvas_res.itemconfig(res_buf_ex1, text="祝福=" + rank_buf_ex_changed[0][0])
     canvas_res.itemconfig(res_buf_ex2, text="一觉=" + rank_buf_ex_changed[0][1])
@@ -3073,9 +3072,9 @@ def calc_my_cha(cha_name, serv_name, job_name):
                 int((lvlget('c_stat')[int(base_array[9])] + base_array[6]) * (c_per / 100 + 1)) * (stat_c / 750 + 1))
             pas1_calc = int(lvlget('hol_pas1_out')[int(base_array[13])] + 213 + base_array[17])
             pas1_out = str(int(lvlget('hol_pas1_out')[int(base_array[13])] + 213 + base_array[17])) + "  (" + str(
-                int(20 + base_array[13])) + "렙)"
+                int(20 + base_array[13])) + "级)"
             save1 = str(b_stat_calc) + "/" + str(b_average) + "   [" + str(int(stat_b)) + "(" + str(
-                int(base_array2[8])) + "렙)]"
+                int(base_array2[8])) + "级)]"
             info_stat = int(
                 stat_c - stat_pas2lvl - 528 - stat_pas1lvl - 213 - lvlget('hol_pas0_1')[int(base_array[12])])
 
@@ -3109,13 +3108,13 @@ def calc_my_cha(cha_name, serv_name, job_name):
             c_calc = int(
                 int((lvlget('c_stat')[int(base_array[9])] + base_array[6]) * (c_per / 100 + 1)) * (stat_c / 750 + 1))
             pas1_calc = int(stat_pas1lvl + 442)
-            pas1_out = str(int(stat_pas1lvl + 442)) + "  (" + str(int(20 + base_array[13])) + "렙)"
+            pas1_out = str(int(stat_pas1lvl + 442)) + "  (" + str(int(20 + base_array[13])) + "级)"
             save1 = str(b_stat_calc) + "(" + str(int(b_stat_calc / aria)) + ")/" + str(b_average) + "(" + str(
                 int(b_average / aria)) + ")\n                  [" + str(int(stat_b)) + "(" + str(
-                int(base_array2[8])) + "렙)]"
+                int(base_array2[8])) + "级)]"
             info_stat = stat_c - pas1_calc
         ##1축 2포 3합
-        save2 = str(c_calc) + "    [" + str(int(stat_c)) + "(" + str(int(base_array[9])) + "렙)]"
+        save2 = str(c_calc) + "    [" + str(int(stat_c)) + "(" + str(int(base_array[9])) + "级)]"
         save3 = pas1_out
         save4 = ((15000 + pas1_calc + c_calc + b_stat_calc) / 250 + 1) * (2650 + b_average)
         type_code = 'buf'
