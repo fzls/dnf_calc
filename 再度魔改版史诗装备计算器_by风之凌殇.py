@@ -676,20 +676,26 @@ def calc():
 
         def try_equip(equip):
             global max_setopt
+            
+            # 增加处理后续未计算的百变怪
+            bbg_invalid_cnt = 0
+            if baibianguai is None:
+                for i in range(current_index+1, len(items)):
+                    bbg_invalid_cnt += int(invalid_cnt/len(items[i])*len(not_select_items[i]))
+
             # 剪枝条件1：若当前组合序列已经有神话装备（god），且当前这个部位遍历到的仍是一个神话装备，则可以直接跳过rcp个组合，当前部位之前处理下一个备选装备
             if has_god and is_god(equip):
-                inc_invalid_cnt_func(invalid_cnt)
+                inc_invalid_cnt_func(invalid_cnt + bbg_invalid_cnt)
                 return
 
-            # re：剪枝条件2：预计算出后面装备部位能够获得的最大价值量，若当前已有价值量与之相加低于已处理的最高价值量，则剪枝
-            # 这个问题其实等价于能否找到后面部分的一个尽可能精确的上限
-            # note: 思路一：计算n个序列所能产生的价值量最大增益，1=0,2=1,3=2,4=2,5=3，所以
-            #  range(1) = [0, 1]
-            #  range(2) = [todo:...........
-            # note: 思路二：进一步降低上限，在当前已有序列的各套装个数的前提下，计算任意n个序列所能产生的价值量最大增益
-            # note：思路三：进一步降低上限，在当前已有序列的各套装个数的前提下，计算后面n个序列的各套装配置下所能产生的价值量最大增益
-
             selected_combination.append(equip)
+
+            # re：剪枝条件2：预计算出后面装备部位能够获得的最大价值量，若当前已有价值量与之相加低于已处理的最高价值量，则剪枝
+            ub = upper_bound(selected_combination, has_god or is_god(equip), current_index+1)
+            if ub < max_setopt - set_perfect:
+                selected_combination.pop()
+                inc_invalid_cnt_func(invalid_cnt + bbg_invalid_cnt)
+                return
 
             if current_index < len(items) - 1:
                 cartesianProduct(current_index+1, has_god or is_god(equip), baibianguai, selected_combination, process_func)
@@ -742,12 +748,55 @@ def calc():
 
         slot_has_god.append(hg)
 
-    def has_no_god_since(idx):
+    def has_god_since(idx):
         for i in range(idx, len(slot_has_god)):
             if slot_has_god[i]:
-                return False
+                return True
 
-        return True
+        return False
+
+    def has_no_god_since(idx):
+        return not has_god_since(idx)
+
+    # 为当前已选择序列和后续剩余可选序列计算出一个尽可能精确的上限
+    # note: 思路二：计算n个序列所能产生的价值量最大增益，1=0,2=1,3=2,4=2,5=3，所以
+    #  range(1) = [0, 1]
+    #  range(2) = [todo:....................
+    # note: 思路三：进一步降低上限，在当前已有序列的各套装个数的前提下，计算任意n个序列所能产生的价值量最大增益
+    # note：思路四：进一步降低上限，在当前已有序列的各套装个数的前提下，计算后面n个序列的各套装配置下所能产生的价值量最大增益
+    def upper_bound(selected_combination, selected_has_god, remaining_start_index):
+        return upper_bound_1(selected_combination, selected_has_god, remaining_start_index)
+
+    # 对照组：也就是后续
+    def upper_bound_none(selected_combination, selected_has_god, remaining_start_index):
+        return 1000000
+
+    # note: 思路一：由于每个新增部位产生增益为1或0，因此计算当前序列的价值量，后续每个可选部位按照增益1来计算，可得到约束条件最小的最大上限
+    def upper_bound_1(selected_combination, selected_has_god, remaining_start_index):
+        # 计算至今为止已有的价值量
+        current_value = calc_equip_value(selected_combination, selected_has_god)
+        # 后续按最大价值量计算，即每个槽位按能产生1点增益计算
+        remaining_max_value = len(items) - remaining_start_index
+        hg = has_god_since(remaining_start_index)
+        if hg:
+            remaining_max_value+=1
+
+        ub = current_value + remaining_max_value
+        return ub
+
+
+    def calc_equip_value(selected_combination, selected_has_god):
+        god = 0
+        if selected_has_god:
+            god = 1
+        set_list = ["1" + str(selected_combination[x][2:4]) for x in range(0, len(selected_combination))]
+        set_val = Counter(set_list)
+        del set_val['136', '137', '138']
+        # 1件价值量=0，两件=1，三件、四件=2，五件=3，神话额外增加1价值量
+        setopt_num = sum([floor(x * 0.7) for x in set_val.values()]) + god
+
+        return setopt_num
+
 
 
     if jobup_select.get()[4:7] != "奶爸" and jobup_select.get()[4:7] != "奶妈" and jobup_select.get()[4:7] != "奶萝":
@@ -2100,11 +2149,9 @@ def update_count():
 def update_count2():
     while True:
         global select_item
-        a_num_all = 0
         a_num = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        a_not_select_num_all = 0
         a_not_select_num = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        for i in range(101, 136):
+        for i in range(101, 199):
             try:
                 if select_item['tg1{}0'.format(i)] == 1:
                     a_num[0]+=1
@@ -2113,8 +2160,9 @@ def update_count2():
 
                 if select_item['tg1{}1'.format(i)] == 1:
                     a_num[0]+=1
-                elif select_item['tg1{}1'.format(i)] == 0:
-                    a_not_select_num[0]+=1
+                # re:神话装备(最后一位为1)不计入百变怪
+                # elif select_item['tg1{}1'.format(i)] == 0:
+                #     a_not_select_num[0]+=1
             except KeyError as error:
                 p = 0
             try:
@@ -2153,8 +2201,9 @@ def update_count2():
 
                 if select_item['tg2{}1'.format(i)] == 1:
                     a_num[5]+=1
-                elif select_item['tg2{}1'.format(i)] == 0:
-                    a_not_select_num[5]+=1
+                # re:神话装备(最后一位为1)不计入百变怪
+                # elif select_item['tg2{}1'.format(i)] == 0:
+                #     a_not_select_num[5]+=1
             except KeyError as error:
                 p = 0
             try:
@@ -2193,8 +2242,9 @@ def update_count2():
 
                 if select_item['tg3{}1'.format(i + 200)] == 1:
                     a_num[10] += 1
-                elif select_item['tg3{}1'.format(i + 200)] == 0:
-                    a_not_select_num[10] += 1
+                # re:神话装备(最后一位为1)不计入百变怪
+                # elif select_item['tg3{}1'.format(i + 200)] == 0:
+                #     a_not_select_num[10] += 1
             except KeyError as error:
                 p = 0
 
