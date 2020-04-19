@@ -1280,8 +1280,8 @@ def show_result(rank_list, job_type, ele_skill):
             except TypeError as error:
                 c = 1
 
-        cool_check = req_cool.get()[2:6]
-        canvas_res.create_text(122, 145, text=cool_check, font=guide_font, fill='white')
+        cool_check = req_cool.get()
+        canvas_res.create_text(122, 145, text="冷却补正：" + cool_check, font=guide_font, fill='white')
         if int(ele_skill) != 0:
             canvas_res.create_text(122, 170, text="技能属强补正=" + str(int(ele_skill)) + " / 逆校正%=" + str(
                 round(100 * (1.05 / (1.05 + int(ele_skill) * 0.0045) - 1), 1)) + "%", font=guide_font, fill='white')
