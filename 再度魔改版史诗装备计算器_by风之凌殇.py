@@ -1620,9 +1620,9 @@ def change_rank(now, job_type):
             canvas_res.itemconfig(res_img31, image=image_changed['31'])
             canvas_res.itemconfig(res_img32, image=image_changed['32'])
             canvas_res.itemconfig(res_img33, image=image_changed['33'])
-            if res_txtbbg is not None:
+            if 'res_txtbbg' in globals() and res_txtbbg is not None:
                 canvas_res.delete(res_txtbbg)
-            if res_imgbbg is not None:
+            if 'res_imgbbg' in globals() and  res_imgbbg is not None:
                 canvas_res.delete(res_imgbbg)
             if 'bbg' in image_changed:
                 res_txtbbg = canvas_res.create_text(178, 147, text="百变怪=>", fill='white')
@@ -1663,9 +1663,9 @@ def change_rank(now, job_type):
             canvas_res.itemconfig(res_img31, image=image_changed['31'])
             canvas_res.itemconfig(res_img32, image=image_changed['32'])
             canvas_res.itemconfig(res_img33, image=image_changed['33'])
-            if res_txtbbg is not None:
+            if 'res_txtbbg' in globals() and res_txtbbg is not None:
                 canvas_res.delete(res_txtbbg)
-            if res_imgbbg is not None:
+            if 'res_imgbbg' in globals() and res_imgbbg is not None:
                 canvas_res.delete(res_imgbbg)
             if 'bbg' in image_changed:
                 res_txtbbg = canvas_res.create_text(178, 147, text="百变怪=>", fill='white')
@@ -1714,9 +1714,9 @@ def change_rank_type(in_type):
     canvas_res.itemconfig(res_img31, image=image_changed['31'])
     canvas_res.itemconfig(res_img32, image=image_changed['32'])
     canvas_res.itemconfig(res_img33, image=image_changed['33'])
-    if res_txtbbg is not None:
+    if 'res_txtbbg' in globals() and res_txtbbg is not None:
         canvas_res.delete(res_txtbbg)
-    if res_imgbbg is not None:
+    if 'res_imgbbg' in globals() and res_imgbbg is not None:
         canvas_res.delete(res_imgbbg)
     if 'bbg' in image_changed:
         res_txtbbg = canvas_res.create_text(178, 147, text="百变怪=>", fill='white')
