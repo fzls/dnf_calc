@@ -1,6 +1,6 @@
 ﻿#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-now_version = "2.0.3"
+now_version = "3.2.3"
 ver_time = '200308'
 
 ## 코드를 무단으로 복제하여 개조 및 배포하지 말 것##
@@ -50,7 +50,7 @@ all_list_num = 0
 count_start_time = datetime.now() # 开始计算的时间点
 
 self = tkinter.Tk()
-self.title("一键史诗搭配计算器-支持百变怪")
+self.title("一键史诗搭配计算器-支持百变怪 ver"+ now_version)
 self.geometry("710x720+0+0")
 self.resizable(False, False)
 self.configure(bg=dark_main)
