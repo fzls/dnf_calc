@@ -249,7 +249,7 @@ load_preset0.close()
 
 def inc_invalid_cnt_func(cnt):
     global count_invalid
-    count_invalid+=cnt
+    count_invalid+=int(cnt)
 
 def format_time(ftime):
     days, remainder = divmod(ftime, 86400)
@@ -679,9 +679,9 @@ def calc():
             
             # 增加处理后续未计算的百变怪
             bbg_invalid_cnt = 0
-            if baibianguai is None:
+            if has_baibainguai and baibianguai is None:
                 for i in range(current_index+1, len(items)):
-                    bbg_invalid_cnt += int(invalid_cnt/len(items[i])*len(not_select_items[i]))
+                    bbg_invalid_cnt += invalid_cnt/len(items[i])*len(not_select_items[i])
 
             # 剪枝条件1：若当前组合序列已经有神话装备（god），且当前这个部位遍历到的仍是一个神话装备，则可以直接跳过rcp个组合，当前部位之前处理下一个备选装备
             if has_god and is_god(equip):
@@ -2314,7 +2314,7 @@ def update_count2():
         if has_baibainguai:
             a_num_all += a_not_select_num_all
 
-        show_txt = "当前总组合数=" + str(a_num_all)
+        show_txt = "当前总组合数=" + str(int(a_num_all))
         if has_baibainguai:
             show_txt = "(计入百变怪)" + show_txt
         showcon2(text=show_txt)
