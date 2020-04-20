@@ -68,7 +68,7 @@ all_list_num = 0
 count_start_time = datetime.now() # 开始计算的时间点
 
 self = tkinter.Tk()
-self.title("一键史诗搭配计算器-支持百变怪 ver"+ now_version)
+self.title("一键史诗搭配计算器-支持百变怪/升级工作服 ver"+ now_version)
 self.geometry("710x720+0+0")
 self.resizable(False, False)
 self.configure(bg=dark_main)
