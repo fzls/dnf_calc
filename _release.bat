@@ -1,5 +1,5 @@
 :: 调用构建脚本，打包
-call build.bat
+call _build.bat
 
 :: 设置目标目录
 set target_dir=.\..\..\..\downloads\(发布魔改计算器\再度魔改版史诗装备计算器_v3.2.填写实际的小版本号_by风之凌殇
