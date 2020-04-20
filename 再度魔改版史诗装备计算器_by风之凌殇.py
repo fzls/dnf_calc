@@ -313,14 +313,20 @@ def can_convert_from_baibianguai(equip):
 
     return True
 
-def calc_ori_counts(all_slots_equips):
+# 计算给定各槽位的装备列表所能产生的装备搭配数
+# slots_equips: 给定各槽位的装备列表
+def calc_ori_counts(slots_equips):
     cnt = 1
-    for one_slot_equips in all_slots_equips:
+    for one_slot_equips in slots_equips:
         cnt *= len(one_slot_equips)
     return cnt
 
-def calc_bbg_add_counts(slots_equips, slots_not_select_equips):
-    if baibianguai_select.get() != txt_has_baibianguai:
+# 计算百变怪所能带来的额外装备搭配数
+# slots_equips: 给定各槽位的装备列表
+# slots_not_select_equips: 给定各槽位的百变怪可选装备列表
+# can_use_bbg: 是否能够使用百变怪
+def calc_bbg_add_counts(slots_equips, slots_not_select_equips, can_use_bbg):
+    if not can_use_bbg:
         return 0
 
     ori_counts = calc_ori_counts(slots_equips)
@@ -332,10 +338,11 @@ def calc_bbg_add_counts(slots_equips, slots_not_select_equips):
 
     return bbg_add_num
 
-# 玩家各个部位是否已经升级了工作服
+# 预计算各个部位是否升级了工作服
 def pre_calc_has_uniforms(items, work_uniforms_items):
     return [work_uniforms_items[idx] in items[idx] for idx in range(len(items))]
 
+# 获取玩家配置的可升级工作服数目
 def get_can_upgrade_work_unifrom_nums():
     # 用户配置的当前可升级的工作服数目
     can_upgrade_work_unifrom_nums = 0
@@ -343,7 +350,11 @@ def get_can_upgrade_work_unifrom_nums():
         can_upgrade_work_unifrom_nums = can_upgrade_work_unifrom_nums_str_2_int[can_upgrade_work_unifrom_nums_select.get()]
     return can_upgrade_work_unifrom_nums
 
-def calc_upgrade_work_uniforms_add_counts(slots_equips, slots_not_select_equips, slots_work_uniforms):
+# 计算因升级工作服而额外增加的装备搭配
+# slots_equips: 给定各槽位的装备列表
+# slots_not_select_equips: 给定各槽位的百变怪可选装备列表
+# can_use_bbg: 是否能够使用百变怪
+def calc_upgrade_work_uniforms_add_counts(slots_equips, slots_not_select_equips, can_use_bbg, slots_work_uniforms, used_upgrade_cnt):
     # 找出所有尚未升级工作服的部位
     not_has_uniform_slots = []
     for slot, work_uniform in enumerate(slots_work_uniforms):
@@ -353,7 +364,7 @@ def calc_upgrade_work_uniforms_add_counts(slots_equips, slots_not_select_equips,
     total_add_counts = 0
 
     # 穷举尚未升级部位的大小小于等于最大可升级数目的所有组合
-    max_upgrade_count = min(get_can_upgrade_work_unifrom_nums(), len(not_has_uniform_slots))
+    max_upgrade_count = min(get_can_upgrade_work_unifrom_nums() - used_upgrade_cnt, len(not_has_uniform_slots))
     # 遍历所有可能升级的件数
     for upgrade_count in range(1, max_upgrade_count + 1):
         # 遍历升级该件数的所有部位的组合
@@ -370,7 +381,8 @@ def calc_upgrade_work_uniforms_add_counts(slots_equips, slots_not_select_equips,
                     other_slots_not_select_equips.append(slot_not_select_equips)
 
             # 计算该升级方案下其余部位的可能搭配数目
-            total_add_counts += calc_bbg_add_counts(other_slots_equips, other_slots_not_select_equips)
+            total_add_counts += calc_ori_counts(other_slots_equips)
+            total_add_counts += calc_bbg_add_counts(other_slots_equips, other_slots_not_select_equips, can_use_bbg)
 
     return total_add_counts
 
@@ -742,9 +754,10 @@ def calc():
     # 已选装备的搭配数
     all_list_num = calc_ori_counts(items)
     # 百变怪增加的搭配数
-    all_list_num += calc_bbg_add_counts(items, not_select_items)
+    can_use_bbg = baibianguai_select.get() == txt_has_baibianguai
+    all_list_num += calc_bbg_add_counts(items, not_select_items, can_use_bbg)
     # 额外升级的工作服增加的搭配数
-    all_list_num += calc_upgrade_work_uniforms_add_counts(items, not_select_items, work_uniforms_items)
+    all_list_num += calc_upgrade_work_uniforms_add_counts(items, not_select_items, can_use_bbg, work_uniforms_items, 0)
 
     try:
         showsta(text='开始计算')
@@ -765,22 +778,13 @@ def calc():
     # 看了看，主要性能瓶颈在于直接使用了itertools.product遍历所有的笛卡尔积组合，导致无法提前剪枝，只能在每个组合计算前通过条件判断是否要跳过
     # 背景，假设当前处理到下标n（0-10）的装备，前面装备已选择的组合为selected_combination(of size n)，未处理装备为后面11-n-1个，其对应组合数为rcp=len(Cartesian Product(后面11-n-1个装备部位))
     def cartesianProduct(current_index, has_god, baibianguai, upgrade_work_uniforms, selected_combination, process_func):
-        invalid_cnt = 1
-        for i in range(current_index+1, len(items)):
-            invalid_cnt *= len(items[i])
-
         def try_equip(equip):
             global max_setopt
-            
-            # 增加处理后续未计算的百变怪
-            bbg_invalid_cnt = 0
-            if has_baibainguai and baibianguai is None:
-                for i in range(current_index+1, len(items)):
-                    bbg_invalid_cnt += invalid_cnt/len(items[i])*len(not_select_items[i])
 
+            total_invalid_cnt = invalid_cnt + bbg_invalid_cnt + wu_invalid_cnt
             # 剪枝条件1：若当前组合序列已经有神话装备（god），且当前这个部位遍历到的仍是一个神话装备，则可以直接跳过rcp个组合，当前部位之前处理下一个备选装备
             if has_god and is_god(equip):
-                inc_invalid_cnt_func(invalid_cnt + bbg_invalid_cnt)
+                inc_invalid_cnt_func(total_invalid_cnt)
                 return
 
             selected_combination.append(equip)
@@ -789,7 +793,7 @@ def calc():
             ub = upper_bound(selected_combination, has_god or is_god(equip), current_index+1)
             if ub < max_setopt - set_perfect:
                 selected_combination.pop()
-                inc_invalid_cnt_func(invalid_cnt + bbg_invalid_cnt)
+                inc_invalid_cnt_func(total_invalid_cnt)
                 return
 
             if current_index < len(items) - 1:
@@ -813,6 +817,24 @@ def calc():
 
             selected_combination.pop()
 
+        # 预先计算若剪枝能跳过的搭配数
+        remaining_items = items[current_index + 1:]
+        remaining_not_select_items = not_select_items[current_index + 1:]
+        remaining_work_uniforms_items = work_uniforms_items[current_index + 1:]
+
+        invalid_cnt = calc_ori_counts(remaining_items)
+
+        # 增加处理后续未计算的百变怪
+        can_use_bbg = has_baibainguai and baibianguai is None
+        bbg_invalid_cnt = calc_bbg_add_counts(remaining_items, remaining_not_select_items, can_use_bbg)
+
+        # 增加计算后续未计算的升级工作服
+        used_upgrade_cnt = len(upgrade_work_uniforms)
+        wu_invalid_cnt = calc_upgrade_work_uniforms_add_counts(remaining_items, remaining_not_select_items, can_use_bbg,
+                                                               remaining_work_uniforms_items, used_upgrade_cnt)
+
+        # --------------------------实际搜索过程---------------------------------------
+
         # 考虑当前部位的每一件可选装备
         for equip in items[current_index]:
             if exit_calc == 1:
@@ -822,6 +844,12 @@ def calc():
 
         # 当拥有百变怪，且目前的尝试序列尚未使用到百变怪的时候考虑使用百变怪充当当前部位
         if has_baibainguai and baibianguai is None:
+            old_bbg_invalid_cnt = bbg_invalid_cnt
+            old_wu_invalid_cnt = wu_invalid_cnt
+
+            bbg_invalid_cnt = 0
+            wu_invalid_cnt = calc_upgrade_work_uniforms_add_counts(remaining_items, remaining_not_select_items, False,
+                                                               remaining_work_uniforms_items, used_upgrade_cnt)
             for equip in not_select_items[current_index]:
                 if exit_calc == 1:
                     showsta(text='已终止')
@@ -830,13 +858,21 @@ def calc():
                 try_equip(equip)
                 baibianguai = None
 
+            bbg_invalid_cnt = old_bbg_invalid_cnt
+            wu_invalid_cnt = old_wu_invalid_cnt
+
         # 若当前部位的工作服尚未拥有，且可升级工作服的次数尚未用完，则尝试本部位升级工作服
         if not has_uniforms[current_index] and len(upgrade_work_uniforms) < can_upgrade_work_unifrom_nums:
-            work_uniform = work_uniforms_items[current_index]
+            old_wu_invalid_cnt = wu_invalid_cnt
 
+            work_uniform = work_uniforms_items[current_index]
             upgrade_work_uniforms.append(work_uniform)
+            wu_invalid_cnt = calc_upgrade_work_uniforms_add_counts(remaining_items, remaining_not_select_items, can_use_bbg,
+                                                                   remaining_work_uniforms_items, used_upgrade_cnt+1)
             try_equip(work_uniform)
             upgrade_work_uniforms.pop()
+
+            wu_invalid_cnt = old_wu_invalid_cnt
 
 
     # items = [list11, list12, list13, list14, list15, list21, list22, list23, list31, list32, list33]
@@ -2366,9 +2402,10 @@ def update_count2():
         # 已选装备的搭配数
         all_list_num = calc_ori_counts(items)
         # 百变怪增加的搭配数
-        all_list_num += calc_bbg_add_counts(items, not_select_items)
+        can_use_bbg = baibianguai_select.get() == txt_has_baibianguai
+        all_list_num += calc_bbg_add_counts(items, not_select_items, can_use_bbg)
         # 额外升级的工作服增加的搭配数
-        all_list_num += calc_upgrade_work_uniforms_add_counts(items, not_select_items, work_uniforms_items)
+        all_list_num += calc_upgrade_work_uniforms_add_counts(items, not_select_items, can_use_bbg, work_uniforms_items, 0)
 
         show_txt = "当前总组合数=" + str(int(all_list_num))
         if baibianguai_select.get() == txt_has_baibianguai:
