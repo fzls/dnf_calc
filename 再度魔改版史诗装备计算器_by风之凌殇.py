@@ -1,7 +1,7 @@
 ﻿#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 now_version = "v3.2.6"
-ver_time = '2020-04-19'
+ver_time = '2020-04-21'
 
 ## 코드를 무단으로 복제하여 개조 및 배포하지 말 것##
 
@@ -288,137 +288,93 @@ def format_time(ftime):
 def is_god(equip):
     return int(equip[-1]) == 1
 
-## 计算函数##
-def calc():
-    global result_window
-    try:
-        result_window.destroy()
-    except NameError as error:
-        pass
-    if select_perfect.get() == '慢速':
-        set_perfect = 1
-    else:
-        set_perfect = 0
-    showsta(text="正在准备组合算法驱动...")
-    start_time = time.time()
-    load_excel = load_workbook("DATA.xlsx", data_only=True)
+# 可升级得到的工作服列表
+work_uniforms = [
+    "11150", "12150", "13150", "14150", "15150",    # 工作服防具：大自然
+    "21190", "22190", "23190",                      # 工作服首饰：权能
+    "31230", "32230", "33230",                      # 工作服特殊装备：能量
+]
+# 智慧产物列表
+the_product_of_wisdoms = [
+    "13390150", "22390240", "23390450", "33390750", "21400340", "31400540", "32410650",
+]
 
-    db_one = load_excel["one"]
-    opt_one = {}
-    name_one = {}
-    a = 1
-    for row in db_one.rows:
-        row_value = []
-        row_value_cut = []
-        for cell in row:
-            row_value.append(cell.value)
-            row_value_cut = row_value[2:]
-        opt_one[db_one.cell(a, 1).value] = row_value_cut
-        name_one[db_one.cell(a, 1).value] = row_value
-        a = a + 1
+# 百变怪是否可以转换成该装备
+def can_convert_from_baibianguai(equip):
+    # 百变怪不能转换为神话装备
+    if is_god(equip):
+        return False
+    # 百变怪不能转化为工作服
+    if equip in work_uniforms:
+        return False
+    # 百变怪不能转化为智慧产物
+    if equip in the_product_of_wisdoms:
+        return False
 
-    b = 1
-    db_set = load_excel["set"]
-    opt_set = {}
-    for row in db_set.rows:
-        row_value = []
-        row_value_cut = []
-        for cell in row:
-            row_value.append(cell.value)
-            row_value_cut = row_value[2:]
-        opt_set[db_set.cell(b, 1).value] = row_value_cut  ## DB 装入 ##
-        b = b + 1
+    return True
 
-    c = 1
-    db_buf = load_excel["buf"]
-    opt_buf = {}
-    name_buf = {}
-    for row in db_buf.rows:
-        row_value = []
-        row_value_cut = []
-        for cell in row:
-            row_value.append(cell.value)
-            row_value_cut = row_value[2:]
-        opt_buf[db_buf.cell(c, 1).value] = row_value_cut  ## DB 装入 ##
-        name_buf[db_buf.cell(c, 1).value] = row_value
-        c = c + 1
+def calc_ori_counts(all_slots_equips):
+    cnt = 1
+    for one_slot_equips in all_slots_equips:
+        cnt *= len(one_slot_equips)
+    return cnt
 
-    d = 1
-    db_buflvl = load_excel["buflvl"]
-    opt_buflvl = {}
-    for row in db_buflvl.rows:
-        row_value = []
-        row_value_cut = []
-        for cell in row:
-            row_value.append(cell.value)
-            row_value_cut = [0] + row_value[1:]
-        opt_buflvl[db_buflvl.cell(d, 1).value] = row_value_cut
-        d = d + 1
+def calc_bbg_add_counts(slots_equips, slots_not_select_equips):
+    if baibianguai_select.get() != txt_has_baibianguai:
+        return 0
 
-    load_presetc = load_workbook("preset.xlsx", data_only=True)
-    db_preset = load_presetc["custom"]
-    try:
-        ele_skill = int(opt_job_ele[jobup_select.get()][1])
-    except KeyError as error:
-        tkinter.messagebox.showerror('部分参数有误', "未选择职业或职业非法")
-        return
-    ele_in = (int(db_preset["B14"].value) + int(db_preset["B15"].value) + int(db_preset["B16"].value) +
-              int(ele_skill) - int(db_preset["B18"].value) + int(db_preset["B19"].value) + 13)
+    ori_counts = calc_ori_counts(slots_equips)
 
-    global count_valid, count_invalid, show_number, all_list_num, max_setopt, count_start_time, unique_index
-    count_valid = 0;
-    count_invalid = 0;
-    show_number = 0
+    # 百变怪增加的搭配数
+    bbg_add_num = 0
+    for i in range(0, len(slots_not_select_equips)):
+        bbg_add_num += ori_counts / len(slots_equips[i]) * len(slots_not_select_equips[i])
 
-    if jobup_select.get()[-4:] == "(奶系)":
-        active_eff_one = 15
-        active_eff_set = 18 - 3
-    else:
-        active_eff_one = 21
-        active_eff_set = 27 - 3
+    return bbg_add_num
 
-    if time_select.get() == "60秒(觉醒占比↓)":
-        lvl_shift = 6
-    else:
-        lvl_shift = 0
+# 玩家各个部位是否已经升级了工作服
+def pre_calc_has_uniforms(items, work_uniforms_items):
+    return [work_uniforms_items[idx] in items[idx] for idx in range(len(items))]
 
-    job_lv1 = opt_job[jobup_select.get()][11 + lvl_shift]
-    job_lv2 = opt_job[jobup_select.get()][12 + lvl_shift]
-    job_lv3 = opt_job[jobup_select.get()][13 + lvl_shift]
-    job_lv4 = opt_job[jobup_select.get()][14 + lvl_shift]
-    job_lv5 = opt_job[jobup_select.get()][15 + lvl_shift]
-    job_lv6 = opt_job[jobup_select.get()][16 + lvl_shift]
-    job_pas0 = opt_job[jobup_select.get()][0]
-    job_pas1 = opt_job[jobup_select.get()][1]
-    job_pas2 = opt_job[jobup_select.get()][2]
-    job_pas3 = opt_job[jobup_select.get()][3]
+def get_can_upgrade_work_unifrom_nums():
+    # 用户配置的当前可升级的工作服数目
+    can_upgrade_work_unifrom_nums = 0
+    if can_upgrade_work_unifrom_nums_select.get() in can_upgrade_work_unifrom_nums_str_2_int:
+        can_upgrade_work_unifrom_nums = can_upgrade_work_unifrom_nums_str_2_int[can_upgrade_work_unifrom_nums_select.get()]
+    return can_upgrade_work_unifrom_nums
 
-    extra_dam = 0
-    extra_cri = 0
-    extra_bon = 0
-    extra_all = 0
-    extra_pas2 = 0
-    extra_sta = 0
-    extra_att = 0
-    if style_select.get() == '伟大的意志':
-        extra_cri = extra_cri + 18
-        extra_sta = extra_sta + 4
-    if style_select.get() == '使徒降临':
-        extra_bon = extra_bon + 12
-        extra_sta = extra_sta + 3
-    if style_select.get() == '国庆称号':
-        extra_cri = extra_cri + 15
-    if creature_select.get() == '普通宠物':
-        extra_bon = extra_bon + 12
-        extra_sta = extra_sta + 10
-    if creature_select.get() == '至尊宠物':
-        extra_bon = extra_bon + 15
-        extra_sta = extra_sta + 12
+def calc_upgrade_work_uniforms_add_counts(slots_equips, slots_not_select_equips, slots_work_uniforms):
+    # 找出所有尚未升级工作服的部位
+    not_has_uniform_slots = []
+    for slot, work_uniform in enumerate(slots_work_uniforms):
+        if work_uniform not in slots_equips[slot]:
+            not_has_uniform_slots.append(slot)
 
-    if req_cool.get() == 'X(纯伤害)':
-        cool_on = 0
-    else:
-        cool_on = 1
+    total_add_counts = 0
+
+    # 穷举尚未升级部位的大小小于等于最大可升级数目的所有组合
+    max_upgrade_count = min(get_can_upgrade_work_unifrom_nums(), len(not_has_uniform_slots))
+    # 遍历所有可能升级的件数
+    for upgrade_count in range(1, max_upgrade_count + 1):
+        # 遍历升级该件数的所有部位的组合
+        for upgrade_slots in itertools.combinations(not_has_uniform_slots, upgrade_count):
+            # 获取非升级部位的已有装备
+            other_slots_equips = []
+            for slot, slot_equips in enumerate(slots_equips):
+                if slot not in upgrade_slots:
+                    other_slots_equips.append(slot_equips)
+            # 获取非升级部位的未选择装备
+            other_slots_not_select_equips = []
+            for slot, slot_not_select_equips in enumerate(slots_not_select_equips):
+                if slot not in upgrade_slots:
+                    other_slots_not_select_equips.append(slot_not_select_equips)
+
+            # 计算该升级方案下其余部位的可能搭配数目
+            total_add_counts += calc_bbg_add_counts(other_slots_equips, other_slots_not_select_equips)
+
+    return total_add_counts
+
+def get_equips():
     list11 = [];
     list12 = [];
     list13 = [];
@@ -444,30 +400,6 @@ def calc():
     listns31 = [];
     listns32 = [];
     listns33 = []
-    # 可升级得到的工作服列表
-    work_uniforms = [
-        "11150", "12150", "13150", "14150", "15150",    # 工作服防具：大自然
-        "21190", "22190", "23190",                      # 工作服首饰：权能
-        "31230", "32230", "33230",                      # 工作服特殊装备：能量
-    ]
-    # 智慧产物列表
-    the_product_of_wisdoms = [
-        "13390150", "22390240", "23390450", "33390750", "21400340", "31400540", "32410650",
-    ]
-
-    # 百变怪是否可以转换成该装备
-    def can_convert_from_baibianguai(equip):
-        # 百变怪不能转换为神话装备
-        if is_god(equip):
-            return False
-        # 百变怪不能转化为工作服
-        if equip in work_uniforms:
-            return False
-        # 百变怪不能转化为智慧产物
-        if equip in the_product_of_wisdoms:
-            return False
-
-        return True
 
     for i in range(1010, 1999):
         try:
@@ -653,15 +585,6 @@ def calc():
     if len(list33) == 0:
         list33.append('33380')
 
-    valid_weapon = False
-    for i in range(0, 75):
-        if wep_select.get() == wep_list[i]:
-            wep_num = (str(i + 111001),)
-            valid_weapon = True
-    if not valid_weapon:
-        tkinter.messagebox.showerror('部分参数有误', "未选择武器或武器非法")
-        return
-
     # hack: 优化：由于装备顺序不影响最终计算结果，所以把神话装备先放到前面，那么剪枝可以更高效
     #   所有已选装备、百变怪各部位可选装备、各部位工作服的顺序需要一致，比如第一个是鞋、头肩、腰带，则其余俩也要是这个顺序
     # 所有已选装备
@@ -671,25 +594,157 @@ def calc():
     # 可升级得到的各部位工作服
     work_uniforms_items = ["11150", "21190", "33230", "12150", "13150", "14150", "15150", "22190", "23190", "31230", "32230"]
 
+    return items, not_select_items, work_uniforms_items
+
+## 计算函数##
+def calc():
+    global result_window
+    try:
+        result_window.destroy()
+    except NameError as error:
+        pass
+    if select_perfect.get() == '慢速':
+        set_perfect = 1
+    else:
+        set_perfect = 0
+    showsta(text="正在准备组合算法驱动...")
+    start_time = time.time()
+    load_excel = load_workbook("DATA.xlsx", data_only=True)
+
+    db_one = load_excel["one"]
+    opt_one = {}
+    name_one = {}
+    a = 1
+    for row in db_one.rows:
+        row_value = []
+        row_value_cut = []
+        for cell in row:
+            row_value.append(cell.value)
+            row_value_cut = row_value[2:]
+        opt_one[db_one.cell(a, 1).value] = row_value_cut
+        name_one[db_one.cell(a, 1).value] = row_value
+        a = a + 1
+
+    b = 1
+    db_set = load_excel["set"]
+    opt_set = {}
+    for row in db_set.rows:
+        row_value = []
+        row_value_cut = []
+        for cell in row:
+            row_value.append(cell.value)
+            row_value_cut = row_value[2:]
+        opt_set[db_set.cell(b, 1).value] = row_value_cut  ## DB 装入 ##
+        b = b + 1
+
+    c = 1
+    db_buf = load_excel["buf"]
+    opt_buf = {}
+    name_buf = {}
+    for row in db_buf.rows:
+        row_value = []
+        row_value_cut = []
+        for cell in row:
+            row_value.append(cell.value)
+            row_value_cut = row_value[2:]
+        opt_buf[db_buf.cell(c, 1).value] = row_value_cut  ## DB 装入 ##
+        name_buf[db_buf.cell(c, 1).value] = row_value
+        c = c + 1
+
+    d = 1
+    db_buflvl = load_excel["buflvl"]
+    opt_buflvl = {}
+    for row in db_buflvl.rows:
+        row_value = []
+        row_value_cut = []
+        for cell in row:
+            row_value.append(cell.value)
+            row_value_cut = [0] + row_value[1:]
+        opt_buflvl[db_buflvl.cell(d, 1).value] = row_value_cut
+        d = d + 1
+
+    load_presetc = load_workbook("preset.xlsx", data_only=True)
+    db_preset = load_presetc["custom"]
+    try:
+        ele_skill = int(opt_job_ele[jobup_select.get()][1])
+    except KeyError as error:
+        tkinter.messagebox.showerror('部分参数有误', "未选择职业或职业非法")
+        return
+    ele_in = (int(db_preset["B14"].value) + int(db_preset["B15"].value) + int(db_preset["B16"].value) +
+              int(ele_skill) - int(db_preset["B18"].value) + int(db_preset["B19"].value) + 13)
+
+    global count_valid, count_invalid, show_number, all_list_num, max_setopt, count_start_time, unique_index
+    count_valid = 0;
+    count_invalid = 0;
+    show_number = 0
+
+    if jobup_select.get()[-4:] == "(奶系)":
+        active_eff_one = 15
+        active_eff_set = 18 - 3
+    else:
+        active_eff_one = 21
+        active_eff_set = 27 - 3
+
+    if time_select.get() == "60秒(觉醒占比↓)":
+        lvl_shift = 6
+    else:
+        lvl_shift = 0
+
+    job_lv1 = opt_job[jobup_select.get()][11 + lvl_shift]
+    job_lv2 = opt_job[jobup_select.get()][12 + lvl_shift]
+    job_lv3 = opt_job[jobup_select.get()][13 + lvl_shift]
+    job_lv4 = opt_job[jobup_select.get()][14 + lvl_shift]
+    job_lv5 = opt_job[jobup_select.get()][15 + lvl_shift]
+    job_lv6 = opt_job[jobup_select.get()][16 + lvl_shift]
+    job_pas0 = opt_job[jobup_select.get()][0]
+    job_pas1 = opt_job[jobup_select.get()][1]
+    job_pas2 = opt_job[jobup_select.get()][2]
+    job_pas3 = opt_job[jobup_select.get()][3]
+
+    extra_dam = 0
+    extra_cri = 0
+    extra_bon = 0
+    extra_all = 0
+    extra_pas2 = 0
+    extra_sta = 0
+    extra_att = 0
+    if style_select.get() == '伟大的意志':
+        extra_cri = extra_cri + 18
+        extra_sta = extra_sta + 4
+    if style_select.get() == '使徒降临':
+        extra_bon = extra_bon + 12
+        extra_sta = extra_sta + 3
+    if style_select.get() == '国庆称号':
+        extra_cri = extra_cri + 15
+    if creature_select.get() == '普通宠物':
+        extra_bon = extra_bon + 12
+        extra_sta = extra_sta + 10
+    if creature_select.get() == '至尊宠物':
+        extra_bon = extra_bon + 15
+        extra_sta = extra_sta + 12
+
+    if req_cool.get() == 'X(纯伤害)':
+        cool_on = 0
+    else:
+        cool_on = 1
+
+    valid_weapon = False
+    for i in range(0, 75):
+        if wep_select.get() == wep_list[i]:
+            wep_num = (str(i + 111001),)
+            valid_weapon = True
+    if not valid_weapon:
+        tkinter.messagebox.showerror('部分参数有误', "未选择武器或武器非法")
+        return
+
+    items, not_select_items, work_uniforms_items = get_equips()
+
     # 已选装备的搭配数
-    all_list_num = len(list11) * len(list12) * len(list13) * len(list14) * len(list15) * len(list21) * len(
-        list22) * len(list23) * len(list31) * len(list32) * len(list33)
-
+    all_list_num = calc_ori_counts(items)
     # 百变怪增加的搭配数
-    bbg_add_num = 0
-    for i in range (0, len(not_select_items)):
-        bbg_add_num += all_list_num/len(items[i])*len(not_select_items[i])
-
-    has_baibainguai = baibianguai_select.get() == txt_has_baibianguai
-    if has_baibainguai:
-        all_list_num += bbg_add_num
-
-    # todo： 升级工作服增加的搭配数
-    # re: 需要在update_count2的地方也做处理
-    # 用户配置的当前可升级的工作服数目
-    can_upgrade_work_unifrom_nums = 0
-    if can_upgrade_work_unifrom_nums_select.get() in can_upgrade_work_unifrom_nums_str_2_int:
-        can_upgrade_work_unifrom_nums = can_upgrade_work_unifrom_nums_str_2_int[can_upgrade_work_unifrom_nums_select.get()]
+    all_list_num += calc_bbg_add_counts(items, not_select_items)
+    # 额外升级的工作服增加的搭配数
+    all_list_num += calc_upgrade_work_uniforms_add_counts(items, not_select_items, work_uniforms_items)
 
     try:
         showsta(text='开始计算')
@@ -703,7 +758,9 @@ def calc():
     # 开始计算
     exit_calc = 0
 
-    has_uniforms = [work_uniforms_items[idx] in items[idx] for idx in range(len(items))]
+    has_baibainguai = baibianguai_select.get() == txt_has_baibianguai
+    can_upgrade_work_unifrom_nums = get_can_upgrade_work_unifrom_nums()
+    has_uniforms = pre_calc_has_uniforms(items, work_uniforms_items)
 
     # 看了看，主要性能瓶颈在于直接使用了itertools.product遍历所有的笛卡尔积组合，导致无法提前剪枝，只能在每个组合计算前通过条件判断是否要跳过
     # 背景，假设当前处理到下标n（0-10）的装备，前面装备已选择的组合为selected_combination(of size n)，未处理装备为后面11-n-1个，其对应组合数为rcp=len(Cartesian Product(后面11-n-1个装备部位))
@@ -2304,177 +2361,20 @@ def update_count():
 
 def update_count2():
     while True:
-        global select_item
-        a_num = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        a_not_select_num = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        for i in range(101, 199):
-            try:
-                if select_item['tg1{}0'.format(i)] == 1:
-                    a_num[0]+=1
-                elif select_item['tg1{}0'.format(i)] == 0:
-                    a_not_select_num[0]+=1
+        items, not_select_items, work_uniforms_items = get_equips()
 
-                if select_item['tg1{}1'.format(i)] == 1:
-                    a_num[0]+=1
-                # re:神话装备(最后一位为1)不计入百变怪
-                # elif select_item['tg1{}1'.format(i)] == 0:
-                #     a_not_select_num[0]+=1
-            except KeyError as error:
-                p = 0
-            try:
-                if select_item['tg1{}0'.format(i + 100)] == 1:
-                    a_num[1]+=1
-                elif select_item['tg1{}0'.format(i + 100)] == 0:
-                    a_not_select_num[1]+=1
-            except KeyError as error:
-                p = 0
-            try:
-                if select_item['tg1{}0'.format(i + 200)] == 1:
-                    a_num[2]+=1
-                elif select_item['tg1{}0'.format(i + 200)] == 0:
-                    a_not_select_num[2]+=1
-            except KeyError as error:
-                p = 0
-            try:
-                if select_item['tg1{}0'.format(i + 300)] == 1:
-                    a_num[3]+=1
-                elif select_item['tg1{}0'.format(i + 300)] == 0:
-                    a_not_select_num[3]+=1
-            except KeyError as error:
-                p = 0
-            try:
-                if select_item['tg1{}0'.format(i + 400)] == 1:
-                    a_num[4]+=1
-                elif select_item['tg1{}0'.format(i + 400)] == 0:
-                    a_not_select_num[4]+=1
-            except KeyError as error:
-                p = 0
-            try:
-                if select_item['tg2{}0'.format(i)] == 1:
-                    a_num[5]+=1
-                elif select_item['tg2{}0'.format(i)] == 0:
-                    a_not_select_num[5]+=1
+        # 已选装备的搭配数
+        all_list_num = calc_ori_counts(items)
+        # 百变怪增加的搭配数
+        all_list_num += calc_bbg_add_counts(items, not_select_items)
+        # 额外升级的工作服增加的搭配数
+        all_list_num += calc_upgrade_work_uniforms_add_counts(items, not_select_items, work_uniforms_items)
 
-                if select_item['tg2{}1'.format(i)] == 1:
-                    a_num[5]+=1
-                # re:神话装备(最后一位为1)不计入百变怪
-                # elif select_item['tg2{}1'.format(i)] == 0:
-                #     a_not_select_num[5]+=1
-            except KeyError as error:
-                p = 0
-            try:
-                if select_item['tg2{}0'.format(i + 100)] == 1:
-                    a_num[6]+=1
-                elif select_item['tg2{}0'.format(i + 100)] == 0:
-                    a_not_select_num[6]+=1
-            except KeyError as error:
-                p = 0
-            try:
-                if select_item['tg2{}0'.format(i + 200)] == 1:
-                    a_num[7]+=1
-                elif select_item['tg2{}0'.format(i + 200)] == 0:
-                    a_not_select_num[7]+=1
-            except KeyError as error:
-                p = 0
-            try:
-                if select_item['tg3{}0'.format(i)] == 1:
-                    a_num[8]+=1
-                elif select_item['tg3{}0'.format(i)] == 0:
-                    a_not_select_num[8]+=1
-            except KeyError as error:
-                p = 0
-            try:
-                if select_item['tg3{}0'.format(i + 100)] == 1:
-                    a_num[9]+=1
-                elif select_item['tg3{}0'.format(i + 100)] == 0:
-                    a_not_select_num[9]+=1
-            except KeyError as error:
-                p = 0
-            try:
-                if select_item['tg3{}0'.format(i + 200)] == 1:
-                    a_num[10]+=1
-                elif select_item['tg3{}0'.format(i + 200)] == 0:
-                    a_not_select_num[10]+=1
-
-                if select_item['tg3{}1'.format(i + 200)] == 1:
-                    a_num[10] += 1
-                # re:神话装备(最后一位为1)不计入百变怪
-                # elif select_item['tg3{}1'.format(i + 200)] == 0:
-                #     a_not_select_num[10] += 1
-            except KeyError as error:
-                p = 0
-
-        if a_num[0] == 0:
-            a_num[0] = a_num[0] + 1;
-            a_num[1] = a_num[1] + 1;
-            a_num[2] = a_num[2] + 1;
-            a_num[3] = a_num[3] + 1;
-            a_num[4] = a_num[4] + 1;
-        if a_num[1] == 0:
-            a_num[0] = a_num[0] + 1;
-            a_num[1] = a_num[1] + 1;
-            a_num[2] = a_num[2] + 1;
-            a_num[3] = a_num[3] + 1;
-            a_num[4] = a_num[4] + 1;
-        if a_num[2] == 0:
-            a_num[0] = a_num[0] + 1;
-            a_num[1] = a_num[1] + 1;
-            a_num[2] = a_num[2] + 1;
-            a_num[3] = a_num[3] + 1;
-            a_num[4] = a_num[4] + 1;
-        if a_num[3] == 0:
-            a_num[0] = a_num[0] + 1;
-            a_num[1] = a_num[1] + 1;
-            a_num[2] = a_num[2] + 1;
-            a_num[3] = a_num[3] + 1;
-            a_num[4] = a_num[4] + 1;
-        if a_num[4] == 0:
-            a_num[0] = a_num[0] + 1;
-            a_num[1] = a_num[1] + 1;
-            a_num[2] = a_num[2] + 1;
-            a_num[3] = a_num[3] + 1;
-            a_num[4] = a_num[4] + 1;
-
-        if a_num[5] + a_num[6] + a_num[7] < 2:
-            a_num[5] = a_num[5] + 1;
-            a_num[6] = a_num[6] + 1;
-            a_num[7] = a_num[7] + 1
-        if a_num[8] + a_num[9] + a_num[10] < 2:
-            a_num[8] = a_num[8] + 1;
-            a_num[9] = a_num[9] + 1;
-            a_num[10] = a_num[10] + 1
-
-        if a_num[5] == 0:
-            a_num[5] = a_num[5] + 1
-        if a_num[6] == 0:
-            a_num[6] = a_num[6] + 1
-        if a_num[7] == 0:
-            a_num[7] = a_num[7] + 1
-
-        if a_num[8] == 0:
-            a_num[8] = a_num[8] + 1
-        if a_num[9] == 0:
-            a_num[9] = a_num[9] + 1
-        if a_num[10] == 0:
-            a_num[10] = a_num[10] + 1
-
-        a_num_all = a_num[0] * a_num[1] * a_num[2] * a_num[3] * a_num[4] * a_num[5] * a_num[6] * a_num[7] * a_num[8] * \
-                    a_num[9] * a_num[10]
-
-        # 百变怪的各部位可选装备需要与上面的部位顺序一致
-        a_not_select_num_all = 0
-        for i in range(0, len(a_not_select_num)):
-            a_not_select_num_all += a_num_all / a_num[i] * a_not_select_num[i]
-
-        has_baibainguai = baibianguai_select.get() == txt_has_baibianguai
-        if has_baibainguai:
-            a_num_all += a_not_select_num_all
-
-        show_txt = "当前总组合数=" + str(int(a_num_all))
-        if has_baibainguai:
+        show_txt = "当前总组合数=" + str(int(all_list_num))
+        if baibianguai_select.get() == txt_has_baibianguai:
             show_txt = "(计入百变怪)" + show_txt
         showcon2(text=show_txt)
-        if a_num_all > 10000000:
+        if all_list_num > 10000000:
             show_count2['fg'] = "red"
         else:
             show_count2['fg'] = "white"
