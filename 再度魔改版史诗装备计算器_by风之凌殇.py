@@ -444,12 +444,37 @@ def calc():
     listns31 = [];
     listns32 = [];
     listns33 = []
+    # 可升级得到的工作服列表
+    work_uniforms = [
+        "11150", "12150", "13150", "14150", "15150",    # 工作服防具：大自然
+        "21190", "22190", "23190",                      # 工作服首饰：权能
+        "31230", "32230", "33230",                      # 工作服特殊装备：能量
+    ]
+    # 智慧产物列表
+    the_product_of_wisdoms = [
+        "13390150", "22390240", "23390450", "33390750", "21400340", "31400540", "32410650",
+    ]
+
+    # 百变怪是否可以转换成该装备
+    def can_convert_from_baibianguai(equip):
+        # 百变怪不能转换为神话装备
+        if is_god(equip):
+            return False
+        # 百变怪不能转化为工作服
+        if equip in work_uniforms:
+            return False
+        # 百变怪不能转化为智慧产物
+        if equip in the_product_of_wisdoms:
+            return False
+
+        return True
+
     for i in range(1010, 1999):
         try:
             if eval('select_item["tg1{}"]'.format(i)) == 1:
                 list11.append('1' + str(i))
                 list_setnum.append(str(i)[1:])
-            elif eval('select_item["tg1{}"]'.format(i)) == 0 and not is_god('1' + str(i)):
+            elif eval('select_item["tg1{}"]'.format(i)) == 0 and can_convert_from_baibianguai('1' + str(i)):
                 listns11.append('1' + str(i))
         except KeyError as error:
             c = 1
@@ -458,7 +483,7 @@ def calc():
             if eval('select_item["tg1{}"]'.format(i)) == 1:
                 list12.append('1' + str(i))
                 list_setnum.append(str(i)[1:])
-            elif eval('select_item["tg1{}"]'.format(i)) == 0 and not is_god('1' + str(i)):
+            elif eval('select_item["tg1{}"]'.format(i)) == 0 and can_convert_from_baibianguai('1' + str(i)):
                 listns12.append('1' + str(i))
         except KeyError as error:
             c = 1
@@ -467,7 +492,7 @@ def calc():
             if eval('select_item["tg1{}"]'.format(i)) == 1:
                 list13.append('1' + str(i))
                 list_setnum.append(str(i)[1:])
-            elif eval('select_item["tg1{}"]'.format(i)) == 0 and not is_god('1' + str(i)):
+            elif eval('select_item["tg1{}"]'.format(i)) == 0 and can_convert_from_baibianguai('1' + str(i)):
                 listns13.append('1' + str(i))
         except KeyError as error:
             c = 1
@@ -476,7 +501,7 @@ def calc():
             if eval('select_item["tg1{}"]'.format(i)) == 1:
                 list14.append('1' + str(i))
                 list_setnum.append(str(i)[1:])
-            elif eval('select_item["tg1{}"]'.format(i)) == 0 and not is_god('1' + str(i)):
+            elif eval('select_item["tg1{}"]'.format(i)) == 0 and can_convert_from_baibianguai('1' + str(i)):
                 listns14.append('1' + str(i))
         except KeyError as error:
             c = 1
@@ -485,7 +510,7 @@ def calc():
             if eval('select_item["tg1{}"]'.format(i)) == 1:
                 list15.append('1' + str(i))
                 list_setnum.append(str(i)[1:])
-            elif eval('select_item["tg1{}"]'.format(i)) == 0 and not is_god('1' + str(i)):
+            elif eval('select_item["tg1{}"]'.format(i)) == 0 and can_convert_from_baibianguai('1' + str(i)):
                 listns15.append('1' + str(i))
         except KeyError as error:
             c = 1
@@ -494,7 +519,7 @@ def calc():
             if eval('select_item["tg2{}"]'.format(i)) == 1:
                 list21.append('2' + str(i))
                 list_setnum.append(str(i)[1:])
-            elif eval('select_item["tg2{}"]'.format(i)) == 0 and not is_god('2' + str(i)):
+            elif eval('select_item["tg2{}"]'.format(i)) == 0 and can_convert_from_baibianguai('2' + str(i)):
                 listns21.append('2' + str(i))
         except KeyError as error:
             c = 1
@@ -503,7 +528,7 @@ def calc():
             if eval('select_item["tg2{}"]'.format(i)) == 1:
                 list22.append('2' + str(i))
                 list_setnum.append(str(i)[1:])
-            elif eval('select_item["tg2{}"]'.format(i)) == 0 and not is_god('2' + str(i)):
+            elif eval('select_item["tg2{}"]'.format(i)) == 0 and can_convert_from_baibianguai('2' + str(i)):
                 listns22.append('2' + str(i))
         except KeyError as error:
             c = 1
@@ -512,7 +537,7 @@ def calc():
             if eval('select_item["tg2{}"]'.format(i)) == 1:
                 list23.append('2' + str(i))
                 list_setnum.append(str(i)[1:])
-            elif eval('select_item["tg2{}"]'.format(i)) == 0 and not is_god('2' + str(i)):
+            elif eval('select_item["tg2{}"]'.format(i)) == 0 and can_convert_from_baibianguai('2' + str(i)):
                 listns23.append('2' + str(i))
         except KeyError as error:
             c = 1
@@ -521,7 +546,7 @@ def calc():
             if eval('select_item["tg3{}"]'.format(i)) == 1:
                 list31.append('3' + str(i))
                 list_setnum.append(str(i)[1:])
-            elif eval('select_item["tg3{}"]'.format(i)) == 0 and not is_god('3' + str(i)):
+            elif eval('select_item["tg3{}"]'.format(i)) == 0 and can_convert_from_baibianguai('3' + str(i)):
                 listns31.append('3' + str(i))
         except KeyError as error:
             c = 1
@@ -530,7 +555,7 @@ def calc():
             if eval('select_item["tg3{}"]'.format(i)) == 1:
                 list32.append('3' + str(i))
                 list_setnum.append(str(i)[1:])
-            elif eval('select_item["tg3{}"]'.format(i)) == 0 and not is_god('3' + str(i)):
+            elif eval('select_item["tg3{}"]'.format(i)) == 0 and can_convert_from_baibianguai('3' + str(i)):
                 listns32.append('3' + str(i))
         except KeyError as error:
             c = 1
@@ -539,7 +564,7 @@ def calc():
             if eval('select_item["tg3{}"]'.format(i)) == 1:
                 list33.append('3' + str(i))
                 list_setnum.append(str(i)[1:])
-            elif eval('select_item["tg3{}"]'.format(i)) == 0 and not is_god('3' + str(i)):
+            elif eval('select_item["tg3{}"]'.format(i)) == 0 and can_convert_from_baibianguai('3' + str(i)):
                 listns33.append('3' + str(i))
         except KeyError as error:
             c = 1
@@ -1287,7 +1312,12 @@ def show_result(rank_list, job_type, ele_skill):
                 c = 1
 
         cool_check = req_cool.get()
-        canvas_res.create_text(122, 145, text="冷却补正：" + cool_check, font=guide_font, fill='white')
+        cool_txt = ""
+        if cool_check == "O(打开)":
+            cool_txt = "冷却补正"
+        else:
+            cool_txt = "纯伤害"
+        canvas_res.create_text(122, 145, text=cool_txt, font=guide_font, fill='white')
         if int(ele_skill) != 0:
             canvas_res.create_text(122, 170, text="技能属强补正=" + str(int(ele_skill)) + " / 逆校正%=" + str(
                 round(100 * (1.05 / (1.05 + int(ele_skill) * 0.0045) - 1), 1)) + "%", font=guide_font, fill='white')
@@ -1307,7 +1337,7 @@ def show_result(rank_list, job_type, ele_skill):
         res_img32 = canvas_res.create_image(219, 117, image=result_image_on[0]['32']) # 魔法石
         res_img33 = canvas_res.create_image(189, 117, image=result_image_on[0]['33']) # 耳环
         if 'bbg' in result_image_on[0]:
-            res_txtbbg = canvas_res.create_text(178, 147, text="百变怪=>", fill='white')
+            res_txtbbg = canvas_res.create_text(178, 147, text="百变怪=>", font=guide_font, fill='white')
             res_imgbbg = canvas_res.create_image(219, 147, image=result_image_on[0]['bbg']) # 百变怪
         cn1 = 0
         for j in range(0, 5):
@@ -1538,7 +1568,7 @@ def show_result(rank_list, job_type, ele_skill):
         res_img32 = canvas_res.create_image(219, 117, image=result_image_on3[0]['32'])
         res_img33 = canvas_res.create_image(189, 117, image=result_image_on3[0]['33'])
         if 'bbg' in result_image_on3[0]:
-            res_txtbbg = canvas_res.create_text(178, 147, text="百变怪=>", fill='white')
+            res_txtbbg = canvas_res.create_text(178, 147, text="百变怪=>", font=guide_font, fill='white')
             res_imgbbg = canvas_res.create_image(219, 147, image=result_image_on3[0]['bbg']) # 百变怪
         cn1 = 0
         res_img_list = {}
