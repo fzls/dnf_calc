@@ -691,27 +691,6 @@ def calc():
     if can_upgrade_work_unifrom_nums_select.get() in can_upgrade_work_unifrom_nums_str_2_int:
         can_upgrade_work_unifrom_nums = can_upgrade_work_unifrom_nums_str_2_int[can_upgrade_work_unifrom_nums_select.get()]
 
-    # re: 做完工作服功能后，测试下下面这些情况对应的耗时，如果其实已经很快乐，直接去掉这些弹框，没必要了
-    if all_list_num > 500000000:
-        ask_msg2 = tkinter.messagebox.askquestion('确认', "情况的数量超过5亿种.\可能需要非常非常久.\n确定进行吗？")
-        if ask_msg2 == 'no':
-            showsta(text='已终止')
-            return
-    elif all_list_num > 100000000:
-        ask_msg2 = tkinter.messagebox.askquestion('确认', "情况的数量超过1亿种.\可能需要30分钟以上.\n确定进行吗？")
-        if ask_msg2 == 'no':
-            showsta(text='已终止')
-            return
-    elif all_list_num > 30000000:
-        ask_msg2 = tkinter.messagebox.askquestion('确认', "情况的数量超过3千万种.\n可能需要很长时间.\n确定进行吗？")
-        if ask_msg2 == 'no':
-            showsta(text='已终止')
-            return
-    if set_perfect == 1 and all_list_num > 3000000:
-        tkinter.messagebox.showerror('提示', "功能不支持很多情况。")
-        showsta(text='已终止')
-        return
-
     try:
         showsta(text='开始计算')
         count_start_time = datetime.now() # 开始计时
