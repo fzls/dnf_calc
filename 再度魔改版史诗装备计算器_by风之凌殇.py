@@ -5,21 +5,92 @@ ver_time = '2020-04-22'
 
 ## 코드를 무단으로 복제하여 개조 및 배포하지 말 것##
 
-import tkinter.ttk
-import tkinter.font
-import tkinter.messagebox
-from tkinter import *
-from openpyxl import load_workbook
 import itertools
+import os
 import threading
 import time
-import numpy as np
-from collections import Counter
-from math import floor
+import tkinter.font
+import tkinter.messagebox
+import tkinter.ttk
 import webbrowser
-import os
+from collections import Counter
 from datetime import datetime
 from heapq import heapify, heappush, heappushpop
+from math import floor
+from tkinter import *
+
+import numpy as np
+from openpyxl import load_workbook
+
+###########################################################
+#                         调试函数                        #
+###########################################################
+
+_debug_start_time = time.time()
+_debug_last_step_time = time.time()
+
+_debug_stats = []
+
+
+def _debug_print_debug_timing_info(message):
+    from inspect import getframeinfo, stack
+    global _debug_last_step_time, _debug_stats
+    timeline = time.time() - _debug_start_time
+    used_time_since_last_step = time.time() - _debug_last_step_time
+    _debug_last_step_time = time.time()
+
+    # if message in ["初始化tkinter"]:
+    #     return
+
+    # if message not in ["读取各种装备与套装的图片"]:
+    #     return
+
+    stat = {
+        "lineno": getframeinfo(stack()[1][0]).lineno,
+        "timeline": timeline,
+        "step_used": used_time_since_last_step,
+        "message": message,
+    }
+
+    _debug_stats.append(stat)
+
+    print("line {:4}: timeline={} step_used={} message={}"
+        .format(
+        stat["lineno"],
+        format_time(stat["timeline"]),
+        format_time(stat["step_used"]),
+        stat["message"]
+    )
+    )
+
+
+def _debug_print_stats():
+    global _debug_stats
+    if len(_debug_stats) == 0:
+        return
+
+    total_used_time = _debug_stats[-1]["timeline"]
+    print("-----------------total={}-----------top 10 step----------------------------".format(
+        format_time(total_used_time)))
+
+    _debug_stats = sorted(_debug_stats, key=lambda k: k['step_used'], reverse=True)
+    if len(_debug_stats) > 10:
+        _debug_stats = _debug_stats[:10]
+
+    for stat in _debug_stats:
+        lineno = stat["lineno"]
+        step_used = stat["step_used"]
+        step_percent = step_used / total_used_time * 100
+
+        print("line {:4}: step_used={} percent={:.2f}% message={}"
+            .format(
+            stat["lineno"],
+            format_time(stat["step_used"]),
+            step_percent,
+            stat["message"]
+        )
+        )
+
 
 ###########################################################
 #                         工具函数                        #
@@ -41,74 +112,15 @@ def format_time(ftime):
 
     return remaining_time_str
 
-###########################################################
-#                         调试函数                        #
-###########################################################
 
-_debug_start_time = time.time()
-_debug_last_step_time = time.time()
+def _from_rgb(rgb):
+    """translates an rgb tuple of int to a tkinter friendly color code
+    """
+    return "#%02x%02x%02x" % rgb
 
-_debug_stats = []
-
-def _debug_print_debug_timing_info(message):
-    from inspect import getframeinfo, stack
-    global _debug_last_step_time, _debug_stats
-    timeline = time.time() - _debug_start_time
-    used_time_since_last_step = time.time() - _debug_last_step_time
-    _debug_last_step_time =time.time()
-
-    # if message in ["初始化tkinter"]:
-    #     return
-
-    # if message not in ["读取各种装备与套装的图片"]:
-    #     return
-
-    stat = {
-        "lineno": getframeinfo(stack()[1][0]).lineno,
-        "timeline": timeline,
-        "step_used": used_time_since_last_step,
-        "message": message,
-    }
-
-    _debug_stats.append(stat)
-
-    print("line {:4}: timeline={} step_used={} message={}"
-        .format(
-            stat["lineno"],
-            format_time(stat["timeline"]),
-            format_time(stat["step_used"]),
-            stat["message"]
-        )
-    )
-
-def _debug_print_stats():
-    global _debug_stats
-    if len(_debug_stats) == 0:
-        return
-
-    total_used_time =_debug_stats[-1]["timeline"]
-    print("-----------------total={}-----------top 10 step----------------------------".format(format_time(total_used_time)))
-
-    _debug_stats = sorted(_debug_stats, key=lambda k: k['step_used'], reverse=True)
-    if len(_debug_stats) > 10:
-        _debug_stats = _debug_stats[:10]
-
-    for stat in _debug_stats:
-        lineno = stat["lineno"]
-        step_used = stat["step_used"]
-        step_percent = step_used / total_used_time * 100
-
-        print("line {:4}: step_used={} percent={:.2f}% message={}"
-            .format(
-                stat["lineno"],
-                format_time(stat["step_used"]),
-                step_percent,
-                stat["message"]
-            )
-        )
 
 ###########################################################
-#                         辅助的数据结构                   #
+#                       辅助的数据结构                     #
 ###########################################################
 
 # 用于实现排行的最小堆
@@ -116,7 +128,7 @@ class MinHeap():
     def __init__(self, top_n):
         self.h = []
         self.length = top_n
-        heapify( self.h)
+        heapify(self.h)
 
     def add(self, element):
         if len(self.h) < self.length:
@@ -127,324 +139,694 @@ class MinHeap():
     def getTop(self):
         return sorted(self.h, reverse=True)
 
-# re：继续整理函数位置
 
-# https://dunfaoff.com/DawnClass.df
-
-def _from_rgb(rgb):
-    """translates an rgb tuple of int to a tkinter friendly color code
-    """
-    return "#%02x%02x%02x" % rgb
-
-
-dark_main = _from_rgb((32, 34, 37))
-dark_sub = _from_rgb((46, 49, 52))
-dark_blue = _from_rgb((29, 30, 36))
-
-exit_calc = 1
-save_name_list = []
-save_select = 0
-count_valid = 0
-unique_index = 0
-count_invalid = 0
-show_number = 0
-all_list_num = 0
-count_start_time = datetime.now() # 开始计算的时间点
-
-self = tkinter.Tk()
-self.title("一键史诗搭配计算器-支持百变怪/升级工作服 ver"+ now_version)
-self.geometry("710x720+0+0")
-self.resizable(False, False)
-self.configure(bg=dark_main)
-self.iconbitmap(r'ext_img/icon.ico')
-guide_font = tkinter.font.Font(family="맑은 고딕", size=10, weight='bold')
-mid_font = tkinter.font.Font(family="맑은 고딕", size=14, weight='bold')
-big_font = tkinter.font.Font(family="맑은 고딕", size=18, weight='bold')
-
-bg_img = PhotoImage(file="ext_img/bg_img.png")
-bg_wall = tkinter.Label(self, image=bg_img)
-bg_wall.place(x=0, y=0)
-
-
-# 由于这里不需要对data.xlsx写入，设置read_only为True可以大幅度加快读取速度，在我的电脑上改动前读取耗时0.67s，占启动时间32%，改动之后用时0.1s，占启动时间4%
-load_excel1 = load_workbook("DATA.xlsx", read_only=True, data_only=True)
-db_one = load_excel1["one"]
-name_one = {}
-for row in db_one.rows:
-    row_value = [cell.value for cell in row]
-
-    name = row_value[0]
-    name_one[name] = row_value
-
-
-db_job = load_excel1["lvl"]
-opt_job = {}
-opt_job_ele = {}
-jobs = []
-
-for row in db_job.rows:
-    row_value = [cell.value for cell in row]
-
-    job = row_value[0]
-    if job in ["empty", "직업명"]:
-        continue
-
-    opt_job[job] = row_value[3:]
-    opt_job_ele[job] = row_value[:3]
-    jobs.append(job)
-
-
-load_excel1.close()
-
-# 该变量用来控制是否要检查preset.xlsx正确初始化，若有些必要的cell没有正确运行，则会赋值，为了更快启动，魔改版本不再检查
-need_check_preset_file = False
-load_preset0 = load_workbook("preset.xlsx", read_only=not need_check_preset_file, data_only=True)
-db_custom = load_preset0["custom"]
-save_name_list = []
-for i in range(1, 11):
-    save_name_list.append(db_custom.cell(i, 5).value)
-
-
-if need_check_preset_file:
-    ########## 버전 최초 구동 프리셋 업데이트 ###########
-    try:
-        db_save = load_preset0["one"]
-        print("DATABASE 버전= " + str(db_custom['K1'].value))
-        print("클라이언트 버전= " + now_version)
-        if str(db_custom['K1'].value) != now_version:
-            # print("DB 업데이트")
-            db_custom['K1'] = now_version
-        if db_custom['H1'].value == None:
-            db_custom['G1'] = "up_stat"
-            db_custom['H1'] = 0
-        if db_custom['H2'].value == None:
-            db_custom['G2'] = "bless_style"
-            db_custom['H2'] = 3
-        if db_custom['H3'].value == None:
-            db_custom['G3'] = "crux_style"
-            db_custom['H3'] = 2
-        if db_custom['H4'].value == None:
-            db_custom['G4'] = "bless_plt"
-            db_custom['H4'] = 2
-        if db_custom['H5'].value == None:
-            db_custom['G5'] = "bless_cri"
-            db_custom['H5'] = 1
-        if db_custom['H6'].value == None:
-            db_custom['G6'] = "up_stat_b"
-            db_custom['H6'] = 0
-
-        if db_custom['B14'].value == None:
-            db_custom['A14'] = "ele_inchant"
-            db_custom['B14'] = 116
-        if db_custom['B15'].value == None:
-            db_custom['A15'] = "ele_ora"
-            db_custom['B15'] = 20
-        if db_custom['B16'].value == None:
-            db_custom['A16'] = "ele_gem"
-            db_custom['B16'] = 7
-        if db_custom['B17'].value == None:
-            db_custom['A17'] = "ele_skill"
-        db_custom['B17'] = 0  ## 자속강 비활성화
-        if db_custom['B18'].value == None:
-            db_custom['A18'] = "ele_mob_resist"
-            db_custom['B18'] = 50
-        if db_custom['B19'].value == None:
-            db_custom['A19'] = "ele_buf_anti"
-            db_custom['B19'] = 60
-
-        if db_save['A257'].value == None:
-            db_save['A257'] = '13390150';
-            db_save['B257'] = '+5 퍼펙트컨트롤'
-            db_save['C257'] = 0;
-            db_save['D257'] = 0;
-            db_save['E257'] = 0;
-            db_save['F257'] = 0;
-            db_save['G257'] = 0
-            db_save['H257'] = 0;
-            db_save['I257'] = 0;
-            db_save['J257'] = 0;
-            db_save['K257'] = 0;
-            db_save['L257'] = 0
-        if db_save['A258'].value == None:
-            db_save['A258'] = '22390240';
-            db_save['B258'] = '+4 선지자의 목걸이'
-            db_save['C258'] = 0;
-            db_save['D258'] = 0;
-            db_save['E258'] = 0;
-            db_save['F258'] = 0;
-            db_save['G258'] = 0
-            db_save['H258'] = 0;
-            db_save['I258'] = 0;
-            db_save['J258'] = 0;
-            db_save['K258'] = 0;
-            db_save['L258'] = 0
-        if db_save['A259'].value == None:
-            db_save['A259'] = '21400340';
-            db_save['B259'] = '+4 독을 머금은 가시장갑'
-            db_save['C259'] = 0;
-            db_save['D259'] = 0;
-            db_save['E259'] = 0;
-            db_save['F259'] = 0;
-            db_save['G259'] = 0
-            db_save['H259'] = 0;
-            db_save['I259'] = 0;
-            db_save['J259'] = 0;
-            db_save['K259'] = 0;
-            db_save['L259'] = 0
-        if db_save['A260'].value == None:
-            db_save['A260'] = '23390450';
-            db_save['B260'] = '+5 할기의 링'
-            db_save['C260'] = 0;
-            db_save['D260'] = 0;
-            db_save['E260'] = 0;
-            db_save['F260'] = 0;
-            db_save['G260'] = 0
-            db_save['H260'] = 0;
-            db_save['I260'] = 0;
-            db_save['J260'] = 0;
-            db_save['K260'] = 0;
-            db_save['L260'] = 0
-        if db_save['A261'].value == None:
-            db_save['A261'] = '31400540';
-            db_save['B261'] = '+4 청면수라의 가면'
-            db_save['C261'] = 0;
-            db_save['D261'] = 0;
-            db_save['E261'] = 0;
-            db_save['F261'] = 0;
-            db_save['G261'] = 0
-            db_save['H261'] = 0;
-            db_save['I261'] = 0;
-            db_save['J261'] = 0;
-            db_save['K261'] = 0;
-            db_save['L261'] = 0
-        if db_save['A262'].value == None:
-            db_save['A262'] = '32410650';
-            db_save['B262'] = '+5 적귀의 차원석'
-            db_save['C262'] = 0;
-            db_save['D262'] = 0;
-            db_save['E262'] = 0;
-            db_save['F262'] = 0;
-            db_save['G262'] = 0
-            db_save['H262'] = 0;
-            db_save['I262'] = 0;
-            db_save['J262'] = 0;
-            db_save['K262'] = 0;
-            db_save['L262'] = 0
-        if db_save['A263'].value == None:
-            db_save['A263'] = '33390750';
-            db_save['B263'] = '+5 패스트퓨처 이어링'
-            db_save['C263'] = 0;
-            db_save['D263'] = 0;
-            db_save['E263'] = 0;
-            db_save['F263'] = 0;
-            db_save['G263'] = 0
-            db_save['H263'] = 0;
-            db_save['I263'] = 0;
-            db_save['J263'] = 0;
-            db_save['K263'] = 0;
-            db_save['L263'] = 0
-
-        load_preset0.save("preset.xlsx")
-
-    except PermissionError as error:
-        tkinter.messagebox.showerror("错误", "更新失败. 请重新运行.")
-
-
-load_preset0.close()
-
-def inc_invalid_cnt_func(cnt):
-    global count_invalid
-    count_invalid+=int(cnt)
-
-# 装备编号的最后一位表示是否是神话装备，eg：33341
-def is_god(equip):
-    return int(equip[-1]) == 1
+###########################################################
+#                         逻辑相关常量                     #
+###########################################################
 
 # 可升级得到的工作服列表
 work_uniforms = [
-    "11150", "12150", "13150", "14150", "15150",    # 工作服防具：大自然
-    "21190", "22190", "23190",                      # 工作服首饰：权能
-    "31230", "32230", "33230",                      # 工作服特殊装备：能量
+    "11150", "12150", "13150", "14150", "15150",  # 工作服防具：大自然
+    "21190", "22190", "23190",  # 工作服首饰：权能
+    "31230", "32230", "33230",  # 工作服特殊装备：能量
 ]
 # 智慧产物列表
 the_product_of_wisdoms = [
     "13390150", "22390240", "23390450", "33390750", "21400340", "31400540", "32410650",
 ]
 
-# 百变怪是否可以转换成该装备
-def can_convert_from_baibianguai(equip):
-    # 百变怪不能转换为神话装备
-    if is_god(equip):
-        return False
-    # 百变怪不能转化为工作服
-    if equip in work_uniforms:
-        return False
-    # 百变怪不能转化为智慧产物
-    if equip in the_product_of_wisdoms:
-        return False
+# 自定义存档的列定义
+g_col_custom_save_key = 14
+g_col_custom_save_value_begin = 15
 
-    return True
+# 自定义存档的行定义
+g_row_custom_save_save_name = 1  # 存档名
+g_row_custom_save_weapon = 2  # 武器
+g_row_custom_save_job = 3  # 职业选择
+g_row_custom_save_fight_time = 4  # 输出时间
+g_row_custom_save_title = 5  # 称号选择
+g_row_custom_save_pet = 6  # 宠物选择
+g_row_custom_save_cd = 7  # 冷却补正
+g_row_custom_save_speed = 8  # 选择速度
+g_row_custom_save_has_baibianguai = 9  # 是否拥有百变怪
+g_row_custom_save_can_upgrade_work_uniforms_nums = 10  # 当前拥有的材料够升级多少件工作服
 
-def calc_ori_counts(all_slots_equips):
-    cnt = 1
-    for one_slot_equips in all_slots_equips:
-        cnt *= len(one_slot_equips)
-    return cnt
 
-def calc_bbg_add_counts(slots_equips, slots_not_select_equips):
-    if baibianguai_select.get() != txt_has_baibianguai:
-        return 0
+###########################################################
+#                         逻辑相关函数                     #
+###########################################################
 
-    ori_counts = calc_ori_counts(slots_equips)
+## 计算函数##
+def calc():
+    global result_window
+    try:
+        result_window.destroy()
+    except NameError as error:
+        pass
+    if select_perfect.get() == '慢速':
+        set_perfect = 1
+    else:
+        set_perfect = 0
+    showsta(text="正在准备组合算法驱动...")
+    start_time = time.time()
+    load_excel = load_workbook("DATA.xlsx", read_only=True, data_only=True)
 
+    db_one = load_excel["one"]
+    opt_one = {}
+    name_one = {}
+    for row in db_one.rows:
+        row_value = [cell.value for cell in row]
+
+        name = row_value[0]
+        row_value_cut = row_value[2:]
+
+        opt_one[name] = row_value_cut
+        name_one[name] = row_value
+
+    db_set = load_excel["set"]
+    opt_set = {}
+    for row in db_set.rows:
+        row_value = [cell.value for cell in row]
+
+        if len(row_value) == 0:
+            continue
+
+        set_index = row_value[0]
+        row_value_cut = row_value[2:]
+
+        opt_set[set_index] = row_value_cut  ## DB 装入 ##
+
+    db_buf = load_excel["buf"]
+    opt_buf = {}
+    name_buf = {}
+    for row in db_buf.rows:
+        row_value = [cell.value for cell in row]
+
+        buf_index = row_value[0]
+        row_value_cut = row_value[2:]
+
+        opt_buf[buf_index] = row_value_cut  ## DB 装入 ##
+        name_buf[buf_index] = row_value
+
+    db_buflvl = load_excel["buflvl"]
+    opt_buflvl = {}
+    for row in db_buflvl.rows:
+        row_value = [cell.value for cell in row]
+
+        buf_name = row_value[0]
+        row_value_cut = row_value[2:]
+
+        opt_buflvl[buf_name] = row_value_cut
+
+    load_presetc = load_workbook("preset.xlsx", data_only=True)
+    db_preset = load_presetc["custom"]
+    try:
+        ele_skill = int(opt_job_ele[jobup_select.get()][1])
+    except KeyError as error:
+        tkinter.messagebox.showerror('部分参数有误', "未选择职业或职业非法")
+        return
+    ele_in = (int(db_preset["B14"].value) + int(db_preset["B15"].value) + int(db_preset["B16"].value) +
+              int(ele_skill) - int(db_preset["B18"].value) + int(db_preset["B19"].value) + 13)
+
+    global count_valid, count_invalid, show_number, all_list_num, max_setopt, count_start_time, unique_index
+    count_valid = 0;
+    count_invalid = 0;
+    show_number = 0
+
+    if jobup_select.get()[-4:] == "(奶系)":
+        active_eff_one = 15
+        active_eff_set = 18 - 3
+    else:
+        active_eff_one = 21
+        active_eff_set = 27 - 3
+
+    if time_select.get() == "60秒(觉醒占比↓)":
+        lvl_shift = 6
+    else:
+        lvl_shift = 0
+
+    job_lv1 = opt_job[jobup_select.get()][11 + lvl_shift]
+    job_lv2 = opt_job[jobup_select.get()][12 + lvl_shift]
+    job_lv3 = opt_job[jobup_select.get()][13 + lvl_shift]
+    job_lv4 = opt_job[jobup_select.get()][14 + lvl_shift]
+    job_lv5 = opt_job[jobup_select.get()][15 + lvl_shift]
+    job_lv6 = opt_job[jobup_select.get()][16 + lvl_shift]
+    job_pas0 = opt_job[jobup_select.get()][0]
+    job_pas1 = opt_job[jobup_select.get()][1]
+    job_pas2 = opt_job[jobup_select.get()][2]
+    job_pas3 = opt_job[jobup_select.get()][3]
+
+    extra_dam = 0
+    extra_cri = 0
+    extra_bon = 0
+    extra_all = 0
+    extra_pas2 = 0
+    extra_sta = 0
+    extra_att = 0
+    if style_select.get() == '伟大的意志':
+        extra_cri = extra_cri + 18
+        extra_sta = extra_sta + 4
+    if style_select.get() == '使徒降临':
+        extra_bon = extra_bon + 12
+        extra_sta = extra_sta + 3
+    if style_select.get() == '国庆称号':
+        extra_cri = extra_cri + 15
+    if creature_select.get() == '普通宠物':
+        extra_bon = extra_bon + 12
+        extra_sta = extra_sta + 10
+    if creature_select.get() == '至尊宠物':
+        extra_bon = extra_bon + 15
+        extra_sta = extra_sta + 12
+
+    if req_cool.get() == 'X(纯伤害)':
+        cool_on = 0
+    else:
+        cool_on = 1
+
+    valid_weapon = False
+    for i in range(0, 75):
+        if wep_select.get() == wep_list[i]:
+            wep_num = (str(i + 111001),)
+            valid_weapon = True
+    if not valid_weapon:
+        tkinter.messagebox.showerror('部分参数有误', "未选择武器或武器非法")
+        return
+
+    items, not_select_items, work_uniforms_items = get_equips()
+
+    # 已选装备的搭配数
+    all_list_num = calc_ori_counts(items)
     # 百变怪增加的搭配数
-    bbg_add_num = 0
-    for i in range(0, len(slots_not_select_equips)):
-        bbg_add_num += ori_counts / len(slots_equips[i]) * len(slots_not_select_equips[i])
+    all_list_num += calc_bbg_add_counts(items, not_select_items)
+    # 额外升级的工作服增加的搭配数
+    all_list_num += calc_upgrade_work_uniforms_add_counts(items, not_select_items, work_uniforms_items)
 
-    return bbg_add_num
+    try:
+        showsta(text='开始计算')
+        count_start_time = datetime.now()  # 开始计时
+    except MemoryError as error:
+        tkinter.messagebox.showerror('内存误差', "已超过可用内存.")
+        showsta(text='已中止')
+        return
 
-# 玩家各个部位是否已经升级了工作服
-def pre_calc_has_uniforms(items, work_uniforms_items):
-    return [work_uniforms_items[idx] in items[idx] for idx in range(len(items))]
+    global exit_calc
+    # 开始计算
+    exit_calc = 0
 
-def get_can_upgrade_work_unifrom_nums():
-    # 用户配置的当前可升级的工作服数目
-    can_upgrade_work_unifrom_nums = 0
-    if can_upgrade_work_unifrom_nums_select.get() in can_upgrade_work_unifrom_nums_str_2_int:
-        can_upgrade_work_unifrom_nums = can_upgrade_work_unifrom_nums_str_2_int[can_upgrade_work_unifrom_nums_select.get()]
-    return can_upgrade_work_unifrom_nums
+    has_baibainguai = baibianguai_select.get() == txt_has_baibianguai
+    can_upgrade_work_unifrom_nums = get_can_upgrade_work_unifrom_nums()
+    has_uniforms = pre_calc_has_uniforms(items, work_uniforms_items)
 
-def calc_upgrade_work_uniforms_add_counts(slots_equips, slots_not_select_equips, slots_work_uniforms):
-    # 找出所有尚未升级工作服的部位
-    not_has_uniform_slots = []
-    for slot, work_uniform in enumerate(slots_work_uniforms):
-        if work_uniform not in slots_equips[slot]:
-            not_has_uniform_slots.append(slot)
+    # 看了看，主要性能瓶颈在于直接使用了itertools.product遍历所有的笛卡尔积组合，导致无法提前剪枝，只能在每个组合计算前通过条件判断是否要跳过
+    # 背景，假设当前处理到下标n（0-10）的装备，前面装备已选择的组合为selected_combination(of size n)，未处理装备为后面11-n-1个，其对应组合数为rcp=len(Cartesian Product(后面11-n-1个装备部位))
+    def cartesianProduct(current_index, has_god, baibianguai, upgrade_work_uniforms, selected_combination,
+                         process_func):
+        invalid_cnt = 1
+        for i in range(current_index + 1, len(items)):
+            invalid_cnt *= len(items[i])
 
-    total_add_counts = 0
+        def try_equip(equip):
+            global max_setopt
 
-    # 穷举尚未升级部位的大小小于等于最大可升级数目的所有组合
-    max_upgrade_count = min(get_can_upgrade_work_unifrom_nums(), len(not_has_uniform_slots))
-    # 遍历所有可能升级的件数
-    for upgrade_count in range(1, max_upgrade_count + 1):
-        # 遍历升级该件数的所有部位的组合
-        for upgrade_slots in itertools.combinations(not_has_uniform_slots, upgrade_count):
-            # 获取非升级部位的已有装备
-            other_slots_equips = []
-            for slot, slot_equips in enumerate(slots_equips):
-                if slot not in upgrade_slots:
-                    other_slots_equips.append(slot_equips)
-            # 获取非升级部位的未选择装备
-            other_slots_not_select_equips = []
-            for slot, slot_not_select_equips in enumerate(slots_not_select_equips):
-                if slot not in upgrade_slots:
-                    other_slots_not_select_equips.append(slot_not_select_equips)
+            # 增加处理后续未计算的百变怪
+            bbg_invalid_cnt = 0
+            if has_baibainguai and baibianguai is None:
+                for i in range(current_index + 1, len(items)):
+                    bbg_invalid_cnt += invalid_cnt / len(items[i]) * len(not_select_items[i])
 
-            # 计算该升级方案下其余部位的可能搭配数目
-            total_add_counts += calc_bbg_add_counts(other_slots_equips, other_slots_not_select_equips)
+            # 剪枝条件1：若当前组合序列已经有神话装备（god），且当前这个部位遍历到的仍是一个神话装备，则可以直接跳过rcp个组合，当前部位之前处理下一个备选装备
+            if has_god and is_god(equip):
+                inc_invalid_cnt_func(invalid_cnt + bbg_invalid_cnt)
+                return
 
-    return total_add_counts
+            selected_combination.append(equip)
+
+            # re：剪枝条件2：预计算出后面装备部位能够获得的最大价值量，若当前已有价值量与之相加低于已处理的最高价值量，则剪枝
+            ub = upper_bound(selected_combination, has_god or is_god(equip), current_index + 1)
+            if ub < max_setopt - set_perfect:
+                selected_combination.pop()
+                inc_invalid_cnt_func(invalid_cnt + bbg_invalid_cnt)
+                return
+
+            if current_index < len(items) - 1:
+                cartesianProduct(current_index + 1, has_god or is_god(equip), baibianguai, upgrade_work_uniforms,
+                                 selected_combination, process_func)
+            else:  # 符合条件的装备搭配
+                god = 0
+                if has_god or is_god(equip):
+                    god = 1
+                set_list = ["1" + str(selected_combination[x][2:4]) for x in range(0, 11)]
+                set_val = Counter(set_list)
+                del set_val['136', '137', '138']
+                # 1件价值量=0，两件=1，三件、四件=2，五件=3，神话额外增加1价值量
+                setopt_num = sum([floor(x * 0.7) for x in set_val.values()]) + god
+
+                if setopt_num >= max_setopt - set_perfect:
+                    if max_setopt <= setopt_num - god * set_perfect:
+                        max_setopt = setopt_num - god * set_perfect
+                    process_func(selected_combination, baibianguai, upgrade_work_uniforms)
+                else:
+                    inc_invalid_cnt_func(1)
+
+            selected_combination.pop()
+
+        # 考虑当前部位的每一件可选装备
+        for equip in items[current_index]:
+            if exit_calc == 1:
+                showsta(text='已终止')
+                return
+            try_equip(equip)
+
+        # 当拥有百变怪，且目前的尝试序列尚未使用到百变怪的时候考虑使用百变怪充当当前部位
+        if has_baibainguai and baibianguai is None:
+            for equip in not_select_items[current_index]:
+                if exit_calc == 1:
+                    showsta(text='已终止')
+                    return
+                baibianguai = equip
+                try_equip(equip)
+                baibianguai = None
+
+        # 若当前部位的工作服尚未拥有，且可升级工作服的次数尚未用完，则尝试本部位升级工作服
+        if not has_uniforms[current_index] and len(upgrade_work_uniforms) < can_upgrade_work_unifrom_nums:
+            work_uniform = work_uniforms_items[current_index]
+
+            upgrade_work_uniforms.append(work_uniform)
+            try_equip(work_uniform)
+            upgrade_work_uniforms.pop()
+
+    # items = [list11, list12, list13, list14, list15, list21, list22, list23, list31, list32, list33]
+    # 预处理，计算每个部位是否拥有神话装备
+    slot_has_god = []
+    for slot_equips in items:
+        hg = False
+        for equip in slot_equips:
+            if is_god(equip):
+                hg = True
+                break
+
+        slot_has_god.append(hg)
+
+    def has_god_since(idx):
+        for i in range(idx, len(slot_has_god)):
+            if slot_has_god[i]:
+                return True
+
+        return False
+
+    def has_no_god_since(idx):
+        return not has_god_since(idx)
+
+    # 为当前已选择序列和后续剩余可选序列计算出一个尽可能精确的上限
+    # note: 思路三：进一步降低上限，在当前已有序列的各套装个数的前提下，计算任意n个序列所能产生的价值量最大增益
+    # note：思路四：进一步降低上限，在当前已有序列的各套装个数的前提下，计算后面n个序列的各套装配置下所能产生的价值量最大增益
+    def upper_bound(selected_combination, selected_has_god, remaining_start_index):
+        return upper_bound_2(selected_combination, selected_has_god, remaining_start_index)
+
+    # 对照组：也就是后续
+    def upper_bound_none(selected_combination, selected_has_god, remaining_start_index):
+        return 1000000
+
+    # note: 思路一：由于每个新增部位产生增益为1或0，因此计算当前序列的价值量，后续每个可选部位按照增益1来计算，可得到约束条件最小的最大上限
+    def upper_bound_1(selected_combination, selected_has_god, remaining_start_index):
+        # 计算至今为止已有的价值量
+        current_value = calc_equip_value(selected_combination, selected_has_god)
+        # 后续按最大价值量计算，即每个槽位按能产生1点增益计算
+        remaining_max_value = len(items) - remaining_start_index
+        hg = has_god_since(remaining_start_index)
+        if hg:
+            remaining_max_value += 1
+
+        ub = current_value + remaining_max_value
+        return ub
+
+    # 新增k个装备所能产生的最大价值量（不计入神话）
+    max_inc_values = [0 for i in range(11 + 1)]
+    max_inc_values[1] = 1  # 2=>3
+    max_inc_values[2] = 2  # 1,1 => 2,2
+    max_inc_values[3] = 3  # 1,1,1 => 2,2,2
+    max_inc_values[4] = 4  # 1,1,1,1 => 2,2,2,2
+    max_inc_values[5] = 5  # 1,1,1,1 => 2,2,2,3
+    max_inc_values[6] = 6  # 1,1,1,1 => 2,2,3,3
+    max_inc_values[7] = 7  # 1,1,1,1 => 2,3,3,3
+    max_inc_values[8] = 7  # upper limit = 533->7
+    max_inc_values[9] = 7  # upper limit = 533->7
+    max_inc_values[10] = 7  # upper limit = 533->7
+    max_inc_values[11] = 7  # upper limit = 533->7
+
+    # note: 思路二：计算新增k个序列所能产生的价值量最大增益
+    def upper_bound_2(selected_combination, selected_has_god, remaining_start_index):
+        # 计算至今为止已有的价值量
+        current_value = calc_equip_value(selected_combination, selected_has_god)
+        # 后续按最大价值量计算，即每个槽位按能产生1点增益计算
+        remaining_max_value = max_inc_values[len(items) - remaining_start_index]
+        hg = has_god_since(remaining_start_index)
+        if hg:
+            remaining_max_value += 1
+
+        ub = current_value + remaining_max_value
+        return ub
+
+    def calc_equip_value(selected_combination, selected_has_god):
+        god = 0
+        if selected_has_god:
+            god = 1
+        set_list = ["1" + str(selected_combination[x][2:4]) for x in range(0, len(selected_combination))]
+        set_val = Counter(set_list)
+        del set_val['136', '137', '138']
+        # 1件价值量=0，两件=1，三件、四件=2，五件=3，神话额外增加1价值量
+        setopt_num = sum([floor(x * 0.7) for x in set_val.values()]) + god
+
+        return setopt_num
+
+    if jobup_select.get()[4:7] != "奶爸" and jobup_select.get()[4:7] != "奶妈" and jobup_select.get()[4:7] != "奶萝":
+
+        # 代码名称
+        # 0调节器 1추공  2증 3크 4추 5속추
+        # 6모 7공 8스탯 9속강 10지속 11스증 12특수
+        # 13공속 14크확 / 15 액티브 / 16~19 패시브 /20 신화여부/21세트코드/22쿨감보정/23 원쿨감
+        # 단품:24~33 저장소 / 34 二觉캐액티브
+        getone = opt_one.get
+        minheap = MinHeap(5)
+        unique_index = 0
+        max_setopt = 0
+        show_number = 1
+
+        def process(calc_now, baibianguai, upgrade_work_uniforms):
+            set_list = ["1" + str(calc_now[x][2:4]) for x in range(0, 11)]
+            set_on = [];
+            setapp = set_on.append
+            setcount = set_list.count
+            set_oncount = set_on.count
+            onecount = calc_now.count
+            for i in range(101, 136):
+                if setcount(str(i)) == 2:
+                    setapp(str(i) + "1")
+                if 4 >= setcount(str(i)) >= 3:
+                    setapp(str(i) + "2")
+                if setcount(str(i)) == 5:
+                    setapp(str(i) + "3")
+            for i in range(136, 139):
+                if setcount(str(i)) == 2:
+                    setapp(str(i) + "0")
+                if 4 >= setcount(str(i)) >= 3:
+                    setapp(str(i) + "1")
+                if setcount(str(i)) == 5:
+                    setapp(str(i) + "2")
+            if onecount('32410650') == 1:
+                if onecount('21400340') == 1:
+                    setapp('1401')
+                elif onecount('31400540') == 1:
+                    setapp('1401')
+            calc_wep = wep_num + tuple(calc_now)
+            damage = 0
+            base_array = np.array(
+                [0, 0, extra_dam, extra_cri, extra_bon, 0, extra_all, extra_att, extra_sta, ele_in, 0, 1, 0, 0,
+                 0, 0, 0, 0, extra_pas2, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+
+            skiper = 0
+            for_calc = tuple(set_on) + calc_wep
+            oneone = len(for_calc)
+            oneonelist = []
+            for i in range(oneone):
+                no_cut = getone(for_calc[i])  ## 11번 스증
+                if no_cut == None:
+                    # hack：目前select是默认初始化时将tg{1101-3336}[0,1]范围的key对应的值都设为0，而百变怪会根据select的值为0来筛选出未选择的集合
+                    #  因此在这里如果为None，就是这种情况，直接返回就可以了
+                    global count_invalid
+                    count_invalid = count_invalid + 1
+                    return
+                cut = np.array(no_cut[0:20] + no_cut[22:23] + no_cut[34:35] + no_cut[38:44])
+                skiper = (skiper / 100 + 1) * (cut[11] / 100 + 1) * 100 - 100
+                oneonelist.append(cut)
+            for i in range(oneone):
+                base_array = base_array + oneonelist[i]
+            # 코드 이름
+            # 0추스탯 1추공 2증 3크 4추 5속추
+            # 6모 7공 8스탯 9속강 10지속 11스증 12특수
+            # 13공속 14크확 / 15 특수액티브 / 16~19 패시브 /20 쿨감보정/21 2각캐특수액티브 /22~27 액티브레벨링
+
+            if set_oncount('1201') == 1 and onecount('32200') == 1:
+                base_array[3] = base_array[3] - 5
+            if onecount('33230') == 1 or onecount('33231') == 1:
+                if onecount('31230') == 0:
+                    base_array[4] = base_array[4] - 10
+                if onecount('32230') == 0:
+                    base_array[9] = base_array[9] - 40
+            if onecount('15340') == 1 or onecount('23340') == 1 or onecount('33340') == 1 or onecount(
+                    '33341') == 1:
+                if set_oncount('1341') == 0 and set_oncount('1342') == 0:
+                    if onecount('15340') == 1:
+                        base_array[9] = base_array[9] - 20
+                    elif onecount('23340') == 1:
+                        base_array[2] = base_array[2] - 10
+                    elif onecount('33340') == 1:
+                        base_array[6] = base_array[6] - 5
+                    else:
+                        base_array[9] = base_array[9] - 4
+                        base_array[2] = base_array[2] - 2
+                        base_array[6] = base_array[6] - 1
+                        base_array[8] = base_array[8] - 1.93
+            if onecount('11111') == 1:
+                if set_oncount('1112') == 1 or set_oncount('1113') == 1:
+                    base_array[20] = base_array[20] + 10
+            if onecount('11301') == 1:
+                if onecount('22300') != 1:
+                    base_array[4] = base_array[4] - 10
+                    base_array[7] = base_array[7] + 10
+                if onecount('31300') != 1:
+                    base_array[4] = base_array[4] - 10
+                    base_array[7] = base_array[7] + 10
+
+            base_array[11] = skiper
+            real_bon = base_array[4] + base_array[5] * (base_array[9] * 0.0045 + 1.05)
+            actlvl = ((base_array[active_eff_one] + base_array[22] * job_lv1 + base_array[23] * job_lv2 +
+                       base_array[24] * job_lv3 +
+                       base_array[25] * job_lv4 + base_array[26] * job_lv5 + base_array[
+                           27] * job_lv6) / 100 + 1)
+            paslvl = ((100 + base_array[16] * job_pas0) / 100) * ((100 + base_array[17] * job_pas1) / 100) * (
+                    (100 + base_array[18] * job_pas2) / 100) * ((100 + base_array[19] * job_pas3) / 100)
+            damage = ((base_array[2] / 100 + 1) * (base_array[3] / 100 + 1) * (real_bon / 100 + 1) * (
+                    base_array[6] / 100 + 1) * (base_array[7] / 100 + 1) *
+                      (base_array[8] / 100 + 1) * (base_array[9] * 0.0045 + 1.05) * (
+                              base_array[10] / 100 + 1) * (skiper / 100 + 1) * (base_array[12] / 100 + 1) *
+                      actlvl * paslvl * ((54500 + 3.31 * base_array[0]) / 54500) * (
+                              (4800 + base_array[1]) / 4800) * (1 + cool_on * base_array[20] / 100) / (
+                              1.05 + 0.0045 * int(ele_skill)))
+
+            base_array[4] = real_bon
+            global unique_index
+            unique_index += 1
+            minheap.add((damage, unique_index,
+                         [calc_wep, base_array, baibianguai, tuple(uwu for uwu in upgrade_work_uniforms)]))
+
+            global count_valid
+            count_valid = count_valid + 1
+
+        cartesianProduct(0, False, None, [], [], process)
+
+        show_number = 0
+        showsta(text='结果统计中')
+
+        ranking = []
+        for rank, data in enumerate(minheap.getTop()):
+            damage = data[0]
+            value = data[2]
+            ranking.append((damage, value))
+            showsta(text='结果统计中' + str(rank + 1) + " / 5")
+
+        show_result(ranking, 'deal', ele_skill)
+
+    else:
+        base_b = 10 + int(db_preset['H2'].value) + int(db_preset['H4'].value) + int(db_preset['H5'].value) + 1
+        base_c = 12 + int(db_preset['H3'].value) + 1
+        base_pas0 = 0
+        base_pas0_c = 3
+        base_pas0_b = 0
+        base_stat_s = 4166 + 74 - 126 + int(db_preset['H1'].value)
+        base_stat_d = int(db_preset['H6'].value) - int(db_preset['H1'].value)
+        base_stat_h = 4308 - 45 - 83 + int(db_preset['H1'].value)
+        base_pas0_1 = 0
+        load_presetc.close()
+        lvlget = opt_buflvl.get
+        # 코드 이름
+        # 0 체정 1 지능
+        # 祝福 2 스탯% 3 물공% 4 마공% 5 독공%
+        # 아포 6 고정 7 스탯%
+        # 8 축렙 9 포렙
+        # 10 아리아/보징증폭
+        # 11 전직패 12 보징 13 각패1 14 각패2 15 二觉 16 각패3
+        # 17 깡신념 18 깡신실 19 아리아쿨 20 하베쿨
+        minheap1 = MinHeap(5)
+        minheap2 = MinHeap(5)
+        minheap3 = MinHeap(5)
+        unique_index = 0
+        setget = opt_buf.get
+        max_setopt = 0
+        show_number = 1
+
+        def process(calc_now, baibianguai, upgrade_work_uniforms):
+            set_list = ["1" + str(calc_now[x][2:4]) for x in range(0, 11)]
+            set_val = Counter(set_list)
+            del set_val['136', '137', '138']
+            set_on = [];
+            setapp = set_on.append
+            setcount = set_list.count
+            for i in range(101, 136):
+                if setcount(str(i)) == 2:
+                    setapp(str(i) + "1")
+                if 4 >= setcount(str(i)) >= 3:
+                    setapp(str(i) + "2")
+                if setcount(str(i)) == 5:
+                    setapp(str(i) + "3")
+            for i in range(136, 139):
+                if setcount(str(i)) == 2:
+                    setapp(str(i) + "0")
+                if 4 >= setcount(str(i)) >= 3:
+                    setapp(str(i) + "1")
+                if setcount(str(i)) == 5:
+                    setapp(str(i) + "2")
+
+            calc_wep = wep_num + tuple(calc_now)
+            base_array = np.array(
+                [base_stat_h, base_stat_s, 0, 0, 0, 0, 0, 0, base_b, base_c, 0, base_pas0, base_pas0_1, 0, 0, 0,
+                 0, 0,
+                 0, 0, 0])
+
+            b_stat = 10.24  ##탈리스만
+            b_phy = 0
+            b_mag = 0
+            b_ind = 0
+            c_per = 0
+            for_calc = tuple(set_on) + calc_wep
+            oneone = len(for_calc)
+            oneonelist = []
+            for i in range(oneone):
+                no_cut = np.array(setget(for_calc[i]))  ## 2 3 4 5 7
+                base_array = base_array + no_cut
+                b_stat = (b_stat / 100 + 1) * (no_cut[2] / 100 + 1) * 100 - 100
+                b_phy = (b_phy / 100 + 1) * (no_cut[3] / 100 + 1) * 100 - 100
+                b_mag = (b_mag / 100 + 1) * (no_cut[4] / 100 + 1) * 100 - 100
+                b_ind = (b_ind / 100 + 1) * (no_cut[5] / 100 + 1) * 100 - 100
+                c_per = (c_per / 100 + 1) * (no_cut[7] / 100 + 1) * 100 - 100
+                oneonelist.append(no_cut)
+
+            # 0 체정 1 지능
+            # 祝福 2 스탯% 3 물공% 4 마공% 5 독공%
+            # 아포 6 고정 7 스탯%
+            # 8 축렙 9 포렙
+            # 10 아리아/보징증폭
+            # 11 전직패 12 보징 13 각패1 14 각패2 15 二觉 16 각패3
+            # 17 깡신념 18 깡신실 19 아리아쿨 20 하베쿨
+            if jobup_select.get()[4:7] == "奶爸":
+                b_base_att = lvlget('hol_b_atta')[int(base_array[8])]
+                stat_pas0lvl_b = lvlget('pas0')[int(base_array[11]) + base_pas0_b] + lvlget('hol_pas0_1')[
+                    int(base_array[12])]
+                stat_pas0lvl_c = lvlget('pas0')[int(base_array[11]) + base_pas0_c] + lvlget('hol_pas0_1')[
+                    int(base_array[12])]
+                stat_pas1lvl = lvlget('hol_pas1')[int(base_array[13])]
+                stat_pas2lvl = lvlget('hol_act2')[int(base_array[15])]
+                stat_pas3lvl = lvlget('pas3')[int(base_array[16])]
+                stat_b = base_array[0] + stat_pas0lvl_b + stat_pas1lvl + stat_pas2lvl + stat_pas3lvl + 19 * \
+                         base_array[10] + base_stat_d
+                stat_c = base_array[0] + stat_pas0lvl_c + stat_pas1lvl + stat_pas2lvl + stat_pas3lvl + 19 * \
+                         base_array[10]
+                b_stat_calc = int(
+                    int(lvlget('hol_b_stat')[int(base_array[8])] * (b_stat / 100 + 1)) * (stat_b / 630 + 1))
+                b_phy_calc = int(int(b_base_att * (b_phy / 100 + 1)) * (stat_b / 630 + 1))
+                b_mag_calc = int(int(b_base_att * (b_mag / 100 + 1)) * (stat_b / 630 + 1))
+                b_ind_calc = int(int(b_base_att * (b_ind / 100 + 1)) * (stat_b / 630 + 1))
+                b_average = int((b_phy_calc + b_mag_calc + b_ind_calc) / 3)
+                c_calc = int(int((lvlget('c_stat')[int(base_array[9])] + base_array[6]) * (c_per / 100 + 1)) * (
+                        stat_c / 750 + 1))
+                pas1_calc = int(lvlget('hol_pas1_out')[int(base_array[13])] + 213 + base_array[17])
+                pas1_out = str(
+                    int(lvlget('hol_pas1_out')[int(base_array[13])] + 213 + base_array[17])) + "  (" + str(
+                    int(20 + base_array[13])) + "级)"
+                save1 = str(b_stat_calc) + "/" + str(b_average) + "   [" + str(int(stat_b)) + "(" + str(
+                    int(base_array[8])) + "级)]"
+
+            else:
+                if jobup_select.get()[4:7] == "奶妈":
+                    b_value = 675
+                    aria = 1.25 + 0.05 * base_array[10]
+                if jobup_select.get()[4:7] == "奶萝":
+                    b_value = 665
+                    aria = (1.20 + 0.05 * base_array[10]) * 1.20
+
+                b_base_att = lvlget('se_b_atta')[int(base_array[8])]
+                stat_pas0lvl_b = lvlget('pas0')[int(base_array[11]) + int(base_pas0_b)]
+                stat_pas0lvl_c = lvlget('pas0')[int(base_array[11]) + int(base_pas0_c)]
+                stat_pas1lvl = lvlget('se_pas1')[int(base_array[13])] + base_array[18]
+                stat_pas2lvl = lvlget('se_pas2')[int(base_array[14])]
+                stat_pas3lvl = lvlget('pas3')[int(base_array[16])]
+                stat_b = base_array[
+                             1] + stat_pas0lvl_b + stat_pas1lvl + stat_pas2lvl + stat_pas3lvl + base_stat_d
+                stat_c = base_array[1] + stat_pas0lvl_c + stat_pas1lvl + stat_pas2lvl + stat_pas3lvl
+                b_stat_calc = int(int(lvlget('se_b_stat')[int(base_array[8])] * (b_stat / 100 + 1)) * (
+                        stat_b / b_value + 1) * aria)
+                b_phy_calc = int(int(b_base_att * (b_phy / 100 + 1) * (stat_b / b_value + 1)) * aria)
+                b_mag_calc = int(int(b_base_att * (b_mag / 100 + 1) * (stat_b / b_value + 1)) * aria)
+                b_ind_calc = int(int(b_base_att * (b_ind / 100 + 1) * (stat_b / b_value + 1)) * aria)
+                b_average = int((b_phy_calc + b_mag_calc + b_ind_calc) / 3)
+                c_calc = int(int((lvlget('c_stat')[int(base_array[9])] + base_array[6]) * (c_per / 100 + 1)) * (
+                        stat_c / 750 + 1))
+                pas1_calc = int(stat_pas1lvl + 442)
+                pas1_out = str(int(stat_pas1lvl + 442)) + "  (" + str(int(20 + base_array[13])) + "级)"
+                save1 = str(b_stat_calc) + "(" + str(int(b_stat_calc / aria)) + ")/ " + str(
+                    b_average) + "(" + str(int(b_average / aria)) + ")\n                  [" + str(
+                    int(stat_b)) + "(" + str(int(base_array[8])) + "级)]"
+
+            save2 = str(c_calc) + "    [" + str(int(stat_c)) + "(" + str(int(base_array[9])) + "级)]"
+            ##1축 2포 3합
+            global unique_index
+            unique_index += 1
+            save_data = [calc_wep, [save1, save2, pas1_out], baibianguai, tuple(uwu for uwu in upgrade_work_uniforms)]
+            minheap1.add((((15000 + b_stat_calc) / 250 + 1) * (2650 + b_average), unique_index, save_data))
+            minheap2.add((((15000 + c_calc) / 250 + 1) * 2650, unique_index, save_data))
+            minheap3.add(
+                (((15000 + pas1_calc + c_calc + b_stat_calc) / 250 + 1) * (2650 + b_average), unique_index, save_data))
+
+            global count_valid
+            count_valid = count_valid + 1
+
+        cartesianProduct(0, False, None, [], [], process)
+        show_number = 0
+        showsta(text='结果统计中')
+
+        ranking1 = [];
+        ranking2 = [];
+        ranking3 = []
+        for rank, data in enumerate(minheap1.getTop()):
+            damage = data[0]
+            value = data[2]
+            ranking1.append((damage, value))
+        for rank, data in enumerate(minheap2.getTop()):
+            damage = data[0]
+            value = data[2]
+            ranking2.append((damage, value))
+        for rank, data in enumerate(minheap3.getTop()):
+            damage = data[0]
+            value = data[2]
+            ranking3.append((damage, value))
+
+        ranking = [ranking1, ranking2, ranking3]
+        show_result(ranking, 'buf', ele_skill)
+    load_excel.close()
+    showsta(text='输出完成' + "时间 = " + format_time(time.time() - start_time))
+    # 结束计算
+    exit_calc = 1
+    # print("时间 = " + str(time.time() - start_time) + "秒")
+
+
+def calc_thread():
+    threading.Thread(target=calc, daemon=True).start()
+
+
+def stop_calc():
+    global exit_calc
+    exit_calc = 1
+
 
 def get_equips():
     list11 = [];
@@ -662,656 +1044,105 @@ def get_equips():
     # 所有已选装备
     items = [list11, list21, list33, list12, list13, list14, list15, list22, list23, list31, list32]
     # 百变怪的各部位可选装备需要与上面的部位顺序一致
-    not_select_items = [listns11, listns21, listns33, listns12, listns13, listns14, listns15, listns22, listns23, listns31, listns32]
+    not_select_items = [listns11, listns21, listns33, listns12, listns13, listns14, listns15, listns22, listns23,
+                        listns31, listns32]
     # 可升级得到的各部位工作服
-    work_uniforms_items = ["11150", "21190", "33230", "12150", "13150", "14150", "15150", "22190", "23190", "31230", "32230"]
+    work_uniforms_items = ["11150", "21190", "33230", "12150", "13150", "14150", "15150", "22190", "23190", "31230",
+                           "32230"]
 
     return items, not_select_items, work_uniforms_items
 
-## 计算函数##
-def calc():
-    global result_window
-    try:
-        result_window.destroy()
-    except NameError as error:
-        pass
-    if select_perfect.get() == '慢速':
-        set_perfect = 1
-    else:
-        set_perfect = 0
-    showsta(text="正在准备组合算法驱动...")
-    start_time = time.time()
-    load_excel = load_workbook("DATA.xlsx", read_only=True, data_only=True)
 
-    db_one = load_excel["one"]
-    opt_one = {}
-    name_one = {}
-    for row in db_one.rows:
-        row_value = [cell.value for cell in row]
-
-        name = row_value[0]
-        row_value_cut = row_value[2:]
-
-        opt_one[name] = row_value_cut
-        name_one[name] = row_value
-
-    db_set = load_excel["set"]
-    opt_set = {}
-    for row in db_set.rows:
-        row_value = [cell.value for cell in row]
-
-        if len(row_value) == 0:
-            continue
-
-        set_index = row_value[0]
-        row_value_cut = row_value[2:]
-
-        opt_set[set_index] = row_value_cut  ## DB 装入 ##
-
-    db_buf = load_excel["buf"]
-    opt_buf = {}
-    name_buf = {}
-    for row in db_buf.rows:
-        row_value = [cell.value for cell in row]
-
-        buf_index = row_value[0]
-        row_value_cut = row_value[2:]
-
-        opt_buf[buf_index] = row_value_cut  ## DB 装入 ##
-        name_buf[buf_index] = row_value
-
-    db_buflvl = load_excel["buflvl"]
-    opt_buflvl = {}
-    for row in db_buflvl.rows:
-        row_value = [cell.value for cell in row]
-
-        buf_name = row_value[0]
-        row_value_cut = row_value[2:]
-
-        opt_buflvl[buf_name] = row_value_cut
-
-    load_presetc = load_workbook("preset.xlsx", data_only=True)
-    db_preset = load_presetc["custom"]
-    try:
-        ele_skill = int(opt_job_ele[jobup_select.get()][1])
-    except KeyError as error:
-        tkinter.messagebox.showerror('部分参数有误', "未选择职业或职业非法")
-        return
-    ele_in = (int(db_preset["B14"].value) + int(db_preset["B15"].value) + int(db_preset["B16"].value) +
-              int(ele_skill) - int(db_preset["B18"].value) + int(db_preset["B19"].value) + 13)
-
-    global count_valid, count_invalid, show_number, all_list_num, max_setopt, count_start_time, unique_index
-    count_valid = 0;
-    count_invalid = 0;
-    show_number = 0
-
-    if jobup_select.get()[-4:] == "(奶系)":
-        active_eff_one = 15
-        active_eff_set = 18 - 3
-    else:
-        active_eff_one = 21
-        active_eff_set = 27 - 3
-
-    if time_select.get() == "60秒(觉醒占比↓)":
-        lvl_shift = 6
-    else:
-        lvl_shift = 0
-
-    job_lv1 = opt_job[jobup_select.get()][11 + lvl_shift]
-    job_lv2 = opt_job[jobup_select.get()][12 + lvl_shift]
-    job_lv3 = opt_job[jobup_select.get()][13 + lvl_shift]
-    job_lv4 = opt_job[jobup_select.get()][14 + lvl_shift]
-    job_lv5 = opt_job[jobup_select.get()][15 + lvl_shift]
-    job_lv6 = opt_job[jobup_select.get()][16 + lvl_shift]
-    job_pas0 = opt_job[jobup_select.get()][0]
-    job_pas1 = opt_job[jobup_select.get()][1]
-    job_pas2 = opt_job[jobup_select.get()][2]
-    job_pas3 = opt_job[jobup_select.get()][3]
-
-    extra_dam = 0
-    extra_cri = 0
-    extra_bon = 0
-    extra_all = 0
-    extra_pas2 = 0
-    extra_sta = 0
-    extra_att = 0
-    if style_select.get() == '伟大的意志':
-        extra_cri = extra_cri + 18
-        extra_sta = extra_sta + 4
-    if style_select.get() == '使徒降临':
-        extra_bon = extra_bon + 12
-        extra_sta = extra_sta + 3
-    if style_select.get() == '国庆称号':
-        extra_cri = extra_cri + 15
-    if creature_select.get() == '普通宠物':
-        extra_bon = extra_bon + 12
-        extra_sta = extra_sta + 10
-    if creature_select.get() == '至尊宠物':
-        extra_bon = extra_bon + 15
-        extra_sta = extra_sta + 12
-
-    if req_cool.get() == 'X(纯伤害)':
-        cool_on = 0
-    else:
-        cool_on = 1
-
-    valid_weapon = False
-    for i in range(0, 75):
-        if wep_select.get() == wep_list[i]:
-            wep_num = (str(i + 111001),)
-            valid_weapon = True
-    if not valid_weapon:
-        tkinter.messagebox.showerror('部分参数有误', "未选择武器或武器非法")
-        return
-
-    items, not_select_items, work_uniforms_items = get_equips()
-
-    # 已选装备的搭配数
-    all_list_num = calc_ori_counts(items)
-    # 百变怪增加的搭配数
-    all_list_num += calc_bbg_add_counts(items, not_select_items)
-    # 额外升级的工作服增加的搭配数
-    all_list_num += calc_upgrade_work_uniforms_add_counts(items, not_select_items, work_uniforms_items)
-
-    try:
-        showsta(text='开始计算')
-        count_start_time = datetime.now() # 开始计时
-    except MemoryError as error:
-        tkinter.messagebox.showerror('内存误差', "已超过可用内存.")
-        showsta(text='已中止')
-        return
-
-    global exit_calc
-    # 开始计算
-    exit_calc = 0
-
-    has_baibainguai = baibianguai_select.get() == txt_has_baibianguai
-    can_upgrade_work_unifrom_nums = get_can_upgrade_work_unifrom_nums()
-    has_uniforms = pre_calc_has_uniforms(items, work_uniforms_items)
-
-    # 看了看，主要性能瓶颈在于直接使用了itertools.product遍历所有的笛卡尔积组合，导致无法提前剪枝，只能在每个组合计算前通过条件判断是否要跳过
-    # 背景，假设当前处理到下标n（0-10）的装备，前面装备已选择的组合为selected_combination(of size n)，未处理装备为后面11-n-1个，其对应组合数为rcp=len(Cartesian Product(后面11-n-1个装备部位))
-    def cartesianProduct(current_index, has_god, baibianguai, upgrade_work_uniforms, selected_combination, process_func):
-        invalid_cnt = 1
-        for i in range(current_index+1, len(items)):
-            invalid_cnt *= len(items[i])
-
-        def try_equip(equip):
-            global max_setopt
-            
-            # 增加处理后续未计算的百变怪
-            bbg_invalid_cnt = 0
-            if has_baibainguai and baibianguai is None:
-                for i in range(current_index+1, len(items)):
-                    bbg_invalid_cnt += invalid_cnt/len(items[i])*len(not_select_items[i])
-
-            # 剪枝条件1：若当前组合序列已经有神话装备（god），且当前这个部位遍历到的仍是一个神话装备，则可以直接跳过rcp个组合，当前部位之前处理下一个备选装备
-            if has_god and is_god(equip):
-                inc_invalid_cnt_func(invalid_cnt + bbg_invalid_cnt)
-                return
-
-            selected_combination.append(equip)
-
-            # re：剪枝条件2：预计算出后面装备部位能够获得的最大价值量，若当前已有价值量与之相加低于已处理的最高价值量，则剪枝
-            ub = upper_bound(selected_combination, has_god or is_god(equip), current_index+1)
-            if ub < max_setopt - set_perfect:
-                selected_combination.pop()
-                inc_invalid_cnt_func(invalid_cnt + bbg_invalid_cnt)
-                return
-
-            if current_index < len(items) - 1:
-                cartesianProduct(current_index+1, has_god or is_god(equip), baibianguai, upgrade_work_uniforms, selected_combination, process_func)
-            else: # 符合条件的装备搭配
-                god=0
-                if has_god or is_god(equip):
-                    god = 1
-                set_list = ["1" + str(selected_combination[x][2:4]) for x in range(0, 11)]
-                set_val = Counter(set_list)
-                del set_val['136', '137', '138']
-                # 1件价值量=0，两件=1，三件、四件=2，五件=3，神话额外增加1价值量
-                setopt_num = sum([floor(x * 0.7) for x in set_val.values()]) + god
-
-                if setopt_num >= max_setopt-set_perfect :
-                    if max_setopt <= setopt_num - god * set_perfect:
-                        max_setopt = setopt_num - god * set_perfect
-                    process_func(selected_combination, baibianguai, upgrade_work_uniforms)
-                else:
-                    inc_invalid_cnt_func(1)
-
-            selected_combination.pop()
-
-        # 考虑当前部位的每一件可选装备
-        for equip in items[current_index]:
-            if exit_calc == 1:
-                showsta(text='已终止')
-                return
-            try_equip(equip)
-
-        # 当拥有百变怪，且目前的尝试序列尚未使用到百变怪的时候考虑使用百变怪充当当前部位
-        if has_baibainguai and baibianguai is None:
-            for equip in not_select_items[current_index]:
-                if exit_calc == 1:
-                    showsta(text='已终止')
-                    return
-                baibianguai = equip
-                try_equip(equip)
-                baibianguai = None
-
-        # 若当前部位的工作服尚未拥有，且可升级工作服的次数尚未用完，则尝试本部位升级工作服
-        if not has_uniforms[current_index] and len(upgrade_work_uniforms) < can_upgrade_work_unifrom_nums:
-            work_uniform = work_uniforms_items[current_index]
-
-            upgrade_work_uniforms.append(work_uniform)
-            try_equip(work_uniform)
-            upgrade_work_uniforms.pop()
+def inc_invalid_cnt_func(cnt):
+    global count_invalid
+    count_invalid += int(cnt)
 
 
-    # items = [list11, list12, list13, list14, list15, list21, list22, list23, list31, list32, list33]
-    # 预处理，计算每个部位是否拥有神话装备
-    slot_has_god = []
-    for slot_equips in items:
-        hg = False
-        for equip in slot_equips:
-            if is_god(equip):
-                hg=True
-                break
+# 装备编号的最后一位表示是否是神话装备，eg：33341
+def is_god(equip):
+    return int(equip[-1]) == 1
 
-        slot_has_god.append(hg)
 
-    def has_god_since(idx):
-        for i in range(idx, len(slot_has_god)):
-            if slot_has_god[i]:
-                return True
-
+# 百变怪是否可以转换成该装备
+def can_convert_from_baibianguai(equip):
+    # 百变怪不能转换为神话装备
+    if is_god(equip):
+        return False
+    # 百变怪不能转化为工作服
+    if equip in work_uniforms:
+        return False
+    # 百变怪不能转化为智慧产物
+    if equip in the_product_of_wisdoms:
         return False
 
-    def has_no_god_since(idx):
-        return not has_god_since(idx)
-
-    # 为当前已选择序列和后续剩余可选序列计算出一个尽可能精确的上限
-    # note: 思路三：进一步降低上限，在当前已有序列的各套装个数的前提下，计算任意n个序列所能产生的价值量最大增益
-    # note：思路四：进一步降低上限，在当前已有序列的各套装个数的前提下，计算后面n个序列的各套装配置下所能产生的价值量最大增益
-    def upper_bound(selected_combination, selected_has_god, remaining_start_index):
-        return upper_bound_2(selected_combination, selected_has_god, remaining_start_index)
-
-    # 对照组：也就是后续
-    def upper_bound_none(selected_combination, selected_has_god, remaining_start_index):
-        return 1000000
-
-    # note: 思路一：由于每个新增部位产生增益为1或0，因此计算当前序列的价值量，后续每个可选部位按照增益1来计算，可得到约束条件最小的最大上限
-    def upper_bound_1(selected_combination, selected_has_god, remaining_start_index):
-        # 计算至今为止已有的价值量
-        current_value = calc_equip_value(selected_combination, selected_has_god)
-        # 后续按最大价值量计算，即每个槽位按能产生1点增益计算
-        remaining_max_value = len(items) - remaining_start_index
-        hg = has_god_since(remaining_start_index)
-        if hg:
-            remaining_max_value+=1
-
-        ub = current_value + remaining_max_value
-        return ub
-
-    # 新增k个装备所能产生的最大价值量（不计入神话）
-    max_inc_values = [0 for i in range(11 + 1)]
-    max_inc_values[1] = 1 # 2=>3
-    max_inc_values[2] = 2 # 1,1 => 2,2
-    max_inc_values[3] = 3 # 1,1,1 => 2,2,2
-    max_inc_values[4] = 4 # 1,1,1,1 => 2,2,2,2
-    max_inc_values[5] = 5 # 1,1,1,1 => 2,2,2,3
-    max_inc_values[6] = 6 # 1,1,1,1 => 2,2,3,3
-    max_inc_values[7] = 7 # 1,1,1,1 => 2,3,3,3
-    max_inc_values[8] = 7 # upper limit = 533->7
-    max_inc_values[9] = 7 # upper limit = 533->7
-    max_inc_values[10] = 7 # upper limit = 533->7
-    max_inc_values[11] = 7 # upper limit = 533->7
-
-    # note: 思路二：计算新增k个序列所能产生的价值量最大增益
-    def upper_bound_2(selected_combination, selected_has_god, remaining_start_index):
-        # 计算至今为止已有的价值量
-        current_value = calc_equip_value(selected_combination, selected_has_god)
-        # 后续按最大价值量计算，即每个槽位按能产生1点增益计算
-        remaining_max_value = max_inc_values[len(items) - remaining_start_index]
-        hg = has_god_since(remaining_start_index)
-        if hg:
-            remaining_max_value+=1
-
-        ub = current_value + remaining_max_value
-        return ub
+    return True
 
 
-    def calc_equip_value(selected_combination, selected_has_god):
-        god = 0
-        if selected_has_god:
-            god = 1
-        set_list = ["1" + str(selected_combination[x][2:4]) for x in range(0, len(selected_combination))]
-        set_val = Counter(set_list)
-        del set_val['136', '137', '138']
-        # 1件价值量=0，两件=1，三件、四件=2，五件=3，神话额外增加1价值量
-        setopt_num = sum([floor(x * 0.7) for x in set_val.values()]) + god
-
-        return setopt_num
+def calc_ori_counts(all_slots_equips):
+    cnt = 1
+    for one_slot_equips in all_slots_equips:
+        cnt *= len(one_slot_equips)
+    return cnt
 
 
+def calc_bbg_add_counts(slots_equips, slots_not_select_equips):
+    if baibianguai_select.get() != txt_has_baibianguai:
+        return 0
 
-    if jobup_select.get()[4:7] != "奶爸" and jobup_select.get()[4:7] != "奶妈" and jobup_select.get()[4:7] != "奶萝":
+    ori_counts = calc_ori_counts(slots_equips)
 
-        # 代码名称
-        # 0调节器 1추공  2증 3크 4추 5속추
-        # 6모 7공 8스탯 9속강 10지속 11스증 12특수
-        # 13공속 14크확 / 15 액티브 / 16~19 패시브 /20 신화여부/21세트코드/22쿨감보정/23 원쿨감
-        # 단품:24~33 저장소 / 34 二觉캐액티브
-        getone = opt_one.get
-        minheap = MinHeap(5)
-        unique_index = 0
-        max_setopt = 0
-        show_number = 1
+    # 百变怪增加的搭配数
+    bbg_add_num = 0
+    for i in range(0, len(slots_not_select_equips)):
+        bbg_add_num += ori_counts / len(slots_equips[i]) * len(slots_not_select_equips[i])
 
-        def process(calc_now, baibianguai, upgrade_work_uniforms):
-            set_list=["1"+str(calc_now[x][2:4]) for x in range(0,11)]
-            set_on = [];
-            setapp = set_on.append
-            setcount = set_list.count
-            set_oncount = set_on.count
-            onecount = calc_now.count
-            for i in range(101, 136):
-                if setcount(str(i)) == 2:
-                    setapp(str(i) + "1")
-                if 4 >= setcount(str(i)) >= 3:
-                    setapp(str(i) + "2")
-                if setcount(str(i)) == 5:
-                    setapp(str(i) + "3")
-            for i in range(136, 139):
-                if setcount(str(i)) == 2:
-                    setapp(str(i) + "0")
-                if 4 >= setcount(str(i)) >= 3:
-                    setapp(str(i) + "1")
-                if setcount(str(i)) == 5:
-                    setapp(str(i) + "2")
-            if onecount('32410650') == 1:
-                if onecount('21400340') == 1:
-                    setapp('1401')
-                elif onecount('31400540') == 1:
-                    setapp('1401')
-            calc_wep = wep_num + tuple(calc_now)
-            damage = 0
-            base_array = np.array(
-                [0, 0, extra_dam, extra_cri, extra_bon, 0, extra_all, extra_att, extra_sta, ele_in, 0, 1, 0, 0,
-                 0, 0, 0, 0, extra_pas2, 0, 0, 0, 0, 0, 0, 0, 0, 0])
-
-            skiper = 0
-            for_calc = tuple(set_on) + calc_wep
-            oneone = len(for_calc)
-            oneonelist = []
-            for i in range(oneone):
-                no_cut = getone(for_calc[i])  ## 11번 스증
-                if no_cut == None:
-                    # hack：目前select是默认初始化时将tg{1101-3336}[0,1]范围的key对应的值都设为0，而百变怪会根据select的值为0来筛选出未选择的集合
-                    #  因此在这里如果为None，就是这种情况，直接返回就可以了
-                    global count_invalid
-                    count_invalid = count_invalid + 1
-                    return
-                cut = np.array(no_cut[0:20] + no_cut[22:23] + no_cut[34:35] + no_cut[38:44])
-                skiper = (skiper / 100 + 1) * (cut[11] / 100 + 1) * 100 - 100
-                oneonelist.append(cut)
-            for i in range(oneone):
-                base_array = base_array + oneonelist[i]
-            # 코드 이름
-            # 0추스탯 1추공 2증 3크 4추 5속추
-            # 6모 7공 8스탯 9속강 10지속 11스증 12특수
-            # 13공속 14크확 / 15 특수액티브 / 16~19 패시브 /20 쿨감보정/21 2각캐특수액티브 /22~27 액티브레벨링
-
-            if set_oncount('1201') == 1 and onecount('32200') == 1:
-                base_array[3] = base_array[3] - 5
-            if onecount('33230') == 1 or onecount('33231') == 1:
-                if onecount('31230') == 0:
-                    base_array[4] = base_array[4] - 10
-                if onecount('32230') == 0:
-                    base_array[9] = base_array[9] - 40
-            if onecount('15340') == 1 or onecount('23340') == 1 or onecount('33340') == 1 or onecount(
-                    '33341') == 1:
-                if set_oncount('1341') == 0 and set_oncount('1342') == 0:
-                    if onecount('15340') == 1:
-                        base_array[9] = base_array[9] - 20
-                    elif onecount('23340') == 1:
-                        base_array[2] = base_array[2] - 10
-                    elif onecount('33340') == 1:
-                        base_array[6] = base_array[6] - 5
-                    else:
-                        base_array[9] = base_array[9] - 4
-                        base_array[2] = base_array[2] - 2
-                        base_array[6] = base_array[6] - 1
-                        base_array[8] = base_array[8] - 1.93
-            if onecount('11111') == 1:
-                if set_oncount('1112') == 1 or set_oncount('1113') == 1:
-                    base_array[20] = base_array[20] + 10
-            if onecount('11301') == 1:
-                if onecount('22300') != 1:
-                    base_array[4] = base_array[4] - 10
-                    base_array[7] = base_array[7] + 10
-                if onecount('31300') != 1:
-                    base_array[4] = base_array[4] - 10
-                    base_array[7] = base_array[7] + 10
-
-            base_array[11] = skiper
-            real_bon = base_array[4] + base_array[5] * (base_array[9] * 0.0045 + 1.05)
-            actlvl = ((base_array[active_eff_one] + base_array[22] * job_lv1 + base_array[23] * job_lv2 +
-                       base_array[24] * job_lv3 +
-                       base_array[25] * job_lv4 + base_array[26] * job_lv5 + base_array[
-                           27] * job_lv6) / 100 + 1)
-            paslvl = ((100 + base_array[16] * job_pas0) / 100) * ((100 + base_array[17] * job_pas1) / 100) * (
-                        (100 + base_array[18] * job_pas2) / 100) * ((100 + base_array[19] * job_pas3) / 100)
-            damage = ((base_array[2] / 100 + 1) * (base_array[3] / 100 + 1) * (real_bon / 100 + 1) * (
-                        base_array[6] / 100 + 1) * (base_array[7] / 100 + 1) *
-                      (base_array[8] / 100 + 1) * (base_array[9] * 0.0045 + 1.05) * (
-                                  base_array[10] / 100 + 1) * (skiper / 100 + 1) * (base_array[12] / 100 + 1) *
-                      actlvl * paslvl * ((54500 + 3.31 * base_array[0]) / 54500) * (
-                                  (4800 + base_array[1]) / 4800) * (1 + cool_on * base_array[20] / 100) / (
-                                  1.05 + 0.0045 * int(ele_skill)))
-
-            base_array[4] = real_bon
-            global unique_index
-            unique_index+=1
-            minheap.add((damage, unique_index, [calc_wep, base_array, baibianguai, tuple(uwu for uwu in upgrade_work_uniforms)]))
-
-            global count_valid
-            count_valid = count_valid + 1
-
-        cartesianProduct(0, False, None, [], [], process)
-
-        show_number = 0
-        showsta(text='结果统计中')
-
-        ranking = []
-        for rank, data in enumerate(minheap.getTop()):
-            damage = data[0]
-            value = data[2]
-            ranking.append((damage, value))
-            showsta(text='结果统计中' + str(rank+1) + " / 5")
-
-        show_result(ranking, 'deal', ele_skill)
-
-    else:
-        base_b = 10 + int(db_preset['H2'].value) + int(db_preset['H4'].value) + int(db_preset['H5'].value) + 1
-        base_c = 12 + int(db_preset['H3'].value) + 1
-        base_pas0 = 0
-        base_pas0_c = 3
-        base_pas0_b = 0
-        base_stat_s = 4166 + 74 - 126 + int(db_preset['H1'].value)
-        base_stat_d = int(db_preset['H6'].value) - int(db_preset['H1'].value)
-        base_stat_h = 4308 - 45 - 83 + int(db_preset['H1'].value)
-        base_pas0_1 = 0
-        load_presetc.close()
-        lvlget = opt_buflvl.get
-        # 코드 이름
-        # 0 체정 1 지능
-        # 祝福 2 스탯% 3 물공% 4 마공% 5 독공%
-        # 아포 6 고정 7 스탯%
-        # 8 축렙 9 포렙
-        # 10 아리아/보징증폭
-        # 11 전직패 12 보징 13 각패1 14 각패2 15 二觉 16 각패3
-        # 17 깡신념 18 깡신실 19 아리아쿨 20 하베쿨
-        minheap1 = MinHeap(5)
-        minheap2 = MinHeap(5)
-        minheap3 = MinHeap(5)
-        unique_index = 0
-        setget = opt_buf.get
-        max_setopt = 0
-        show_number = 1
-        def process(calc_now, baibianguai, upgrade_work_uniforms):
-            set_list = ["1" + str(calc_now[x][2:4]) for x in range(0, 11)]
-            set_val = Counter(set_list)
-            del set_val['136', '137', '138']
-            set_on = [];
-            setapp = set_on.append
-            setcount = set_list.count
-            for i in range(101, 136):
-                if setcount(str(i)) == 2:
-                    setapp(str(i) + "1")
-                if 4 >= setcount(str(i)) >= 3:
-                    setapp(str(i) + "2")
-                if setcount(str(i)) == 5:
-                    setapp(str(i) + "3")
-            for i in range(136, 139):
-                if setcount(str(i)) == 2:
-                    setapp(str(i) + "0")
-                if 4 >= setcount(str(i)) >= 3:
-                    setapp(str(i) + "1")
-                if setcount(str(i)) == 5:
-                    setapp(str(i) + "2")
-
-            calc_wep = wep_num + tuple(calc_now)
-            base_array = np.array(
-                [base_stat_h, base_stat_s, 0, 0, 0, 0, 0, 0, base_b, base_c, 0, base_pas0, base_pas0_1, 0, 0, 0,
-                 0, 0,
-                 0, 0, 0])
-
-            b_stat = 10.24  ##탈리스만
-            b_phy = 0
-            b_mag = 0
-            b_ind = 0
-            c_per = 0
-            for_calc = tuple(set_on) + calc_wep
-            oneone = len(for_calc)
-            oneonelist = []
-            for i in range(oneone):
-                no_cut = np.array(setget(for_calc[i]))  ## 2 3 4 5 7
-                base_array = base_array + no_cut
-                b_stat = (b_stat / 100 + 1) * (no_cut[2] / 100 + 1) * 100 - 100
-                b_phy = (b_phy / 100 + 1) * (no_cut[3] / 100 + 1) * 100 - 100
-                b_mag = (b_mag / 100 + 1) * (no_cut[4] / 100 + 1) * 100 - 100
-                b_ind = (b_ind / 100 + 1) * (no_cut[5] / 100 + 1) * 100 - 100
-                c_per = (c_per / 100 + 1) * (no_cut[7] / 100 + 1) * 100 - 100
-                oneonelist.append(no_cut)
-
-            # 0 체정 1 지능
-            # 祝福 2 스탯% 3 물공% 4 마공% 5 독공%
-            # 아포 6 고정 7 스탯%
-            # 8 축렙 9 포렙
-            # 10 아리아/보징증폭
-            # 11 전직패 12 보징 13 각패1 14 각패2 15 二觉 16 각패3
-            # 17 깡신념 18 깡신실 19 아리아쿨 20 하베쿨
-            if jobup_select.get()[4:7] == "奶爸":
-                b_base_att = lvlget('hol_b_atta')[int(base_array[8])]
-                stat_pas0lvl_b = lvlget('pas0')[int(base_array[11]) + base_pas0_b] + lvlget('hol_pas0_1')[
-                    int(base_array[12])]
-                stat_pas0lvl_c = lvlget('pas0')[int(base_array[11]) + base_pas0_c] + lvlget('hol_pas0_1')[
-                    int(base_array[12])]
-                stat_pas1lvl = lvlget('hol_pas1')[int(base_array[13])]
-                stat_pas2lvl = lvlget('hol_act2')[int(base_array[15])]
-                stat_pas3lvl = lvlget('pas3')[int(base_array[16])]
-                stat_b = base_array[0] + stat_pas0lvl_b + stat_pas1lvl + stat_pas2lvl + stat_pas3lvl + 19 * \
-                         base_array[10] + base_stat_d
-                stat_c = base_array[0] + stat_pas0lvl_c + stat_pas1lvl + stat_pas2lvl + stat_pas3lvl + 19 * \
-                         base_array[10]
-                b_stat_calc = int(
-                    int(lvlget('hol_b_stat')[int(base_array[8])] * (b_stat / 100 + 1)) * (stat_b / 630 + 1))
-                b_phy_calc = int(int(b_base_att * (b_phy / 100 + 1)) * (stat_b / 630 + 1))
-                b_mag_calc = int(int(b_base_att * (b_mag / 100 + 1)) * (stat_b / 630 + 1))
-                b_ind_calc = int(int(b_base_att * (b_ind / 100 + 1)) * (stat_b / 630 + 1))
-                b_average = int((b_phy_calc + b_mag_calc + b_ind_calc) / 3)
-                c_calc = int(int((lvlget('c_stat')[int(base_array[9])] + base_array[6]) * (c_per / 100 + 1)) * (
-                            stat_c / 750 + 1))
-                pas1_calc = int(lvlget('hol_pas1_out')[int(base_array[13])] + 213 + base_array[17])
-                pas1_out = str(
-                    int(lvlget('hol_pas1_out')[int(base_array[13])] + 213 + base_array[17])) + "  (" + str(
-                    int(20 + base_array[13])) + "级)"
-                save1 = str(b_stat_calc) + "/" + str(b_average) + "   [" + str(int(stat_b)) + "(" + str(
-                    int(base_array[8])) + "级)]"
-
-            else:
-                if jobup_select.get()[4:7] == "奶妈":
-                    b_value = 675
-                    aria = 1.25 + 0.05 * base_array[10]
-                if jobup_select.get()[4:7] == "奶萝":
-                    b_value = 665
-                    aria = (1.20 + 0.05 * base_array[10]) * 1.20
-
-                b_base_att = lvlget('se_b_atta')[int(base_array[8])]
-                stat_pas0lvl_b = lvlget('pas0')[int(base_array[11]) + int(base_pas0_b)]
-                stat_pas0lvl_c = lvlget('pas0')[int(base_array[11]) + int(base_pas0_c)]
-                stat_pas1lvl = lvlget('se_pas1')[int(base_array[13])] + base_array[18]
-                stat_pas2lvl = lvlget('se_pas2')[int(base_array[14])]
-                stat_pas3lvl = lvlget('pas3')[int(base_array[16])]
-                stat_b = base_array[
-                             1] + stat_pas0lvl_b + stat_pas1lvl + stat_pas2lvl + stat_pas3lvl + base_stat_d
-                stat_c = base_array[1] + stat_pas0lvl_c + stat_pas1lvl + stat_pas2lvl + stat_pas3lvl
-                b_stat_calc = int(int(lvlget('se_b_stat')[int(base_array[8])] * (b_stat / 100 + 1)) * (
-                            stat_b / b_value + 1) * aria)
-                b_phy_calc = int(int(b_base_att * (b_phy / 100 + 1) * (stat_b / b_value + 1)) * aria)
-                b_mag_calc = int(int(b_base_att * (b_mag / 100 + 1) * (stat_b / b_value + 1)) * aria)
-                b_ind_calc = int(int(b_base_att * (b_ind / 100 + 1) * (stat_b / b_value + 1)) * aria)
-                b_average = int((b_phy_calc + b_mag_calc + b_ind_calc) / 3)
-                c_calc = int(int((lvlget('c_stat')[int(base_array[9])] + base_array[6]) * (c_per / 100 + 1)) * (
-                            stat_c / 750 + 1))
-                pas1_calc = int(stat_pas1lvl + 442)
-                pas1_out = str(int(stat_pas1lvl + 442)) + "  (" + str(int(20 + base_array[13])) + "级)"
-                save1 = str(b_stat_calc) + "(" + str(int(b_stat_calc / aria)) + ")/ " + str(
-                    b_average) + "(" + str(int(b_average / aria)) + ")\n                  [" + str(
-                    int(stat_b)) + "(" + str(int(base_array[8])) + "级)]"
-
-            save2 = str(c_calc) + "    [" + str(int(stat_c)) + "(" + str(int(base_array[9])) + "级)]"
-            ##1축 2포 3합
-            global unique_index
-            unique_index+=1
-            save_data = [calc_wep, [save1, save2, pas1_out], baibianguai, tuple(uwu for uwu in upgrade_work_uniforms)]
-            minheap1.add((((15000 + b_stat_calc) / 250 + 1) * (2650 + b_average), unique_index, save_data))
-            minheap2.add((((15000 + c_calc) / 250 + 1) * 2650, unique_index, save_data))
-            minheap3.add((((15000 + pas1_calc + c_calc + b_stat_calc) / 250 + 1) * (2650 + b_average), unique_index, save_data))
-
-            global count_valid
-            count_valid = count_valid + 1
-
-        cartesianProduct(0, False, None, [], [], process)
-        show_number = 0
-        showsta(text='结果统计中')
-
-        ranking1 = [];
-        ranking2 = [];
-        ranking3 = []
-        for rank, data in enumerate(minheap1.getTop()):
-            damage = data[0]
-            value = data[2]
-            ranking1.append((damage, value))
-        for rank, data in enumerate(minheap2.getTop()):
-            damage = data[0]
-            value = data[2]
-            ranking2.append((damage, value))
-        for rank, data in enumerate(minheap3.getTop()):
-            damage = data[0]
-            value = data[2]
-            ranking3.append((damage, value))
-
-        ranking = [ranking1, ranking2, ranking3]
-        show_result(ranking, 'buf', ele_skill)
-    load_excel.close()
-    showsta(text='输出完成' + "时间 = " + format_time(time.time() - start_time))
-    # 结束计算
-    exit_calc = 1
-    # print("时间 = " + str(time.time() - start_time) + "秒")
+    return bbg_add_num
 
 
-def calc_thread():
-    threading.Thread(target=calc, daemon=True).start()
+# 玩家各个部位是否已经升级了工作服
+def pre_calc_has_uniforms(items, work_uniforms_items):
+    return [work_uniforms_items[idx] in items[idx] for idx in range(len(items))]
+
+
+def get_can_upgrade_work_unifrom_nums():
+    # 用户配置的当前可升级的工作服数目
+    can_upgrade_work_unifrom_nums = 0
+    if can_upgrade_work_unifrom_nums_select.get() in can_upgrade_work_unifrom_nums_str_2_int:
+        can_upgrade_work_unifrom_nums = can_upgrade_work_unifrom_nums_str_2_int[
+            can_upgrade_work_unifrom_nums_select.get()]
+    return can_upgrade_work_unifrom_nums
+
+
+def calc_upgrade_work_uniforms_add_counts(slots_equips, slots_not_select_equips, slots_work_uniforms):
+    # 找出所有尚未升级工作服的部位
+    not_has_uniform_slots = []
+    for slot, work_uniform in enumerate(slots_work_uniforms):
+        if work_uniform not in slots_equips[slot]:
+            not_has_uniform_slots.append(slot)
+
+    total_add_counts = 0
+
+    # 穷举尚未升级部位的大小小于等于最大可升级数目的所有组合
+    max_upgrade_count = min(get_can_upgrade_work_unifrom_nums(), len(not_has_uniform_slots))
+    # 遍历所有可能升级的件数
+    for upgrade_count in range(1, max_upgrade_count + 1):
+        # 遍历升级该件数的所有部位的组合
+        for upgrade_slots in itertools.combinations(not_has_uniform_slots, upgrade_count):
+            # 获取非升级部位的已有装备
+            other_slots_equips = []
+            for slot, slot_equips in enumerate(slots_equips):
+                if slot not in upgrade_slots:
+                    other_slots_equips.append(slot_equips)
+            # 获取非升级部位的未选择装备
+            other_slots_not_select_equips = []
+            for slot, slot_not_select_equips in enumerate(slots_not_select_equips):
+                if slot not in upgrade_slots:
+                    other_slots_not_select_equips.append(slot_not_select_equips)
+
+            # 计算该升级方案下其余部位的可能搭配数目
+            total_add_counts += calc_bbg_add_counts(other_slots_equips, other_slots_not_select_equips)
+
+    return total_add_counts
 
 
 def show_result(rank_list, job_type, ele_skill):
@@ -1447,15 +1278,19 @@ def show_result(rank_list, job_type, ele_skill):
                                 "%\n暴击= " + str(int(rss[i][14])) + "%")
                 rank_stat2[i] = ("   <主动>"
                                  "\n  1~45技能= " + str(round(rss[i][22], 1)) + "级"
-                                 "\n    50技能= " + str(int(rss[i][23])) + "级"
-                                 "\n 60~80技能= " + str(round(rss[i][24], 1)) + "级"
-                                 "\n    85技能= " + str(int(rss[i][25])) + "级"
-                                 "\n    95技能= " + str(int(rss[i][26])) + "级"
-                                 "\n   100技能= " + str(int(rss[i][27])) + "级"
-                                 "\n\n   <被动>\n 前失败者(机翻)= " + str(round(rss[i][16], 1)) + "级"
-                                 "\n  一觉= " + str(int(rss[i][17])) + "级"
-                                 "\n  二觉= " + str(int(rss[i][18])) + "级"
-                                 "\n  三觉= " + str(int(rss[i][19])) + "级")
+                                                                              "\n    50技能= " + str(
+                    int(rss[i][23])) + "级"
+                                       "\n 60~80技能= " + str(round(rss[i][24], 1)) + "级"
+                                                                                    "\n    85技能= " + str(
+                    int(rss[i][25])) + "级"
+                                       "\n    95技能= " + str(int(rss[i][26])) + "级"
+                                                                               "\n   100技能= " + str(
+                    int(rss[i][27])) + "级"
+                                       "\n\n   <被动>\n 前失败者(机翻)= " + str(round(rss[i][16], 1)) + "级"
+                                                                                                "\n  一觉= " + str(
+                    int(rss[i][17])) + "级"
+                                       "\n  二觉= " + str(int(rss[i][18])) + "级"
+                                                                           "\n  三觉= " + str(int(rss[i][19])) + "级")
             except TypeError as error:
                 c = 1
 
@@ -1473,20 +1308,20 @@ def show_result(rank_list, job_type, ele_skill):
         res_stat = canvas_res.create_text(65, 293, text=rank_stat[0], fill='white')
         res_stat2 = canvas_res.create_text(185, 293, text=rank_stat2[0], fill='white')
 
-        res_img11 = canvas_res.create_image(57, 57, image=result_image_on[0]['11']) # 上衣
-        res_img12 = canvas_res.create_image(27, 87, image=result_image_on[0]['12']) # 裤子
-        res_img13 = canvas_res.create_image(27, 57, image=result_image_on[0]['13']) # 头肩
-        res_img14 = canvas_res.create_image(57, 87, image=result_image_on[0]['14']) # 腰带
-        res_img15 = canvas_res.create_image(27, 117, image=result_image_on[0]['15']) # 鞋子
-        res_img21 = canvas_res.create_image(189, 57, image=result_image_on[0]['21']) # 手镯
-        res_img22 = canvas_res.create_image(219, 57, image=result_image_on[0]['22']) # 项链
-        res_img23 = canvas_res.create_image(219, 87, image=result_image_on[0]['23']) # 戒指
-        res_img31 = canvas_res.create_image(189, 87, image=result_image_on[0]['31']) # 辅助装备
-        res_img32 = canvas_res.create_image(219, 117, image=result_image_on[0]['32']) # 魔法石
-        res_img33 = canvas_res.create_image(189, 117, image=result_image_on[0]['33']) # 耳环
+        res_img11 = canvas_res.create_image(57, 57, image=result_image_on[0]['11'])  # 上衣
+        res_img12 = canvas_res.create_image(27, 87, image=result_image_on[0]['12'])  # 裤子
+        res_img13 = canvas_res.create_image(27, 57, image=result_image_on[0]['13'])  # 头肩
+        res_img14 = canvas_res.create_image(57, 87, image=result_image_on[0]['14'])  # 腰带
+        res_img15 = canvas_res.create_image(27, 117, image=result_image_on[0]['15'])  # 鞋子
+        res_img21 = canvas_res.create_image(189, 57, image=result_image_on[0]['21'])  # 手镯
+        res_img22 = canvas_res.create_image(219, 57, image=result_image_on[0]['22'])  # 项链
+        res_img23 = canvas_res.create_image(219, 87, image=result_image_on[0]['23'])  # 戒指
+        res_img31 = canvas_res.create_image(189, 87, image=result_image_on[0]['31'])  # 辅助装备
+        res_img32 = canvas_res.create_image(219, 117, image=result_image_on[0]['32'])  # 魔法石
+        res_img33 = canvas_res.create_image(189, 117, image=result_image_on[0]['33'])  # 耳环
         if 'bbg' in result_image_on[0]:
             res_txtbbg = canvas_res.create_text(178, 147, text="百变怪=>", font=guide_font, fill='white')
-            res_imgbbg = canvas_res.create_image(219, 147, image=result_image_on[0]['bbg']) # 百变怪
+            res_imgbbg = canvas_res.create_image(219, 147, image=result_image_on[0]['bbg'])  # 百变怪
         cn1 = 0
         for j in range(0, 5):
             try:
@@ -1780,7 +1615,7 @@ def show_result(rank_list, job_type, ele_skill):
         res_img33 = canvas_res.create_image(189, 117, image=result_image_on3[0]['33'])
         if 'bbg' in result_image_on3[0]:
             res_txtbbg = canvas_res.create_text(178, 147, text="百变怪=>", font=guide_font, fill='white')
-            res_imgbbg = canvas_res.create_image(219, 147, image=result_image_on3[0]['bbg']) # 百变怪
+            res_imgbbg = canvas_res.create_image(219, 147, image=result_image_on3[0]['bbg'])  # 百变怪
         cn1 = 0
         res_img_list = {}
         res_buf_list = {}
@@ -1868,11 +1703,11 @@ def change_rank(now, job_type):
             canvas_res.itemconfig(res_img33, image=image_changed['33'])
             if 'res_txtbbg' in globals() and res_txtbbg is not None:
                 canvas_res.delete(res_txtbbg)
-            if 'res_imgbbg' in globals() and  res_imgbbg is not None:
+            if 'res_imgbbg' in globals() and res_imgbbg is not None:
                 canvas_res.delete(res_imgbbg)
             if 'bbg' in image_changed:
                 res_txtbbg = canvas_res.create_text(178, 147, text="百变怪=>", fill='white')
-                res_imgbbg = canvas_res.create_image(219, 147, image=image_changed['bbg']) # 百变怪
+                res_imgbbg = canvas_res.create_image(219, 147, image=image_changed['bbg'])  # 百变怪
             canvas_res.itemconfig(res_dam, text=rank_dam[now])
             canvas_res.itemconfig(res_stat, text=rank_stat[now])
             canvas_res.itemconfig(res_stat2, text=rank_stat2[now])
@@ -1915,7 +1750,7 @@ def change_rank(now, job_type):
                 canvas_res.delete(res_imgbbg)
             if 'bbg' in image_changed:
                 res_txtbbg = canvas_res.create_text(178, 147, text="百变怪=>", fill='white')
-                res_imgbbg = canvas_res.create_image(219, 147, image=image_changed['bbg']) # 百变怪
+                res_imgbbg = canvas_res.create_image(219, 147, image=image_changed['bbg'])  # 百变怪
         except KeyError as error:
             c = 1
 
@@ -1966,7 +1801,7 @@ def change_rank_type(in_type):
         canvas_res.delete(res_imgbbg)
     if 'bbg' in image_changed:
         res_txtbbg = canvas_res.create_text(178, 147, text="百变怪=>", fill='white')
-        res_imgbbg = canvas_res.create_image(219, 147, image=image_changed['bbg']) # 百变怪
+        res_imgbbg = canvas_res.create_image(219, 147, image=image_changed['bbg'])  # 百变怪
     cn2 = 0
     for j in range(0, 5):
         try:
@@ -2221,23 +2056,6 @@ def save_custom(ele_type, cool_con, cus1, cus2, cus3, cus4, cus6, cus7, cus8, cu
         tkinter.messagebox.showerror("错误", "请重试")
 
 
-# 自定义存档的列定义
-g_col_custom_save_key = 14
-g_col_custom_save_value_begin = 15
-
-# 自定义存档的行定义
-g_row_custom_save_save_name = 1 # 存档名
-g_row_custom_save_weapon = 2  # 武器
-g_row_custom_save_job = 3  # 职业选择
-g_row_custom_save_fight_time = 4  # 输出时间
-g_row_custom_save_title = 5  # 称号选择
-g_row_custom_save_pet = 6  # 宠物选择
-g_row_custom_save_cd = 7  # 冷却补正
-g_row_custom_save_speed = 8  # 选择速度
-g_row_custom_save_has_baibianguai = 9 # 是否拥有百变怪
-g_row_custom_save_can_upgrade_work_uniforms_nums = 10 # 当前拥有的材料够升级多少件工作服
-
-
 def load_checklist():
     ask_msg1 = tkinter.messagebox.askquestion('确认', "找回保存明细？")
     for snum in range(0, 10):
@@ -2245,6 +2063,7 @@ def load_checklist():
             ssnum1 = snum
     if ask_msg1 == 'yes':
         load_checklist_noconfirm(ssnum1)
+
 
 def load_checklist_noconfirm(ssnum1):
     load_preset3 = load_workbook("preset.xlsx")
@@ -2273,13 +2092,17 @@ def load_checklist_noconfirm(ssnum1):
     creature_select.set(load_cell(g_row_custom_save_pet, col_custom_save_value).value)
     req_cool.set(load_cell(g_row_custom_save_cd, col_custom_save_value).value)
     select_perfect.set(load_cell(g_row_custom_save_speed, col_custom_save_value).value)
-    baibianguai_select.set(load_cell(g_row_custom_save_has_baibianguai, col_custom_save_value).value or txt_no_baibianguai)
-    can_upgrade_work_unifrom_nums_select.set(load_cell(g_row_custom_save_can_upgrade_work_uniforms_nums, col_custom_save_value).value or txt_can_upgrade_work_unifrom_nums[0])
+    baibianguai_select.set(
+        load_cell(g_row_custom_save_has_baibianguai, col_custom_save_value).value or txt_no_baibianguai)
+    can_upgrade_work_unifrom_nums_select.set(
+        load_cell(g_row_custom_save_can_upgrade_work_uniforms_nums, col_custom_save_value).value or
+        txt_can_upgrade_work_unifrom_nums[0])
 
     load_preset3.close()
     check_equipment()
     for i in range(101, 136):
         check_set(i)
+
 
 # save_idx为存档的下标，从0到9
 def save_my_custom(sc, row, col_custom_save_value, name, value):
@@ -2328,8 +2151,10 @@ def save_checklist():
             save_my_custom(save_cell, g_row_custom_save_pet, col_custom_save_value, "宠物选择", creature_select.get())
             save_my_custom(save_cell, g_row_custom_save_cd, col_custom_save_value, "冷却补正", req_cool.get())
             save_my_custom(save_cell, g_row_custom_save_speed, col_custom_save_value, "选择速度", select_perfect.get())
-            save_my_custom(save_cell, g_row_custom_save_has_baibianguai, col_custom_save_value, "是否拥有百变怪", baibianguai_select.get())
-            save_my_custom(save_cell, g_row_custom_save_can_upgrade_work_uniforms_nums, col_custom_save_value, "材料够升级的工作服数目", can_upgrade_work_unifrom_nums_select.get())
+            save_my_custom(save_cell, g_row_custom_save_has_baibianguai, col_custom_save_value, "是否拥有百变怪",
+                           baibianguai_select.get())
+            save_my_custom(save_cell, g_row_custom_save_can_upgrade_work_uniforms_nums, col_custom_save_value,
+                           "材料够升级的工作服数目", can_upgrade_work_unifrom_nums_select.get())
 
             load_preset4.save("preset.xlsx")
             load_preset4.close()
@@ -2422,7 +2247,7 @@ def update_count():
             using_time = datetime.now() - count_start_time
             if exit_calc == 0:
                 remaining_time = (all_list_num - count_valid - count_invalid) / (
-                            count_valid + count_invalid + 1) * using_time.seconds
+                        count_valid + count_invalid + 1) * using_time.seconds
                 remaining_time_str = format_time(remaining_time)
             showcon(text=str(count_valid) + "有效搭配/" + str(count_invalid) + "无效\n" + remaining_time_str + "剩余时间")
             time.sleep(0.1)
@@ -2454,15 +2279,240 @@ def update_count2():
         except Exception as e:
             print("update_count2 except: {}".format(e))
 
+
 def load_checklist_on_start():
     # 启动时自动读取第一个配置
     load_checklist_noconfirm(0)
+
 
 def update_thread():
     threading.Thread(target=update_count, daemon=True).start()
     threading.Thread(target=update_count2, daemon=True).start()
     threading.Thread(target=load_checklist_on_start, daemon=True).start()
 
+
+def reset():
+    know_list2 = ['13390150', '22390240', '23390450', '33390750', '21400340', '31400540', '32410650']
+    for i in range(1101, 3336):
+        try:
+            select_item['tg{}0'.format(i)] = 0
+        except KeyError as error:
+            passss = 1
+        try:
+            select_item['tg{}1'.format(i)] = 0
+        except KeyError as error:
+            passss = 1
+    for i in know_list2:
+        select_item['tg{}'.format(i)] = 0
+    check_equipment()
+    for i in range(101, 136):
+        check_set(i)
+
+    # 处理百变怪与工作服升级数目
+    baibianguai_select.set(txt_no_baibianguai)
+    can_upgrade_work_unifrom_nums_select.set(txt_can_upgrade_work_unifrom_nums[0])
+
+
+###########################################################
+#                         逻辑初始化                       #
+###########################################################
+
+exit_calc = 1
+save_name_list = []
+save_select = 0
+count_valid = 0
+unique_index = 0
+count_invalid = 0
+show_number = 0
+all_list_num = 0
+count_start_time = datetime.now()  # 开始计算的时间点
+
+# 由于这里不需要对data.xlsx写入，设置read_only为True可以大幅度加快读取速度，在我的电脑上改动前读取耗时0.67s，占启动时间32%，改动之后用时0.1s，占启动时间4%
+load_excel1 = load_workbook("DATA.xlsx", read_only=True, data_only=True)
+db_one = load_excel1["one"]
+name_one = {}
+for row in db_one.rows:
+    row_value = [cell.value for cell in row]
+
+    name = row_value[0]
+    name_one[name] = row_value
+
+db_job = load_excel1["lvl"]
+opt_job = {}
+opt_job_ele = {}
+jobs = []
+
+for row in db_job.rows:
+    row_value = [cell.value for cell in row]
+
+    job = row_value[0]
+    if job in ["empty", "직업명"]:
+        continue
+
+    opt_job[job] = row_value[3:]
+    opt_job_ele[job] = row_value[:3]
+    jobs.append(job)
+
+load_excel1.close()
+
+# 该变量用来控制是否要检查preset.xlsx正确初始化，若有些必要的cell没有正确运行，则会赋值，为了更快启动，魔改版本不再检查
+need_check_preset_file = False
+load_preset0 = load_workbook("preset.xlsx", read_only=not need_check_preset_file, data_only=True)
+db_custom = load_preset0["custom"]
+save_name_list = []
+for i in range(1, 11):
+    save_name_list.append(db_custom.cell(i, 5).value)
+
+if need_check_preset_file:
+    ########## 버전 최초 구동 프리셋 업데이트 ###########
+    try:
+        db_save = load_preset0["one"]
+        print("DATABASE 버전= " + str(db_custom['K1'].value))
+        print("클라이언트 버전= " + now_version)
+        if str(db_custom['K1'].value) != now_version:
+            # print("DB 업데이트")
+            db_custom['K1'] = now_version
+        if db_custom['H1'].value == None:
+            db_custom['G1'] = "up_stat"
+            db_custom['H1'] = 0
+        if db_custom['H2'].value == None:
+            db_custom['G2'] = "bless_style"
+            db_custom['H2'] = 3
+        if db_custom['H3'].value == None:
+            db_custom['G3'] = "crux_style"
+            db_custom['H3'] = 2
+        if db_custom['H4'].value == None:
+            db_custom['G4'] = "bless_plt"
+            db_custom['H4'] = 2
+        if db_custom['H5'].value == None:
+            db_custom['G5'] = "bless_cri"
+            db_custom['H5'] = 1
+        if db_custom['H6'].value == None:
+            db_custom['G6'] = "up_stat_b"
+            db_custom['H6'] = 0
+
+        if db_custom['B14'].value == None:
+            db_custom['A14'] = "ele_inchant"
+            db_custom['B14'] = 116
+        if db_custom['B15'].value == None:
+            db_custom['A15'] = "ele_ora"
+            db_custom['B15'] = 20
+        if db_custom['B16'].value == None:
+            db_custom['A16'] = "ele_gem"
+            db_custom['B16'] = 7
+        if db_custom['B17'].value == None:
+            db_custom['A17'] = "ele_skill"
+        db_custom['B17'] = 0  ## 자속강 비활성화
+        if db_custom['B18'].value == None:
+            db_custom['A18'] = "ele_mob_resist"
+            db_custom['B18'] = 50
+        if db_custom['B19'].value == None:
+            db_custom['A19'] = "ele_buf_anti"
+            db_custom['B19'] = 60
+
+        if db_save['A257'].value == None:
+            db_save['A257'] = '13390150';
+            db_save['B257'] = '+5 퍼펙트컨트롤'
+            db_save['C257'] = 0;
+            db_save['D257'] = 0;
+            db_save['E257'] = 0;
+            db_save['F257'] = 0;
+            db_save['G257'] = 0
+            db_save['H257'] = 0;
+            db_save['I257'] = 0;
+            db_save['J257'] = 0;
+            db_save['K257'] = 0;
+            db_save['L257'] = 0
+        if db_save['A258'].value == None:
+            db_save['A258'] = '22390240';
+            db_save['B258'] = '+4 선지자의 목걸이'
+            db_save['C258'] = 0;
+            db_save['D258'] = 0;
+            db_save['E258'] = 0;
+            db_save['F258'] = 0;
+            db_save['G258'] = 0
+            db_save['H258'] = 0;
+            db_save['I258'] = 0;
+            db_save['J258'] = 0;
+            db_save['K258'] = 0;
+            db_save['L258'] = 0
+        if db_save['A259'].value == None:
+            db_save['A259'] = '21400340';
+            db_save['B259'] = '+4 독을 머금은 가시장갑'
+            db_save['C259'] = 0;
+            db_save['D259'] = 0;
+            db_save['E259'] = 0;
+            db_save['F259'] = 0;
+            db_save['G259'] = 0
+            db_save['H259'] = 0;
+            db_save['I259'] = 0;
+            db_save['J259'] = 0;
+            db_save['K259'] = 0;
+            db_save['L259'] = 0
+        if db_save['A260'].value == None:
+            db_save['A260'] = '23390450';
+            db_save['B260'] = '+5 할기의 링'
+            db_save['C260'] = 0;
+            db_save['D260'] = 0;
+            db_save['E260'] = 0;
+            db_save['F260'] = 0;
+            db_save['G260'] = 0
+            db_save['H260'] = 0;
+            db_save['I260'] = 0;
+            db_save['J260'] = 0;
+            db_save['K260'] = 0;
+            db_save['L260'] = 0
+        if db_save['A261'].value == None:
+            db_save['A261'] = '31400540';
+            db_save['B261'] = '+4 청면수라의 가면'
+            db_save['C261'] = 0;
+            db_save['D261'] = 0;
+            db_save['E261'] = 0;
+            db_save['F261'] = 0;
+            db_save['G261'] = 0
+            db_save['H261'] = 0;
+            db_save['I261'] = 0;
+            db_save['J261'] = 0;
+            db_save['K261'] = 0;
+            db_save['L261'] = 0
+        if db_save['A262'].value == None:
+            db_save['A262'] = '32410650';
+            db_save['B262'] = '+5 적귀의 차원석'
+            db_save['C262'] = 0;
+            db_save['D262'] = 0;
+            db_save['E262'] = 0;
+            db_save['F262'] = 0;
+            db_save['G262'] = 0
+            db_save['H262'] = 0;
+            db_save['I262'] = 0;
+            db_save['J262'] = 0;
+            db_save['K262'] = 0;
+            db_save['L262'] = 0
+        if db_save['A263'].value == None:
+            db_save['A263'] = '33390750';
+            db_save['B263'] = '+5 패스트퓨처 이어링'
+            db_save['C263'] = 0;
+            db_save['D263'] = 0;
+            db_save['E263'] = 0;
+            db_save['F263'] = 0;
+            db_save['G263'] = 0
+            db_save['H263'] = 0;
+            db_save['I263'] = 0;
+            db_save['J263'] = 0;
+            db_save['K263'] = 0;
+            db_save['L263'] = 0
+
+        load_preset0.save("preset.xlsx")
+
+    except PermissionError as error:
+        tkinter.messagebox.showerror("错误", "更新失败. 请重新运行.")
+
+load_preset0.close()
+
+
+###########################################################
+#                韩服特有的一些功能，与我们无关              #
+###########################################################
 
 def timeline_select():
     global timeline_window
@@ -2489,33 +2539,58 @@ def show_timeline(name, server):
     pass
 
 
-def reset():
-    know_list2 = ['13390150', '22390240', '23390450', '33390750', '21400340', '31400540', '32410650']
-    for i in range(1101, 3336):
-        try:
-            select_item['tg{}0'.format(i)] = 0
-        except KeyError as error:
-            passss = 1
-        try:
-            select_item['tg{}1'.format(i)] = 0
-        except KeyError as error:
-            passss = 1
-    for i in know_list2:
-        select_item['tg{}'.format(i)] = 0
-    check_equipment()
-    for i in range(101, 136):
-        check_set(i)
+def cha_select(jobs):
+    # 国服没有这个东西，干掉它，提升运行效率
+    pass
 
-    # 处理百变怪与工作服升级数目
-    baibianguai_select.set(txt_no_baibianguai)
-    can_upgrade_work_unifrom_nums_select.set(txt_can_upgrade_work_unifrom_nums[0])
 
+def calc_my_cha(cha_name, serv_name, job_name):
+    # 国服没有这个东西，干掉它，提升运行效率
+    pass
+
+
+def cha_image(cha_code, serv_code):
+    # 国服没有这个东西，干掉它，提升运行效率
+    pass
+
+
+def show_my_cha(equipment, final_list, type_code, job_name, wep_name, ele_skill, cha_name, info_stat, *equipment2):
+    # 国服没有这个东西，干掉它，提升运行效率
+    pass
+
+
+def toggle_cha_swi():
+    # 国服没有这个东西，干掉它，提升运行效率
+    pass
+
+
+###########################################################
+#                        ui相关变量                        #
+###########################################################
+
+select_item = {}
+
+dark_main = _from_rgb((32, 34, 37))
+dark_sub = _from_rgb((46, 49, 52))
+dark_blue = _from_rgb((29, 30, 36))
+
+# 目前可升级的工作服数目
+txt_can_upgrade_work_unifrom_nums = [
+    '材料够升级零件', '材料够升级一件', '材料够升级两件', '材料够升级三件', '材料够升级四件', '材料够升级五件',
+    '材料够升级六件', '材料够升级七件', '材料够升级八件', '材料够升级九件', '材料够升级十件', '材料够升级十一件',
+]
+# 预先将升级工作服数目的字符串与对应数目映射
+can_upgrade_work_unifrom_nums_str_2_int = {}
+for idx, txt in enumerate(txt_can_upgrade_work_unifrom_nums):
+    can_upgrade_work_unifrom_nums_str_2_int[txt] = idx
+
+
+###########################################################
+#                        ui相关函数                        #
+###########################################################
 
 def guide_speed():
     tkinter.messagebox.showinfo("准确度选择", "快速=删除单一散件n中速=包括散件, 神话优先\n慢速=所有限制解除(非常慢)")
-
-
-select_item = {}
 
 
 def click_equipment(code):
@@ -2678,37 +2753,45 @@ def check_set(code):
             eval('set' + str(code))['image'] = image_list_set2[str(code)]
 
 
-def cha_select(jobs):
-    # 国服没有这个东西，干掉它，提升运行效率
-    pass
+def donate():
+    webbrowser.open('https://twip.kr/dawnclass16')
 
 
-def calc_my_cha(cha_name, serv_name, job_name):
-    # 国服没有这个东西，干掉它，提升运行效率
-    pass
+def dunfaoff():
+    webbrowser.open('https://space.bilibili.com/4952736')
 
 
-def cha_image(cha_code, serv_code):
-    # 国服没有这个东西，干掉它，提升运行效率
-    pass
+def blog():
+    webbrowser.open('https://blog.naver.com/dawnclass16/221837654941')
 
 
-def show_my_cha(equipment, final_list, type_code, job_name, wep_name, ele_skill, cha_name, info_stat, *equipment2):
-    # 国服没有这个东西，干掉它，提升运行效率
-    pass
-
-def toggle_cha_swi():
-    # 国服没有这个东西，干掉它，提升运行效率
-    pass
+def hamjung():
+    tkinter.messagebox.showinfo("제작자 크레딧",
+                                "총제작자=Dawnclass(새벽반)\n이미지/그래픽=경철부동산\n직업/버퍼DB=대략볼록할철\n서버제공=던파오프\n기타조언=히든 도비 4,5,6호\n\n오류 제보는 블로그 덧글이나 던조 쪽지로")
 
 
-def stop_calc():
-    global exit_calc
-    exit_calc = 1
+###########################################################
+#                        tkinter初始化                    #
+###########################################################
 
+self = tkinter.Tk()
+self.title("一键史诗搭配计算器-支持百变怪/升级工作服 ver" + now_version)
+self.geometry("710x720+0+0")
+self.resizable(False, False)
+self.configure(bg=dark_main)
+self.iconbitmap(r'ext_img/icon.ico')
+
+###########################################################
+#                      拼接ui的琐碎代码                    #
+###########################################################
+
+
+guide_font = tkinter.font.Font(family="맑은 고딕", size=10, weight='bold')
+mid_font = tkinter.font.Font(family="맑은 고딕", size=14, weight='bold')
+big_font = tkinter.font.Font(family="맑은 고딕", size=18, weight='bold')
 
 ## 내부 구조 ##
-know_list=['13390150','22390240','23390450','33390750','21400340','31400540','32410650']
+know_list = ['13390150', '22390240', '23390450', '33390750', '21400340', '31400540', '32410650']
 image_list = {}
 image_list2 = {}
 image_list_set = {}
@@ -2720,8 +2803,8 @@ image_directory = "image"
 for filename in os.listdir(image_directory):
     # 示例文件：22390240f.png
     index = filename[:-5]  # 装备的key(除去后五位后剩余的字符串)：22390240
-    newImage = PhotoImage(file="image/{}".format(filename)) #
-    if filename[-5] == "n": # 根据倒数第五位决定使用哪个list
+    newImage = PhotoImage(file="image/{}".format(filename))  #
+    if filename[-5] == "n":  # 根据倒数第五位决定使用哪个list
         image_list[index] = newImage
     else:
         image_list2[index] = newImage
@@ -2730,6 +2813,10 @@ for filename in os.listdir(image_directory):
 for i in range(1, 36):
     image_list_set[str(100 + i)] = eval('PhotoImage(file="set_name/{}.png")'.format(i + 100))
     image_list_set2[str(100 + i)] = eval('PhotoImage(file="set_name/{}f.png")'.format(i + 100))
+
+bg_img = PhotoImage(file="ext_img/bg_img.png")
+bg_wall = tkinter.Label(self, image=bg_img)
+bg_wall.place(x=0, y=0)
 
 select_perfect = tkinter.ttk.Combobox(self, values=['快速', '中速', '慢速'], width=15)
 select_perfect.place(x=145, y=11)
@@ -2812,27 +2899,12 @@ baibianguai_select = tkinter.ttk.Combobox(self, width=13, values=[txt_no_baibian
 baibianguai_select.set(txt_no_baibianguai)
 baibianguai_select.place(x=390 - 17, y=405)
 
-# 目前可升级的工作服数目
-txt_can_upgrade_work_unifrom_nums = [
-    '材料够升级零件', '材料够升级一件', '材料够升级两件', '材料够升级三件', '材料够升级四件', '材料够升级五件',
-    '材料够升级六件', '材料够升级七件', '材料够升级八件', '材料够升级九件', '材料够升级十件', '材料够升级十一件',
-]
-# 预先将升级工作服数目的字符串与对应数目映射
-can_upgrade_work_unifrom_nums_str_2_int = {}
-for idx, txt in enumerate(txt_can_upgrade_work_unifrom_nums):
-    can_upgrade_work_unifrom_nums_str_2_int[txt] = idx
-
 can_upgrade_work_unifrom_nums_txt = tkinter.Label(self, text="  工作服  ", font=guide_font, fg="white", bg=dark_sub)
 can_upgrade_work_unifrom_nums_txt.place(x=300, y=441)
-can_upgrade_work_unifrom_nums_select = tkinter.ttk.Combobox(self, width=13, values=txt_can_upgrade_work_unifrom_nums)
+can_upgrade_work_unifrom_nums_select = tkinter.ttk.Combobox(self, width=13,
+                                                            values=txt_can_upgrade_work_unifrom_nums)
 can_upgrade_work_unifrom_nums_select.set(txt_can_upgrade_work_unifrom_nums[0])
 can_upgrade_work_unifrom_nums_select.place(x=390 - 17, y=441)
-
-
-# calc_me_img = PhotoImage(file="ext_img/calc_me.png")
-# calc_me = tkinter.Button(self, image=calc_me_img, borderwidth=0, activebackground=dark_main,
-#                          command=lambda: cha_select(jobs), bg=dark_sub)
-# calc_me.place(x=300, y=400)
 
 show_count = tkinter.Label(self, font=guide_font, fg="white", bg=dark_sub)
 show_count.place(x=490, y=40)
@@ -3677,54 +3749,36 @@ select_33351 = tkinter.Button(self, relief='flat', borderwidth=0, activebackgrou
                               image=image_list2['33351'], command=lambda: click_equipment(33351))
 select_33351.place(x=584, y=660)
 
-
-def donate():
-    webbrowser.open('https://twip.kr/dawnclass16')
-
-
 donate_image = PhotoImage(file='ext_img/donate.png')
 donate_bt = tkinter.Button(self, image=donate_image, command=donate, borderwidth=0, bg=dark_main,
                            activebackground=dark_main)
 donate_bt.place(x=625, y=550 - 28)
-
-
-def dunfaoff():
-    webbrowser.open('https://space.bilibili.com/4952736')
-
 
 dunfaoff_image = PhotoImage(file='ext_img/dunfaoff.png')
 dunfaoff_url = tkinter.Button(self, image=dunfaoff_image, command=dunfaoff, borderwidth=0, bg=dark_main,
                               activebackground=dark_main)
 dunfaoff_url.place(x=535, y=410)
 
-
-def blog():
-    webbrowser.open('https://blog.naver.com/dawnclass16/221837654941')
-
-
 blog_image = PhotoImage(file='ext_img/blog.png')
-blog_url = tkinter.Button(self, image=blog_image, command=blog, borderwidth=0, bg=dark_main, activebackground=dark_main)
+blog_url = tkinter.Button(self, image=blog_image, command=blog, borderwidth=0, bg=dark_main,
+                          activebackground=dark_main)
 blog_url.place(x=615, y=410)
-
-
-def hamjung():
-    tkinter.messagebox.showinfo("제작자 크레딧",
-                                "총제작자=Dawnclass(새벽반)\n이미지/그래픽=경철부동산\n직업/버퍼DB=대략볼록할철\n서버제공=던파오프\n기타조언=히든 도비 4,5,6호\n\n오류 제보는 블로그 덧글이나 던조 쪽지로")
-
 
 maker_image = PhotoImage(file='ext_img/maker.png')
 maker = tkinter.Button(self, image=maker_image, command=hamjung, borderwidth=0, bg=dark_main,
                        activebackground=dark_main)
-version = tkinter.Label(self, text='V ' + str(now_version) + '\n' + ver_time, font=guide_font, fg="white", bg=dark_main)
+version = tkinter.Label(self, text='V ' + str(now_version) + '\n' + ver_time, font=guide_font, fg="white",
+                        bg=dark_main)
 
 maker.place(x=625, y=590)
 version.place(x=630, y=650)
 
+###########################################################
+#                 启动工作线程并进入ui主循环                #
+###########################################################
 
 if __name__ == "__main__":
     update_thread()
 
 self.mainloop()
-
 self.quit()
-
