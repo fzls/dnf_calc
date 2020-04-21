@@ -2351,34 +2351,41 @@ def update_count():
     seconds = 0
     remaining_time_str = "0s"
     while True:
-        using_time = datetime.now() - count_start_time
-        if exit_calc == 0:
-            remaining_time = (all_list_num - count_valid - count_invalid) / (count_valid + count_invalid+1) * using_time.seconds
-            remaining_time_str = format_time(remaining_time)
-        showcon(text=str(count_valid) + "有效搭配/" + str(count_invalid) + "无效\n" + remaining_time_str + "剩余时间")
-        time.sleep(0.1)
+        try:
+            using_time = datetime.now() - count_start_time
+            if exit_calc == 0:
+                remaining_time = (all_list_num - count_valid - count_invalid) / (
+                            count_valid + count_invalid + 1) * using_time.seconds
+                remaining_time_str = format_time(remaining_time)
+            showcon(text=str(count_valid) + "有效搭配/" + str(count_invalid) + "无效\n" + remaining_time_str + "剩余时间")
+            time.sleep(0.1)
+        except Exception as e:
+            print("update_count except: {}".format(e))
 
 
 def update_count2():
     while True:
-        items, not_select_items, work_uniforms_items = get_equips()
+        try:
+            items, not_select_items, work_uniforms_items = get_equips()
 
-        # 已选装备的搭配数
-        all_list_num = calc_ori_counts(items)
-        # 百变怪增加的搭配数
-        all_list_num += calc_bbg_add_counts(items, not_select_items)
-        # 额外升级的工作服增加的搭配数
-        all_list_num += calc_upgrade_work_uniforms_add_counts(items, not_select_items, work_uniforms_items)
+            # 已选装备的搭配数
+            all_list_num = calc_ori_counts(items)
+            # 百变怪增加的搭配数
+            all_list_num += calc_bbg_add_counts(items, not_select_items)
+            # 额外升级的工作服增加的搭配数
+            all_list_num += calc_upgrade_work_uniforms_add_counts(items, not_select_items, work_uniforms_items)
 
-        show_txt = "当前总组合数=" + str(int(all_list_num))
-        if baibianguai_select.get() == txt_has_baibianguai:
-            show_txt = "(计入百变怪)" + show_txt
-        showcon2(text=show_txt)
-        if all_list_num > 10000000:
-            show_count2['fg'] = "red"
-        else:
-            show_count2['fg'] = "white"
-        time.sleep(1)
+            show_txt = "当前总组合数=" + str(int(all_list_num))
+            if baibianguai_select.get() == txt_has_baibianguai:
+                show_txt = "(计入百变怪)" + show_txt
+            showcon2(text=show_txt)
+            if all_list_num > 10000000:
+                show_count2['fg'] = "red"
+            else:
+                show_count2['fg'] = "white"
+            time.sleep(1)
+        except Exception as e:
+            print("update_count2 except: {}".format(e))
 
 
 def update_thread():
