@@ -208,18 +208,19 @@ index_extra_percent_special_effect = 12  # 12-O-special-特殊词条，作者为
 index_extra_percent_attack_speed = 13  # 13-P-speed-攻击速度 +X%
 index_extra_percent_magic_physical_crit_rate = 14  # 14-Q-critical-魔法/物理暴击率 +X%
 index_extra_active_skill_effect = 15  # 15-R-active-主动技能增加等级所带来的的影响（目前C的伤害计算没有计入该值，仅奶系职业用到）
-index_extra_passive_transfer_skill = 16  # 16~19-S-V-pas1~pas4-分别是增加转职被动、一绝被动、二觉被动、三觉被动的等级
-index_extra_passive_first_awaken_skill = 17
-index_extra_passive_second_awaken_skill = 18
-index_extra_passive_third_awaken_skill = 19
-index_is_god_equipment = 20  # 20-W-god-是否是神话装备
-index_set_code = 21  # 21-X-set_code-套装编号
-index_cool_skill = 22  # 22-Y-cool_skill-冷却的技能范围越大，这个值越大
-index_cool_original = 23  # 23-Z-cool_original-相对于原始冷却时间减少的百分比，如有词条减少10%cd，则这个为10
-index_save1 = 24  # 24-AA-save1-
-index_save2 = 25  # 25-AB-save2-
-index_save3 = 26  # 26-AC-save3-
-index_save4 = 27  # 27-AD-save4-
+index_extra_passive_transfer_skill = 16  # 16-S-pas1-增加转职被动的等级
+index_extra_passive_first_awaken_skill = 17  # 17-T-pas2-增加一绝被动的等级
+index_extra_passive_second_awaken_skill = 18  # 18-U-pas3-增加二觉被动的等级
+index_extra_passive_third_awaken_skill = 19  # 19-V-pas4-增加三觉被动的等级
+index_cool_correction = 20  # 20-Y-cool_skill-冷却矫正系数，每冷却1%，记0.35这个值
+index_extra_active_second_awaken_skill = 21  # 二觉主动技能
+index_extra_active_skill_lv_1_45 = 22  # 1_45主动技能
+index_extra_active_skill_lv_50 = 23  # 50主动技能
+index_extra_active_skill_lv_60_80 = 24  # 60_80主动技能
+index_extra_active_skill_lv_85 = 25  # 85主动技能
+index_extra_active_skill_lv_95 = 26  # 95主动技能
+index_extra_active_skill_lv_100 = 27  # 100主动技能
+
 
 ###########################################################
 #                         逻辑相关函数                     #
@@ -231,199 +232,216 @@ def get_shuchu_bonus_attributes():
     # 获取称号的加成
     style = style_select.get()
     if style == '使徒降临':
-        bonus_array[index_physical_magical_independent_attack_power]+=60 # 三攻+60
-        bonus_array[index_strength_and_intelligence]+=80 # 四维+80
-        bonus_array[index_extra_percent_attack_speed] += 3 # 攻击速度+3%
-        bonus_array[index_extra_percent_all_element_strength]+=15#所有属性强化+15
-        bonus_array[index_extra_percent_magic_physical_crit_rate] += 12 # 物理、魔法暴击率+12%
-        bonus_array[index_extra_percent_addtional_damage]+=12 # 攻击时，附加12%的伤害
-        bonus_array[index_extra_percent_strength_and_intelligence]+=3 # 增加3%的力量、智力
-        bonus_array[index_strength_and_intelligence] += 0.03*35*20/30 # 攻击时，3%概率增加35点力量，持续20s，冷却30s
-        bonus_array[index_extra_percent_magic_physical_crit_rate]+=0.05*5*20/30 # 释放技能时，5%概率增加5%物理、魔法暴击率，持续20s，冷却30s
+        bonus_array[index_physical_magical_independent_attack_power] += 60  # 三攻+60
+        bonus_array[index_strength_and_intelligence] += 80  # 四维+80
+        bonus_array[index_extra_percent_attack_speed] += 3  # 攻击速度+3%
+        bonus_array[index_extra_percent_all_element_strength] += 15  # 所有属性强化+15
+        bonus_array[index_extra_percent_magic_physical_crit_rate] += 12  # 物理、魔法暴击率+12%
+        bonus_array[index_extra_percent_addtional_damage] += 12  # 攻击时，附加12%的伤害
+        bonus_array[index_extra_percent_strength_and_intelligence] += 3  # 增加3%的力量、智力
+        bonus_array[index_strength_and_intelligence] += 0.03 * 35 * 20 / 30  # 攻击时，3%概率增加35点力量，持续20s，冷却30s
+        bonus_array[
+            index_extra_percent_magic_physical_crit_rate] += 0.05 * 5 * 20 / 30  # 释放技能时，5%概率增加5%物理、魔法暴击率，持续20s，冷却30s
     elif style == '伟大的意志':
-        bonus_array[index_physical_magical_independent_attack_power]+=65 # 三攻+65
-        bonus_array[index_strength_and_intelligence]+=90 # 四维+90
-        bonus_array[index_extra_percent_attack_speed] += 4 # 攻击速度+4%
-        bonus_array[index_extra_percent_all_element_strength]+=20#所有属性强化+20
-        bonus_array[index_extra_percent_magic_physical_crit_rate] += 15 # 物理、魔法暴击率+15%
-        bonus_array[index_extra_percent_strength_and_intelligence]+=4 # 增加4%的力量、智力
-        bonus_array[index_extra_percent_crit_damage]+=18 # 暴击时，额外增加18%的伤害增加量
-        bonus_array[index_strength_and_intelligence] += 0.03*35*20/30 # 攻击时，3%概率增加35点力量，持续20s，冷却30s
-        bonus_array[index_extra_percent_magic_physical_crit_rate]+=0.05*5*20/30 # 释放技能时，5%概率增加5%物理、魔法暴击率，持续20s，冷却30s
+        bonus_array[index_physical_magical_independent_attack_power] += 65  # 三攻+65
+        bonus_array[index_strength_and_intelligence] += 90  # 四维+90
+        bonus_array[index_extra_percent_attack_speed] += 4  # 攻击速度+4%
+        bonus_array[index_extra_percent_all_element_strength] += 20  # 所有属性强化+20
+        bonus_array[index_extra_percent_magic_physical_crit_rate] += 15  # 物理、魔法暴击率+15%
+        bonus_array[index_extra_percent_strength_and_intelligence] += 4  # 增加4%的力量、智力
+        bonus_array[index_extra_percent_crit_damage] += 18  # 暴击时，额外增加18%的伤害增加量
+        bonus_array[index_strength_and_intelligence] += 0.03 * 35 * 20 / 30  # 攻击时，3%概率增加35点力量，持续20s，冷却30s
+        bonus_array[
+            index_extra_percent_magic_physical_crit_rate] += 0.05 * 5 * 20 / 30  # 释放技能时，5%概率增加5%物理、魔法暴击率，持续20s，冷却30s
     elif style == '超越极限者':
-        bonus_array[index_strength_and_intelligence]+=60 # 四维+60
-        bonus_array[index_extra_percent_attack_speed] += 3 # 攻击速度+3%
-        bonus_array[index_extra_percent_all_element_strength]+=15#所有属性强化+15
-        bonus_array[index_extra_percent_magic_physical_crit_rate] += 12 # 物理、魔法暴击率+12%
-        bonus_array[index_extra_percent_crit_damage]+=15 # 暴击时，额外增加15%的伤害增加量
-        bonus_array[index_extra_percent_all_element_strength] += 0.03*10*30/40 # 攻击时，3%概率增加10点属强，持续30s，冷却40s
-        bonus_array[index_extra_percent_attack_speed]+=0.03*3*30/40 # 攻击时，3%概率增加3%三速，持续30s，冷却40s
+        bonus_array[index_strength_and_intelligence] += 60  # 四维+60
+        bonus_array[index_extra_percent_attack_speed] += 3  # 攻击速度+3%
+        bonus_array[index_extra_percent_all_element_strength] += 15  # 所有属性强化+15
+        bonus_array[index_extra_percent_magic_physical_crit_rate] += 12  # 物理、魔法暴击率+12%
+        bonus_array[index_extra_percent_crit_damage] += 15  # 暴击时，额外增加15%的伤害增加量
+        bonus_array[index_extra_percent_all_element_strength] += 0.03 * 10 * 30 / 40  # 攻击时，3%概率增加10点属强，持续30s，冷却40s
+        bonus_array[index_extra_percent_attack_speed] += 0.03 * 3 * 30 / 40  # 攻击时，3%概率增加3%三速，持续30s，冷却40s
     elif style == '秘境迷踪':
-        bonus_array[index_physical_magical_independent_attack_power]+=40 # 三攻+40
-        bonus_array[index_strength_and_intelligence]+=70 # 四维+70
-        bonus_array[index_extra_percent_attack_speed] += 3 # 攻击速度+3%
-        bonus_array[index_extra_percent_all_element_strength]+=15#所有属性强化+15
-        bonus_array[index_extra_percent_magic_physical_crit_rate] += 12 # 物理、魔法暴击率+12%
-        bonus_array[index_extra_percent_addtional_damage]+=10 # 攻击时，附加10%的伤害
-        bonus_array[index_strength_and_intelligence] += 0.03*35*20/30 # 攻击时，3%概率增加35点力量，持续20s，冷却30s
-        bonus_array[index_extra_percent_magic_physical_crit_rate]+=0.05*5*20/30 # 释放技能时，5%概率增加5%物理、魔法暴击率，持续20s，冷却30s
+        bonus_array[index_physical_magical_independent_attack_power] += 40  # 三攻+40
+        bonus_array[index_strength_and_intelligence] += 70  # 四维+70
+        bonus_array[index_extra_percent_attack_speed] += 3  # 攻击速度+3%
+        bonus_array[index_extra_percent_all_element_strength] += 15  # 所有属性强化+15
+        bonus_array[index_extra_percent_magic_physical_crit_rate] += 12  # 物理、魔法暴击率+12%
+        bonus_array[index_extra_percent_addtional_damage] += 10  # 攻击时，附加10%的伤害
+        bonus_array[index_strength_and_intelligence] += 0.03 * 35 * 20 / 30  # 攻击时，3%概率增加35点力量，持续20s，冷却30s
+        bonus_array[
+            index_extra_percent_magic_physical_crit_rate] += 0.05 * 5 * 20 / 30  # 释放技能时，5%概率增加5%物理、魔法暴击率，持续20s，冷却30s
     elif style == '神选之英杰':
-        bonus_array[index_physical_magical_independent_attack_power]+=45 # 三攻+45
-        bonus_array[index_strength_and_intelligence]+=75 # 四维+75
-        bonus_array[index_extra_percent_attack_speed] += 4 # 攻击速度+4%
-        bonus_array[index_extra_percent_all_element_strength]+=20#所有属性强化+20
-        bonus_array[index_extra_percent_magic_physical_crit_rate] += 15 # 物理、魔法暴击率+15%
-        bonus_array[index_extra_percent_crit_damage]+=18 # 暴击时，额外增加18%的伤害增加量
-        bonus_array[index_strength_and_intelligence] += 0.03*35*20/30 # 攻击时，3%概率增加35点力量，持续20s，冷却30s
-        bonus_array[index_extra_percent_magic_physical_crit_rate]+=0.05*6*20/30 # 释放技能时，5%概率增加6%物理、魔法暴击率，持续20s，冷却30s
+        bonus_array[index_physical_magical_independent_attack_power] += 45  # 三攻+45
+        bonus_array[index_strength_and_intelligence] += 75  # 四维+75
+        bonus_array[index_extra_percent_attack_speed] += 4  # 攻击速度+4%
+        bonus_array[index_extra_percent_all_element_strength] += 20  # 所有属性强化+20
+        bonus_array[index_extra_percent_magic_physical_crit_rate] += 15  # 物理、魔法暴击率+15%
+        bonus_array[index_extra_percent_crit_damage] += 18  # 暴击时，额外增加18%的伤害增加量
+        bonus_array[index_strength_and_intelligence] += 0.03 * 35 * 20 / 30  # 攻击时，3%概率增加35点力量，持续20s，冷却30s
+        bonus_array[
+            index_extra_percent_magic_physical_crit_rate] += 0.05 * 6 * 20 / 30  # 释放技能时，5%概率增加6%物理、魔法暴击率，持续20s，冷却30s
     elif style == '神之试炼的奖赏':
-        bonus_array[index_strength_and_intelligence]+=55 # 四维+55
-        bonus_array[index_extra_percent_attack_speed] += 3 # 攻击速度+3%
-        bonus_array[index_extra_percent_all_element_strength]+=15#所有属性强化+15
-        bonus_array[index_extra_percent_magic_physical_crit_rate] += 10 # 物理、魔法暴击率+10%
-        bonus_array[index_extra_percent_crit_damage]+=15 # 暴击时，额外增加15%的伤害增加量
-        bonus_array[index_extra_percent_all_element_strength] += 0.03*10*30/40 # 攻击时，3%概率增加10点属强，持续30s，冷却40s
-        bonus_array[index_extra_percent_attack_speed]+=0.03*3*30/40 # 攻击时，3%概率增加3%三速，持续30s，冷却40s
+        bonus_array[index_strength_and_intelligence] += 55  # 四维+55
+        bonus_array[index_extra_percent_attack_speed] += 3  # 攻击速度+3%
+        bonus_array[index_extra_percent_all_element_strength] += 15  # 所有属性强化+15
+        bonus_array[index_extra_percent_magic_physical_crit_rate] += 10  # 物理、魔法暴击率+10%
+        bonus_array[index_extra_percent_crit_damage] += 15  # 暴击时，额外增加15%的伤害增加量
+        bonus_array[index_extra_percent_all_element_strength] += 0.03 * 10 * 30 / 40  # 攻击时，3%概率增加10点属强，持续30s，冷却40s
+        bonus_array[index_extra_percent_attack_speed] += 0.03 * 3 * 30 / 40  # 攻击时，3%概率增加3%三速，持续30s，冷却40s
     elif style == '兽人守护神':
-        bonus_array[index_physical_magical_independent_attack_power]+=30 # 三攻+30
-        bonus_array[index_strength_and_intelligence]+=70 # 四维+70
-        bonus_array[index_extra_percent_attack_speed] += 3 # 攻击速度+3%
-        bonus_array[index_extra_percent_all_element_strength]+=15#所有属性强化+15
-        bonus_array[index_extra_percent_magic_physical_crit_rate] += 12 # 物理、魔法暴击率+12%
-        bonus_array[index_extra_percent_addtional_damage]+=10 # 攻击时，附加10%的伤害
-        bonus_array[index_strength_and_intelligence] += 0.03*35*20/30 # 攻击时，3%概率增加35点力量，持续20s，冷却30s
-        bonus_array[index_extra_percent_magic_physical_crit_rate]+=0.05*5*20/30 # 释放技能时，5%概率增加5%物理、魔法暴击率，持续20s，冷却30s
+        bonus_array[index_physical_magical_independent_attack_power] += 30  # 三攻+30
+        bonus_array[index_strength_and_intelligence] += 70  # 四维+70
+        bonus_array[index_extra_percent_attack_speed] += 3  # 攻击速度+3%
+        bonus_array[index_extra_percent_all_element_strength] += 15  # 所有属性强化+15
+        bonus_array[index_extra_percent_magic_physical_crit_rate] += 12  # 物理、魔法暴击率+12%
+        bonus_array[index_extra_percent_addtional_damage] += 10  # 攻击时，附加10%的伤害
+        bonus_array[index_strength_and_intelligence] += 0.03 * 35 * 20 / 30  # 攻击时，3%概率增加35点力量，持续20s，冷却30s
+        bonus_array[
+            index_extra_percent_magic_physical_crit_rate] += 0.05 * 5 * 20 / 30  # 释放技能时，5%概率增加5%物理、魔法暴击率，持续20s，冷却30s
     elif style == '天选之人':
-        bonus_array[index_physical_magical_independent_attack_power]+=35 # 三攻+35
-        bonus_array[index_strength_and_intelligence]+=75 # 四维+75
-        bonus_array[index_extra_percent_attack_speed] += 4 # 攻击速度+4%
-        bonus_array[index_extra_percent_all_element_strength]+=20#所有属性强化+20
-        bonus_array[index_extra_percent_magic_physical_crit_rate] += 15 # 物理、魔法暴击率+15%
-        bonus_array[index_extra_percent_final_damage]+=12 # 最终伤害增加12%
-        bonus_array[index_strength_and_intelligence] += 0.03*35*20/30 # 攻击时，3%概率增加35点力量，持续20s，冷却30s
-        bonus_array[index_extra_percent_magic_physical_crit_rate]+=0.05*6*20/30 # 释放技能时，5%概率增加6%物理、魔法暴击率，持续20s，冷却30s
+        bonus_array[index_physical_magical_independent_attack_power] += 35  # 三攻+35
+        bonus_array[index_strength_and_intelligence] += 75  # 四维+75
+        bonus_array[index_extra_percent_attack_speed] += 4  # 攻击速度+4%
+        bonus_array[index_extra_percent_all_element_strength] += 20  # 所有属性强化+20
+        bonus_array[index_extra_percent_magic_physical_crit_rate] += 15  # 物理、魔法暴击率+15%
+        bonus_array[index_extra_percent_final_damage] += 12  # 最终伤害增加12%
+        bonus_array[index_strength_and_intelligence] += 0.03 * 35 * 20 / 30  # 攻击时，3%概率增加35点力量，持续20s，冷却30s
+        bonus_array[
+            index_extra_percent_magic_physical_crit_rate] += 0.05 * 6 * 20 / 30  # 释放技能时，5%概率增加6%物理、魔法暴击率，持续20s，冷却30s
     elif style == '海洋霸主':
-        bonus_array[index_strength_and_intelligence]+=55 # 四维+55
-        bonus_array[index_extra_percent_attack_speed] += 3 # 攻击速度+3%
-        bonus_array[index_extra_percent_all_element_strength]+=15#所有属性强化+15
-        bonus_array[index_extra_percent_magic_physical_crit_rate] += 10 # 物理、魔法暴击率+10%
-        bonus_array[index_extra_percent_crit_damage]+=10 # 暴击时，额外增加10%的伤害增加量
-        bonus_array[index_extra_percent_all_element_strength] += 0.03*10*30/40 # 攻击时，3%概率增加10点属强，持续30s，冷却40s
-        bonus_array[index_extra_percent_attack_speed]+=0.03*3*30/40 # 攻击时，3%概率增加3%三速，持续30s，冷却40s
+        bonus_array[index_strength_and_intelligence] += 55  # 四维+55
+        bonus_array[index_extra_percent_attack_speed] += 3  # 攻击速度+3%
+        bonus_array[index_extra_percent_all_element_strength] += 15  # 所有属性强化+15
+        bonus_array[index_extra_percent_magic_physical_crit_rate] += 10  # 物理、魔法暴击率+10%
+        bonus_array[index_extra_percent_crit_damage] += 10  # 暴击时，额外增加10%的伤害增加量
+        bonus_array[index_extra_percent_all_element_strength] += 0.03 * 10 * 30 / 40  # 攻击时，3%概率增加10点属强，持续30s，冷却40s
+        bonus_array[index_extra_percent_attack_speed] += 0.03 * 3 * 30 / 40  # 攻击时，3%概率增加3%三速，持续30s，冷却40s
     elif style == '龙之挑战':
-        bonus_array[index_physical_magical_independent_attack_power]+=30 # 三攻+30
-        bonus_array[index_strength_and_intelligence]+=60 # 四维+60
-        bonus_array[index_extra_percent_attack_speed] += 3 # 攻击速度+3%
-        bonus_array[index_extra_percent_all_element_strength]+=15#所有属性强化+15
-        bonus_array[index_extra_percent_magic_physical_crit_rate] += 10 # 物理、魔法暴击率+10%
-        bonus_array[index_extra_percent_addtional_damage]+=10 # 攻击时，附加10%的伤害
-        bonus_array[index_strength_and_intelligence] += 0.03*35*20/30 # 攻击时，3%概率增加35点力量，持续20s，冷却30s
-        bonus_array[index_extra_percent_magic_physical_crit_rate]+=0.05*5*20/30 # 释放技能时，5%概率增加5%物理、魔法暴击率，持续20s，冷却30s
+        bonus_array[index_physical_magical_independent_attack_power] += 30  # 三攻+30
+        bonus_array[index_strength_and_intelligence] += 60  # 四维+60
+        bonus_array[index_extra_percent_attack_speed] += 3  # 攻击速度+3%
+        bonus_array[index_extra_percent_all_element_strength] += 15  # 所有属性强化+15
+        bonus_array[index_extra_percent_magic_physical_crit_rate] += 10  # 物理、魔法暴击率+10%
+        bonus_array[index_extra_percent_addtional_damage] += 10  # 攻击时，附加10%的伤害
+        bonus_array[index_strength_and_intelligence] += 0.03 * 35 * 20 / 30  # 攻击时，3%概率增加35点力量，持续20s，冷却30s
+        bonus_array[
+            index_extra_percent_magic_physical_crit_rate] += 0.05 * 5 * 20 / 30  # 释放技能时，5%概率增加5%物理、魔法暴击率，持续20s，冷却30s
     elif style == '龙之威仪':
-        bonus_array[index_physical_magical_independent_attack_power]+=35 # 三攻+35
-        bonus_array[index_strength_and_intelligence]+=65 # 四维+65
-        bonus_array[index_extra_percent_attack_speed] += 3 # 攻击速度+3%
-        bonus_array[index_extra_percent_all_element_strength]+=15#所有属性强化+15
-        bonus_array[index_extra_percent_magic_physical_crit_rate] += 10 # 物理、魔法暴击率+10%
-        bonus_array[index_extra_percent_addtional_damage]+=12 # 攻击时，附加12%的伤害
-        bonus_array[index_strength_and_intelligence] += 0.03*35*20/30 # 攻击时，3%概率增加35点力量，持续20s，冷却30s
-        bonus_array[index_extra_percent_magic_physical_crit_rate]+=0.05*6*20/30 # 释放技能时，5%概率增加6%物理、魔法暴击率，持续20s，冷却30s
+        bonus_array[index_physical_magical_independent_attack_power] += 35  # 三攻+35
+        bonus_array[index_strength_and_intelligence] += 65  # 四维+65
+        bonus_array[index_extra_percent_attack_speed] += 3  # 攻击速度+3%
+        bonus_array[index_extra_percent_all_element_strength] += 15  # 所有属性强化+15
+        bonus_array[index_extra_percent_magic_physical_crit_rate] += 10  # 物理、魔法暴击率+10%
+        bonus_array[index_extra_percent_addtional_damage] += 12  # 攻击时，附加12%的伤害
+        bonus_array[index_strength_and_intelligence] += 0.03 * 35 * 20 / 30  # 攻击时，3%概率增加35点力量，持续20s，冷却30s
+        bonus_array[
+            index_extra_percent_magic_physical_crit_rate] += 0.05 * 6 * 20 / 30  # 释放技能时，5%概率增加6%物理、魔法暴击率，持续20s，冷却30s
     elif style == '最强战神':
-        bonus_array[index_physical_magical_independent_attack_power]+=35 # 三攻+35
-        bonus_array[index_strength_and_intelligence]+=75 # 四维+75
-        bonus_array[index_extra_percent_attack_speed] += 4 # 攻击速度+4%
-        bonus_array[index_extra_percent_all_element_strength]+=20#所有属性强化+20
-        bonus_array[index_extra_percent_magic_physical_crit_rate] += 15 # 物理、魔法暴击率+15%
-        bonus_array[index_extra_percent_final_damage]+=12 # 最终伤害增加12%
-        bonus_array[index_strength_and_intelligence] += 0.03*35*20/30 # 攻击时，3%概率增加35点力量，持续20s，冷却30s
-        bonus_array[index_extra_percent_magic_physical_crit_rate]+=0.05*6*20/30 # 释放技能时，5%概率增加6%物理、魔法暴击率，持续20s，冷却30s
+        bonus_array[index_physical_magical_independent_attack_power] += 35  # 三攻+35
+        bonus_array[index_strength_and_intelligence] += 75  # 四维+75
+        bonus_array[index_extra_percent_attack_speed] += 4  # 攻击速度+4%
+        bonus_array[index_extra_percent_all_element_strength] += 20  # 所有属性强化+20
+        bonus_array[index_extra_percent_magic_physical_crit_rate] += 15  # 物理、魔法暴击率+15%
+        bonus_array[index_extra_percent_final_damage] += 12  # 最终伤害增加12%
+        bonus_array[index_strength_and_intelligence] += 0.03 * 35 * 20 / 30  # 攻击时，3%概率增加35点力量，持续20s，冷却30s
+        bonus_array[
+            index_extra_percent_magic_physical_crit_rate] += 0.05 * 6 * 20 / 30  # 释放技能时，5%概率增加6%物理、魔法暴击率，持续20s，冷却30s
 
     # 获取宠物的加成
     creature = creature_select.get()
     if creature in ['弓手维多利亚', '神官格洛丽亚']:
-        bonus_array[index_extra_percent_addtional_damage] += 10*10/30 # 宠物技能+10%攻击力，持续10s，冷却30s
-        bonus_array[index_extra_percent_attack_speed]+=5*10/30 # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
-        bonus_array[index_strength_and_intelligence]+=140 # 四维+140
-        bonus_array[index_extra_percent_attack_speed]+=5 # 三速+5%
-        bonus_array[index_extra_percent_all_element_strength]+=24 # 所有属强+24
-        bonus_array[index_extra_percent_magic_physical_crit_rate]+=10 # 暴击率+10%
-        bonus_array[index_extra_passive_transfer_skill]+=1 # 转职被动+1， 1-50lv+1
-        bonus_array[index_extra_passive_first_awaken_skill]+=1 # 一觉被动+1， 1-50lv+1
-        bonus_array[index_extra_percent_addtional_damage]+=12 # 攻击时，附加12%的伤害
-        bonus_array[index_extra_percent_strength_and_intelligence]+=10 # 力智+10%
-        bonus_array[index_cool_skill]+=1.75 # 技能冷却每减1%，这个值增加0.35
-        bonus_array[index_cool_original]+=5 # 所有技能冷却-5%
+        bonus_array[index_extra_percent_addtional_damage] += 10 * 10 / 30  # 宠物技能+10%攻击力，持续10s，冷却30s
+        bonus_array[index_extra_percent_attack_speed] += 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
+        bonus_array[index_strength_and_intelligence] += 140  # 四维+140
+        bonus_array[index_extra_percent_attack_speed] += 5  # 三速+5%
+        bonus_array[index_extra_percent_all_element_strength] += 24  # 所有属强+24
+        bonus_array[index_extra_percent_magic_physical_crit_rate] += 10  # 暴击率+10%
+        bonus_array[index_extra_passive_transfer_skill] += 1  # 转职被动+1， 1-50lv+1
+        bonus_array[index_extra_passive_first_awaken_skill] += 1  # 一觉被动+1， 1-50lv+1
+        bonus_array[index_extra_active_skill_lv_1_45] += 1  # 1-45级主动+1， 1-50lv+1
+        bonus_array[index_extra_active_skill_lv_50] += 1  # 50级主动+1， 1-50lv+1
+        bonus_array[index_extra_percent_addtional_damage] += 12  # 攻击时，附加12%的伤害
+        bonus_array[index_extra_percent_strength_and_intelligence] += 10  # 力智+10%
+        bonus_array[index_cool_correction] += 1.75  # 技能冷却每减1%，冷却矫正系数增加0.35
     elif creature in ['雷光之箭维多利亚', '暴风圣女格洛丽亚']:
-        bonus_array[index_extra_percent_addtional_damage] += 10*10/30 # 宠物技能+10%攻击力，持续10s，冷却30s
-        bonus_array[index_extra_percent_attack_speed]+=5*10/30 # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
-        bonus_array[index_strength_and_intelligence]+=150 # 四维+150
-        bonus_array[index_extra_percent_attack_speed]+=5 # 三速+5%
-        bonus_array[index_extra_percent_all_element_strength]+=24 # 所有属强+24
-        bonus_array[index_extra_percent_magic_physical_crit_rate]+=10 # 暴击率+10%
-        bonus_array[index_extra_passive_transfer_skill]+=1 # 转职被动+1， 1-50lv+1
-        bonus_array[index_extra_passive_first_awaken_skill]+=1 # 一觉被动+1， 1-50lv+1
-        bonus_array[index_extra_percent_addtional_damage]+=15 # 攻击时，附加15%的伤害
-        bonus_array[index_extra_percent_final_damage]+=5 # 最终伤害+5%
-        bonus_array[index_extra_percent_strength_and_intelligence]+=12 # 力智+12%
-        bonus_array[index_cool_skill]+=1.75 # 技能冷却每减1%，这个值增加0.35
-        bonus_array[index_cool_original]+=5 # 所有技能冷却-5%
+        bonus_array[index_extra_percent_addtional_damage] += 10 * 10 / 30  # 宠物技能+10%攻击力，持续10s，冷却30s
+        bonus_array[index_extra_percent_attack_speed] += 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
+        bonus_array[index_strength_and_intelligence] += 150  # 四维+150
+        bonus_array[index_extra_percent_attack_speed] += 5  # 三速+5%
+        bonus_array[index_extra_percent_all_element_strength] += 24  # 所有属强+24
+        bonus_array[index_extra_percent_magic_physical_crit_rate] += 10  # 暴击率+10%
+        bonus_array[index_extra_passive_transfer_skill] += 1  # 转职被动+1， 1-50lv+1
+        bonus_array[index_extra_passive_first_awaken_skill] += 1  # 一觉被动+1， 1-50lv+1
+        bonus_array[index_extra_active_skill_lv_1_45] += 1  # 1-45级主动+1， 1-50lv+1
+        bonus_array[index_extra_active_skill_lv_50] += 1  # 50级主动+1， 1-50lv+1
+        bonus_array[index_extra_percent_addtional_damage] += 15  # 攻击时，附加15%的伤害
+        bonus_array[index_extra_percent_final_damage] += 5  # 最终伤害+5%
+        bonus_array[index_extra_percent_strength_and_intelligence] += 12  # 力智+12%
+        bonus_array[index_cool_correction] += 1.75  # 技能冷却每减1%，冷却矫正系数增加0.35
     elif creature in ['骑士莱恩', '吟游诗人薇泽达']:
-        bonus_array[index_extra_percent_addtional_damage] += 10*10/30 # 宠物技能+10%攻击力，持续10s，冷却30s
-        bonus_array[index_extra_percent_attack_speed]+=5*10/30 # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
-        bonus_array[index_strength_and_intelligence]+=120 # 四维+120
-        bonus_array[index_extra_percent_attack_speed]+=5 # 三速+5%
-        bonus_array[index_extra_percent_all_element_strength]+=24 # 所有属强+24
-        bonus_array[index_extra_percent_magic_physical_crit_rate]+=10 # 暴击率+10%
-        bonus_array[index_extra_passive_transfer_skill]+=1 # 转职被动+1， 1-50lv+1
-        bonus_array[index_extra_passive_first_awaken_skill]+=1 # 一觉被动+1， 1-50lv+1
-        bonus_array[index_extra_percent_addtional_damage]+=12 # 攻击时，附加12%的伤害
-        bonus_array[index_cool_skill]+=1.75 # 技能冷却每减1%，这个值增加0.35
-        bonus_array[index_cool_original]+=5 # 所有技能冷却-5%
+        bonus_array[index_extra_percent_addtional_damage] += 10 * 10 / 30  # 宠物技能+10%攻击力，持续10s，冷却30s
+        bonus_array[index_extra_percent_attack_speed] += 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
+        bonus_array[index_strength_and_intelligence] += 120  # 四维+120
+        bonus_array[index_extra_percent_attack_speed] += 5  # 三速+5%
+        bonus_array[index_extra_percent_all_element_strength] += 24  # 所有属强+24
+        bonus_array[index_extra_percent_magic_physical_crit_rate] += 10  # 暴击率+10%
+        bonus_array[index_extra_passive_transfer_skill] += 1  # 转职被动+1， 1-50lv+1
+        bonus_array[index_extra_passive_first_awaken_skill] += 1  # 一觉被动+1， 1-50lv+1
+        bonus_array[index_extra_active_skill_lv_1_45] += 1  # 1-45级主动+1， 1-50lv+1
+        bonus_array[index_extra_active_skill_lv_50] += 1  # 50级主动+1， 1-50lv+1
+        bonus_array[index_extra_percent_addtional_damage] += 12  # 攻击时，附加12%的伤害
+        bonus_array[index_cool_correction] += 1.75  # 技能冷却每减1%，冷却矫正系数增加0.35
     elif creature in ['古国英豪莱恩', '太初之音薇泽达']:
-        bonus_array[index_extra_percent_addtional_damage] += 10*10/30 # 宠物技能+10%攻击力，持续10s，冷却30s
-        bonus_array[index_extra_percent_attack_speed]+=5*10/30 # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
-        bonus_array[index_strength_and_intelligence]+=120 # 四维+120
-        bonus_array[index_extra_percent_attack_speed]+=5 # 三速+5%
-        bonus_array[index_extra_percent_all_element_strength]+=24 # 所有属强+24
-        bonus_array[index_extra_percent_magic_physical_crit_rate]+=10 # 暴击率+10%
-        bonus_array[index_extra_passive_transfer_skill]+=1 # 转职被动+1， 1-50lv+1
-        bonus_array[index_extra_passive_first_awaken_skill]+=1 # 一觉被动+1， 1-50lv+1
-        bonus_array[index_extra_percent_addtional_damage]+=15 # 攻击时，附加15%的伤害
-        bonus_array[index_extra_percent_final_damage]+=5 # 最终伤害+5%
-        bonus_array[index_cool_skill]+=1.75 # 技能冷却每减1%，这个值增加0.35
-        bonus_array[index_cool_original]+=5 # 所有技能冷却-5%
+        bonus_array[index_extra_percent_addtional_damage] += 10 * 10 / 30  # 宠物技能+10%攻击力，持续10s，冷却30s
+        bonus_array[index_extra_percent_attack_speed] += 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
+        bonus_array[index_strength_and_intelligence] += 120  # 四维+120
+        bonus_array[index_extra_percent_attack_speed] += 5  # 三速+5%
+        bonus_array[index_extra_percent_all_element_strength] += 24  # 所有属强+24
+        bonus_array[index_extra_percent_magic_physical_crit_rate] += 10  # 暴击率+10%
+        bonus_array[index_extra_passive_transfer_skill] += 1  # 转职被动+1， 1-50lv+1
+        bonus_array[index_extra_passive_first_awaken_skill] += 1  # 一觉被动+1， 1-50lv+1
+        bonus_array[index_extra_active_skill_lv_1_45] += 1  # 1-45级主动+1， 1-50lv+1
+        bonus_array[index_extra_active_skill_lv_50] += 1  # 50级主动+1， 1-50lv+1
+        bonus_array[index_extra_percent_addtional_damage] += 15  # 攻击时，附加15%的伤害
+        bonus_array[index_extra_percent_final_damage] += 5  # 最终伤害+5%
+        bonus_array[index_cool_correction] += 1.75  # 技能冷却每减1%，冷却矫正系数增加0.35
     elif creature in ['雪兔蒂娅', '火狐艾芙']:
-        bonus_array[index_extra_percent_addtional_damage] += 10*10/30 # 宠物技能+10%攻击力，持续10s，冷却30s
-        bonus_array[index_extra_percent_attack_speed]+=5*10/30 # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
-        bonus_array[index_strength_and_intelligence]+=100 # 四维+100
-        bonus_array[index_extra_percent_attack_speed]+=5 # 三速+5%
-        bonus_array[index_extra_percent_all_element_strength]+=20 # 所有属强+20
-        bonus_array[index_extra_percent_magic_physical_crit_rate]+=10 # 暴击率+10%
-        bonus_array[index_extra_passive_transfer_skill]+=1 # 转职被动+1， 1-50lv+1
-        bonus_array[index_extra_passive_first_awaken_skill]+=1 # 一觉被动+1， 1-50lv+1
-        bonus_array[index_extra_percent_addtional_damage]+=10 # 攻击时，附加10%的伤害
-        bonus_array[index_cool_skill]+=1.75 # 技能冷却每减1%，这个值增加0.35
-        bonus_array[index_cool_original]+=5 # 所有技能冷却-5%
+        bonus_array[index_extra_percent_addtional_damage] += 10 * 10 / 30  # 宠物技能+10%攻击力，持续10s，冷却30s
+        bonus_array[index_extra_percent_attack_speed] += 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
+        bonus_array[index_strength_and_intelligence] += 100  # 四维+100
+        bonus_array[index_extra_percent_attack_speed] += 5  # 三速+5%
+        bonus_array[index_extra_percent_all_element_strength] += 20  # 所有属强+20
+        bonus_array[index_extra_percent_magic_physical_crit_rate] += 10  # 暴击率+10%
+        bonus_array[index_extra_passive_transfer_skill] += 1  # 转职被动+1， 1-50lv+1
+        bonus_array[index_extra_passive_first_awaken_skill] += 1  # 一觉被动+1， 1-50lv+1
+        bonus_array[index_extra_active_skill_lv_1_45] += 1  # 1-45级主动+1， 1-50lv+1
+        bonus_array[index_extra_active_skill_lv_50] += 1  # 50级主动+1， 1-50lv+1
+        bonus_array[index_extra_percent_addtional_damage] += 10  # 攻击时，附加10%的伤害
+        bonus_array[index_cool_correction] += 1.75  # 技能冷却每减1%，冷却矫正系数增加0.35
     elif creature in ['冰雪魔法师蒂娅', '炽焰咒术师艾芙']:
-        bonus_array[index_extra_percent_addtional_damage] += 10*10/30 # 宠物技能+10%攻击力，持续10s，冷却30s
-        bonus_array[index_extra_percent_attack_speed]+=5*10/30 # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
-        bonus_array[index_strength_and_intelligence]+=110 # 四维+110
-        bonus_array[index_extra_percent_attack_speed]+=5 # 三速+5%
-        bonus_array[index_extra_percent_all_element_strength]+=22 # 所有属强+22
-        bonus_array[index_extra_percent_magic_physical_crit_rate]+=10 # 暴击率+10%
-        bonus_array[index_extra_passive_transfer_skill]+=1 # 转职被动+1， 1-50lv+1
-        bonus_array[index_extra_passive_first_awaken_skill]+=1 # 一觉被动+1， 1-50lv+1
-        bonus_array[index_extra_percent_addtional_damage]+=12 # 攻击时，附加12%的伤害
-        bonus_array[index_cool_skill]+=1.75 # 技能冷却每减1%，这个值增加0.35
-        bonus_array[index_cool_original]+=5 # 所有技能冷却-5%
+        bonus_array[index_extra_percent_addtional_damage] += 10 * 10 / 30  # 宠物技能+10%攻击力，持续10s，冷却30s
+        bonus_array[index_extra_percent_attack_speed] += 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
+        bonus_array[index_strength_and_intelligence] += 110  # 四维+110
+        bonus_array[index_extra_percent_attack_speed] += 5  # 三速+5%
+        bonus_array[index_extra_percent_all_element_strength] += 22  # 所有属强+22
+        bonus_array[index_extra_percent_magic_physical_crit_rate] += 10  # 暴击率+10%
+        bonus_array[index_extra_passive_transfer_skill] += 1  # 转职被动+1， 1-50lv+1
+        bonus_array[index_extra_passive_first_awaken_skill] += 1  # 一觉被动+1， 1-50lv+1
+        bonus_array[index_extra_active_skill_lv_1_45] += 1  # 1-45级主动+1， 1-50lv+1
+        bonus_array[index_extra_active_skill_lv_50] += 1  # 50级主动+1， 1-50lv+1
+        bonus_array[index_extra_percent_addtional_damage] += 12  # 攻击时，附加12%的伤害
+        bonus_array[index_cool_correction] += 1.75  # 技能冷却每减1%，冷却矫正系数增加0.35
     elif creature in ['艾莉丝', '克里斯']:
-        bonus_array[index_extra_percent_addtional_damage] += 10*10/20 # 宠物技能+10%攻击力，持续10s，冷却20s
-        bonus_array[index_physical_magical_independent_attack_power]+=35 # 三攻+35
-        bonus_array[index_extra_percent_attack_speed]+=4 # 三速+4%
-        bonus_array[index_extra_percent_all_element_strength]+=15 # 所有属强+15
-        bonus_array[index_extra_percent_magic_physical_crit_rate]+=10 # 暴击率+10%
-        bonus_array[index_extra_passive_transfer_skill]+=1 # 转职被动+1， 1-50lv+1
-        bonus_array[index_extra_passive_first_awaken_skill]+=1 # 一觉被动+1， 1-50lv+1
+        bonus_array[index_extra_percent_addtional_damage] += 10 * 10 / 20  # 宠物技能+10%攻击力，持续10s，冷却20s
+        bonus_array[index_physical_magical_independent_attack_power] += 35  # 三攻+35
+        bonus_array[index_extra_percent_attack_speed] += 4  # 三速+4%
+        bonus_array[index_extra_percent_all_element_strength] += 15  # 所有属强+15
+        bonus_array[index_extra_percent_magic_physical_crit_rate] += 10  # 暴击率+10%
+        bonus_array[index_extra_passive_transfer_skill] += 1  # 转职被动+1， 1-50lv+1
+        bonus_array[index_extra_passive_first_awaken_skill] += 1  # 一觉被动+1， 1-50lv+1
+        bonus_array[index_extra_active_skill_lv_1_45] += 1  # 1-45级主动+1， 1-50lv+1
+        bonus_array[index_extra_active_skill_lv_50] += 1  # 50级主动+1， 1-50lv+1
 
     # todo：加上各种技能宝珠、光环、皮肤、徽章等国服特色的支持
 
@@ -494,8 +512,9 @@ def calc():
 
     load_presetc = load_workbook("preset.xlsx", data_only=True)
     db_preset = load_presetc["custom"]
+    job_name = jobup_select.get()
     try:
-        ele_skill = int(opt_job_ele[jobup_select.get()][1])
+        ele_skill = int(opt_job_ele[job_name][1])
     except KeyError as error:
         tkinter.messagebox.showerror('部分参数有误', "未选择职业或职业非法")
         return
@@ -503,11 +522,11 @@ def calc():
               int(ele_skill) - int(db_preset["B18"].value) + int(db_preset["B19"].value) + 13)
 
     global count_valid, count_invalid, show_number, all_list_num, max_setopt, count_start_time, unique_index
-    count_valid = 0;
-    count_invalid = 0;
+    count_valid = 0
+    count_invalid = 0
     show_number = 0
 
-    if jobup_select.get()[-4:] == "(奶系)":
+    if job_name[-4:] == "(奶系)":
         active_eff_one = 15
         active_eff_set = 18 - 3
     else:
@@ -519,16 +538,16 @@ def calc():
     else:
         lvl_shift = 0
 
-    job_lv1 = opt_job[jobup_select.get()][11 + lvl_shift]
-    job_lv2 = opt_job[jobup_select.get()][12 + lvl_shift]
-    job_lv3 = opt_job[jobup_select.get()][13 + lvl_shift]
-    job_lv4 = opt_job[jobup_select.get()][14 + lvl_shift]
-    job_lv5 = opt_job[jobup_select.get()][15 + lvl_shift]
-    job_lv6 = opt_job[jobup_select.get()][16 + lvl_shift]
-    job_pas0 = opt_job[jobup_select.get()][0]
-    job_pas1 = opt_job[jobup_select.get()][1]
-    job_pas2 = opt_job[jobup_select.get()][2]
-    job_pas3 = opt_job[jobup_select.get()][3]
+    job_lv1 = opt_job[job_name][11 + lvl_shift]
+    job_lv2 = opt_job[job_name][12 + lvl_shift]
+    job_lv3 = opt_job[job_name][13 + lvl_shift]
+    job_lv4 = opt_job[job_name][14 + lvl_shift]
+    job_lv5 = opt_job[job_name][15 + lvl_shift]
+    job_lv6 = opt_job[job_name][16 + lvl_shift]
+    job_pas0 = opt_job[job_name][0]
+    job_pas1 = opt_job[job_name][1]
+    job_pas2 = opt_job[job_name][2]
+    job_pas3 = opt_job[job_name][3]
 
     if req_cool.get() == 'X(纯伤害)':
         cool_on = 0
@@ -731,7 +750,8 @@ def calc():
 
         return setopt_num
 
-    if jobup_select.get()[4:7] != "奶爸" and jobup_select.get()[4:7] != "奶妈" and jobup_select.get()[4:7] != "奶萝":
+    is_shuchu_job = job_name[4:7] not in ["奶爸", "奶妈", "奶萝"]
+    if is_shuchu_job:
 
         # 代码名称
         # 0调节器 1추공  2증 3크 4추 5속추
@@ -788,61 +808,78 @@ def calc():
                     count_invalid = count_invalid + 1
                     return
                 cut = np.array(no_cut[0:20] + no_cut[22:23] + no_cut[34:35] + no_cut[38:44])
-                skiper = (skiper / 100 + 1) * (cut[11] / 100 + 1) * 100 - 100
+                skiper = (skiper / 100 + 1) * (cut[index_extra_percent_skill_attack_power] / 100 + 1) * 100 - 100
                 oneonelist.append(cut)
             for i in range(oneone):
                 base_array = base_array + oneonelist[i]
 
             if set_oncount('1201') == 1 and onecount('32200') == 1:
-                base_array[3] = base_array[3] - 5
+                base_array[index_extra_percent_crit_damage] -= 5
             if onecount('33230') == 1 or onecount('33231') == 1:
                 if onecount('31230') == 0:
-                    base_array[4] = base_array[4] - 10
+                    base_array[index_extra_percent_addtional_damage] -= 10
                 if onecount('32230') == 0:
-                    base_array[9] = base_array[9] - 40
+                    base_array[index_extra_percent_all_element_strength] -= 40
             # 特殊处理天命无常套装
             if onecount('15340') == 1 or onecount('23340') == 1 or onecount('33340') == 1 or onecount(
                     '33341') == 1:
                 if set_oncount('1341') == 0 and set_oncount('1342') == 0:  # 1341=天命两件套 1342=天命三件套
                     if onecount('15340') == 1:
-                        base_array[9] = base_array[9] - 20
+                        base_array[index_extra_percent_all_element_strength] -= 20
                     elif onecount('23340') == 1:  # 天命无常-戒指-命运的捉弄
-                        base_array[2] = base_array[2] - 10
+                        base_array[index_extra_percent_attack_damage] -= 10
                     elif onecount('33340') == 1:
-                        base_array[6] = base_array[6] - 5  #
+                        base_array[index_extra_percent_final_damage] -= 5  #
                     else:  # 天命无常-神话耳环-命运反抗者
-                        base_array[9] = base_array[9] - 4  # ele=4
-                        base_array[2] = base_array[2] - 2  # damper=2
-                        base_array[6] = base_array[6] - 1  # allper=6
-                        base_array[8] = base_array[8] - 1.93  # staper=15
+                        base_array[index_extra_percent_all_element_strength] -= 4  # ele=4
+                        base_array[index_extra_percent_attack_damage] -= 2  # damper=2
+                        base_array[index_extra_percent_final_damage] -= 1  # allper=6
+                        base_array[index_extra_percent_strength_and_intelligence] -= 1.93  # staper=15
             if onecount('11111') == 1:
                 if set_oncount('1112') == 1 or set_oncount('1113') == 1:
-                    base_array[20] = base_array[20] + 10
+                    base_array[index_cool_correction] += 10
             if onecount('11301') == 1:
                 if onecount('22300') != 1:
-                    base_array[4] = base_array[4] - 10
-                    base_array[7] = base_array[7] + 10
+                    base_array[index_extra_percent_addtional_damage] -= 10
+                    base_array[index_extra_percent_physical_magical_independent_attack_power] += 10
                 if onecount('31300') != 1:
-                    base_array[4] = base_array[4] - 10
-                    base_array[7] = base_array[7] + 10
+                    base_array[index_extra_percent_addtional_damage] -= 10
+                    base_array[index_extra_percent_physical_magical_independent_attack_power] += 10
 
-            base_array[11] = skiper
-            real_bon = base_array[4] + base_array[5] * (base_array[9] * 0.0045 + 1.05)
-            actlvl = ((base_array[active_eff_one] + base_array[22] * job_lv1 + base_array[23] * job_lv2 +
-                       base_array[24] * job_lv3 +
-                       base_array[25] * job_lv4 + base_array[26] * job_lv5 + base_array[
-                           27] * job_lv6) / 100 + 1)
-            paslvl = ((100 + base_array[16] * job_pas0) / 100) * ((100 + base_array[17] * job_pas1) / 100) * (
-                    (100 + base_array[18] * job_pas2) / 100) * ((100 + base_array[19] * job_pas3) / 100)
-            damage = ((base_array[2] / 100 + 1) * (base_array[3] / 100 + 1) * (real_bon / 100 + 1) * (
-                    base_array[6] / 100 + 1) * (base_array[7] / 100 + 1) *
-                      (base_array[8] / 100 + 1) * (base_array[9] * 0.0045 + 1.05) * (
-                              base_array[10] / 100 + 1) * (skiper / 100 + 1) * (base_array[12] / 100 + 1) *
-                      actlvl * paslvl * ((54500 + 3.31 * base_array[0]) / 54500) * (
-                              (4800 + base_array[1]) / 4800) * (1 + cool_on * base_array[20] / 100) / (
-                              1.05 + 0.0045 * int(ele_skill)))
+            base_array[index_extra_percent_skill_attack_power] = skiper  # 技能攻击力 +X%
+            real_bon = (base_array[index_extra_percent_addtional_damage] +  # 攻击时，附加X%的伤害，也就是白字
+                        base_array[index_extra_percent_elemental_damage] *  # 攻击时，附加X%的属性伤害
+                        (base_array[index_extra_percent_all_element_strength] * 0.0045 + 1.05))  # 所有属性强化+X
+            actlvl = ((base_array[index_extra_active_second_awaken_skill] +  # 二觉主动技能
+                       base_array[index_extra_active_skill_lv_1_45] * job_lv1 +  # 1_45主动技能
+                       base_array[index_extra_active_skill_lv_50] * job_lv2 +  # 50主动技能
+                       base_array[index_extra_active_skill_lv_60_80] * job_lv3 +  # 60_80主动技能
+                       base_array[index_extra_active_skill_lv_85] * job_lv4 +  # 85主动技能
+                       base_array[index_extra_active_skill_lv_95] * job_lv5 +  # 95主动技能
+                       base_array[index_extra_active_skill_lv_100] * job_lv6  # 100主动技能
+                       ) / 100 + 1)
+            paslvl = (((100 + base_array[index_extra_passive_transfer_skill] * job_pas0) / 100) *  # 增加转职被动的等级
+                      ((100 + base_array[index_extra_passive_first_awaken_skill] * job_pas1) / 100) *  # 增加一绝被动的等级
+                      ((100 + base_array[index_extra_passive_second_awaken_skill] * job_pas2) / 100) *  # 增加二觉被动的等级
+                      ((100 + base_array[index_extra_passive_third_awaken_skill] * job_pas3) / 100)  # 增加三觉被动的等级
+                      )
+            damage = ((base_array[index_extra_percent_attack_damage] / 100 + 1) *  # 攻击时额外增加X%的伤害增加量
+                      (base_array[index_extra_percent_crit_damage] / 100 + 1) *  # 暴击时，额外增加X%的伤害增加量
+                      (real_bon / 100 + 1) *  # 白字与属强的最终综合值
+                      (base_array[index_extra_percent_final_damage] / 100 + 1) *  # 最终伤害+X%
+                      (base_array[index_extra_percent_physical_magical_independent_attack_power] / 100 + 1) *  # 物理/魔法/独立攻击力 +X%
+                      (base_array[index_extra_percent_strength_and_intelligence] / 100 + 1) *  # 力智+X%
+                      (base_array[index_extra_percent_all_element_strength] * 0.0045 + 1.05) *  # 所有属性强化+X
+                      (base_array[index_extra_percent_continued_damage] / 100 + 1) *  # 发生持续伤害5秒，伤害量为对敌人造成伤害的X%
+                      (skiper / 100 + 1) *  # 技能攻击力 +X%
+                      (base_array[index_extra_percent_special_effect] / 100 + 1) *  # 特殊词条，作者为每个特殊词条打了相应的强度百分比分，如一叶障目对忍者一些技能的特殊改变被认为可以强化9%，守护的抉择（歧路鞋）的护石增强词条被认为可以增强21%
+                      actlvl * paslvl *  # 主动技能与被动技能的影响
+                      ((54500 + 3.31 * base_array[index_strength_and_intelligence]) / 54500) *  # 力智
+                      ((4800 + base_array[index_physical_magical_independent_attack_power]) / 4800) *  # 物理/魔法/独立攻击力
+                      (1 + cool_on * base_array[index_cool_correction] / 100) /  # 冷却矫正系数，每冷却1%，记0.35这个值
+                      (1.05 + 0.0045 * int(ele_skill)))  # 不太确定，可能是属性抗性？속강
 
-            base_array[4] = real_bon
+            base_array[index_extra_percent_addtional_damage] = real_bon
             global unique_index
             unique_index += 1
             minheap.add((damage, unique_index,
@@ -931,6 +968,8 @@ def calc():
             oneone = len(for_calc)
             oneonelist = []
             for i in range(oneone):
+                # 获取该装备的buff属性
+                # re：阅读data.xlsx的buf sheet和buflvl确认奶系职业的各个计算维度的含义
                 no_cut = np.array(setget(for_calc[i]))  ## 2 3 4 5 7
                 base_array = base_array + no_cut
                 b_stat = (b_stat / 100 + 1) * (no_cut[2] / 100 + 1) * 100 - 100
@@ -940,7 +979,7 @@ def calc():
                 c_per = (c_per / 100 + 1) * (no_cut[7] / 100 + 1) * 100 - 100
                 oneonelist.append(no_cut)
 
-            if jobup_select.get()[4:7] == "奶爸":
+            if job_name[4:7] == "奶爸":
                 b_base_att = lvlget('hol_b_atta')[int(base_array[8])]
                 stat_pas0lvl_b = lvlget('pas0')[int(base_array[11]) + base_pas0_b] + lvlget('hol_pas0_1')[
                     int(base_array[12])]
@@ -969,10 +1008,10 @@ def calc():
                     int(base_array[8])) + "级)]"
 
             else:
-                if jobup_select.get()[4:7] == "奶妈":
+                if job_name[4:7] == "奶妈":
                     b_value = 675
                     aria = 1.25 + 0.05 * base_array[10]
-                if jobup_select.get()[4:7] == "奶萝":
+                if job_name[4:7] == "奶萝":
                     b_value = 665
                     aria = (1.20 + 0.05 * base_array[10]) * 1.20
 
@@ -1486,33 +1525,30 @@ def show_result(rank_list, job_type, ele_skill):
         rank_stat2 = [0, 0, 0, 0, 0]
         for i in range(0, 5):
             try:
-                rank_stat[i] = ("增伤= " + str(int(rss[i][2])) +
-                                "%\n爆伤= " + str(int(rss[i][3])) +
-                                "%\n白字= " + str(int(rss[i][4])) +
-                                "%\n所攻= " + str(int(rss[i][6])) +
-                                "%\n三攻= " + str(int(rss[i][7])) +
-                                "%\n力智= " + str(int(rss[i][8])) +
-                                "%\n属强= " + str(int(rss[i][9])) +
-                                "\n持续= " + str(int(rss[i][10])) +
-                                "%\n技攻= " + str(int(rss[i][11])) +
-                                "%\n特殊= " + str(int(rss[i][12])) +
-                                "%\n\n速度= " + str(int(rss[i][13])) +
-                                "%\n暴击= " + str(int(rss[i][14])) + "%")
+                rank_stat[i] = ("增伤= " + str(int(rss[i][index_extra_percent_attack_damage])) +
+                                "%\n爆伤= " + str(int(rss[i][index_extra_percent_crit_damage])) +
+                                "%\n白字= " + str(int(rss[i][index_extra_percent_addtional_damage])) +
+                                "%\n所攻= " + str(int(rss[i][index_extra_percent_final_damage])) +
+                                "%\n三攻= " + str(int(rss[i][index_extra_percent_physical_magical_independent_attack_power])) +
+                                "%\n力智= " + str(int(rss[i][index_extra_percent_strength_and_intelligence])) +
+                                "%\n属强= " + str(int(rss[i][index_extra_percent_all_element_strength])) +
+                                "\n持续= " + str(int(rss[i][index_extra_percent_continued_damage])) +
+                                "%\n技攻= " + str(int(rss[i][index_extra_percent_skill_attack_power])) +
+                                "%\n特殊= " + str(int(rss[i][index_extra_percent_special_effect])) +
+                                "%\n\n攻速= " + str(int(rss[i][index_extra_percent_attack_speed])) +
+                                "%\n暴击率= " + str(int(rss[i][index_extra_percent_magic_physical_crit_rate])) + "%")
                 rank_stat2[i] = ("   <主动>"
-                                 "\n  1~45技能= " + str(round(rss[i][22], 1)) + "级"
-                                                                              "\n    50技能= " + str(
-                    int(rss[i][23])) + "级"
-                                       "\n 60~80技能= " + str(round(rss[i][24], 1)) + "级"
-                                                                                    "\n    85技能= " + str(
-                    int(rss[i][25])) + "级"
-                                       "\n    95技能= " + str(int(rss[i][26])) + "级"
-                                                                               "\n   100技能= " + str(
-                    int(rss[i][27])) + "级"
-                                       "\n\n   <被动>\n 前失败者(机翻)= " + str(round(rss[i][16], 1)) + "级"
-                                                                                                "\n  一觉= " + str(
-                    int(rss[i][17])) + "级"
-                                       "\n  二觉= " + str(int(rss[i][18])) + "级"
-                                                                           "\n  三觉= " + str(int(rss[i][19])) + "级")
+                                 "\n  1~45技能= " + str(round(rss[i][index_extra_active_skill_lv_1_45], 1)) + "级" +
+                                 "\n    50技能= " + str(int(rss[i][index_extra_active_skill_lv_50])) + "级" +
+                                 "\n 60~80技能= " + str(round(rss[i][index_extra_active_skill_lv_60_80], 1)) + "级" +
+                                 "\n    85技能= " + str(int(rss[i][index_extra_active_skill_lv_85])) + "级" +
+                                 "\n    95技能= " + str(int(rss[i][index_extra_active_skill_lv_95])) + "级" +
+                                 "\n   100技能= " + str(int(rss[i][index_extra_active_skill_lv_100])) + "级" +
+                                 "\n\n   <被动>" +
+                                 "\n  转职被动= " + str(round(rss[i][index_extra_passive_transfer_skill], 1)) + "级" +
+                                 "\n  一觉被动= " + str(int(rss[i][index_extra_passive_first_awaken_skill])) + "级" +
+                                 "\n  二觉被动= " + str(int(rss[i][index_extra_passive_second_awaken_skill])) + "级" +
+                                 "\n  三觉被动= " + str(int(rss[i][index_extra_passive_third_awaken_skill])) + "级")
             except TypeError as error:
                 c = 1
 
