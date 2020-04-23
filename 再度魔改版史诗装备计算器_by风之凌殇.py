@@ -181,6 +181,7 @@ styles = [
     '海洋霸主',  # 2017国庆称号
     '龙之挑战', '龙之威仪',  # 2017春节普通称号和至尊称号
     '最强战神',  # 心悦称号
+    '与贝奇邂逅', # 我的奶妈在用的称号，方便自己用
     '其他（直接比较）'
 ]
 creatures = [
@@ -347,6 +348,15 @@ def get_shuchu_bonus_attributes():
         bonus_array[index_strength_and_intelligence] += 0.03 * 35 * 20 / 30  # 攻击时，3%概率增加35点力量，持续20s，冷却30s
         bonus_array[
             index_extra_percent_magic_physical_crit_rate] += 0.05 * 6 * 20 / 30  # 释放技能时，5%概率增加6%物理、魔法暴击率，持续20s，冷却30s
+    elif style == '与贝奇邂逅':
+        bonus_array[index_strength_and_intelligence] += 90  # 四维+90
+        bonus_array[index_extra_percent_attack_speed] += 3  # 攻击速度+3%
+        bonus_array[index_extra_all_element_strength] += 12  # 所有属性强化+12
+        bonus_array[index_extra_percent_magic_physical_crit_rate] += 8  # 物理、魔法暴击率+8%
+        bonus_array[index_extra_percent_addtional_damage] += 10  # 攻击时，附加10%的伤害
+        bonus_array[index_strength_and_intelligence] += 0.05 * 25 * 30 / 30  # 攻击时，5%概率增加25点力量，持续30s，冷却30s
+        bonus_array[index_extra_percent_attack_speed] += 0.05 * 2 * 30 / 30  # 攻击时，5%概率增加2%三速，持续30s，冷却30s
+
 
     # 获取宠物的加成
     creature = creature_select.get()
