@@ -1,6 +1,6 @@
 ﻿#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-now_version = "v3.2.7.1"
+now_version = "v3.2.7.2"
 ver_time = '2020-04-23'
 
 ## 코드를 무단으로 복제하여 개조 및 배포하지 말 것##
@@ -213,13 +213,13 @@ index_extra_passive_first_awaken_skill = 17  # 17-T-pas2-增加一绝被动的�
 index_extra_passive_second_awaken_skill = 18  # 18-U-pas3-增加二觉被动的等级
 index_extra_passive_third_awaken_skill = 19  # 19-V-pas4-增加三觉被动的等级
 index_cool_correction = 20  # 20-Y-cool_skill-冷却矫正系数，每冷却1%，记0.35这个值
-index_extra_active_second_awaken_skill = 21  # 二觉主动技能
-index_extra_active_skill_lv_1_45 = 22  # 1_45主动技能
-index_extra_active_skill_lv_50 = 23  # 50主动技能
-index_extra_active_skill_lv_60_80 = 24  # 60_80主动技能
-index_extra_active_skill_lv_85 = 25  # 85主动技能
-index_extra_active_skill_lv_95 = 26  # 95主动技能
-index_extra_active_skill_lv_100 = 27  # 100主动技能
+index_extra_active_second_awaken_skill = 21  # 21-AK-active2-二觉主动技能
+index_extra_active_skill_lv_1_45 = 22  # 22-AO-pas0-1_45主动技能
+index_extra_active_skill_lv_50 = 23  # 23-AP-pas1-50主动技能
+index_extra_active_skill_lv_60_80 = 24  # 24-AQ-pas2-60_80主动技能
+index_extra_active_skill_lv_85 = 25  # 25-AR-pas3-85主动技能
+index_extra_active_skill_lv_95 = 26  # 26-AS-pas4-95主动技能
+index_extra_active_skill_lv_100 = 27  # 27-AT-pas5-100主动技能
 
 
 ###########################################################
@@ -444,6 +444,12 @@ def get_shuchu_bonus_attributes():
         bonus_array[index_extra_active_skill_lv_50] += 1  # 50级主动+1， 1-50lv+1
 
     # todo：加上各种技能宝珠、光环、皮肤、徽章等国服特色的支持
+
+    # from 韩械，原先他在Data.xlsx中所有武器的1-45和50级的被动技能中各增加了2级，其中1级为宠物的技能等级，另一极暂时不确定是哪里来的，可能是其他国服特色
+    # 为了保持一致，根据他的建议，把data中所有武器的1-45和50级的主动技能减少两级，然后另外一个技能补正加在这个位置
+    # todo：问问韩械这个多出来的一级是啥特色带来的？
+    bonus_array[index_extra_active_skill_lv_1_45] += 1  # 1-45级主动+1， 1-50lv+1
+    bonus_array[index_extra_active_skill_lv_50] += 1  # 50级主动+1， 1-50lv+1
 
     return bonus_array
 
