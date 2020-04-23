@@ -181,7 +181,7 @@ styles = [
     '海洋霸主',  # 2017国庆称号
     '龙之挑战', '龙之威仪',  # 2017春节普通称号和至尊称号
     '最强战神',  # 心悦称号
-    '与贝奇邂逅', # 我的奶妈在用的称号，方便自己用
+    '与贝奇邂逅',  # 我的奶妈在用的称号，方便自己用
     '其他（直接比较）'
 ]
 creatures = [
@@ -356,7 +356,6 @@ def get_shuchu_bonus_attributes():
         bonus_array[index_extra_percent_addtional_damage] += 10  # 攻击时，附加10%的伤害
         bonus_array[index_strength_and_intelligence] += 0.05 * 25 * 30 / 30  # 攻击时，5%概率增加25点力量，持续30s，冷却30s
         bonus_array[index_extra_percent_attack_speed] += 0.05 * 2 * 30 / 30  # 攻击时，5%概率增加2%三速，持续30s，冷却30s
-
 
     # 获取宠物的加成
     creature = creature_select.get()
@@ -590,7 +589,7 @@ def calc():
 
     try:
         showsta(text='开始计算')
-        count_start_time = datetime.now()  # 开始计时
+        count_start_time = time.time()  # 开始计时
     except MemoryError as error:
         tkinter.messagebox.showerror('内存误差', "已超过可用内存.")
         showsta(text='已中止')
@@ -2525,15 +2524,21 @@ def update_count():
     hours = 0
     minutes = 0
     seconds = 0
+    using_time_str = "0s"
     remaining_time_str = "0s"
     while True:
         try:
-            using_time = datetime.now() - count_start_time
+            show_str = str(count_valid) + "有效搭配/" + str(count_invalid) + "无效"
             if exit_calc == 0:
+                using_time = time.time() - count_start_time
+                using_time_str = format_time(using_time)
                 remaining_time = (all_list_num - count_valid - count_invalid) / (
-                        count_valid + count_invalid + 1) * using_time.seconds
+                        count_valid + count_invalid + 1) * using_time
                 remaining_time_str = format_time(remaining_time)
-            showcon(text=str(count_valid) + "有效搭配/" + str(count_invalid) + "无效\n" + remaining_time_str + "剩余时间")
+            showcon(text=(str(count_valid) + "有效搭配/" + str(count_invalid) + "无效" +
+                          "\n用时=" + using_time_str + "" +
+                          "\n剩余=" + remaining_time_str)
+                    )
             time.sleep(0.1)
         except Exception as e:
             print("update_count except: {}".format(e))
@@ -2609,7 +2614,7 @@ unique_index = 0
 count_invalid = 0
 show_number = 0
 all_list_num = 0
-count_start_time = datetime.now()  # 开始计算的时间点
+count_start_time = time.time() # 开始计算的时间点
 
 # 由于这里不需要对data.xlsx写入，设置read_only为True可以大幅度加快读取速度，在我的电脑上改动前读取耗时0.67s，占启动时间32%，改动之后用时0.1s，占启动时间4%
 load_excel1 = load_workbook("DATA.xlsx", read_only=True, data_only=True)
