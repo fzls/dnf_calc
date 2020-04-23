@@ -1,7 +1,7 @@
 ﻿#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-now_version = "v3.2.7"
-ver_time = '2020-04-22'
+now_version = "v3.2.7.1"
+ver_time = '2020-04-23'
 
 ## 코드를 무단으로 복제하여 개조 및 배포하지 말 것##
 
@@ -201,7 +201,7 @@ index_extra_percent_elemental_damage = 5  # 5-H-elebon-攻击时，附加X%的�
 index_extra_percent_final_damage = 6  # 6-I-allper-最终伤害+X%
 index_extra_percent_physical_magical_independent_attack_power = 7  # 7-J-attper-物理/魔法/独立攻击力 +X%
 index_extra_percent_strength_and_intelligence = 8  # 8-K-staper-力智+X%
-index_extra_percent_all_element_strength = 9  # 9-L-ele-所有属性强化+X
+index_extra_all_element_strength = 9  # 9-L-ele-所有属性强化+X
 index_extra_percent_continued_damage = 10  # 10-M-sloper-发生持续伤害5秒，伤害量为对敌人造成伤害的X%
 index_extra_percent_skill_attack_power = 11  # 11-N-skiper-技能攻击力 +X%
 index_extra_percent_special_effect = 12  # 12-O-special-特殊词条，作者为每个特殊词条打了相应的强度百分比分，如一叶障目对忍者一些技能的特殊改变被认为可以强化9%，守护的抉择（歧路鞋）的护石增强词条被认为可以增强21%
@@ -235,7 +235,7 @@ def get_shuchu_bonus_attributes():
         bonus_array[index_physical_magical_independent_attack_power] += 60  # 三攻+60
         bonus_array[index_strength_and_intelligence] += 80  # 四维+80
         bonus_array[index_extra_percent_attack_speed] += 3  # 攻击速度+3%
-        bonus_array[index_extra_percent_all_element_strength] += 15  # 所有属性强化+15
+        bonus_array[index_extra_all_element_strength] += 15  # 所有属性强化+15
         bonus_array[index_extra_percent_magic_physical_crit_rate] += 12  # 物理、魔法暴击率+12%
         bonus_array[index_extra_percent_addtional_damage] += 12  # 攻击时，附加12%的伤害
         bonus_array[index_extra_percent_strength_and_intelligence] += 3  # 增加3%的力量、智力
@@ -246,7 +246,7 @@ def get_shuchu_bonus_attributes():
         bonus_array[index_physical_magical_independent_attack_power] += 65  # 三攻+65
         bonus_array[index_strength_and_intelligence] += 90  # 四维+90
         bonus_array[index_extra_percent_attack_speed] += 4  # 攻击速度+4%
-        bonus_array[index_extra_percent_all_element_strength] += 20  # 所有属性强化+20
+        bonus_array[index_extra_all_element_strength] += 20  # 所有属性强化+20
         bonus_array[index_extra_percent_magic_physical_crit_rate] += 15  # 物理、魔法暴击率+15%
         bonus_array[index_extra_percent_strength_and_intelligence] += 4  # 增加4%的力量、智力
         bonus_array[index_extra_percent_crit_damage] += 18  # 暴击时，额外增加18%的伤害增加量
@@ -256,16 +256,16 @@ def get_shuchu_bonus_attributes():
     elif style == '超越极限者':
         bonus_array[index_strength_and_intelligence] += 60  # 四维+60
         bonus_array[index_extra_percent_attack_speed] += 3  # 攻击速度+3%
-        bonus_array[index_extra_percent_all_element_strength] += 15  # 所有属性强化+15
+        bonus_array[index_extra_all_element_strength] += 15  # 所有属性强化+15
         bonus_array[index_extra_percent_magic_physical_crit_rate] += 12  # 物理、魔法暴击率+12%
         bonus_array[index_extra_percent_crit_damage] += 15  # 暴击时，额外增加15%的伤害增加量
-        bonus_array[index_extra_percent_all_element_strength] += 0.03 * 10 * 30 / 40  # 攻击时，3%概率增加10点属强，持续30s，冷却40s
+        bonus_array[index_extra_all_element_strength] += 0.03 * 10 * 30 / 40  # 攻击时，3%概率增加10点属强，持续30s，冷却40s
         bonus_array[index_extra_percent_attack_speed] += 0.03 * 3 * 30 / 40  # 攻击时，3%概率增加3%三速，持续30s，冷却40s
     elif style == '秘境迷踪':
         bonus_array[index_physical_magical_independent_attack_power] += 40  # 三攻+40
         bonus_array[index_strength_and_intelligence] += 70  # 四维+70
         bonus_array[index_extra_percent_attack_speed] += 3  # 攻击速度+3%
-        bonus_array[index_extra_percent_all_element_strength] += 15  # 所有属性强化+15
+        bonus_array[index_extra_all_element_strength] += 15  # 所有属性强化+15
         bonus_array[index_extra_percent_magic_physical_crit_rate] += 12  # 物理、魔法暴击率+12%
         bonus_array[index_extra_percent_addtional_damage] += 10  # 攻击时，附加10%的伤害
         bonus_array[index_strength_and_intelligence] += 0.03 * 35 * 20 / 30  # 攻击时，3%概率增加35点力量，持续20s，冷却30s
@@ -275,7 +275,7 @@ def get_shuchu_bonus_attributes():
         bonus_array[index_physical_magical_independent_attack_power] += 45  # 三攻+45
         bonus_array[index_strength_and_intelligence] += 75  # 四维+75
         bonus_array[index_extra_percent_attack_speed] += 4  # 攻击速度+4%
-        bonus_array[index_extra_percent_all_element_strength] += 20  # 所有属性强化+20
+        bonus_array[index_extra_all_element_strength] += 20  # 所有属性强化+20
         bonus_array[index_extra_percent_magic_physical_crit_rate] += 15  # 物理、魔法暴击率+15%
         bonus_array[index_extra_percent_crit_damage] += 18  # 暴击时，额外增加18%的伤害增加量
         bonus_array[index_strength_and_intelligence] += 0.03 * 35 * 20 / 30  # 攻击时，3%概率增加35点力量，持续20s，冷却30s
@@ -284,16 +284,16 @@ def get_shuchu_bonus_attributes():
     elif style == '神之试炼的奖赏':
         bonus_array[index_strength_and_intelligence] += 55  # 四维+55
         bonus_array[index_extra_percent_attack_speed] += 3  # 攻击速度+3%
-        bonus_array[index_extra_percent_all_element_strength] += 15  # 所有属性强化+15
+        bonus_array[index_extra_all_element_strength] += 15  # 所有属性强化+15
         bonus_array[index_extra_percent_magic_physical_crit_rate] += 10  # 物理、魔法暴击率+10%
         bonus_array[index_extra_percent_crit_damage] += 15  # 暴击时，额外增加15%的伤害增加量
-        bonus_array[index_extra_percent_all_element_strength] += 0.03 * 10 * 30 / 40  # 攻击时，3%概率增加10点属强，持续30s，冷却40s
+        bonus_array[index_extra_all_element_strength] += 0.03 * 10 * 30 / 40  # 攻击时，3%概率增加10点属强，持续30s，冷却40s
         bonus_array[index_extra_percent_attack_speed] += 0.03 * 3 * 30 / 40  # 攻击时，3%概率增加3%三速，持续30s，冷却40s
     elif style == '兽人守护神':
         bonus_array[index_physical_magical_independent_attack_power] += 30  # 三攻+30
         bonus_array[index_strength_and_intelligence] += 70  # 四维+70
         bonus_array[index_extra_percent_attack_speed] += 3  # 攻击速度+3%
-        bonus_array[index_extra_percent_all_element_strength] += 15  # 所有属性强化+15
+        bonus_array[index_extra_all_element_strength] += 15  # 所有属性强化+15
         bonus_array[index_extra_percent_magic_physical_crit_rate] += 12  # 物理、魔法暴击率+12%
         bonus_array[index_extra_percent_addtional_damage] += 10  # 攻击时，附加10%的伤害
         bonus_array[index_strength_and_intelligence] += 0.03 * 35 * 20 / 30  # 攻击时，3%概率增加35点力量，持续20s，冷却30s
@@ -303,7 +303,7 @@ def get_shuchu_bonus_attributes():
         bonus_array[index_physical_magical_independent_attack_power] += 35  # 三攻+35
         bonus_array[index_strength_and_intelligence] += 75  # 四维+75
         bonus_array[index_extra_percent_attack_speed] += 4  # 攻击速度+4%
-        bonus_array[index_extra_percent_all_element_strength] += 20  # 所有属性强化+20
+        bonus_array[index_extra_all_element_strength] += 20  # 所有属性强化+20
         bonus_array[index_extra_percent_magic_physical_crit_rate] += 15  # 物理、魔法暴击率+15%
         bonus_array[index_extra_percent_final_damage] += 12  # 最终伤害增加12%
         bonus_array[index_strength_and_intelligence] += 0.03 * 35 * 20 / 30  # 攻击时，3%概率增加35点力量，持续20s，冷却30s
@@ -312,16 +312,16 @@ def get_shuchu_bonus_attributes():
     elif style == '海洋霸主':
         bonus_array[index_strength_and_intelligence] += 55  # 四维+55
         bonus_array[index_extra_percent_attack_speed] += 3  # 攻击速度+3%
-        bonus_array[index_extra_percent_all_element_strength] += 15  # 所有属性强化+15
+        bonus_array[index_extra_all_element_strength] += 15  # 所有属性强化+15
         bonus_array[index_extra_percent_magic_physical_crit_rate] += 10  # 物理、魔法暴击率+10%
         bonus_array[index_extra_percent_crit_damage] += 10  # 暴击时，额外增加10%的伤害增加量
-        bonus_array[index_extra_percent_all_element_strength] += 0.03 * 10 * 30 / 40  # 攻击时，3%概率增加10点属强，持续30s，冷却40s
+        bonus_array[index_extra_all_element_strength] += 0.03 * 10 * 30 / 40  # 攻击时，3%概率增加10点属强，持续30s，冷却40s
         bonus_array[index_extra_percent_attack_speed] += 0.03 * 3 * 30 / 40  # 攻击时，3%概率增加3%三速，持续30s，冷却40s
     elif style == '龙之挑战':
         bonus_array[index_physical_magical_independent_attack_power] += 30  # 三攻+30
         bonus_array[index_strength_and_intelligence] += 60  # 四维+60
         bonus_array[index_extra_percent_attack_speed] += 3  # 攻击速度+3%
-        bonus_array[index_extra_percent_all_element_strength] += 15  # 所有属性强化+15
+        bonus_array[index_extra_all_element_strength] += 15  # 所有属性强化+15
         bonus_array[index_extra_percent_magic_physical_crit_rate] += 10  # 物理、魔法暴击率+10%
         bonus_array[index_extra_percent_addtional_damage] += 10  # 攻击时，附加10%的伤害
         bonus_array[index_strength_and_intelligence] += 0.03 * 35 * 20 / 30  # 攻击时，3%概率增加35点力量，持续20s，冷却30s
@@ -331,7 +331,7 @@ def get_shuchu_bonus_attributes():
         bonus_array[index_physical_magical_independent_attack_power] += 35  # 三攻+35
         bonus_array[index_strength_and_intelligence] += 65  # 四维+65
         bonus_array[index_extra_percent_attack_speed] += 3  # 攻击速度+3%
-        bonus_array[index_extra_percent_all_element_strength] += 15  # 所有属性强化+15
+        bonus_array[index_extra_all_element_strength] += 15  # 所有属性强化+15
         bonus_array[index_extra_percent_magic_physical_crit_rate] += 10  # 物理、魔法暴击率+10%
         bonus_array[index_extra_percent_addtional_damage] += 12  # 攻击时，附加12%的伤害
         bonus_array[index_strength_and_intelligence] += 0.03 * 35 * 20 / 30  # 攻击时，3%概率增加35点力量，持续20s，冷却30s
@@ -341,7 +341,7 @@ def get_shuchu_bonus_attributes():
         bonus_array[index_physical_magical_independent_attack_power] += 35  # 三攻+35
         bonus_array[index_strength_and_intelligence] += 75  # 四维+75
         bonus_array[index_extra_percent_attack_speed] += 4  # 攻击速度+4%
-        bonus_array[index_extra_percent_all_element_strength] += 20  # 所有属性强化+20
+        bonus_array[index_extra_all_element_strength] += 20  # 所有属性强化+20
         bonus_array[index_extra_percent_magic_physical_crit_rate] += 15  # 物理、魔法暴击率+15%
         bonus_array[index_extra_percent_final_damage] += 12  # 最终伤害增加12%
         bonus_array[index_strength_and_intelligence] += 0.03 * 35 * 20 / 30  # 攻击时，3%概率增加35点力量，持续20s，冷却30s
@@ -355,7 +355,7 @@ def get_shuchu_bonus_attributes():
         bonus_array[index_extra_percent_attack_speed] += 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
         bonus_array[index_strength_and_intelligence] += 140  # 四维+140
         bonus_array[index_extra_percent_attack_speed] += 5  # 三速+5%
-        bonus_array[index_extra_percent_all_element_strength] += 24  # 所有属强+24
+        bonus_array[index_extra_all_element_strength] += 24  # 所有属强+24
         bonus_array[index_extra_percent_magic_physical_crit_rate] += 10  # 暴击率+10%
         bonus_array[index_extra_passive_transfer_skill] += 1  # 转职被动+1， 1-50lv+1
         bonus_array[index_extra_passive_first_awaken_skill] += 1  # 一觉被动+1， 1-50lv+1
@@ -369,7 +369,7 @@ def get_shuchu_bonus_attributes():
         bonus_array[index_extra_percent_attack_speed] += 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
         bonus_array[index_strength_and_intelligence] += 150  # 四维+150
         bonus_array[index_extra_percent_attack_speed] += 5  # 三速+5%
-        bonus_array[index_extra_percent_all_element_strength] += 24  # 所有属强+24
+        bonus_array[index_extra_all_element_strength] += 24  # 所有属强+24
         bonus_array[index_extra_percent_magic_physical_crit_rate] += 10  # 暴击率+10%
         bonus_array[index_extra_passive_transfer_skill] += 1  # 转职被动+1， 1-50lv+1
         bonus_array[index_extra_passive_first_awaken_skill] += 1  # 一觉被动+1， 1-50lv+1
@@ -384,7 +384,7 @@ def get_shuchu_bonus_attributes():
         bonus_array[index_extra_percent_attack_speed] += 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
         bonus_array[index_strength_and_intelligence] += 120  # 四维+120
         bonus_array[index_extra_percent_attack_speed] += 5  # 三速+5%
-        bonus_array[index_extra_percent_all_element_strength] += 24  # 所有属强+24
+        bonus_array[index_extra_all_element_strength] += 24  # 所有属强+24
         bonus_array[index_extra_percent_magic_physical_crit_rate] += 10  # 暴击率+10%
         bonus_array[index_extra_passive_transfer_skill] += 1  # 转职被动+1， 1-50lv+1
         bonus_array[index_extra_passive_first_awaken_skill] += 1  # 一觉被动+1， 1-50lv+1
@@ -397,7 +397,7 @@ def get_shuchu_bonus_attributes():
         bonus_array[index_extra_percent_attack_speed] += 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
         bonus_array[index_strength_and_intelligence] += 120  # 四维+120
         bonus_array[index_extra_percent_attack_speed] += 5  # 三速+5%
-        bonus_array[index_extra_percent_all_element_strength] += 24  # 所有属强+24
+        bonus_array[index_extra_all_element_strength] += 24  # 所有属强+24
         bonus_array[index_extra_percent_magic_physical_crit_rate] += 10  # 暴击率+10%
         bonus_array[index_extra_passive_transfer_skill] += 1  # 转职被动+1， 1-50lv+1
         bonus_array[index_extra_passive_first_awaken_skill] += 1  # 一觉被动+1， 1-50lv+1
@@ -411,7 +411,7 @@ def get_shuchu_bonus_attributes():
         bonus_array[index_extra_percent_attack_speed] += 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
         bonus_array[index_strength_and_intelligence] += 100  # 四维+100
         bonus_array[index_extra_percent_attack_speed] += 5  # 三速+5%
-        bonus_array[index_extra_percent_all_element_strength] += 20  # 所有属强+20
+        bonus_array[index_extra_all_element_strength] += 20  # 所有属强+20
         bonus_array[index_extra_percent_magic_physical_crit_rate] += 10  # 暴击率+10%
         bonus_array[index_extra_passive_transfer_skill] += 1  # 转职被动+1， 1-50lv+1
         bonus_array[index_extra_passive_first_awaken_skill] += 1  # 一觉被动+1， 1-50lv+1
@@ -424,7 +424,7 @@ def get_shuchu_bonus_attributes():
         bonus_array[index_extra_percent_attack_speed] += 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
         bonus_array[index_strength_and_intelligence] += 110  # 四维+110
         bonus_array[index_extra_percent_attack_speed] += 5  # 三速+5%
-        bonus_array[index_extra_percent_all_element_strength] += 22  # 所有属强+22
+        bonus_array[index_extra_all_element_strength] += 22  # 所有属强+22
         bonus_array[index_extra_percent_magic_physical_crit_rate] += 10  # 暴击率+10%
         bonus_array[index_extra_passive_transfer_skill] += 1  # 转职被动+1， 1-50lv+1
         bonus_array[index_extra_passive_first_awaken_skill] += 1  # 一觉被动+1， 1-50lv+1
@@ -436,7 +436,7 @@ def get_shuchu_bonus_attributes():
         bonus_array[index_extra_percent_addtional_damage] += 10 * 10 / 20  # 宠物技能+10%攻击力，持续10s，冷却20s
         bonus_array[index_physical_magical_independent_attack_power] += 35  # 三攻+35
         bonus_array[index_extra_percent_attack_speed] += 4  # 三速+4%
-        bonus_array[index_extra_percent_all_element_strength] += 15  # 所有属强+15
+        bonus_array[index_extra_all_element_strength] += 15  # 所有属强+15
         bonus_array[index_extra_percent_magic_physical_crit_rate] += 10  # 暴击率+10%
         bonus_array[index_extra_passive_transfer_skill] += 1  # 转职被动+1， 1-50lv+1
         bonus_array[index_extra_passive_first_awaken_skill] += 1  # 一觉被动+1， 1-50lv+1
@@ -794,6 +794,8 @@ def calc():
             damage = 0
             # 获取输出职业的国服特色数值作为初始值
             base_array = get_shuchu_bonus_attributes()
+            # 加上职业的基础属强
+            base_array[index_extra_all_element_strength] += ele_in
 
             skiper = 0
             for_calc = tuple(set_on) + calc_wep
@@ -819,19 +821,19 @@ def calc():
                 if onecount('31230') == 0:
                     base_array[index_extra_percent_addtional_damage] -= 10
                 if onecount('32230') == 0:
-                    base_array[index_extra_percent_all_element_strength] -= 40
+                    base_array[index_extra_all_element_strength] -= 40
             # 特殊处理天命无常套装
             if onecount('15340') == 1 or onecount('23340') == 1 or onecount('33340') == 1 or onecount(
                     '33341') == 1:
                 if set_oncount('1341') == 0 and set_oncount('1342') == 0:  # 1341=天命两件套 1342=天命三件套
                     if onecount('15340') == 1:
-                        base_array[index_extra_percent_all_element_strength] -= 20
+                        base_array[index_extra_all_element_strength] -= 20
                     elif onecount('23340') == 1:  # 天命无常-戒指-命运的捉弄
                         base_array[index_extra_percent_attack_damage] -= 10
                     elif onecount('33340') == 1:
                         base_array[index_extra_percent_final_damage] -= 5  #
                     else:  # 天命无常-神话耳环-命运反抗者
-                        base_array[index_extra_percent_all_element_strength] -= 4  # ele=4
+                        base_array[index_extra_all_element_strength] -= 4  # ele=4
                         base_array[index_extra_percent_attack_damage] -= 2  # damper=2
                         base_array[index_extra_percent_final_damage] -= 1  # allper=6
                         base_array[index_extra_percent_strength_and_intelligence] -= 1.93  # staper=15
@@ -849,7 +851,7 @@ def calc():
             base_array[index_extra_percent_skill_attack_power] = skiper  # 技能攻击力 +X%
             real_bon = (base_array[index_extra_percent_addtional_damage] +  # 攻击时，附加X%的伤害，也就是白字
                         base_array[index_extra_percent_elemental_damage] *  # 攻击时，附加X%的属性伤害
-                        (base_array[index_extra_percent_all_element_strength] * 0.0045 + 1.05))  # 所有属性强化+X
+                        (base_array[index_extra_all_element_strength] * 0.0045 + 1.05))  # 所有属性强化+X
             actlvl = ((base_array[index_extra_active_second_awaken_skill] +  # 二觉主动技能
                        base_array[index_extra_active_skill_lv_1_45] * job_lv1 +  # 1_45主动技能
                        base_array[index_extra_active_skill_lv_50] * job_lv2 +  # 50主动技能
@@ -869,7 +871,7 @@ def calc():
                       (base_array[index_extra_percent_final_damage] / 100 + 1) *  # 最终伤害+X%
                       (base_array[index_extra_percent_physical_magical_independent_attack_power] / 100 + 1) *  # 物理/魔法/独立攻击力 +X%
                       (base_array[index_extra_percent_strength_and_intelligence] / 100 + 1) *  # 力智+X%
-                      (base_array[index_extra_percent_all_element_strength] * 0.0045 + 1.05) *  # 所有属性强化+X
+                      (base_array[index_extra_all_element_strength] * 0.0045 + 1.05) *  # 所有属性强化+X
                       (base_array[index_extra_percent_continued_damage] / 100 + 1) *  # 发生持续伤害5秒，伤害量为对敌人造成伤害的X%
                       (skiper / 100 + 1) *  # 技能攻击力 +X%
                       (base_array[index_extra_percent_special_effect] / 100 + 1) *  # 特殊词条，作者为每个特殊词条打了相应的强度百分比分，如一叶障目对忍者一些技能的特殊改变被认为可以强化9%，守护的抉择（歧路鞋）的护石增强词条被认为可以增强21%
@@ -1531,7 +1533,7 @@ def show_result(rank_list, job_type, ele_skill):
                                 "%\n所攻= " + str(int(rss[i][index_extra_percent_final_damage])) +
                                 "%\n三攻= " + str(int(rss[i][index_extra_percent_physical_magical_independent_attack_power])) +
                                 "%\n力智= " + str(int(rss[i][index_extra_percent_strength_and_intelligence])) +
-                                "%\n属强= " + str(int(rss[i][index_extra_percent_all_element_strength])) +
+                                "%\n属强= " + str(int(rss[i][index_extra_all_element_strength])) +
                                 "\n持续= " + str(int(rss[i][index_extra_percent_continued_damage])) +
                                 "%\n技攻= " + str(int(rss[i][index_extra_percent_skill_attack_power])) +
                                 "%\n特殊= " + str(int(rss[i][index_extra_percent_special_effect])) +
