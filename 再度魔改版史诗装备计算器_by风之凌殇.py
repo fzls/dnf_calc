@@ -1,7 +1,7 @@
 ﻿#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-now_version = "v3.2.7.2"
-ver_time = '2020-04-23'
+now_version = "v3.2.8"
+ver_time = '2020-04-25'
 
 ## 코드를 무단으로 복제하여 개조 및 배포하지 말 것##
 
@@ -470,7 +470,7 @@ def calc():
         result_window.destroy()
     except NameError as error:
         pass
-    if select_perfect.get() == '慢速':
+    if select_speed.get() == '慢速':
         set_perfect = 1
     else:
         set_perfect = 0
@@ -602,6 +602,8 @@ def calc():
     has_baibainguai = baibianguai_select.get() == txt_has_baibianguai
     can_upgrade_work_unifrom_nums = get_can_upgrade_work_unifrom_nums()
     has_uniforms = pre_calc_has_uniforms(items, work_uniforms_items)
+    # 超慢速时不进行任何剪枝操作，装备搭配对比的标准是最终计算出的伤害与奶量倍率
+    dont_pruning = select_speed.get() == '超慢速'
 
     # 看了看，主要性能瓶颈在于直接使用了itertools.product遍历所有的笛卡尔积组合，导致无法提前剪枝，只能在每个组合计算前通过条件判断是否要跳过
     # 背景，假设当前处理到下标n（0-10）的装备，前面装备已选择的组合为selected_combination(of size n)，未处理装备为后面11-n-1个，其对应组合数为rcp=len(Cartesian Product(后面11-n-1个装备部位))
@@ -628,31 +630,37 @@ def calc():
             selected_combination.append(equip)
 
             # re：剪枝条件2：预计算出后面装备部位能够获得的最大价值量，若当前已有价值量与之相加低于已处理的最高价值量，则剪枝
-            ub = upper_bound(selected_combination, has_god or is_god(equip), current_index + 1)
-            if ub < max_setopt - set_perfect:
-                selected_combination.pop()
-                inc_invalid_cnt_func(invalid_cnt + bbg_invalid_cnt)
-                return
+            if not dont_pruning:
+                ub = upper_bound(selected_combination, has_god or is_god(equip), current_index + 1)
+                if ub < max_setopt - set_perfect:
+                    selected_combination.pop()
+                    inc_invalid_cnt_func(invalid_cnt + bbg_invalid_cnt)
+                    return
 
             if current_index < len(items) - 1:
                 cartesianProduct(current_index + 1, has_god or is_god(equip), baibianguai, upgrade_work_uniforms,
                                  selected_combination, process_func)
             else:  # 符合条件的装备搭配
-                god = 0
-                if has_god or is_god(equip):
-                    god = 1
-                set_list = ["1" + str(selected_combination[x][2:4]) for x in range(0, 11)]
-                set_val = Counter(set_list)
-                del set_val['136', '137', '138']
-                # 1件价值量=0，两件=1，三件、四件=2，五件=3，神话额外增加1价值量
-                setopt_num = sum([floor(x * 0.7) for x in set_val.values()]) + god
-
-                if setopt_num >= max_setopt - set_perfect:
-                    if max_setopt <= setopt_num - god * set_perfect:
-                        max_setopt = setopt_num - god * set_perfect
+                if dont_pruning:
+                    # 不进行任何剪枝操作，装备搭配对比的标准是最终计算出的伤害与奶量倍率
                     process_func(selected_combination, baibianguai, upgrade_work_uniforms)
                 else:
-                    inc_invalid_cnt_func(1)
+                    # 仅当当前搭配的价值评估函数值不低于历史最高值时才视为有效搭配
+                    god = 0
+                    if has_god or is_god(equip):
+                        god = 1
+                    set_list = ["1" + str(selected_combination[x][2:4]) for x in range(0, 11)]
+                    set_val = Counter(set_list)
+                    del set_val['136', '137', '138']
+                    # 1件价值量=0，两件=1，三件、四件=2，五件=3，神话额外增加1价值量
+                    setopt_num = sum([floor(x * 0.7) for x in set_val.values()]) + god
+
+                    if setopt_num >= max_setopt - set_perfect:
+                        if max_setopt <= setopt_num - god * set_perfect:
+                            max_setopt = setopt_num - god * set_perfect
+                        process_func(selected_combination, baibianguai, upgrade_work_uniforms)
+                    else:
+                        inc_invalid_cnt_func(1)
 
             selected_combination.pop()
 
@@ -1233,7 +1241,7 @@ def get_equips():
         except KeyError as error:
             c = 1
     algo_list = ['11', '12', '13', '14', '15', '21', '22', '23', '31', '32', '33']
-    if select_perfect.get() == '快速':
+    if select_speed.get() == '快速':
         for i in list_setnum:
             if list_setnum.count(i) == 1:
                 if i[-1] != '1':
@@ -2374,7 +2382,7 @@ def load_checklist_noconfirm(ssnum1):
         creature = creatures[0]
     creature_select.set(creature)
     req_cool.set(load_cell(g_row_custom_save_cd, col_custom_save_value).value)
-    select_perfect.set(load_cell(g_row_custom_save_speed, col_custom_save_value).value)
+    select_speed.set(load_cell(g_row_custom_save_speed, col_custom_save_value).value)
     baibianguai_select.set(
         load_cell(g_row_custom_save_has_baibianguai, col_custom_save_value).value or txt_no_baibianguai)
     can_upgrade_work_unifrom_nums_select.set(
@@ -2433,7 +2441,7 @@ def save_checklist():
             save_my_custom(save_cell, g_row_custom_save_title, col_custom_save_value, "称号选择", style_select.get())
             save_my_custom(save_cell, g_row_custom_save_pet, col_custom_save_value, "宠物选择", creature_select.get())
             save_my_custom(save_cell, g_row_custom_save_cd, col_custom_save_value, "冷却补正", req_cool.get())
-            save_my_custom(save_cell, g_row_custom_save_speed, col_custom_save_value, "选择速度", select_perfect.get())
+            save_my_custom(save_cell, g_row_custom_save_speed, col_custom_save_value, "选择速度", select_speed.get())
             save_my_custom(save_cell, g_row_custom_save_has_baibianguai, col_custom_save_value, "是否拥有百变怪",
                            baibianguai_select.get())
             save_my_custom(save_cell, g_row_custom_save_can_upgrade_work_uniforms_nums, col_custom_save_value,
@@ -2879,7 +2887,11 @@ for idx, txt in enumerate(txt_can_upgrade_work_unifrom_nums):
 ###########################################################
 
 def guide_speed():
-    tkinter.messagebox.showinfo("准确度选择", "快速=删除单一散件n中速=包括散件, 神话优先\n慢速=所有限制解除(非常慢)")
+    tkinter.messagebox.showinfo("准确度选择", (
+        "快速=不太精确-删除单一散件\n"
+        "中速=稍精确-包括散件, 神话优先\n"
+        "慢速=比较精确-所有限制解除(非常慢)(保留价值预估函数过滤)\n"
+        "超慢速=非常精确-所有限制解除(天荒地老海枯石烂的慢)"))
 
 
 def click_equipment(code):
@@ -3107,9 +3119,9 @@ bg_img = PhotoImage(file="ext_img/bg_img.png")
 bg_wall = tkinter.Label(self, image=bg_img)
 bg_wall.place(x=0, y=0)
 
-select_perfect = tkinter.ttk.Combobox(self, values=['快速', '中速', '慢速'], width=15)
-select_perfect.place(x=145, y=11)
-select_perfect.set('中速')
+select_speed = tkinter.ttk.Combobox(self, values=['快速', '中速', '慢速', '超慢速'], width=15)
+select_speed.place(x=145, y=11)
+select_speed.set('中速')
 select_speed_img = PhotoImage(file="ext_img/select_speed.png")
 tkinter.Button(self, command=guide_speed, image=select_speed_img, borderwidth=0, activebackground=dark_main,
                bg=dark_main).place(x=29, y=7)
