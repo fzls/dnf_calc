@@ -1327,16 +1327,12 @@ def get_equips():
     if len(list33) == 0:
         list33.append('33380')
 
-    # hack: 优化：由于装备顺序不影响最终计算结果，所以把神话装备先放到前面，那么剪枝可以更高效
-    #   所有已选装备、百变怪各部位可选装备、各部位工作服的顺序需要一致，比如第一个是鞋、头肩、腰带，则其余俩也要是这个顺序
     # 所有已选装备
-    items = [list11, list21, list33, list12, list13, list14, list15, list22, list23, list31, list32]
+    items = [list11, list12, list13, list14, list15, list21, list22, list23, list31, list32, list33]
     # 百变怪的各部位可选装备需要与上面的部位顺序一致
-    not_select_items = [listns11, listns21, listns33, listns12, listns13, listns14, listns15, listns22, listns23,
-                        listns31, listns32]
+    not_select_items = [listns11, listns12, listns13, listns14, listns15, listns21, listns22, listns23, listns31, listns32, listns33]
     # 可升级得到的各部位工作服
-    work_uniforms_items = ["11150", "21190", "33230", "12150", "13150", "14150", "15150", "22190", "23190", "31230",
-                           "32230"]
+    work_uniforms_items = ["11150", "12150", "13150", "14150", "15150", "21190", "22190", "23190", "31230", "32230", "33230"]
 
     return items, not_select_items, work_uniforms_items
 
@@ -1467,7 +1463,7 @@ def create_readable_result_area(weapon, equips):
             wisdom_indexs.remove('32410650')
             wisdom_indexs.remove('31400540')
     for wisdom_index in wisdom_indexs:
-        readable_names.append("{}".format(equip_index_to_realname[wisdom_index]))
+        readable_names.append(equip_index_to_realname[wisdom_index])
 
 
 
@@ -1484,10 +1480,48 @@ def create_readable_result_area(weapon, equips):
         readable_result += name
         line_word_count += len(name)
 
-    res_txt_readable_result = canvas_res.create_text(res_txt_readable_result_center_x, res_txt_readable_result_center_y, text=readable_result,
+    res_txt_readable_result = canvas_res.create_text(res_txt_readable_result_center_x, res_txt_readable_result_center_y,
+                                                     text=pretty_words(readable_names, 40, ' | '),
                                                      font=guide_font, fill='white')
 
+
+# 展示当前搭配的各装备名称
+def show_name():
+    global g_rank_equips, g_current_rank, g_current_job, g_current_buff_type
+
+    equips = None
+    if g_current_job == "deal":
+        equips = g_rank_equips[g_current_rank]
+    else:
+        equips = g_rank_equips[g_current_buff_type][g_current_rank]
+
+    readable_names = []
+    for equip in equips:
+        readable_names.append(equip_index_to_realname[equip])
+
+    tkinter.messagebox.showinfo("装备详细信息", pretty_words(readable_names, 30, ' | '))
+
+# 保证一行不会有太多词
+def pretty_words(words, max_line_word_count, delimiter):
+    pretty_result = ""
+    line_word_count = 0
+    for word in words:
+        if line_word_count + len(word) >= max_line_word_count:
+            line_word_count = 0
+            pretty_result += "\n"
+        elif line_word_count != 0:
+            pretty_result += delimiter
+
+        pretty_result += word
+        line_word_count += len(word)
+
+    return pretty_result
+
 def show_result(rank_list, job_type, ele_skill):
+    global g_rank_equips, g_current_rank, g_current_job, g_current_buff_type
+    g_current_rank = 0
+    g_current_job = job_type
+
     global result_window
     result_window = tkinter.Toplevel(self)
     # result_window.attributes("-topmost", True)
@@ -1680,6 +1714,10 @@ def show_result(rank_list, job_type, ele_skill):
         weapon = rank_setting[0][0]
         equips = rank_setting[0][1:]
         create_readable_result_area(weapon, equips)
+
+        g_rank_equips = {}
+        for rank in range(0, 5):
+            g_rank_equips[rank] = rank_setting[rank]
 
         length = len(rank_list)
 
@@ -2000,6 +2038,14 @@ def show_result(rank_list, job_type, ele_skill):
         equips = rank_setting3[0][1:]
         create_readable_result_area(weapon, equips)
 
+        g_rank_equips = {}
+        g_current_buff_type = "综合"
+        for buf_type, rank_setting in [("祝福", rank_setting1), ("一觉", rank_setting2), ("综合", rank_setting3)]:
+            ranks = {}
+            for rank in range(0, 5):
+                ranks[rank] = rank_setting[rank]
+            g_rank_equips[buf_type] = ranks
+
         load_presetr.close()
 
     wep_name = wep_select.get()
@@ -2007,6 +2053,11 @@ def show_result(rank_list, job_type, ele_skill):
     canvas_res.create_text(122, 20, text=wep_name, font=guide_font, fill='white')
     canvas_res.create_text(122, 50, text="<职业>", font=guide_font, fill='white')
     canvas_res.create_text(122, 87, text=job_name, font=guide_font, fill='white')
+
+    show_name_img = tkinter.PhotoImage(file='ext_img/show_name.png')
+    res_bt_show_name = tkinter.Button(result_window, command=lambda: show_name(), image=show_name_img,
+                                      bg=dark_blue, borderwidth=0, activebackground=dark_blue);
+    res_bt_show_name.place(x=8, y=135)
 
     show_detail_img = tkinter.PhotoImage(file='ext_img/show_detail.png')
 
@@ -2032,9 +2083,13 @@ def show_result(rank_list, job_type, ele_skill):
 
     canvas_res.image = result_bg
     res_bt1.image = show_detail_img
+    res_bt_show_name.image = show_name_img
 
 
 def change_rank(now, job_type):
+    global g_current_rank
+    g_current_rank = now
+
     global image_list, canvas_res, res_img11, res_img12, res_img13, res_img14, res_img15, res_img21, res_img22, res_img23, res_img31, res_img32, res_img33, res_txtbbg, res_imgbbg
     if job_type == 'deal':
         global res_dam, res_stat, res_stat2, rank_stat, rank_stat2, result_image_on
@@ -2106,6 +2161,9 @@ def change_rank(now, job_type):
 
 
 def change_rank_type(in_type):
+    global g_current_rank
+    g_current_rank = 0
+    global g_current_buff_type
     global image_list, canvas_res, res_img11, res_img12, res_img13, res_img14, res_img15, res_img21, res_img22, res_img23, res_img31, res_img32, res_img33, res_txtbbg, res_imgbbg
     global result_image_on1, result_image_on2, result_image_on3, rank_buf1, rank_buf2, rank_buf3, rank_type_buf, res_img_list, res_buf_list, res_buf_ex1, res_buf_ex2, res_buf_ex3, rank_buf_ex1, rank_buf_ex2, rank_buf_ex3, res_buf_type_what
     if in_type == 1:
@@ -2115,6 +2173,7 @@ def change_rank_type(in_type):
         rank_changed = rank_buf1
         rank_buf_ex_changed = rank_buf_ex1
         type_changed = "祝福标准"
+        g_current_buff_type = "祝福"
     elif in_type == 2:
         rank_type_buf = 2
         image_changed = result_image_on2[0]
@@ -2122,6 +2181,7 @@ def change_rank_type(in_type):
         rank_changed = rank_buf2
         rank_buf_ex_changed = rank_buf_ex2
         type_changed = "一觉标准"
+        g_current_buff_type = "一觉"
     elif in_type == 3:
         rank_type_buf = 3
         image_changed = result_image_on3[0]
@@ -2129,6 +2189,7 @@ def change_rank_type(in_type):
         rank_changed = rank_buf3
         rank_buf_ex_changed = rank_buf_ex3
         type_changed = "综合标准"
+        g_current_buff_type = "综合"
     canvas_res.itemconfig(res_buf_type_what, text=type_changed)
     canvas_res.itemconfig(res_buf_ex1, text="祝福=" + rank_buf_ex_changed[0][0])
     canvas_res.itemconfig(res_buf_ex2, text="一觉=" + rank_buf_ex_changed[0][1])
@@ -2689,6 +2750,10 @@ unique_index = 0
 count_invalid = 0
 show_number = 0
 all_list_num = 0
+g_current_rank = 0
+g_current_job = ""
+g_current_buff_type = "祝福" # 祝福 一觉 综合
+g_rank_equips = {}
 count_start_time = time.time() # 开始计算的时间点
 
 # 由于这里不需要对data.xlsx写入，设置read_only为True可以大幅度加快读取速度，在我的电脑上改动前读取耗时0.67s，占启动时间32%，改动之后用时0.1s，占启动时间4%
