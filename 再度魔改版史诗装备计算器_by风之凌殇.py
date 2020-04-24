@@ -1,5 +1,7 @@
 ﻿#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import collections
+
 now_version = "v3.2.8"
 ver_time = '2020-04-25'
 
@@ -1430,22 +1432,66 @@ def calc_upgrade_work_uniforms_add_counts(slots_equips, slots_not_select_equips,
 
     return total_add_counts
 
+result_window_width = 585
+result_window_readable_result_area_height = 18*3
+result_window_height = 402 + result_window_readable_result_area_height
+
+res_txt_readable_result_left_top_x = 0
+res_txt_readable_result_left_top_y = result_window_height - result_window_readable_result_area_height
+res_txt_readable_result_center_x = result_window_width // 2
+res_txt_readable_result_center_y = result_window_height - result_window_readable_result_area_height // 2
+res_txt_readable_result = None
+
+# 用文字方式写成当前搭配，避免每次都得一个个肉眼对比图标来确认是啥装备
+def create_readable_result_area(weapon, equips):
+    global res_txt_readable_result
+
+    readable_names = []
+    readable_names.append(equip_index_to_realname[weapon])
+
+    # 智慧产物以外的套装信息
+    set_list = ["1" + str(equips[x][2:4]) for x in range(0, 11) if len(equips[x]) < 8]
+    for set_index, count in collections.Counter(set_list).most_common():
+        readable_names.append("{}-{}".format(equip_index_to_realname[set_index], count))
+
+    # 智慧产物单独列出
+    for wisdom_index in [equips[x] for x in range(0, 11) if len(equips[x]) == 8]:
+        readable_names.append("{}".format(equip_index_to_realname[wisdom_index]))
+
+
+    line_item_count = 0
+    max_line_item_count = 4
+    readable_result = ""
+    for name in readable_names:
+        if line_item_count == max_line_item_count:
+            line_item_count = 0
+            readable_result += "\n"
+        elif line_item_count != 0:
+            readable_result += ' | '
+
+        readable_result += name
+        line_item_count += 1
+
+    res_txt_readable_result = canvas_res.create_text(res_txt_readable_result_center_x, res_txt_readable_result_center_y, text=readable_result,
+                                                     font=guide_font, fill='white')
 
 def show_result(rank_list, job_type, ele_skill):
     global result_window
     result_window = tkinter.Toplevel(self)
-    result_window.attributes("-topmost", True)
-    result_window.geometry("585x402+800+400")
+    # result_window.attributes("-topmost", True)
+    result_window.geometry("{}x{}+800+400".format(result_window_width, result_window_height))
     result_window.title("计算结果")
     result_window.resizable(False, False)
     global canvas_res
-    canvas_res = Canvas(result_window, width=587, height=404, bd=0)
+    canvas_width = result_window_width+2
+    canvas_height = result_window_height+2
+    canvas_res = Canvas(result_window, width=canvas_width, height=canvas_height, bd=0)
     canvas_res.place(x=-2, y=-2)
     if job_type == 'deal':
         result_bg = tkinter.PhotoImage(file='ext_img/bg_result.png')
     else:
         result_bg = tkinter.PhotoImage(file='ext_img/bg_result2.png')
-    canvas_res.create_image(293, 202, image=result_bg)
+    canvas_res.create_image(canvas_width//2, canvas_height//2, image=result_bg)
 
     global image_list, image_list2
     global res_img11, res_img12, res_img13, res_img14, res_img15, res_img21, res_img22, res_img23, res_img31, res_img32, res_img33, res_txtbbg, res_imgbbg, wep_select, jobup_select
@@ -1618,6 +1664,11 @@ def show_result(rank_list, job_type, ele_skill):
                 canvas_res.create_text(346, 34 + 78 * j, text=rank_dam[j], font=mid_font, fill='white')
             except KeyError as error:
                 c = 1
+
+        weapon = rank_setting[0][0]
+        equips = rank_setting[0][1:]
+        create_readable_result_area(weapon, equips)
+
         length = len(rank_list)
 
     elif job_type == 'buf':  ##########################
@@ -1932,6 +1983,10 @@ def show_result(rank_list, job_type, ele_skill):
         rank_type_but1.image = type1_img
         rank_type_but2.image = type2_img
         rank_type_but3.image = type3_img
+
+        weapon = rank_setting3[0][0]
+        equips = rank_setting3[0][1:]
+        create_readable_result_area(weapon, equips)
 
         load_presetr.close()
 
@@ -2628,11 +2683,15 @@ count_start_time = time.time() # 开始计算的时间点
 load_excel1 = load_workbook("DATA.xlsx", read_only=True, data_only=True)
 db_one = load_excel1["one"]
 name_one = {}
+equip_index_to_realname = {}
 for row in db_one.rows:
     row_value = [cell.value for cell in row]
 
-    name = row_value[0]
-    name_one[name] = row_value
+    index = row_value[0]
+    realname = row_value[1]
+
+    name_one[index] = row_value
+    equip_index_to_realname[index] = realname
 
 db_job = load_excel1["lvl"]
 opt_job = {}
