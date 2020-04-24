@@ -1455,22 +1455,34 @@ def create_readable_result_area(weapon, equips):
         readable_names.append("{}-{}".format(equip_index_to_realname[set_index], count))
 
     # 智慧产物单独列出
-    for wisdom_index in [equips[x] for x in range(0, 11) if len(equips[x]) == 8]:
+    wisdom_indexs = [equips[x] for x in range(0, 11) if len(equips[x]) == 8]
+    # 赤鬼的次元石改造五阶段词条：装备[青面修罗的面具]、[噙毒手套]中1种以上时，释放疯魔索伦之力。 - 攻击时，附加7%的伤害。
+    if wisdom_indexs.count('32410650') == 1:
+        if wisdom_indexs.count('21400340'):
+            readable_names.append(equip_index_to_realname["1401"])
+            wisdom_indexs.remove('32410650')
+            wisdom_indexs.remove('21400340')
+        elif wisdom_indexs.count('31400540') == 1:
+            readable_names.append(equip_index_to_realname["1401"])
+            wisdom_indexs.remove('32410650')
+            wisdom_indexs.remove('31400540')
+    for wisdom_index in wisdom_indexs:
         readable_names.append("{}".format(equip_index_to_realname[wisdom_index]))
 
 
-    line_item_count = 0
-    max_line_item_count = 4
+
+    line_word_count = 0
+    max_line_word_count = 40
     readable_result = ""
     for name in readable_names:
-        if line_item_count == max_line_item_count:
-            line_item_count = 0
+        if line_word_count + len(name) >= max_line_word_count:
+            line_word_count = 0
             readable_result += "\n"
-        elif line_item_count != 0:
+        elif line_word_count != 0:
             readable_result += ' | '
 
         readable_result += name
-        line_item_count += 1
+        line_word_count += len(name)
 
     res_txt_readable_result = canvas_res.create_text(res_txt_readable_result_center_x, res_txt_readable_result_center_y, text=readable_result,
                                                      font=guide_font, fill='white')
