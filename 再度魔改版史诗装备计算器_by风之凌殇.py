@@ -140,6 +140,7 @@ class MinHeap():
     def getTop(self):
         return sorted(self.h, reverse=True)
 
+
 # copy from https://gist.github.com/bakineugene/76c8f9bcec5b390e45df
 # http://tkinter.unpythonic.net/wiki/VerticalScrolledFrame
 
@@ -149,6 +150,7 @@ class VerticalScrolledFrame(Frame):
     * Construct and pack/place/grid normally
     * This frame only allows vertical scrolling
     """
+
     def __init__(self, parent, *args, **kw):
         Frame.__init__(self, parent, *args, **kw)
 
@@ -178,13 +180,16 @@ class VerticalScrolledFrame(Frame):
             if interior.winfo_reqwidth() != canvas.winfo_width():
                 # update the canvas's width to fit the inner frame
                 canvas.config(width=interior.winfo_reqwidth())
+
         interior.bind('<Configure>', _configure_interior)
 
         def _configure_canvas(event):
             if interior.winfo_reqwidth() != canvas.winfo_width():
                 # update the inner frame's width to fill the canvas
                 canvas.itemconfigure(interior_id, width=canvas.winfo_width())
+
         canvas.bind('<Configure>', _configure_canvas)
+
 
 # Combopicker code from @SilverHalo https://stackoverflow.com/questions/34549752/how-do-i-enable-multiple-selection-of-values-from-a-combobox
 class Picker(tkinter.ttk.Frame):
@@ -245,7 +250,8 @@ class Combopicker(tkinter.ttk.Entry, Picker):
 
         self._is_menuoptions_visible = False
 
-        self.picker_frame = Picker(self.winfo_toplevel(), dict_intvar_item=self.dict_intvar_item, values=values, entry_wid=self.entry_var, activebackground=activebackground, activeforeground=activeforeground, selectbackground=selectbackground, selectforeground=selectforeground,
+        self.picker_frame = Picker(self.winfo_toplevel(), dict_intvar_item=self.dict_intvar_item, values=values, entry_wid=self.entry_var, activebackground=activebackground, activeforeground=activeforeground,
+                                   selectbackground=selectbackground, selectforeground=selectforeground,
                                    command=self._on_selected_check)
 
         self.bind_all("<1>", self._on_click, "+")
@@ -368,8 +374,8 @@ g_row_custom_save_cd = 7  # 冷却补正
 g_row_custom_save_speed = 8  # 选择速度
 g_row_custom_save_has_baibianguai = 9  # 是否拥有百变怪
 g_row_custom_save_can_upgrade_work_uniforms_nums = 10  # 当前拥有的材料够升级多少件工作服
-g_row_custom_save_transfer_from = 11 # 跨界来源账户列表
-g_row_custom_save_max_transfer_count = 12 # 最大跨界数目
+g_row_custom_save_transfer_from = 11  # 跨界来源账户列表
+g_row_custom_save_max_transfer_count = 12  # 最大跨界数目
 
 # 国服特色
 styles = [
@@ -656,9 +662,11 @@ def get_shuchu_bonus_attributes():
 
     # from 韩械，原先他在Data.xlsx中所有武器的1-45和50级的被动技能中各增加了2级，其中1级为宠物的技能等级，另一极暂时不确定是哪里来的，可能是其他国服特色
     # 为了保持一致，根据他的建议，把data中所有武器的1-45和50级的主动技能减少两级，然后另外一个技能补正加在这个位置
-    # todo：问问韩械这个多出来的一级是啥特色带来的？
     bonus_array[index_extra_active_skill_lv_1_45] += 1  # 1-45级主动+1， 1-50lv+1
     bonus_array[index_extra_active_skill_lv_50] += 1  # 50级主动+1， 1-50lv+1
+
+    # 经韩械反馈，属强多出来了80点，应该是之前他在data.xlsx中补正的数值我这边重新计算了一遍- -，暂时先在这里减去吧
+    bonus_array[index_extra_all_element_strength] -= 44
 
     return bonus_array
 
@@ -1667,6 +1675,7 @@ def get_transfer_slots_equips(items, sheet):
                     pass
 
     return transfer_slots_equips
+
 
 def calc_upgrade_work_uniforms_add_counts(slots_equips, slots_not_select_equips, slots_work_uniforms):
     # 找出所有尚未升级工作服的部位
@@ -2804,7 +2813,6 @@ def load_checklist_noconfirm(ssnum1):
     transfer_equip_combopicker.set((load_cell(g_row_custom_save_transfer_from, col_custom_save_value).value or "").split(','))
     can_transfer_nums_select.set(load_cell(g_row_custom_save_max_transfer_count, col_custom_save_value).value or txt_can_transfer_nums[0])
 
-
     load_preset3.close()
     check_equipment()
     for i in range(101, 136):
@@ -3046,7 +3054,6 @@ def reset():
     var = tkinter.StringVar(self)
     var.set("0")
     transfer_equip_spinbox.textvariable = var
-
 
 
 ###########################################################
@@ -3526,6 +3533,7 @@ def blog():
 def hamjung():
     tkinter.messagebox.showinfo("제작자 크레딧",
                                 "총제작자=Dawnclass(새벽반)\n이미지/그래픽=경철부동산\n직업/버퍼DB=대략볼록할철\n서버제공=던파오프\n기타조언=히든 도비 4,5,6호\n\n오류 제보는 블로그 덧글이나 던조 쪽지로")
+
 
 def get_other_account_names():
     current_name = save_select.get()
