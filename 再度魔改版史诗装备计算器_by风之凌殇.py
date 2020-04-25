@@ -140,10 +140,55 @@ class MinHeap():
     def getTop(self):
         return sorted(self.h, reverse=True)
 
+# copy from https://gist.github.com/bakineugene/76c8f9bcec5b390e45df
+# http://tkinter.unpythonic.net/wiki/VerticalScrolledFrame
+
+class VerticalScrolledFrame(Frame):
+    """A pure Tkinter scrollable frame that actually works!
+    * Use the 'interior' attribute to place widgets inside the scrollable frame
+    * Construct and pack/place/grid normally
+    * This frame only allows vertical scrolling
+    """
+    def __init__(self, parent, *args, **kw):
+        Frame.__init__(self, parent, *args, **kw)
+
+        # create a canvas object and a vertical scrollbar for scrolling it
+        vscrollbar = Scrollbar(self, orient=VERTICAL)
+        vscrollbar.pack(fill=Y, side=RIGHT, expand=FALSE)
+        canvas = Canvas(self, bd=0, highlightthickness=0,
+                        yscrollcommand=vscrollbar.set)
+        canvas.pack(side=LEFT, fill=BOTH, expand=TRUE)
+        vscrollbar.config(command=canvas.yview)
+
+        # reset the view
+        canvas.xview_moveto(0)
+        canvas.yview_moveto(0)
+
+        # create a frame inside the canvas which will be scrolled with it
+        self.interior = interior = Frame(canvas)
+        interior_id = canvas.create_window(0, 0, window=interior,
+                                           anchor=NW)
+
+        # track changes to the canvas and frame width and sync them,
+        # also updating the scrollbar
+        def _configure_interior(event):
+            # update the scrollbars to match the size of the inner frame
+            size = (interior.winfo_reqwidth(), interior.winfo_reqheight())
+            canvas.config(scrollregion="0 0 %s %s" % size)
+            if interior.winfo_reqwidth() != canvas.winfo_width():
+                # update the canvas's width to fit the inner frame
+                canvas.config(width=interior.winfo_reqwidth())
+        interior.bind('<Configure>', _configure_interior)
+
+        def _configure_canvas(event):
+            if interior.winfo_reqwidth() != canvas.winfo_width():
+                # update the inner frame's width to fill the canvas
+                canvas.itemconfigure(interior_id, width=canvas.winfo_width())
+        canvas.bind('<Configure>', _configure_canvas)
 
 # Combopicker code from @SilverHalo https://stackoverflow.com/questions/34549752/how-do-i-enable-multiple-selection-of-values-from-a-combobox
 class Picker(tkinter.ttk.Frame):
-    def __init__(self, master=None, activebackground='#b1dcfb', values=[], entry_wid=None, activeforeground='black', selectbackground='#003eff', selectforeground='white', command=None, borderwidth=1, relief="solid"):
+    def __init__(self, master=None, activebackground='#b1dcfb', dict_intvar_item={}, values=[], entry_wid=None, activeforeground='black', selectbackground='#003eff', selectforeground='white', command=None, borderwidth=1, relief="solid"):
         self._selected_item = None
 
         self._values = values
@@ -164,13 +209,16 @@ class Picker(tkinter.ttk.Frame):
 
         self._font = tkinter.font.Font()
 
+        self.frame = VerticalScrolledFrame(self)
+        self.frame.pack()
+
         self.dict_checkbutton = {}
         self.dict_checkbutton_var = {}
-        self.dict_intvar_item = {}
+        self.dict_intvar_item = dict_intvar_item
 
         for index, item in enumerate(self._values):
             self.dict_intvar_item[item] = tkinter.IntVar()
-            self.dict_checkbutton[item] = tkinter.ttk.Checkbutton(self, text=item, variable=self.dict_intvar_item[item], command=lambda ITEM=item: self._command(ITEM))
+            self.dict_checkbutton[item] = tkinter.ttk.Checkbutton(self.frame.interior, text=item, variable=self.dict_intvar_item[item], command=lambda ITEM=item: self._command(ITEM))
             self.dict_checkbutton[item].grid(row=index, column=0, sticky=tkinter.NSEW)
             self.dict_intvar_item[item].set(0)
 
@@ -184,6 +232,8 @@ class Combopicker(tkinter.ttk.Entry, Picker):
         else:
             self.entry_var = tkinter.StringVar()
 
+        self.dict_intvar_item = {}
+
         entry_config = {}
         if entrywidth is not None:
             entry_config["width"] = entrywidth
@@ -195,7 +245,7 @@ class Combopicker(tkinter.ttk.Entry, Picker):
 
         self._is_menuoptions_visible = False
 
-        self.picker_frame = Picker(self.winfo_toplevel(), values=values, entry_wid=self.entry_var, activebackground=activebackground, activeforeground=activeforeground, selectbackground=selectbackground, selectforeground=selectforeground,
+        self.picker_frame = Picker(self.winfo_toplevel(), dict_intvar_item=self.dict_intvar_item, values=values, entry_wid=self.entry_var, activebackground=activebackground, activeforeground=activeforeground, selectbackground=selectbackground, selectforeground=selectforeground,
                                    command=self._on_selected_check)
 
         self.bind_all("<1>", self._on_click, "+")
@@ -216,6 +266,29 @@ class Combopicker(tkinter.ttk.Entry, Picker):
     @current_value.setter
     def current_value(self, INDEX):
         self.entry_var.set(self.values.index(INDEX))
+
+    def set(self, checked_values):
+        # 清空所有选项
+        for item, intvar in self.dict_intvar_item.items():
+            intvar.set(0)
+        # 清空内容栏
+        self.entry_var.set("")
+
+        if checked_values is None:
+            return
+
+        # 添加选项与内容
+        temp_value = ""
+        for item in checked_values:
+            try:
+                self.dict_intvar_item[item].set(1)
+                if len(temp_value) != 0:
+                    temp_value += ","
+                temp_value += str(item)
+            except:
+                pass
+
+        self.entry_var.set(temp_value)
 
     def _on_selected_check(self, SELECTED):
 
@@ -295,6 +368,8 @@ g_row_custom_save_cd = 7  # 冷却补正
 g_row_custom_save_speed = 8  # 选择速度
 g_row_custom_save_has_baibianguai = 9  # 是否拥有百变怪
 g_row_custom_save_can_upgrade_work_uniforms_nums = 10  # 当前拥有的材料够升级多少件工作服
+g_row_custom_save_transfer_from = 11 # 跨界来源账户列表
+g_row_custom_save_max_transfer_count = 12 # 最大跨界数目
 
 # 国服特色
 styles = [
@@ -694,11 +769,16 @@ def calc():
     else:
         cool_on = 1
 
-    valid_weapon = False
-    for i in range(0, 75):
-        if wep_select.get() == wep_list[i]:
-            wep_num = (str(i + 111001),)
-            valid_weapon = True
+    valid_weapon = True
+    weapon_indexs = []
+    try:
+        for weapon_name in wep_combopicker.get_selected_entrys():
+            weapon_indexs.append(wep_name_to_index[weapon_name])
+    except:
+        valid_weapon = False
+    if len(weapon_indexs) == 0:
+        valid_weapon = False
+
     if not valid_weapon:
         tkinter.messagebox.showerror('部分参数有误', "未选择武器或武器非法")
         return
@@ -951,108 +1031,110 @@ def calc():
                     setapp('1401')
                 elif onecount('31400540') == 1:
                     setapp('1401')
-            calc_wep = wep_num + tuple(calc_now)
-            damage = 0
-            # 获取输出职业的国服特色数值作为初始值
-            base_array = get_shuchu_bonus_attributes()
-            # 加上职业的基础属强
-            base_array[index_extra_all_element_strength] += ele_in
 
-            skiper = 0
-            for_calc = tuple(set_on) + calc_wep
-            oneone = len(for_calc)
-            oneonelist = []
-            for i in range(oneone):
-                no_cut = getone(for_calc[i])  ## 11번 스증
-                if no_cut == None:
-                    # hack：目前select是默认初始化时将tg{1101-3336}[0,1]范围的key对应的值都设为0，而百变怪会根据select的值为0来筛选出未选择的集合
-                    #  因此在这里如果为None，就是这种情况，直接返回就可以了
-                    global count_invalid
-                    count_invalid = count_invalid + 1
-                    return
-                cut = np.array(no_cut[0:20] + no_cut[22:23] + no_cut[34:35] + no_cut[38:44])
-                skiper = (skiper / 100 + 1) * (cut[index_extra_percent_skill_attack_power] / 100 + 1) * 100 - 100
-                oneonelist.append(cut)
-            for i in range(oneone):
-                base_array = base_array + oneonelist[i]
+            for wep_num in weapon_indexs:
+                calc_wep = (wep_num,) + tuple(calc_now)
+                damage = 0
+                # 获取输出职业的国服特色数值作为初始值
+                base_array = get_shuchu_bonus_attributes()
+                # 加上职业的基础属强
+                base_array[index_extra_all_element_strength] += ele_in
 
-            if set_oncount('1201') == 1 and onecount('32200') == 1:
-                base_array[index_extra_percent_crit_damage] -= 5
-            if onecount('33230') == 1 or onecount('33231') == 1:
-                if onecount('31230') == 0:
-                    base_array[index_extra_percent_addtional_damage] -= 10
-                if onecount('32230') == 0:
-                    base_array[index_extra_all_element_strength] -= 40
-            # 特殊处理天命无常套装
-            if onecount('15340') == 1 or onecount('23340') == 1 or onecount('33340') == 1 or onecount(
-                    '33341') == 1:
-                if set_oncount('1341') == 0 and set_oncount('1342') == 0:  # 1341=天命两件套 1342=天命三件套
-                    if onecount('15340') == 1:
-                        base_array[index_extra_all_element_strength] -= 20
-                    elif onecount('23340') == 1:  # 天命无常-戒指-命运的捉弄
-                        base_array[index_extra_percent_attack_damage] -= 10
-                    elif onecount('33340') == 1:
-                        base_array[index_extra_percent_final_damage] -= 5  #
-                    else:  # 天命无常-神话耳环-命运反抗者
-                        base_array[index_extra_all_element_strength] -= 4  # ele=4
-                        base_array[index_extra_percent_attack_damage] -= 2  # damper=2
-                        base_array[index_extra_percent_final_damage] -= 1  # allper=6
-                        base_array[index_extra_percent_strength_and_intelligence] -= 1.93  # staper=15
-            if onecount('11111') == 1:
-                if set_oncount('1112') == 1 or set_oncount('1113') == 1:
-                    base_array[index_cool_correction] += 10
-            if onecount('11301') == 1:
-                if onecount('22300') != 1:
-                    base_array[index_extra_percent_addtional_damage] -= 10
-                    base_array[index_extra_percent_physical_magical_independent_attack_power] += 10
-                if onecount('31300') != 1:
-                    base_array[index_extra_percent_addtional_damage] -= 10
-                    base_array[index_extra_percent_physical_magical_independent_attack_power] += 10
+                skiper = 0
+                for_calc = tuple(set_on) + calc_wep
+                oneone = len(for_calc)
+                oneonelist = []
+                for i in range(oneone):
+                    no_cut = getone(for_calc[i])  ## 11번 스증
+                    if no_cut == None:
+                        # hack：目前select是默认初始化时将tg{1101-3336}[0,1]范围的key对应的值都设为0，而百变怪会根据select的值为0来筛选出未选择的集合
+                        #  因此在这里如果为None，就是这种情况，直接返回就可以了
+                        global count_invalid
+                        count_invalid = count_invalid + 1
+                        return
+                    cut = np.array(no_cut[0:20] + no_cut[22:23] + no_cut[34:35] + no_cut[38:44])
+                    skiper = (skiper / 100 + 1) * (cut[index_extra_percent_skill_attack_power] / 100 + 1) * 100 - 100
+                    oneonelist.append(cut)
+                for i in range(oneone):
+                    base_array = base_array + oneonelist[i]
 
-            base_array[index_extra_percent_skill_attack_power] = skiper  # 技能攻击力 +X%
-            real_bon = (base_array[index_extra_percent_addtional_damage] +  # 攻击时，附加X%的伤害，也就是白字
-                        base_array[index_extra_percent_elemental_damage] *  # 攻击时，附加X%的属性伤害
-                        (base_array[index_extra_all_element_strength] * 0.0045 + 1.05))  # 所有属性强化+X
-            actlvl = ((base_array[index_extra_active_second_awaken_skill] +  # 二觉主动技能
-                       base_array[index_extra_active_skill_lv_1_45] * job_lv1 +  # 1_45主动技能
-                       base_array[index_extra_active_skill_lv_50] * job_lv2 +  # 50主动技能
-                       base_array[index_extra_active_skill_lv_60_80] * job_lv3 +  # 60_80主动技能
-                       base_array[index_extra_active_skill_lv_85] * job_lv4 +  # 85主动技能
-                       base_array[index_extra_active_skill_lv_95] * job_lv5 +  # 95主动技能
-                       base_array[index_extra_active_skill_lv_100] * job_lv6  # 100主动技能
-                       ) / 100 + 1)
-            paslvl = (((100 + base_array[index_extra_passive_transfer_skill] * job_pas0) / 100) *  # 增加转职被动的等级
-                      ((100 + base_array[index_extra_passive_first_awaken_skill] * job_pas1) / 100) *  # 增加一绝被动的等级
-                      ((100 + base_array[index_extra_passive_second_awaken_skill] * job_pas2) / 100) *  # 增加二觉被动的等级
-                      ((100 + base_array[index_extra_passive_third_awaken_skill] * job_pas3) / 100)  # 增加三觉被动的等级
-                      )
-            damage = ((base_array[index_extra_percent_attack_damage] / 100 + 1) *  # 攻击时额外增加X%的伤害增加量
-                      (base_array[index_extra_percent_crit_damage] / 100 + 1) *  # 暴击时，额外增加X%的伤害增加量
-                      (real_bon / 100 + 1) *  # 白字与属强的最终综合值
-                      (base_array[index_extra_percent_final_damage] / 100 + 1) *  # 最终伤害+X%
-                      (base_array[index_extra_percent_physical_magical_independent_attack_power] / 100 + 1) *  # 物理/魔法/独立攻击力 +X%
-                      (base_array[index_extra_percent_strength_and_intelligence] / 100 + 1) *  # 力智+X%
-                      (base_array[index_extra_all_element_strength] * 0.0045 + 1.05) *  # 所有属性强化+X
-                      (base_array[index_extra_percent_continued_damage] / 100 + 1) *  # 发生持续伤害5秒，伤害量为对敌人造成伤害的X%
-                      (skiper / 100 + 1) *  # 技能攻击力 +X%
-                      (base_array[index_extra_percent_special_effect] / 100 + 1) *  # 特殊词条，作者为每个特殊词条打了相应的强度百分比分，如一叶障目对忍者一些技能的特殊改变被认为可以强化9%，守护的抉择（歧路鞋）的护石增强词条被认为可以增强21%
-                      actlvl * paslvl *  # 主动技能与被动技能的影响
-                      ((54500 + 3.31 * base_array[index_strength_and_intelligence]) / 54500) *  # 力智
-                      ((4800 + base_array[index_physical_magical_independent_attack_power]) / 4800) *  # 物理/魔法/独立攻击力
-                      (1 + cool_on * base_array[index_cool_correction] / 100) /  # 冷却矫正系数，每冷却1%，记0.35这个值
-                      (1.05 + 0.0045 * int(ele_skill)))  # 不太确定，可能是属性抗性？속강
+                if set_oncount('1201') == 1 and onecount('32200') == 1:
+                    base_array[index_extra_percent_crit_damage] -= 5
+                if onecount('33230') == 1 or onecount('33231') == 1:
+                    if onecount('31230') == 0:
+                        base_array[index_extra_percent_addtional_damage] -= 10
+                    if onecount('32230') == 0:
+                        base_array[index_extra_all_element_strength] -= 40
+                # 特殊处理天命无常套装
+                if onecount('15340') == 1 or onecount('23340') == 1 or onecount('33340') == 1 or onecount(
+                        '33341') == 1:
+                    if set_oncount('1341') == 0 and set_oncount('1342') == 0:  # 1341=天命两件套 1342=天命三件套
+                        if onecount('15340') == 1:
+                            base_array[index_extra_all_element_strength] -= 20
+                        elif onecount('23340') == 1:  # 天命无常-戒指-命运的捉弄
+                            base_array[index_extra_percent_attack_damage] -= 10
+                        elif onecount('33340') == 1:
+                            base_array[index_extra_percent_final_damage] -= 5  #
+                        else:  # 天命无常-神话耳环-命运反抗者
+                            base_array[index_extra_all_element_strength] -= 4  # ele=4
+                            base_array[index_extra_percent_attack_damage] -= 2  # damper=2
+                            base_array[index_extra_percent_final_damage] -= 1  # allper=6
+                            base_array[index_extra_percent_strength_and_intelligence] -= 1.93  # staper=15
+                if onecount('11111') == 1:
+                    if set_oncount('1112') == 1 or set_oncount('1113') == 1:
+                        base_array[index_cool_correction] += 10
+                if onecount('11301') == 1:
+                    if onecount('22300') != 1:
+                        base_array[index_extra_percent_addtional_damage] -= 10
+                        base_array[index_extra_percent_physical_magical_independent_attack_power] += 10
+                    if onecount('31300') != 1:
+                        base_array[index_extra_percent_addtional_damage] -= 10
+                        base_array[index_extra_percent_physical_magical_independent_attack_power] += 10
 
-            base_array[index_extra_percent_addtional_damage] = real_bon
-            global unique_index
-            unique_index += 1
-            not_owned_equips = [uwu for uwu in upgrade_work_uniforms]
-            for equip in transfered_equips:
-                not_owned_equips.append(equip)
-            minheap.add((damage, unique_index,
-                         [calc_wep, base_array, baibianguai, tuple(not_owned_equips)]))
+                base_array[index_extra_percent_skill_attack_power] = skiper  # 技能攻击力 +X%
+                real_bon = (base_array[index_extra_percent_addtional_damage] +  # 攻击时，附加X%的伤害，也就是白字
+                            base_array[index_extra_percent_elemental_damage] *  # 攻击时，附加X%的属性伤害
+                            (base_array[index_extra_all_element_strength] * 0.0045 + 1.05))  # 所有属性强化+X
+                actlvl = ((base_array[index_extra_active_second_awaken_skill] +  # 二觉主动技能
+                           base_array[index_extra_active_skill_lv_1_45] * job_lv1 +  # 1_45主动技能
+                           base_array[index_extra_active_skill_lv_50] * job_lv2 +  # 50主动技能
+                           base_array[index_extra_active_skill_lv_60_80] * job_lv3 +  # 60_80主动技能
+                           base_array[index_extra_active_skill_lv_85] * job_lv4 +  # 85主动技能
+                           base_array[index_extra_active_skill_lv_95] * job_lv5 +  # 95主动技能
+                           base_array[index_extra_active_skill_lv_100] * job_lv6  # 100主动技能
+                           ) / 100 + 1)
+                paslvl = (((100 + base_array[index_extra_passive_transfer_skill] * job_pas0) / 100) *  # 增加转职被动的等级
+                          ((100 + base_array[index_extra_passive_first_awaken_skill] * job_pas1) / 100) *  # 增加一绝被动的等级
+                          ((100 + base_array[index_extra_passive_second_awaken_skill] * job_pas2) / 100) *  # 增加二觉被动的等级
+                          ((100 + base_array[index_extra_passive_third_awaken_skill] * job_pas3) / 100)  # 增加三觉被动的等级
+                          )
+                damage = ((base_array[index_extra_percent_attack_damage] / 100 + 1) *  # 攻击时额外增加X%的伤害增加量
+                          (base_array[index_extra_percent_crit_damage] / 100 + 1) *  # 暴击时，额外增加X%的伤害增加量
+                          (real_bon / 100 + 1) *  # 白字与属强的最终综合值
+                          (base_array[index_extra_percent_final_damage] / 100 + 1) *  # 最终伤害+X%
+                          (base_array[index_extra_percent_physical_magical_independent_attack_power] / 100 + 1) *  # 物理/魔法/独立攻击力 +X%
+                          (base_array[index_extra_percent_strength_and_intelligence] / 100 + 1) *  # 力智+X%
+                          (base_array[index_extra_all_element_strength] * 0.0045 + 1.05) *  # 所有属性强化+X
+                          (base_array[index_extra_percent_continued_damage] / 100 + 1) *  # 发生持续伤害5秒，伤害量为对敌人造成伤害的X%
+                          (skiper / 100 + 1) *  # 技能攻击力 +X%
+                          (base_array[index_extra_percent_special_effect] / 100 + 1) *  # 特殊词条，作者为每个特殊词条打了相应的强度百分比分，如一叶障目对忍者一些技能的特殊改变被认为可以强化9%，守护的抉择（歧路鞋）的护石增强词条被认为可以增强21%
+                          actlvl * paslvl *  # 主动技能与被动技能的影响
+                          ((54500 + 3.31 * base_array[index_strength_and_intelligence]) / 54500) *  # 力智
+                          ((4800 + base_array[index_physical_magical_independent_attack_power]) / 4800) *  # 物理/魔法/独立攻击力
+                          (1 + cool_on * base_array[index_cool_correction] / 100) /  # 冷却矫正系数，每冷却1%，记0.35这个值
+                          (1.05 + 0.0045 * int(ele_skill)))  # 不太确定，可能是属性抗性？속강
 
-            global count_valid
-            count_valid = count_valid + 1
+                base_array[index_extra_percent_addtional_damage] = real_bon
+                global unique_index
+                unique_index += 1
+                not_owned_equips = [uwu for uwu in upgrade_work_uniforms]
+                for equip in transfered_equips:
+                    not_owned_equips.append(equip)
+                minheap.add((damage, unique_index,
+                             [calc_wep, base_array, baibianguai, tuple(not_owned_equips)]))
+
+                global count_valid
+                count_valid = count_valid + 1
 
         cartesianProduct(0, False, None, [], [], [], process)
 
@@ -1118,106 +1200,107 @@ def calc():
             # 10 아리아/보징증폭
             # 11 전직패 12 보징 13 각패1 14 각패2 15 二觉 16 각패3
             # 17 깡신념 18 깡신실 19 아리아쿨 20 하베쿨
-            calc_wep = wep_num + tuple(calc_now)
-            base_array = np.array(
-                [base_stat_h, base_stat_s, 0, 0, 0, 0, 0, 0, base_b, base_c, 0, base_pas0, base_pas0_1, 0, 0, 0,
-                 0, 0,
-                 0, 0, 0])
+            for wep_num in weapon_indexs:
+                calc_wep = (wep_num,) + tuple(calc_now)
+                base_array = np.array(
+                    [base_stat_h, base_stat_s, 0, 0, 0, 0, 0, 0, base_b, base_c, 0, base_pas0, base_pas0_1, 0, 0, 0,
+                     0, 0,
+                     0, 0, 0])
 
-            b_stat = 10.24  ##탈리스만
-            b_phy = 0
-            b_mag = 0
-            b_ind = 0
-            c_per = 0
-            for_calc = tuple(set_on) + calc_wep
-            oneone = len(for_calc)
-            oneonelist = []
-            for i in range(oneone):
-                # 获取该装备的buff属性
-                # re：阅读data.xlsx的buf sheet和buflvl确认奶系职业的各个计算维度的含义
-                no_cut = np.array(setget(for_calc[i]))  ## 2 3 4 5 7
-                base_array = base_array + no_cut
-                b_stat = (b_stat / 100 + 1) * (no_cut[2] / 100 + 1) * 100 - 100
-                b_phy = (b_phy / 100 + 1) * (no_cut[3] / 100 + 1) * 100 - 100
-                b_mag = (b_mag / 100 + 1) * (no_cut[4] / 100 + 1) * 100 - 100
-                b_ind = (b_ind / 100 + 1) * (no_cut[5] / 100 + 1) * 100 - 100
-                c_per = (c_per / 100 + 1) * (no_cut[7] / 100 + 1) * 100 - 100
-                oneonelist.append(no_cut)
+                b_stat = 10.24  ##탈리스만
+                b_phy = 0
+                b_mag = 0
+                b_ind = 0
+                c_per = 0
+                for_calc = tuple(set_on) + calc_wep
+                oneone = len(for_calc)
+                oneonelist = []
+                for i in range(oneone):
+                    # 获取该装备的buff属性
+                    # re：阅读data.xlsx的buf sheet和buflvl确认奶系职业的各个计算维度的含义
+                    no_cut = np.array(setget(for_calc[i]))  ## 2 3 4 5 7
+                    base_array = base_array + no_cut
+                    b_stat = (b_stat / 100 + 1) * (no_cut[2] / 100 + 1) * 100 - 100
+                    b_phy = (b_phy / 100 + 1) * (no_cut[3] / 100 + 1) * 100 - 100
+                    b_mag = (b_mag / 100 + 1) * (no_cut[4] / 100 + 1) * 100 - 100
+                    b_ind = (b_ind / 100 + 1) * (no_cut[5] / 100 + 1) * 100 - 100
+                    c_per = (c_per / 100 + 1) * (no_cut[7] / 100 + 1) * 100 - 100
+                    oneonelist.append(no_cut)
 
-            if job_name[4:7] == "奶爸":
-                b_base_att = lvlget('hol_b_atta')[int(base_array[8])]
-                stat_pas0lvl_b = lvlget('pas0')[int(base_array[11]) + base_pas0_b] + lvlget('hol_pas0_1')[
-                    int(base_array[12])]
-                stat_pas0lvl_c = lvlget('pas0')[int(base_array[11]) + base_pas0_c] + lvlget('hol_pas0_1')[
-                    int(base_array[12])]
-                stat_pas1lvl = lvlget('hol_pas1')[int(base_array[13])]
-                stat_pas2lvl = lvlget('hol_act2')[int(base_array[15])]
-                stat_pas3lvl = lvlget('pas3')[int(base_array[16])]
-                stat_b = base_array[0] + stat_pas0lvl_b + stat_pas1lvl + stat_pas2lvl + stat_pas3lvl + 19 * \
-                         base_array[10] + base_stat_d
-                stat_c = base_array[0] + stat_pas0lvl_c + stat_pas1lvl + stat_pas2lvl + stat_pas3lvl + 19 * \
-                         base_array[10]
-                b_stat_calc = int(
-                    int(lvlget('hol_b_stat')[int(base_array[8])] * (b_stat / 100 + 1)) * (stat_b / 630 + 1))
-                b_phy_calc = int(int(b_base_att * (b_phy / 100 + 1)) * (stat_b / 630 + 1))
-                b_mag_calc = int(int(b_base_att * (b_mag / 100 + 1)) * (stat_b / 630 + 1))
-                b_ind_calc = int(int(b_base_att * (b_ind / 100 + 1)) * (stat_b / 630 + 1))
-                b_average = int((b_phy_calc + b_mag_calc + b_ind_calc) / 3)
-                c_calc = int(int((lvlget('c_stat')[int(base_array[9])] + base_array[6]) * (c_per / 100 + 1)) * (
-                        stat_c / 750 + 1))
-                pas1_calc = int(lvlget('hol_pas1_out')[int(base_array[13])] + 213 + base_array[17])
-                pas1_out = str(
-                    int(lvlget('hol_pas1_out')[int(base_array[13])] + 213 + base_array[17])) + "  (" + str(
-                    int(20 + base_array[13])) + "级)"
-                save1 = str(b_stat_calc) + "/" + str(b_average) + "   [" + str(int(stat_b)) + "(" + str(
-                    int(base_array[8])) + "级)]"
+                if job_name[4:7] == "奶爸":
+                    b_base_att = lvlget('hol_b_atta')[int(base_array[8])]
+                    stat_pas0lvl_b = lvlget('pas0')[int(base_array[11]) + base_pas0_b] + lvlget('hol_pas0_1')[
+                        int(base_array[12])]
+                    stat_pas0lvl_c = lvlget('pas0')[int(base_array[11]) + base_pas0_c] + lvlget('hol_pas0_1')[
+                        int(base_array[12])]
+                    stat_pas1lvl = lvlget('hol_pas1')[int(base_array[13])]
+                    stat_pas2lvl = lvlget('hol_act2')[int(base_array[15])]
+                    stat_pas3lvl = lvlget('pas3')[int(base_array[16])]
+                    stat_b = base_array[0] + stat_pas0lvl_b + stat_pas1lvl + stat_pas2lvl + stat_pas3lvl + 19 * \
+                             base_array[10] + base_stat_d
+                    stat_c = base_array[0] + stat_pas0lvl_c + stat_pas1lvl + stat_pas2lvl + stat_pas3lvl + 19 * \
+                             base_array[10]
+                    b_stat_calc = int(
+                        int(lvlget('hol_b_stat')[int(base_array[8])] * (b_stat / 100 + 1)) * (stat_b / 630 + 1))
+                    b_phy_calc = int(int(b_base_att * (b_phy / 100 + 1)) * (stat_b / 630 + 1))
+                    b_mag_calc = int(int(b_base_att * (b_mag / 100 + 1)) * (stat_b / 630 + 1))
+                    b_ind_calc = int(int(b_base_att * (b_ind / 100 + 1)) * (stat_b / 630 + 1))
+                    b_average = int((b_phy_calc + b_mag_calc + b_ind_calc) / 3)
+                    c_calc = int(int((lvlget('c_stat')[int(base_array[9])] + base_array[6]) * (c_per / 100 + 1)) * (
+                            stat_c / 750 + 1))
+                    pas1_calc = int(lvlget('hol_pas1_out')[int(base_array[13])] + 213 + base_array[17])
+                    pas1_out = str(
+                        int(lvlget('hol_pas1_out')[int(base_array[13])] + 213 + base_array[17])) + "  (" + str(
+                        int(20 + base_array[13])) + "级)"
+                    save1 = str(b_stat_calc) + "/" + str(b_average) + "   [" + str(int(stat_b)) + "(" + str(
+                        int(base_array[8])) + "级)]"
 
-            else:
-                if job_name[4:7] == "奶妈":
-                    b_value = 675
-                    aria = 1.25 + 0.05 * base_array[10]
-                if job_name[4:7] == "奶萝":
-                    b_value = 665
-                    aria = (1.20 + 0.05 * base_array[10]) * 1.20
+                else:
+                    if job_name[4:7] == "奶妈":
+                        b_value = 675
+                        aria = 1.25 + 0.05 * base_array[10]
+                    if job_name[4:7] == "奶萝":
+                        b_value = 665
+                        aria = (1.20 + 0.05 * base_array[10]) * 1.20
 
-                b_base_att = lvlget('se_b_atta')[int(base_array[8])]
-                stat_pas0lvl_b = lvlget('pas0')[int(base_array[11]) + int(base_pas0_b)]
-                stat_pas0lvl_c = lvlget('pas0')[int(base_array[11]) + int(base_pas0_c)]
-                stat_pas1lvl = lvlget('se_pas1')[int(base_array[13])] + base_array[18]
-                stat_pas2lvl = lvlget('se_pas2')[int(base_array[14])]
-                stat_pas3lvl = lvlget('pas3')[int(base_array[16])]
-                stat_b = base_array[
-                             1] + stat_pas0lvl_b + stat_pas1lvl + stat_pas2lvl + stat_pas3lvl + base_stat_d
-                stat_c = base_array[1] + stat_pas0lvl_c + stat_pas1lvl + stat_pas2lvl + stat_pas3lvl
-                b_stat_calc = int(int(lvlget('se_b_stat')[int(base_array[8])] * (b_stat / 100 + 1)) * (
-                        stat_b / b_value + 1) * aria)
-                b_phy_calc = int(int(b_base_att * (b_phy / 100 + 1) * (stat_b / b_value + 1)) * aria)
-                b_mag_calc = int(int(b_base_att * (b_mag / 100 + 1) * (stat_b / b_value + 1)) * aria)
-                b_ind_calc = int(int(b_base_att * (b_ind / 100 + 1) * (stat_b / b_value + 1)) * aria)
-                b_average = int((b_phy_calc + b_mag_calc + b_ind_calc) / 3)
-                c_calc = int(int((lvlget('c_stat')[int(base_array[9])] + base_array[6]) * (c_per / 100 + 1)) * (
-                        stat_c / 750 + 1))
-                pas1_calc = int(stat_pas1lvl + 442)
-                pas1_out = str(int(stat_pas1lvl + 442)) + "  (" + str(int(20 + base_array[13])) + "级)"
-                save1 = str(b_stat_calc) + "(" + str(int(b_stat_calc / aria)) + ")/ " + str(
-                    b_average) + "(" + str(int(b_average / aria)) + ")\n                  [" + str(
-                    int(stat_b)) + "(" + str(int(base_array[8])) + "级)]"
+                    b_base_att = lvlget('se_b_atta')[int(base_array[8])]
+                    stat_pas0lvl_b = lvlget('pas0')[int(base_array[11]) + int(base_pas0_b)]
+                    stat_pas0lvl_c = lvlget('pas0')[int(base_array[11]) + int(base_pas0_c)]
+                    stat_pas1lvl = lvlget('se_pas1')[int(base_array[13])] + base_array[18]
+                    stat_pas2lvl = lvlget('se_pas2')[int(base_array[14])]
+                    stat_pas3lvl = lvlget('pas3')[int(base_array[16])]
+                    stat_b = base_array[
+                                 1] + stat_pas0lvl_b + stat_pas1lvl + stat_pas2lvl + stat_pas3lvl + base_stat_d
+                    stat_c = base_array[1] + stat_pas0lvl_c + stat_pas1lvl + stat_pas2lvl + stat_pas3lvl
+                    b_stat_calc = int(int(lvlget('se_b_stat')[int(base_array[8])] * (b_stat / 100 + 1)) * (
+                            stat_b / b_value + 1) * aria)
+                    b_phy_calc = int(int(b_base_att * (b_phy / 100 + 1) * (stat_b / b_value + 1)) * aria)
+                    b_mag_calc = int(int(b_base_att * (b_mag / 100 + 1) * (stat_b / b_value + 1)) * aria)
+                    b_ind_calc = int(int(b_base_att * (b_ind / 100 + 1) * (stat_b / b_value + 1)) * aria)
+                    b_average = int((b_phy_calc + b_mag_calc + b_ind_calc) / 3)
+                    c_calc = int(int((lvlget('c_stat')[int(base_array[9])] + base_array[6]) * (c_per / 100 + 1)) * (
+                            stat_c / 750 + 1))
+                    pas1_calc = int(stat_pas1lvl + 442)
+                    pas1_out = str(int(stat_pas1lvl + 442)) + "  (" + str(int(20 + base_array[13])) + "级)"
+                    save1 = str(b_stat_calc) + "(" + str(int(b_stat_calc / aria)) + ")/ " + str(
+                        b_average) + "(" + str(int(b_average / aria)) + ")\n                  [" + str(
+                        int(stat_b)) + "(" + str(int(base_array[8])) + "级)]"
 
-            save2 = str(c_calc) + "    [" + str(int(stat_c)) + "(" + str(int(base_array[9])) + "级)]"
-            ##1축 2포 3합
-            global unique_index
-            unique_index += 1
-            not_owned_equips = [uwu for uwu in upgrade_work_uniforms]
-            for equip in transfered_equips:
-                not_owned_equips.append(equip)
-            save_data = [calc_wep, [save1, save2, pas1_out], baibianguai, tuple(not_owned_equips)]
-            minheap1.add((((15000 + b_stat_calc) / 250 + 1) * (2650 + b_average), unique_index, save_data))
-            minheap2.add((((15000 + c_calc) / 250 + 1) * 2650, unique_index, save_data))
-            minheap3.add(
-                (((15000 + pas1_calc + c_calc + b_stat_calc) / 250 + 1) * (2650 + b_average), unique_index, save_data))
+                save2 = str(c_calc) + "    [" + str(int(stat_c)) + "(" + str(int(base_array[9])) + "级)]"
+                ##1축 2포 3합
+                global unique_index
+                unique_index += 1
+                not_owned_equips = [uwu for uwu in upgrade_work_uniforms]
+                for equip in transfered_equips:
+                    not_owned_equips.append(equip)
+                save_data = [calc_wep, [save1, save2, pas1_out], baibianguai, tuple(not_owned_equips)]
+                minheap1.add((((15000 + b_stat_calc) / 250 + 1) * (2650 + b_average), unique_index, save_data))
+                minheap2.add((((15000 + c_calc) / 250 + 1) * 2650, unique_index, save_data))
+                minheap3.add(
+                    (((15000 + pas1_calc + c_calc + b_stat_calc) / 250 + 1) * (2650 + b_average), unique_index, save_data))
 
-            global count_valid
-            count_valid = count_valid + 1
+                global count_valid
+                count_valid = count_valid + 1
 
         cartesianProduct(0, False, None, [], [], [], process)
         show_number = 0
@@ -1541,13 +1624,13 @@ def get_can_upgrade_work_unifrom_nums():
 
 
 def get_can_transfer_nums():
-    # 用户配置的当前可跨界的装备数目
-    transfer_max_count = 0
-    try:
-        transfer_max_count = int(transfer_equip_spinbox.get())
-    except Exception as e:
-        print("parse transfer_max_count failed, except={}", e)
-    return transfer_max_count
+    # 用户配置的当前可升级的工作服数目
+    can_transfer_nums = 0
+    if can_transfer_nums_select.get() in can_transfer_nums_str_2_int:
+        can_transfer_nums = can_transfer_nums_str_2_int[
+            can_transfer_nums_select.get()]
+    return can_transfer_nums
+
 
 # 获取选定的账号的各部位所拥有的当前账户未拥有的装备列表
 def get_transfer_slots_equips(items, sheet):
@@ -1578,7 +1661,7 @@ def get_transfer_slots_equips(items, sheet):
                 try:
                     slot_index = slot_name_to_index[equip_index[:2]]
                     # 如果该装备当前账号未拥有，且之前的账户中未添加过，则加入备选集
-                    if equip_index not in items[slot_index] and equip_index not in transfer_slots_equips[slot_index]:
+                    if equip_index not in items[slot_index] and equip_index not in transfer_slots_equips[slot_index] and not is_god(equip_index):
                         transfer_slots_equips[slot_index].append(equip_index)
                 except KeyError as error:
                     pass
@@ -1730,7 +1813,9 @@ def show_result(rank_list, job_type, ele_skill):
     canvas_res.create_image(canvas_width // 2, canvas_height // 2, image=result_bg)
 
     global image_list, image_list2
-    global res_img11, res_img12, res_img13, res_img14, res_img15, res_img21, res_img22, res_img23, res_img31, res_img32, res_img33, res_txtbbg, res_imgbbg, wep_select, jobup_select
+    global res_img11, res_img12, res_img13, res_img14, res_img15, res_img21, res_img22, res_img23, res_img31, res_img32, res_img33, res_txtbbg, res_imgbbg, wep_combopicker, jobup_select, res_txt_weapon
+
+    wep_index = ""
 
     if job_type == 'deal':  ###########################
 
@@ -1904,6 +1989,8 @@ def show_result(rank_list, job_type, ele_skill):
         weapon = rank_setting[0][0]
         equips = rank_setting[0][1:]
         create_readable_result_area(weapon, equips)
+
+        wep_index = weapon
 
         g_rank_equips = {}
         for rank in range(0, 5):
@@ -2228,6 +2315,8 @@ def show_result(rank_list, job_type, ele_skill):
         equips = rank_setting3[0][1:]
         create_readable_result_area(weapon, equips)
 
+        wep_index = weapon
+
         g_rank_equips = {}
         g_current_buff_type = "综合"
         for buf_type, rank_setting in [("祝福", rank_setting1), ("一觉", rank_setting2), ("综合", rank_setting3)]:
@@ -2238,9 +2327,9 @@ def show_result(rank_list, job_type, ele_skill):
 
         load_presetr.close()
 
-    wep_name = wep_select.get()
+    wep_name = equip_index_to_realname[wep_index]
     job_name = jobup_select.get()
-    canvas_res.create_text(122, 20, text=wep_name, font=guide_font, fill='white')
+    res_txt_weapon = canvas_res.create_text(122, 20, text=wep_name, font=guide_font, fill='white')
     canvas_res.create_text(122, 50, text="<职业>", font=guide_font, fill='white')
     canvas_res.create_text(122, 87, text=job_name, font=guide_font, fill='white')
 
@@ -2306,6 +2395,8 @@ def change_rank(now, job_type):
             canvas_res.itemconfig(res_dam, text=rank_dam[now])
             canvas_res.itemconfig(res_stat, text=rank_stat[now])
             canvas_res.itemconfig(res_stat2, text=rank_stat2[now])
+
+            canvas_res.itemconfig(res_txt_weapon, text=equip_index_to_realname[g_rank_equips[now][0]])
         except KeyError as error:
             c = 1
 
@@ -2346,6 +2437,8 @@ def change_rank(now, job_type):
             if 'bbg' in image_changed:
                 res_txtbbg = canvas_res.create_text(178, 147, text="百变怪=>", fill='white')
                 res_imgbbg = canvas_res.create_image(219, 147, image=image_changed['bbg'])  # 百变怪
+
+            canvas_res.itemconfig(res_txt_weapon, text=equip_index_to_realname[g_rank_equips[g_current_buff_type][now][0]])
         except KeyError as error:
             c = 1
 
@@ -2416,6 +2509,8 @@ def change_rank_type(in_type):
             canvas_res.itemconfig(res_buf_list[j], text=rank_changed[j], font=mid_font, fill='white')
         except KeyError as error:
             c = 1
+
+    canvas_res.itemconfig(res_txt_weapon, text=equip_index_to_realname[g_rank_equips[g_current_buff_type][0][0]])
 
 
 def costum():
@@ -2686,7 +2781,7 @@ def load_checklist_noconfirm(ssnum1):
 
     # 增加读取武器、职业等选项
     col_custom_save_value = g_col_custom_save_value_begin + ssnum1
-    wep_select.set(load_cell(g_row_custom_save_weapon, col_custom_save_value).value)
+    wep_combopicker.set((load_cell(g_row_custom_save_weapon, col_custom_save_value).value or "").split(','))
     jobup_select.set(load_cell(g_row_custom_save_job, col_custom_save_value).value)
     time_select.set(load_cell(g_row_custom_save_fight_time, col_custom_save_value).value)
     style = load_cell(g_row_custom_save_title, col_custom_save_value).value
@@ -2706,6 +2801,9 @@ def load_checklist_noconfirm(ssnum1):
     can_upgrade_work_unifrom_nums_select.set(
         load_cell(g_row_custom_save_can_upgrade_work_uniforms_nums, col_custom_save_value).value or
         txt_can_upgrade_work_unifrom_nums[0])
+    transfer_equip_combopicker.set((load_cell(g_row_custom_save_transfer_from, col_custom_save_value).value or "").split(','))
+    can_transfer_nums_select.set(load_cell(g_row_custom_save_max_transfer_count, col_custom_save_value).value or txt_can_transfer_nums[0])
+
 
     load_preset3.close()
     check_equipment()
@@ -2753,23 +2851,23 @@ def save_checklist():
             # 增加保存武器、职业等选项
             col_custom_save_value = g_col_custom_save_value_begin + ssnum2
             save_my_custom(save_cell, g_row_custom_save_save_name, col_custom_save_value, "存档名", save_select.get())
-            save_my_custom(save_cell, g_row_custom_save_weapon, col_custom_save_value, "武器", wep_select.get())
+            save_my_custom(save_cell, g_row_custom_save_weapon, col_custom_save_value, "武器", wep_combopicker.current_value)
             save_my_custom(save_cell, g_row_custom_save_job, col_custom_save_value, "职业选择", jobup_select.get())
             save_my_custom(save_cell, g_row_custom_save_fight_time, col_custom_save_value, "输出时间", time_select.get())
             save_my_custom(save_cell, g_row_custom_save_title, col_custom_save_value, "称号选择", style_select.get())
             save_my_custom(save_cell, g_row_custom_save_pet, col_custom_save_value, "宠物选择", creature_select.get())
-            save_my_custom(save_cell, g_row_custom_save_cd, col_custom_save_value, "冷却补正", req_cool.get())
+            save_my_custom(save_cell, g_row_custom_save_cd, col_custom_save_value, "冷却补正", req_cool.get())"是否拥有百变怪",
             save_my_custom(save_cell, g_row_custom_save_speed, col_custom_save_value, "选择速度", select_speed.get())
-            save_my_custom(save_cell, g_row_custom_save_has_baibianguai, col_custom_save_value, "是否拥有百变怪",
-                           baibianguai_select.get())
-            save_my_custom(save_cell, g_row_custom_save_can_upgrade_work_uniforms_nums, col_custom_save_value,
-                           "材料够升级的工作服数目", can_upgrade_work_unifrom_nums_select.get())
+            save_my_custom(save_cell, g_row_custom_save_has_baibianguai, col_custom_save_value, baibianguai_select.get())
+            save_my_custom(save_cell, g_row_custom_save_can_upgrade_work_uniforms_nums, col_custom_save_value, "材料够升级的工作服数目", can_upgrade_work_unifrom_nums_select.get())
+            save_my_custom(save_cell, g_row_custom_save_transfer_from, col_custom_save_value, "跨界来源账户列表", transfer_equip_combopicker.current_value)
+            save_my_custom(save_cell, g_row_custom_save_max_transfer_count, col_custom_save_value, "最大跨界数目", can_transfer_nums_select.get())
 
             load_preset4.save("preset.xlsx")
             load_preset4.close()
             tkinter.messagebox.showinfo("通知", "保存完成")
     except PermissionError as error:
-        tkinter.messagebox.showerror("错误", "请关闭重试")
+        tkinter.messagebox.showerror("错误", "请关闭preset.xlsx之后重试")
 
 
 def change_list_name():
@@ -2849,11 +2947,9 @@ def change_savelist(in1, in2, in3, in4, in5, in6, in7, in8, in9, in10):
         tkinter.messagebox.showinfo("通知", "保存完成")
 
         # 更新存档名称后，同步更新picker的列表，同时清空已选列表
-        global transfer_equip_combopicker
-        transfer_equip_combopicker = Combopicker(self, values=get_other_account_names(), entrywidth=11)
-        transfer_equip_combopicker.place(x=390 - 17, y=447)
+        transfer_equip_combopicker.set("")
     except PermissionError as error:
-        tkinter.messagebox.showerror("错误", "请关闭重试")
+        tkinter.messagebox.showerror("错误", "请关闭preset.xlsx之后重试")
 
 
 def update_count():
@@ -2943,6 +3039,14 @@ def reset():
     # 处理百变怪与工作服升级数目
     baibianguai_select.set(txt_no_baibianguai)
     can_upgrade_work_unifrom_nums_select.set(txt_can_upgrade_work_unifrom_nums[0])
+
+    wep_combopicker.set("")
+    transfer_equip_combopicker.set("")
+
+    var = tkinter.StringVar(self)
+    var.set("0")
+    transfer_equip_spinbox.textvariable = var
+
 
 
 ###########################################################
@@ -3224,6 +3328,16 @@ can_upgrade_work_unifrom_nums_str_2_int = {}
 for idx, txt in enumerate(txt_can_upgrade_work_unifrom_nums):
     can_upgrade_work_unifrom_nums_str_2_int[txt] = idx
 
+# 目前最多可跨界的装备数目
+txt_can_transfer_nums = [
+    '0', '1', '2', '3', '4', '5',
+    '6', '7', '8', '9', '10', '11',
+]
+# 预先将目前最多可跨界的装备数目与对应数目映射
+can_transfer_nums_str_2_int = {}
+for idx, txt in enumerate(txt_can_transfer_nums):
+    can_transfer_nums_str_2_int[txt] = idx
+
 
 ###########################################################
 #                        ui相关函数                        #
@@ -3477,15 +3591,19 @@ tkinter.Button(self, command=reset, image=reset_img, borderwidth=0, activebackgr
     x=302, y=476)
 
 wep_list = []
+wep_name_to_index = {}
 for i in range(0, 75):
-    wep_list.append(name_one[str(i + 111001)][1])
+    wep_index = name_one[str(i + 111001)][0]
+    wep_name = name_one[str(i + 111001)][1]
+
+    wep_list.append(wep_name)
+    wep_name_to_index[wep_name] = wep_index
 
 wep_image = PhotoImage(file="ext_img/wep.png")
 wep_g = tkinter.Label(self, image=wep_image, borderwidth=0, activebackground=dark_main, bg=dark_main)
 wep_g.place(x=29, y=55)
-wep_select = tkinter.ttk.Combobox(self, width=30, values=wep_list)
-wep_select.place(x=110, y=60)
-wep_select.set('选择武器')
+wep_combopicker = Combopicker(self, values=wep_list, entrywidth=30)
+wep_combopicker.place(x=110, y=60)
 
 time_select = tkinter.ttk.Combobox(self, width=13, values=['20秒(觉醒占比↑)', '60秒(觉醒占比↓)'])
 time_select.set('20秒(觉醒占比↑)')
@@ -3558,12 +3676,10 @@ transfer_equip_txt = tkinter.Label(self, text="  跨界  ", font=guide_font, fg=
 transfer_equip_txt.place(x=300, y=447)
 transfer_equip_combopicker = Combopicker(self, values=get_other_account_names(), entrywidth=11)
 transfer_equip_combopicker.place(x=390 - 17, y=447)
-transfer_equip_spinbox = tkinter.Spinbox(self, from_=0, to=11, width=2)
-transfer_equip_spinbox.place(x=457, y=447)
 
-# transfer_equip_listbox = tkinter.ttk.Combobox(self, width=13, height=1, selectmode=MULTIPLE)
-# transfer_equip_listbox.pack()
-# transfer_equip_listbox.place(x=390 - 17, y=447)
+can_transfer_nums_select = tkinter.ttk.Combobox(self, width=2, values=txt_can_transfer_nums)
+can_transfer_nums_select.set(txt_can_transfer_nums[0])
+can_transfer_nums_select.place(x=457, y=447)
 
 show_count = tkinter.Label(self, font=guide_font, fg="white", bg=dark_sub)
 show_count.place(x=490, y=40)
