@@ -2856,9 +2856,9 @@ def save_checklist():
             save_my_custom(save_cell, g_row_custom_save_fight_time, col_custom_save_value, "输出时间", time_select.get())
             save_my_custom(save_cell, g_row_custom_save_title, col_custom_save_value, "称号选择", style_select.get())
             save_my_custom(save_cell, g_row_custom_save_pet, col_custom_save_value, "宠物选择", creature_select.get())
-            save_my_custom(save_cell, g_row_custom_save_cd, col_custom_save_value, "冷却补正", req_cool.get())"是否拥有百变怪",
+            save_my_custom(save_cell, g_row_custom_save_cd, col_custom_save_value, "冷却补正", req_cool.get())
             save_my_custom(save_cell, g_row_custom_save_speed, col_custom_save_value, "选择速度", select_speed.get())
-            save_my_custom(save_cell, g_row_custom_save_has_baibianguai, col_custom_save_value, baibianguai_select.get())
+            save_my_custom(save_cell, g_row_custom_save_has_baibianguai, col_custom_save_value, "是否拥有百变怪", baibianguai_select.get())
             save_my_custom(save_cell, g_row_custom_save_can_upgrade_work_uniforms_nums, col_custom_save_value, "材料够升级的工作服数目", can_upgrade_work_unifrom_nums_select.get())
             save_my_custom(save_cell, g_row_custom_save_transfer_from, col_custom_save_value, "跨界来源账户列表", transfer_equip_combopicker.current_value)
             save_my_custom(save_cell, g_row_custom_save_max_transfer_count, col_custom_save_value, "最大跨界数目", can_transfer_nums_select.get())
