@@ -3,7 +3,7 @@
 import collections
 
 now_version = "v3.2.8"
-ver_time = '2020-04-25'
+ver_time = '2020-04-26'
 
 ## 코드를 무단으로 복제하여 개조 및 배포하지 말 것##
 
@@ -1054,7 +1054,7 @@ def calc():
                 oneonelist = []
                 for i in range(oneone):
                     no_cut = getone(for_calc[i])  ## 11번 스증
-                    if no_cut == None:
+                    if no_cut is None:
                         # hack：目前select是默认初始化时将tg{1101-3336}[0,1]范围的key对应的值都设为0，而百变怪会根据select的值为0来筛选出未选择的集合
                         #  因此在这里如果为None，就是这种情况，直接返回就可以了
                         global count_invalid
@@ -1227,6 +1227,12 @@ def calc():
                     # 获取该装备的buff属性
                     # re：阅读data.xlsx的buf sheet和buflvl确认奶系职业的各个计算维度的含义
                     no_cut = np.array(setget(for_calc[i]))  ## 2 3 4 5 7
+                    if no_cut is None:
+                        # hack：目前select是默认初始化时将tg{1101-3336}[0,1]范围的key对应的值都设为0，而百变怪会根据select的值为0来筛选出未选择的集合
+                        #  因此在这里如果为None，就是这种情况，直接返回就可以了
+                        global count_invalid
+                        count_invalid = count_invalid + 1
+                        return
                     base_array = base_array + no_cut
                     b_stat = (b_stat / 100 + 1) * (no_cut[2] / 100 + 1) * 100 - 100
                     b_phy = (b_phy / 100 + 1) * (no_cut[3] / 100 + 1) * 100 - 100
