@@ -16,7 +16,6 @@ import tkinter.messagebox
 import tkinter.ttk
 import webbrowser
 from collections import Counter
-from datetime import datetime
 from heapq import heapify, heappush, heappushpop
 from math import floor
 from tkinter import *
@@ -140,6 +139,130 @@ class MinHeap():
 
     def getTop(self):
         return sorted(self.h, reverse=True)
+
+
+# Combopicker code from @SilverHalo https://stackoverflow.com/questions/34549752/how-do-i-enable-multiple-selection-of-values-from-a-combobox
+class Picker(tkinter.ttk.Frame):
+    def __init__(self, master=None, activebackground='#b1dcfb', values=[], entry_wid=None, activeforeground='black', selectbackground='#003eff', selectforeground='white', command=None, borderwidth=1, relief="solid"):
+        self._selected_item = None
+
+        self._values = values
+
+        self._entry_wid = entry_wid
+
+        self._sel_bg = selectbackground
+        self._sel_fg = selectforeground
+
+        self._act_bg = activebackground
+        self._act_fg = activeforeground
+
+        self._command = command
+        tkinter.ttk.Frame.__init__(self, master, borderwidth=borderwidth, relief=relief)
+
+        self.bind("<FocusIn>", lambda event: self.event_generate('<<PickerFocusIn>>'))
+        self.bind("<FocusOut>", lambda event: self.event_generate('<<PickerFocusOut>>'))
+
+        self._font = tkinter.font.Font()
+
+        self.dict_checkbutton = {}
+        self.dict_checkbutton_var = {}
+        self.dict_intvar_item = {}
+
+        for index, item in enumerate(self._values):
+            self.dict_intvar_item[item] = tkinter.IntVar()
+            self.dict_checkbutton[item] = tkinter.ttk.Checkbutton(self, text=item, variable=self.dict_intvar_item[item], command=lambda ITEM=item: self._command(ITEM))
+            self.dict_checkbutton[item].grid(row=index, column=0, sticky=tkinter.NSEW)
+            self.dict_intvar_item[item].set(0)
+
+
+class Combopicker(tkinter.ttk.Entry, Picker):
+    def __init__(self, master, values=[], entryvar=None, entrywidth=None, entrystyle=None, onselect=None, activebackground='#b1dcfb', activeforeground='black', selectbackground='#003eff', selectforeground='white', borderwidth=1,
+                 relief="solid"):
+
+        if entryvar is not None:
+            self.entry_var = entryvar
+        else:
+            self.entry_var = tkinter.StringVar()
+
+        entry_config = {}
+        if entrywidth is not None:
+            entry_config["width"] = entrywidth
+
+        if entrystyle is not None:
+            entry_config["style"] = entrystyle
+
+        tkinter.ttk.Entry.__init__(self, master, textvariable=self.entry_var, **entry_config, state="readonly")
+
+        self._is_menuoptions_visible = False
+
+        self.picker_frame = Picker(self.winfo_toplevel(), values=values, entry_wid=self.entry_var, activebackground=activebackground, activeforeground=activeforeground, selectbackground=selectbackground, selectforeground=selectforeground,
+                                   command=self._on_selected_check)
+
+        self.bind_all("<1>", self._on_click, "+")
+
+        self.bind("<Escape>", lambda event: self.hide_picker())
+
+    @property
+    def current_value(self):
+        try:
+            value = self.entry_var.get()
+            return value
+        except ValueError:
+            return None
+
+    def get_selected_entrys(self):
+        return self.entry_var.get().split(",")
+
+    @current_value.setter
+    def current_value(self, INDEX):
+        self.entry_var.set(self.values.index(INDEX))
+
+    def _on_selected_check(self, SELECTED):
+
+        value = []
+        if self.entry_var.get() != "" and self.entry_var.get() != None:
+            temp_value = self.entry_var.get()
+            value = temp_value.split(",")
+
+        if str(SELECTED) in value:
+            value.remove(str(SELECTED))
+
+        else:
+            value.append(str(SELECTED))
+
+        value.sort()
+
+        temp_value = ""
+        for index, item in enumerate(value):
+            if item != "":
+                if index != 0:
+                    temp_value += ","
+                temp_value += str(item)
+
+        self.entry_var.set(temp_value)
+
+    def _on_click(self, event):
+        str_widget = str(event.widget)
+
+        if str_widget == str(self):
+            if not self._is_menuoptions_visible:
+                self.show_picker()
+        else:
+            if not str_widget.startswith(str(self.picker_frame)) and self._is_menuoptions_visible:
+                self.hide_picker()
+
+    def show_picker(self):
+        if not self._is_menuoptions_visible:
+            self.picker_frame.place(in_=self, relx=0, rely=1, relwidth=1)
+            self.picker_frame.lift()
+
+        self._is_menuoptions_visible = True
+
+    def hide_picker(self):
+        if self._is_menuoptions_visible:
+            self.picker_frame.place_forget()
+
+        self._is_menuoptions_visible = False
 
 
 ###########################################################
@@ -1428,8 +1551,9 @@ def calc_upgrade_work_uniforms_add_counts(slots_equips, slots_not_select_equips,
 
     return total_add_counts
 
+
 result_window_width = 585
-result_window_readable_result_area_height = 18*3
+result_window_readable_result_area_height = 18 * 3
 result_window_height = 402 + result_window_readable_result_area_height
 
 res_txt_readable_result_left_top_x = 0
@@ -1437,6 +1561,7 @@ res_txt_readable_result_left_top_y = result_window_height - result_window_readab
 res_txt_readable_result_center_x = result_window_width // 2
 res_txt_readable_result_center_y = result_window_height - result_window_readable_result_area_height // 2
 res_txt_readable_result = None
+
 
 # 用文字方式写成当前搭配，避免每次都得一个个肉眼对比图标来确认是啥装备
 def create_readable_result_area(weapon, equips):
@@ -1464,8 +1589,6 @@ def create_readable_result_area(weapon, equips):
             wisdom_indexs.remove('31400540')
     for wisdom_index in wisdom_indexs:
         readable_names.append(equip_index_to_realname[wisdom_index])
-
-
 
     line_word_count = 0
     max_line_word_count = 40
@@ -1501,6 +1624,7 @@ def show_name():
 
     tkinter.messagebox.showinfo("装备详细信息", pretty_words(readable_names, 30, ' | '))
 
+
 # 保证一行不会有太多词
 def pretty_words(words, max_line_word_count, delimiter):
     pretty_result = ""
@@ -1517,6 +1641,7 @@ def pretty_words(words, max_line_word_count, delimiter):
 
     return pretty_result
 
+
 def show_result(rank_list, job_type, ele_skill):
     global g_rank_equips, g_current_rank, g_current_job, g_current_buff_type
     g_current_rank = 0
@@ -1529,15 +1654,15 @@ def show_result(rank_list, job_type, ele_skill):
     result_window.title("计算结果")
     result_window.resizable(False, False)
     global canvas_res
-    canvas_width = result_window_width+2
-    canvas_height = result_window_height+2
+    canvas_width = result_window_width + 2
+    canvas_height = result_window_height + 2
     canvas_res = Canvas(result_window, width=canvas_width, height=canvas_height, bd=0)
     canvas_res.place(x=-2, y=-2)
     if job_type == 'deal':
         result_bg = tkinter.PhotoImage(file='ext_img/bg_result.png')
     else:
         result_bg = tkinter.PhotoImage(file='ext_img/bg_result2.png')
-    canvas_res.create_image(canvas_width//2, canvas_height//2, image=result_bg)
+    canvas_res.create_image(canvas_width // 2, canvas_height // 2, image=result_bg)
 
     global image_list, image_list2
     global res_img11, res_img12, res_img13, res_img14, res_img15, res_img21, res_img22, res_img23, res_img31, res_img32, res_img33, res_txtbbg, res_imgbbg, wep_select, jobup_select
@@ -2680,7 +2805,7 @@ def update_count():
             print("update_count except: {}".format(e))
 
 
-def update_count2():
+def display_realtime_counting_info():
     while True:
         try:
             items, not_select_items, work_uniforms_items = get_equips()
@@ -2692,17 +2817,17 @@ def update_count2():
             # 额外升级的工作服增加的搭配数
             all_list_num += calc_upgrade_work_uniforms_add_counts(items, not_select_items, work_uniforms_items)
 
-            show_txt = "当前总组合数=" + str(int(all_list_num))
-            if baibianguai_select.get() == txt_has_baibianguai:
-                show_txt = "(计入百变怪)" + show_txt
+            current_equips = 0
+            for slot_equips in items:
+                current_equips += len(slot_equips)
+            total_equips = 177
+            percent = current_equips / total_equips * 100
+
+            show_txt = "{}/{}({:.2f}%) N={}".format(current_equips, total_equips, percent, int(all_list_num))
             showcon2(text=show_txt)
-            if all_list_num > 10000000:
-                show_count2['fg'] = "red"
-            else:
-                show_count2['fg'] = "white"
             time.sleep(1)
         except Exception as e:
-            print("update_count2 except: {}".format(e))
+            print("display_realtime_counting_info except: {}".format(e))
 
 
 def load_checklist_on_start():
@@ -2712,7 +2837,7 @@ def load_checklist_on_start():
 
 def update_thread():
     threading.Thread(target=update_count, daemon=True).start()
-    threading.Thread(target=update_count2, daemon=True).start()
+    threading.Thread(target=display_realtime_counting_info, daemon=True).start()
     threading.Thread(target=load_checklist_on_start, daemon=True).start()
 
 
@@ -2752,9 +2877,9 @@ show_number = 0
 all_list_num = 0
 g_current_rank = 0
 g_current_job = ""
-g_current_buff_type = "祝福" # 祝福 一觉 综合
+g_current_buff_type = "祝福"  # 祝福 一觉 综合
 g_rank_equips = {}
-count_start_time = time.time() # 开始计算的时间点
+count_start_time = time.time()  # 开始计算的时间点
 
 # 由于这里不需要对data.xlsx写入，设置read_only为True可以大幅度加快读取速度，在我的电脑上改动前读取耗时0.67s，占启动时间32%，改动之后用时0.1s，占启动时间4%
 load_excel1 = load_workbook("DATA.xlsx", read_only=True, data_only=True)
@@ -3212,7 +3337,7 @@ def hamjung():
 ###########################################################
 
 self = tkinter.Tk()
-self.title("一键史诗搭配计算器-支持百变怪/升级工作服 ver" + now_version)
+self.title("一键史诗搭配计算器-支持百变怪/升级工作服/跨界/多武器 ver" + now_version)
 self.geometry("710x720+0+0")
 self.resizable(False, False)
 self.configure(bg=dark_main)
@@ -3331,17 +3456,32 @@ change_list_but.place(x=435 + 165, y=405 - 100)
 txt_no_baibianguai = 'No(没有百变怪)'
 txt_has_baibianguai = 'Yes(拥有百变怪)'
 baibianguai_txt = tkinter.Label(self, text="  百变怪  ", font=guide_font, fg="white", bg=dark_sub)
-baibianguai_txt.place(x=300, y=405)
+baibianguai_txt.place(x=300, y=395)
 baibianguai_select = tkinter.ttk.Combobox(self, width=13, values=[txt_no_baibianguai, txt_has_baibianguai])
 baibianguai_select.set(txt_no_baibianguai)
-baibianguai_select.place(x=390 - 17, y=405)
+baibianguai_select.place(x=390 - 17, y=395)
 
 can_upgrade_work_unifrom_nums_txt = tkinter.Label(self, text="  工作服  ", font=guide_font, fg="white", bg=dark_sub)
-can_upgrade_work_unifrom_nums_txt.place(x=300, y=441)
+can_upgrade_work_unifrom_nums_txt.place(x=300, y=421)
 can_upgrade_work_unifrom_nums_select = tkinter.ttk.Combobox(self, width=13,
                                                             values=txt_can_upgrade_work_unifrom_nums)
 can_upgrade_work_unifrom_nums_select.set(txt_can_upgrade_work_unifrom_nums[0])
-can_upgrade_work_unifrom_nums_select.place(x=390 - 17, y=441)
+can_upgrade_work_unifrom_nums_select.place(x=390 - 17, y=421)
+
+# re: 增加跨界的ui
+txt_transfer_equip = ["月虫", "奶妈", "奶萝"]
+
+transfer_equip_txt = tkinter.Label(self, text="  跨界  ", font=guide_font, fg="white", bg=dark_sub)
+transfer_equip_txt.place(x=300, y=447)
+transfer_equip_combopicker = Combopicker(self, values=txt_transfer_equip, entrywidth=13)
+transfer_equip_combopicker.place(x=390 - 17, y=447)
+
+# re:通过下面这个函数获取已选择的列表
+transfer_equip_combopicker.get_selected_entrys()
+
+# transfer_equip_listbox = tkinter.ttk.Combobox(self, width=13, height=1, selectmode=MULTIPLE)
+# transfer_equip_listbox.pack()
+# transfer_equip_listbox.place(x=390 - 17, y=447)
 
 show_count = tkinter.Label(self, font=guide_font, fg="white", bg=dark_sub)
 show_count.place(x=490, y=40)
@@ -3350,9 +3490,9 @@ show_state = tkinter.Label(self, text="计算栏", font=guide_font, fg="white", 
 show_state.place(x=490, y=20)
 showsta = show_state.configure
 
-show_count2 = tkinter.Label(self, font=guide_font, fg="white", bg=dark_sub)
-show_count2.place(x=430, y=480)
-showcon2 = show_count2.configure
+display_realtime_counting_info_label = tkinter.Label(self, font=guide_font, fg="white", bg=dark_sub)
+display_realtime_counting_info_label.place(x=430, y=480)
+showcon2 = display_realtime_counting_info_label.configure
 
 set101 = tkinter.Button(self, bg=dark_main, borderwidth=0, activebackground=dark_main, image=image_list_set2['101'],
                         command=lambda: click_set(101));
