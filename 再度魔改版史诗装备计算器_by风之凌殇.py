@@ -712,6 +712,10 @@ def calc():
     # 额外升级的工作服增加的搭配数
     all_list_num += calc_upgrade_work_uniforms_add_counts(items, not_select_items, work_uniforms_items)
 
+    # 获取选定的账号的各部位所拥有的当前账户未拥有的装备列表
+    transfer_slots_equips = get_transfer_slots_equips(items, load_presetc["one"])
+    transfer_max_count = get_can_transfer_nums()
+
     try:
         showsta(text='开始计算')
         count_start_time = time.time()  # 开始计时
@@ -732,7 +736,7 @@ def calc():
 
     # 看了看，主要性能瓶颈在于直接使用了itertools.product遍历所有的笛卡尔积组合，导致无法提前剪枝，只能在每个组合计算前通过条件判断是否要跳过
     # 背景，假设当前处理到下标n（0-10）的装备，前面装备已选择的组合为selected_combination(of size n)，未处理装备为后面11-n-1个，其对应组合数为rcp=len(Cartesian Product(后面11-n-1个装备部位))
-    def cartesianProduct(current_index, has_god, baibianguai, upgrade_work_uniforms, selected_combination,
+    def cartesianProduct(current_index, has_god, baibianguai, upgrade_work_uniforms, transfered_equips, selected_combination,
                          process_func):
         invalid_cnt = 1
         for i in range(current_index + 1, len(items)):
@@ -763,12 +767,12 @@ def calc():
                     return
 
             if current_index < len(items) - 1:
-                cartesianProduct(current_index + 1, has_god or is_god(equip), baibianguai, upgrade_work_uniforms,
+                cartesianProduct(current_index + 1, has_god or is_god(equip), baibianguai, upgrade_work_uniforms, transfered_equips,
                                  selected_combination, process_func)
             else:  # 符合条件的装备搭配
                 if dont_pruning:
                     # 不进行任何剪枝操作，装备搭配对比的标准是最终计算出的伤害与奶量倍率
-                    process_func(selected_combination, baibianguai, upgrade_work_uniforms)
+                    process_func(selected_combination, baibianguai, upgrade_work_uniforms, transfered_equips)
                 else:
                     # 仅当当前搭配的价值评估函数值不低于历史最高值时才视为有效搭配
                     god = 0
@@ -783,7 +787,7 @@ def calc():
                     if setopt_num >= max_setopt - set_perfect:
                         if max_setopt <= setopt_num - god * set_perfect:
                             max_setopt = setopt_num - god * set_perfect
-                        process_func(selected_combination, baibianguai, upgrade_work_uniforms)
+                        process_func(selected_combination, baibianguai, upgrade_work_uniforms, transfered_equips)
                     else:
                         inc_invalid_cnt_func(1)
 
@@ -813,6 +817,15 @@ def calc():
             upgrade_work_uniforms.append(work_uniform)
             try_equip(work_uniform)
             upgrade_work_uniforms.pop()
+
+        # 当当前部位有可以从选定账号跨界的装备，且已跨界数目未超过设定上限，则考虑跨界该部位的装备
+        if len(transfer_slots_equips[current_index]) != 0 and len(transfered_equips) < transfer_max_count:
+            for equip_to_transfer in transfer_slots_equips[current_index]:
+                transfered_equips.append(equip_to_transfer)
+                try_equip(equip_to_transfer)
+                transfered_equips.pop()
+
+        pass
 
     # items = [list11, list12, list13, list14, list15, list21, list22, list23, list31, list32, list33]
     # 预处理，计算每个部位是否拥有神话装备
@@ -912,7 +925,7 @@ def calc():
         max_setopt = 0
         show_number = 1
 
-        def process(calc_now, baibianguai, upgrade_work_uniforms):
+        def process(calc_now, baibianguai, upgrade_work_uniforms, transfered_equips):
             set_list = ["1" + str(calc_now[x][2:4]) for x in range(0, 11)]
             set_on = [];
             setapp = set_on.append
@@ -1032,13 +1045,16 @@ def calc():
             base_array[index_extra_percent_addtional_damage] = real_bon
             global unique_index
             unique_index += 1
+            not_owned_equips = [uwu for uwu in upgrade_work_uniforms]
+            for equip in transfered_equips:
+                not_owned_equips.append(equip)
             minheap.add((damage, unique_index,
-                         [calc_wep, base_array, baibianguai, tuple(uwu for uwu in upgrade_work_uniforms)]))
+                         [calc_wep, base_array, baibianguai, tuple(not_owned_equips)]))
 
             global count_valid
             count_valid = count_valid + 1
 
-        cartesianProduct(0, False, None, [], [], process)
+        cartesianProduct(0, False, None, [], [], [], process)
 
         show_number = 0
         showsta(text='结果统计中')
@@ -1063,7 +1079,6 @@ def calc():
         base_stat_d = int(db_preset['H6'].value) - int(db_preset['H1'].value)
         base_stat_h = 4308 - 45 - 83 + int(db_preset['H1'].value)
         base_pas0_1 = 0
-        load_presetc.close()
         lvlget = opt_buflvl.get
         minheap1 = MinHeap(5)
         minheap2 = MinHeap(5)
@@ -1073,7 +1088,7 @@ def calc():
         max_setopt = 0
         show_number = 1
 
-        def process(calc_now, baibianguai, upgrade_work_uniforms):
+        def process(calc_now, baibianguai, upgrade_work_uniforms, transfered_equips):
             set_list = ["1" + str(calc_now[x][2:4]) for x in range(0, 11)]
             set_val = Counter(set_list)
             del set_val['136', '137', '138']
@@ -1192,7 +1207,10 @@ def calc():
             ##1축 2포 3합
             global unique_index
             unique_index += 1
-            save_data = [calc_wep, [save1, save2, pas1_out], baibianguai, tuple(uwu for uwu in upgrade_work_uniforms)]
+            not_owned_equips = [uwu for uwu in upgrade_work_uniforms]
+            for equip in transfered_equips:
+                not_owned_equips.append(equip)
+            save_data = [calc_wep, [save1, save2, pas1_out], baibianguai, tuple(not_owned_equips)]
             minheap1.add((((15000 + b_stat_calc) / 250 + 1) * (2650 + b_average), unique_index, save_data))
             minheap2.add((((15000 + c_calc) / 250 + 1) * 2650, unique_index, save_data))
             minheap3.add(
@@ -1201,7 +1219,7 @@ def calc():
             global count_valid
             count_valid = count_valid + 1
 
-        cartesianProduct(0, False, None, [], [], process)
+        cartesianProduct(0, False, None, [], [], [], process)
         show_number = 0
         showsta(text='结果统计中')
 
@@ -1223,6 +1241,8 @@ def calc():
 
         ranking = [ranking1, ranking2, ranking3]
         show_result(ranking, 'buf', ele_skill)
+
+    load_presetc.close()
     load_excel.close()
     showsta(text='输出完成' + "时间 = " + format_time(time.time() - start_time))
     # 结束计算
@@ -1520,6 +1540,51 @@ def get_can_upgrade_work_unifrom_nums():
     return can_upgrade_work_unifrom_nums
 
 
+def get_can_transfer_nums():
+    # 用户配置的当前可跨界的装备数目
+    transfer_max_count = 0
+    try:
+        transfer_max_count = int(transfer_equip_spinbox.get())
+    except Exception as e:
+        print("parse transfer_max_count failed, except={}", e)
+    return transfer_max_count
+
+# 获取选定的账号的各部位所拥有的当前账户未拥有的装备列表
+def get_transfer_slots_equips(items, sheet):
+    # 获取各存档的装备信息
+    slot_name_list = ['11', '12', '13', '14', '15', '21', '22', '23', '31', '32', '33']
+    slot_name_to_index = {}
+    for idx, name in enumerate(slot_name_list):
+        slot_name_to_index[name] = idx
+
+    transfer_slots_equips = [[] for i in range(0, 11)]
+    for account_name in transfer_equip_combopicker.get_selected_entrys():
+        # 获取当前存档的index
+        account_index = 0
+        try:
+            account_index = save_name_list.index(account_name)
+        except Exception:
+            continue
+
+        # 读取各个装备的点亮情况
+        for i in range(1, 264):
+            has_equip = sheet.cell(i, 2 + account_index).value == 1
+            equip_index = sheet.cell(i, 1).value
+            if len(equip_index) == 6:
+                # 六位为武器，过滤掉武器
+                continue
+
+            if has_equip:
+                try:
+                    slot_index = slot_name_to_index[equip_index[:2]]
+                    # 如果该装备当前账号未拥有，且之前的账户中未添加过，则加入备选集
+                    if equip_index not in items[slot_index] and equip_index not in transfer_slots_equips[slot_index]:
+                        transfer_slots_equips[slot_index].append(equip_index)
+                except KeyError as error:
+                    pass
+
+    return transfer_slots_equips
+
 def calc_upgrade_work_uniforms_add_counts(slots_equips, slots_not_select_equips, slots_work_uniforms):
     # 找出所有尚未升级工作服的部位
     not_has_uniform_slots = []
@@ -1671,15 +1736,15 @@ def show_result(rank_list, job_type, ele_skill):
 
         global result_image_on, rank_dam, rank_stat, rank_stat2, req_cool, res_dam, res_stat, res_stat2
         rank_baibiaoguai = [0, 0, 0, 0, 0]
-        rank_upgrade_work_uniforms = [0, 0, 0, 0, 0]
+        rank_not_owned_equips = [0, 0, 0, 0, 0]
         rank_dam = [0, 0, 0, 0, 0]
         rank_setting = [0, 0, 0, 0, 0]
         rss = [0, 0, 0, 0, 0]
         result_image_on = [{}, {}, {}, {}, {}]
         try:
-            # rank => [score, [calc_wep, base_array, baibianguai, upgrade_work_uniforms]]
+            # rank => [score, [calc_wep, base_array, baibianguai, not_owned_equips]]
             rank_baibiaoguai[0] = rank_list[0][1][2]
-            rank_upgrade_work_uniforms[0] = rank_list[0][1][3]
+            rank_not_owned_equips[0] = rank_list[0][1][3]
             rank_dam[0] = str(int(100 * rank_list[0][0])) + "%"
             rank_setting[0] = rank_list[0][1][0]  ##0号是排名
             rss[0] = rank_list[0][1][1]
@@ -1688,14 +1753,14 @@ def show_result(rank_list, job_type, ele_skill):
                     if len(j) != 6:
                         if j[0:2] == str(i):
                             result_image_on[0][str(i)] = image_list[j]
-                            # 如果该装备在额外升级的工作服列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
-                            if j in rank_upgrade_work_uniforms[0]:
+                            # 如果该装备在额外升级的工作服或跨界装备列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
+                            if j in rank_not_owned_equips[0]:
                                 result_image_on[0][str(i)] = image_list2[j]
             if rank_baibiaoguai[0] is not None:
                 result_image_on[0]["bbg"] = image_list[rank_baibiaoguai[0]]
 
             rank_baibiaoguai[1] = rank_list[1][1][2]
-            rank_upgrade_work_uniforms[1] = rank_list[1][1][3]
+            rank_not_owned_equips[1] = rank_list[1][1][3]
             rank_dam[1] = str(int(100 * rank_list[1][0])) + "%"
             rank_setting[1] = rank_list[1][1][0]
             rss[1] = rank_list[1][1][1]
@@ -1704,14 +1769,14 @@ def show_result(rank_list, job_type, ele_skill):
                     if len(j) != 6:
                         if j[0:2] == str(i):
                             result_image_on[1][str(i)] = image_list[j]
-                            # 如果该装备在额外升级的工作服列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
-                            if j in rank_upgrade_work_uniforms[1]:
+                            # 如果该装备在额外升级的工作服或跨界装备列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
+                            if j in rank_not_owned_equips[1]:
                                 result_image_on[1][str(i)] = image_list2[j]
             if rank_baibiaoguai[1] is not None:
                 result_image_on[1]["bbg"] = image_list[rank_baibiaoguai[1]]
 
             rank_baibiaoguai[2] = rank_list[2][1][2]
-            rank_upgrade_work_uniforms[2] = rank_list[2][1][3]
+            rank_not_owned_equips[2] = rank_list[2][1][3]
             rank_dam[2] = str(int(100 * rank_list[2][0])) + "%"
             rank_setting[2] = rank_list[2][1][0]
             rss[2] = rank_list[2][1][1]
@@ -1720,14 +1785,14 @@ def show_result(rank_list, job_type, ele_skill):
                     if len(j) != 6:
                         if j[0:2] == str(i):
                             result_image_on[2][str(i)] = image_list[j]
-                            # 如果该装备在额外升级的工作服列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
-                            if j in rank_upgrade_work_uniforms[2]:
+                            # 如果该装备在额外升级的工作服或跨界装备列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
+                            if j in rank_not_owned_equips[2]:
                                 result_image_on[2][str(i)] = image_list2[j]
             if rank_baibiaoguai[2] is not None:
                 result_image_on[2]["bbg"] = image_list[rank_baibiaoguai[2]]
 
             rank_baibiaoguai[3] = rank_list[3][1][2]
-            rank_upgrade_work_uniforms[3] = rank_list[3][1][3]
+            rank_not_owned_equips[3] = rank_list[3][1][3]
             rank_dam[3] = str(int(100 * rank_list[3][0])) + "%"
             rank_setting[3] = rank_list[3][1][0]
             rss[3] = rank_list[3][1][1]
@@ -1736,14 +1801,14 @@ def show_result(rank_list, job_type, ele_skill):
                     if len(j) != 6:
                         if j[0:2] == str(i):
                             result_image_on[3][str(i)] = image_list[j]
-                            # 如果该装备在额外升级的工作服列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
-                            if j in rank_upgrade_work_uniforms[3]:
+                            # 如果该装备在额外升级的工作服或跨界装备列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
+                            if j in rank_not_owned_equips[3]:
                                 result_image_on[3][str(i)] = image_list2[j]
             if rank_baibiaoguai[3] is not None:
                 result_image_on[3]["bbg"] = image_list[rank_baibiaoguai[3]]
 
             rank_baibiaoguai[4] = rank_list[4][1][2]
-            rank_upgrade_work_uniforms[4] = rank_list[4][1][3]
+            rank_not_owned_equips[4] = rank_list[4][1][3]
             rank_dam[4] = str(int(100 * rank_list[4][0])) + "%"
             rank_setting[4] = rank_list[4][1][0]
             rss[4] = rank_list[4][1][1]
@@ -1752,8 +1817,8 @@ def show_result(rank_list, job_type, ele_skill):
                     if len(j) != 6:
                         if j[0:2] == str(i):
                             result_image_on[4][str(i)] = image_list[j]
-                            # 如果该装备在额外升级的工作服列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
-                            if j in rank_upgrade_work_uniforms[4]:
+                            # 如果该装备在额外升级的工作服或跨界装备列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
+                            if j in rank_not_owned_equips[4]:
                                 result_image_on[4][str(i)] = image_list2[j]
             if rank_baibiaoguai[4] is not None:
                 result_image_on[4]["bbg"] = image_list[rank_baibiaoguai[4]]
@@ -1854,9 +1919,9 @@ def show_result(rank_list, job_type, ele_skill):
         rank_baibiaoguai1 = [0, 0, 0, 0, 0]
         rank_baibiaoguai2 = [0, 0, 0, 0, 0]
         rank_baibiaoguai3 = [0, 0, 0, 0, 0]
-        rank_upgrade_work_uniforms1 = [0, 0, 0, 0, 0]
-        rank_upgrade_work_uniforms2 = [0, 0, 0, 0, 0]
-        rank_upgrade_work_uniforms3 = [0, 0, 0, 0, 0]
+        rank_not_owned_equips1 = [0, 0, 0, 0, 0]
+        rank_not_owned_equips2 = [0, 0, 0, 0, 0]
+        rank_not_owned_equips3 = [0, 0, 0, 0, 0]
         rank_setting1 = [0, 0, 0, 0, 0]
         rank_setting2 = [0, 0, 0, 0, 0]
         rank_setting3 = [0, 0, 0, 0, 0]
@@ -1875,13 +1940,13 @@ def show_result(rank_list, job_type, ele_skill):
         ## c: b에서 1 선택시, 0=스펙, 1=증가량
         try:
             # ranking = [ranking1, ranking2, ranking3]
-            # ranking1 = rank => [score, [calc_wep, [save1, save2, pas1_out], baibianguai, upgrade_work_uniforms]]
+            # ranking1 = rank => [score, [calc_wep, [save1, save2, pas1_out], baibianguai, not_owned_equips]]
             rank_baibiaoguai3[0] = rank_list[2][0][1][2]
             rank_baibiaoguai2[0] = rank_list[1][0][1][2]
             rank_baibiaoguai1[0] = rank_list[0][0][1][2]
-            rank_upgrade_work_uniforms3[0] = rank_list[2][0][1][3]
-            rank_upgrade_work_uniforms2[0] = rank_list[1][0][1][3]
-            rank_upgrade_work_uniforms1[0] = rank_list[0][0][1][3]
+            rank_not_owned_equips3[0] = rank_list[2][0][1][3]
+            rank_not_owned_equips2[0] = rank_list[1][0][1][3]
+            rank_not_owned_equips1[0] = rank_list[0][0][1][3]
             rank_setting3[0] = rank_list[2][0][1][0]  ##2번째 숫자가 랭킹임
             rank_setting2[0] = rank_list[1][0][1][0]
             rank_setting1[0] = rank_list[0][0][1][0]
@@ -1896,22 +1961,22 @@ def show_result(rank_list, job_type, ele_skill):
                     if len(j) != 6:
                         if j[0:2] == str(i):
                             result_image_on3[0][str(i)] = image_list[j]
-                            # 如果该装备在额外升级的工作服列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
-                            if j in rank_upgrade_work_uniforms3[0]:
+                            # 如果该装备在额外升级的工作服或跨界装备列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
+                            if j in rank_not_owned_equips3[0]:
                                 result_image_on3[0][str(i)] = image_list2[j]
                 for j in rank_setting2[0]:
                     if len(j) != 6:
                         if j[0:2] == str(i):
                             result_image_on2[0][str(i)] = image_list[j]
-                            # 如果该装备在额外升级的工作服列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
-                            if j in rank_upgrade_work_uniforms2[0]:
+                            # 如果该装备在额外升级的工作服或跨界装备列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
+                            if j in rank_not_owned_equips2[0]:
                                 result_image_on2[0][str(i)] = image_list2[j]
                 for j in rank_setting1[0]:
                     if len(j) != 6:
                         if j[0:2] == str(i):
                             result_image_on1[0][str(i)] = image_list[j]  ##
-                            # 如果该装备在额外升级的工作服列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
-                            if j in rank_upgrade_work_uniforms1[0]:
+                            # 如果该装备在额外升级的工作服或跨界装备列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
+                            if j in rank_not_owned_equips1[0]:
                                 result_image_on1[0][str(i)] = image_list2[j]
             if rank_baibiaoguai3[0] is not None:
                 result_image_on3[0]["bbg"] = image_list[rank_baibiaoguai3[0]]
@@ -1923,9 +1988,9 @@ def show_result(rank_list, job_type, ele_skill):
             rank_baibiaoguai3[1] = rank_list[2][1][1][2]
             rank_baibiaoguai2[1] = rank_list[1][1][1][2]
             rank_baibiaoguai1[1] = rank_list[0][1][1][2]
-            rank_upgrade_work_uniforms3[1] = rank_list[2][1][1][3]
-            rank_upgrade_work_uniforms2[1] = rank_list[1][1][1][3]
-            rank_upgrade_work_uniforms1[1] = rank_list[0][1][1][3]
+            rank_not_owned_equips3[1] = rank_list[2][1][1][3]
+            rank_not_owned_equips2[1] = rank_list[1][1][1][3]
+            rank_not_owned_equips1[1] = rank_list[0][1][1][3]
             rank_setting3[1] = rank_list[2][1][1][0]
             rank_setting2[1] = rank_list[1][1][1][0]
             rank_setting1[1] = rank_list[0][1][1][0]
@@ -1940,22 +2005,22 @@ def show_result(rank_list, job_type, ele_skill):
                     if len(j) != 6:
                         if j[0:2] == str(i):
                             result_image_on3[1][str(i)] = image_list[j]
-                            # 如果该装备在额外升级的工作服列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
-                            if j in rank_upgrade_work_uniforms3[1]:
+                            # 如果该装备在额外升级的工作服或跨界装备列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
+                            if j in rank_not_owned_equips3[1]:
                                 result_image_on3[1][str(i)] = image_list2[j]
                 for j in rank_setting2[1]:
                     if len(j) != 6:
                         if j[0:2] == str(i):
                             result_image_on2[1][str(i)] = image_list[j]
-                            # 如果该装备在额外升级的工作服列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
-                            if j in rank_upgrade_work_uniforms2[1]:
+                            # 如果该装备在额外升级的工作服或跨界装备列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
+                            if j in rank_not_owned_equips2[1]:
                                 result_image_on2[1][str(i)] = image_list2[j]
                 for j in rank_setting1[1]:
                     if len(j) != 6:
                         if j[0:2] == str(i):
                             result_image_on1[1][str(i)] = image_list[j]  ##
-                            # 如果该装备在额外升级的工作服列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
-                            if j in rank_upgrade_work_uniforms1[1]:
+                            # 如果该装备在额外升级的工作服或跨界装备列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
+                            if j in rank_not_owned_equips1[1]:
                                 result_image_on1[1][str(i)] = image_list2[j]
             if rank_baibiaoguai3[1] is not None:
                 result_image_on3[1]["bbg"] = image_list[rank_baibiaoguai3[1]]
@@ -1967,9 +2032,9 @@ def show_result(rank_list, job_type, ele_skill):
             rank_baibiaoguai3[2] = rank_list[2][2][1][2]
             rank_baibiaoguai2[2] = rank_list[1][2][1][2]
             rank_baibiaoguai1[2] = rank_list[0][2][1][2]
-            rank_upgrade_work_uniforms3[2] = rank_list[2][2][1][3]
-            rank_upgrade_work_uniforms2[2] = rank_list[1][2][1][3]
-            rank_upgrade_work_uniforms1[2] = rank_list[0][2][1][3]
+            rank_not_owned_equips3[2] = rank_list[2][2][1][3]
+            rank_not_owned_equips2[2] = rank_list[1][2][1][3]
+            rank_not_owned_equips1[2] = rank_list[0][2][1][3]
             rank_setting3[2] = rank_list[2][2][1][0]
             rank_setting2[2] = rank_list[1][2][1][0]
             rank_setting1[2] = rank_list[0][2][1][0]
@@ -1984,22 +2049,22 @@ def show_result(rank_list, job_type, ele_skill):
                     if len(j) != 6:
                         if j[0:2] == str(i):
                             result_image_on3[2][str(i)] = image_list[j]
-                            # 如果该装备在额外升级的工作服列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
-                            if j in rank_upgrade_work_uniforms3[2]:
+                            # 如果该装备在额外升级的工作服或跨界装备列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
+                            if j in rank_not_owned_equips3[2]:
                                 result_image_on3[2][str(i)] = image_list2[j]
                 for j in rank_setting2[2]:
                     if len(j) != 6:
                         if j[0:2] == str(i):
                             result_image_on2[2][str(i)] = image_list[j]
-                            # 如果该装备在额外升级的工作服列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
-                            if j in rank_upgrade_work_uniforms2[2]:
+                            # 如果该装备在额外升级的工作服或跨界装备列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
+                            if j in rank_not_owned_equips2[2]:
                                 result_image_on2[2][str(i)] = image_list2[j]
                 for j in rank_setting1[2]:
                     if len(j) != 6:
                         if j[0:2] == str(i):
                             result_image_on1[2][str(i)] = image_list[j]  ##
-                            # 如果该装备在额外升级的工作服列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
-                            if j in rank_upgrade_work_uniforms1[1]:
+                            # 如果该装备在额外升级的工作服或跨界装备列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
+                            if j in rank_not_owned_equips1[1]:
                                 result_image_on1[1][str(i)] = image_list2[j]
             if rank_baibiaoguai3[2] is not None:
                 result_image_on3[2]["bbg"] = image_list[rank_baibiaoguai3[2]]
@@ -2011,9 +2076,9 @@ def show_result(rank_list, job_type, ele_skill):
             rank_baibiaoguai3[3] = rank_list[2][3][1][2]
             rank_baibiaoguai2[3] = rank_list[1][3][1][2]
             rank_baibiaoguai1[3] = rank_list[0][3][1][2]
-            rank_upgrade_work_uniforms3[3] = rank_list[2][3][1][3]
-            rank_upgrade_work_uniforms2[3] = rank_list[1][3][1][3]
-            rank_upgrade_work_uniforms1[3] = rank_list[0][3][1][3]
+            rank_not_owned_equips3[3] = rank_list[2][3][1][3]
+            rank_not_owned_equips2[3] = rank_list[1][3][1][3]
+            rank_not_owned_equips1[3] = rank_list[0][3][1][3]
             rank_setting3[3] = rank_list[2][3][1][0]
             rank_setting2[3] = rank_list[1][3][1][0]
             rank_setting1[3] = rank_list[0][3][1][0]
@@ -2028,22 +2093,22 @@ def show_result(rank_list, job_type, ele_skill):
                     if len(j) != 6:
                         if j[0:2] == str(i):
                             result_image_on3[3][str(i)] = image_list[j]
-                            # 如果该装备在额外升级的工作服列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
-                            if j in rank_upgrade_work_uniforms3[3]:
+                            # 如果该装备在额外升级的工作服或跨界装备列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
+                            if j in rank_not_owned_equips3[3]:
                                 result_image_on3[3][str(i)] = image_list2[j]
                 for j in rank_setting2[3]:
                     if len(j) != 6:
                         if j[0:2] == str(i):
                             result_image_on2[3][str(i)] = image_list[j]
-                            # 如果该装备在额外升级的工作服列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
-                            if j in rank_upgrade_work_uniforms2[3]:
+                            # 如果该装备在额外升级的工作服或跨界装备列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
+                            if j in rank_not_owned_equips2[3]:
                                 result_image_on2[3][str(i)] = image_list2[j]
                 for j in rank_setting1[3]:
                     if len(j) != 6:
                         if j[0:2] == str(i):
                             result_image_on1[3][str(i)] = image_list[j]  ##
-                            # 如果该装备在额外升级的工作服列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
-                            if j in rank_upgrade_work_uniforms1[3]:
+                            # 如果该装备在额外升级的工作服或跨界装备列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
+                            if j in rank_not_owned_equips1[3]:
                                 result_image_on1[3][str(i)] = image_list2[j]
             if rank_baibiaoguai3[3] is not None:
                 result_image_on3[3]["bbg"] = image_list[rank_baibiaoguai3[3]]
@@ -2055,9 +2120,9 @@ def show_result(rank_list, job_type, ele_skill):
             rank_baibiaoguai3[4] = rank_list[2][4][1][2]
             rank_baibiaoguai2[4] = rank_list[1][4][1][2]
             rank_baibiaoguai1[4] = rank_list[0][4][1][2]
-            rank_upgrade_work_uniforms3[4] = rank_list[2][4][1][3]
-            rank_upgrade_work_uniforms2[4] = rank_list[1][4][1][3]
-            rank_upgrade_work_uniforms1[4] = rank_list[0][4][1][3]
+            rank_not_owned_equips3[4] = rank_list[2][4][1][3]
+            rank_not_owned_equips2[4] = rank_list[1][4][1][3]
+            rank_not_owned_equips1[4] = rank_list[0][4][1][3]
             rank_setting3[4] = rank_list[2][4][1][0]
             rank_setting2[4] = rank_list[1][4][1][0]
             rank_setting1[4] = rank_list[0][4][1][0]
@@ -2072,22 +2137,22 @@ def show_result(rank_list, job_type, ele_skill):
                     if len(j) != 6:
                         if j[0:2] == str(i):
                             result_image_on3[4][str(i)] = image_list[j]
-                            # 如果该装备在额外升级的工作服列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
-                            if j in rank_upgrade_work_uniforms3[4]:
+                            # 如果该装备在额外升级的工作服或跨界装备列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
+                            if j in rank_not_owned_equips3[4]:
                                 result_image_on3[4][str(i)] = image_list2[j]
                 for j in rank_setting2[4]:
                     if len(j) != 6:
                         if j[0:2] == str(i):
                             result_image_on2[4][str(i)] = image_list[j]
-                            # 如果该装备在额外升级的工作服列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
-                            if j in rank_upgrade_work_uniforms2[4]:
+                            # 如果该装备在额外升级的工作服或跨界装备列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
+                            if j in rank_not_owned_equips2[4]:
                                 result_image_on2[4][str(i)] = image_list2[j]
                 for j in rank_setting1[4]:
                     if len(j) != 6:
                         if j[0:2] == str(i):
                             result_image_on1[4][str(i)] = image_list[j]  ##
-                            # 如果该装备在额外升级的工作服列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
-                            if j in rank_upgrade_work_uniforms1[4]:
+                            # 如果该装备在额外升级的工作服或跨界装备列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
+                            if j in rank_not_owned_equips1[4]:
                                 result_image_on1[4][str(i)] = image_list2[j]
             if rank_baibiaoguai3[4] is not None:
                 result_image_on3[4]["bbg"] = image_list[rank_baibiaoguai3[4]]
@@ -2767,13 +2832,26 @@ def change_savelist(in1, in2, in3, in4, in5, in6, in7, in8, in9, in10):
         for i in range(1, 11):
             db_custom2.cell(i, 5).value = in_list[i - 1]
         global save_name_list
+
+        # 更改存档名后，仍保持当前位置这个存档
+        current_index = 0
+        try:
+            current_index = save_name_list.index(save_select.get())
+        except ValueError:
+            current_index = 0
+
         save_name_list = in_list
         load_preset5.save("preset.xlsx")
         load_preset5.close()
-        save_select.set(save_name_list[0])
+        save_select.set(save_name_list[current_index])
         save_select['values'] = save_name_list
         change_window.destroy()
         tkinter.messagebox.showinfo("通知", "保存完成")
+
+        # 更新存档名称后，同步更新picker的列表，同时清空已选列表
+        global transfer_equip_combopicker
+        transfer_equip_combopicker = Combopicker(self, values=get_other_account_names(), entrywidth=11)
+        transfer_equip_combopicker.place(x=390 - 17, y=447)
     except PermissionError as error:
         tkinter.messagebox.showerror("错误", "请关闭重试")
 
@@ -2793,9 +2871,13 @@ def update_count():
             if exit_calc == 0:
                 using_time = time.time() - count_start_time
                 using_time_str = format_time(using_time)
-                remaining_time = (all_list_num - count_valid - count_invalid) / (
-                        count_valid + count_invalid + 1) * using_time
-                remaining_time_str = format_time(remaining_time)
+                processed = count_valid + count_invalid
+                if all_list_num >= processed:
+                    remaining_time = (all_list_num - count_valid - count_invalid) / (
+                            count_valid + count_invalid + 1) * using_time
+                    remaining_time_str = format_time(remaining_time)
+                else:
+                    remaining_time_str = "0s(未经确计数)"
             showcon(text=(str(count_valid) + "有效搭配/" + str(count_invalid) + "无效" +
                           "\n用时=" + using_time_str + "" +
                           "\n剩余=" + remaining_time_str)
@@ -3331,6 +3413,10 @@ def hamjung():
     tkinter.messagebox.showinfo("제작자 크레딧",
                                 "총제작자=Dawnclass(새벽반)\n이미지/그래픽=경철부동산\n직업/버퍼DB=대략볼록할철\n서버제공=던파오프\n기타조언=히든 도비 4,5,6호\n\n오류 제보는 블로그 덧글이나 던조 쪽지로")
 
+def get_other_account_names():
+    current_name = save_select.get()
+    return [name for name in save_name_list if name != current_name]
+
 
 ###########################################################
 #                        tkinter初始化                    #
@@ -3468,16 +3554,12 @@ can_upgrade_work_unifrom_nums_select = tkinter.ttk.Combobox(self, width=13,
 can_upgrade_work_unifrom_nums_select.set(txt_can_upgrade_work_unifrom_nums[0])
 can_upgrade_work_unifrom_nums_select.place(x=390 - 17, y=421)
 
-# re: 增加跨界的ui
-txt_transfer_equip = ["月虫", "奶妈", "奶萝"]
-
 transfer_equip_txt = tkinter.Label(self, text="  跨界  ", font=guide_font, fg="white", bg=dark_sub)
 transfer_equip_txt.place(x=300, y=447)
-transfer_equip_combopicker = Combopicker(self, values=txt_transfer_equip, entrywidth=13)
+transfer_equip_combopicker = Combopicker(self, values=get_other_account_names(), entrywidth=11)
 transfer_equip_combopicker.place(x=390 - 17, y=447)
-
-# re:通过下面这个函数获取已选择的列表
-transfer_equip_combopicker.get_selected_entrys()
+transfer_equip_spinbox = tkinter.Spinbox(self, from_=0, to=11, width=2)
+transfer_equip_spinbox.place(x=457, y=447)
 
 # transfer_equip_listbox = tkinter.ttk.Combobox(self, width=13, height=1, selectmode=MULTIPLE)
 # transfer_equip_listbox.pack()
