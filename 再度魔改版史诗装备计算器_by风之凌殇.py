@@ -1491,75 +1491,21 @@ def get_equips():
         if eval('select_item["tg{}"]'.format(know_one)) == 1:
             eval('list{}.append(str({}))'.format(know_one[0:2], know_one))
 
-    if len(list11) == 0:
-        list11.append('11360');
-        list12.append('12360');
-        list13.append('13360');
-        list14.append('14360');
-        list15.append('15360')
-    elif len(list12) == 0:
-        list11.append('11360');
-        list12.append('12360');
-        list13.append('13360');
-        list14.append('14360');
-        list15.append('15360')
-    elif len(list13) == 0:
-        list11.append('11360');
-        list12.append('12360');
-        list13.append('13360');
-        list14.append('14360');
-        list15.append('15360')
-    elif len(list14) == 0:
-        list11.append('11360');
-        list12.append('12360');
-        list13.append('13360');
-        list14.append('14360');
-        list15.append('15360')
-    elif len(list15) == 0:
-        list11.append('11360');
-        list12.append('12360');
-        list13.append('13360');
-        list14.append('14360');
-        list15.append('15360')
 
-    if len(list21) == 0 and len(list22) == 0:
-        list21.append('21370');
-        list22.append('22370');
-        list23.append('23370')
-    elif len(list22) == 0 and len(list23) == 0:
-        list21.append('21370');
-        list22.append('22370');
-        list23.append('23370')
-    elif len(list23) == 0 and len(list21) == 0:
-        list21.append('21370');
-        list22.append('22370');
-        list23.append('23370')
+    # 为了计算结果更精确，永远将100传说防具、普雷首饰、普雷特殊加入备选方案
+    list11.append('11360')
+    list12.append('12360')
+    list13.append('13360')
+    list14.append('14360')
+    list15.append('15360')
 
-    if len(list31) == 0 and len(list32) == 0:
-        list31.append('31380');
-        list32.append('32380');
-        list33.append('33380')
-    elif len(list32) == 0 and len(list33) == 0:
-        list31.append('31380');
-        list32.append('32380');
-        list33.append('33380')
-    elif len(list33) == 0 and len(list31) == 0:
-        list31.append('31380');
-        list32.append('32380');
-        list33.append('33380')
+    list21.append('21370')
+    list22.append('22370')
+    list23.append('23370')
 
-    if len(list21) == 0:
-        list21.append('21370')
-    if len(list22) == 0:
-        list22.append('22370')
-    if len(list23) == 0:
-        list23.append('23370')
-    if len(list31) == 0:
-        list31.append('31380')
-    if len(list32) == 0:
-        list32.append('32380')
-    if len(list33) == 0:
-        list33.append('33380')
+    list31.append('31380');
+    list32.append('32380');
+    list33.append('33380')
 
     # 所有已选装备
     items = [list11, list12, list13, list14, list15, list21, list22, list23, list31, list32, list33]
@@ -3050,10 +2996,7 @@ def reset():
 
     wep_combopicker.set("")
     transfer_equip_combopicker.set("")
-
-    var = tkinter.StringVar(self)
-    var.set("0")
-    transfer_equip_spinbox.textvariable = var
+    can_transfer_nums_select.set(txt_can_transfer_nums[0])
 
 
 ###########################################################
