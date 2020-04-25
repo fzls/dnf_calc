@@ -670,6 +670,29 @@ def get_shuchu_bonus_attributes():
 
     return bonus_array
 
+g_speed_first = True
+
+def modify_slots_order(items, not_select_items, work_uniforms_items, transfer_slots_equips):
+    if not g_speed_first:
+        return
+
+    # 所有已选装备
+    _modify_slots_order(items)
+    # 百变怪的各部位可选装备需要与上面的部位顺序一致
+    _modify_slots_order(not_select_items)
+    # 可升级得到的各部位工作服
+    _modify_slots_order(work_uniforms_items)
+    # 跨界的备选装备
+    _modify_slots_order(transfer_slots_equips)
+
+def _modify_slots_order(slots):
+    # 默认槽位顺序为11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33
+    # 这种情况下，神话分布在第一位、第六位、第十一位，由于不能同时搭配两个神话，会导致额外多计算很多搭配
+    # hack: 优化：由于装备顺序不影响最终计算结果，所以把神话装备先放到前面，那么剪枝可以更高效
+    #   所有已选装备、百变怪各部位可选装备、各部位工作服的顺序需要一致，比如第一个是鞋、头肩、腰带，则其余俩也要是这个顺序
+
+    slots[0], slots[1], slots[2], slots[3], slots[4], slots[5], slots[6], slots[7], slots[8], slots[9], slots[10] = \
+        slots[0], slots[5], slots[10], slots[1], slots[2], slots[3], slots[4], slots[6], slots[7], slots[8], slots[9]
 
 ## 计算函数##
 def calc():
@@ -791,7 +814,15 @@ def calc():
         tkinter.messagebox.showerror('部分参数有误', "未选择武器或武器非法")
         return
 
+    # 获取当前装备、百变怪可选装备、工作服列表
     items, not_select_items, work_uniforms_items = get_equips()
+
+    # 获取选定的账号的各部位所拥有的当前账户未拥有的装备列表
+    transfer_slots_equips = get_transfer_slots_equips(items, load_presetc["one"])
+    transfer_max_count = get_can_transfer_nums()
+
+    # 根据需求决定是否需要开启将神话放到前面来加快剪枝的方案
+    modify_slots_order(items, not_select_items, work_uniforms_items, transfer_slots_equips)
 
     # 已选装备的搭配数
     all_list_num = calc_ori_counts(items)
@@ -799,10 +830,6 @@ def calc():
     all_list_num += calc_bbg_add_counts(items, not_select_items)
     # 额外升级的工作服增加的搭配数
     all_list_num += calc_upgrade_work_uniforms_add_counts(items, not_select_items, work_uniforms_items)
-
-    # 获取选定的账号的各部位所拥有的当前账户未拥有的装备列表
-    transfer_slots_equips = get_transfer_slots_equips(items, load_presetc["one"])
-    transfer_max_count = get_can_transfer_nums()
 
     try:
         showsta(text='开始计算')
