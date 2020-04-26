@@ -411,7 +411,7 @@ index_extra_percent_strength_and_intelligence = 8  # 8-K-staper-力智+X%
 index_extra_all_element_strength = 9  # 9-L-ele-所有属性强化+X
 index_extra_percent_continued_damage = 10  # 10-M-sloper-发生持续伤害5秒，伤害量为对敌人造成伤害的X%
 index_extra_percent_skill_attack_power = 11  # 11-N-skiper-技能攻击力 +X%
-index_extra_percent_special_effect = 12  # 12-O-special-特殊词条，作者为每个特殊词条打了相应的强度百分比分，如一叶障目对忍者一些技能的特殊改变被认为可以强化9%，守护的抉择（歧路鞋）的护石增强词条被认为可以增强21%
+index_extra_percent_special_effect = 12  # 12-O-special-特殊词条补正，如歧路和不息的装备，详见自定义中这俩装备相关配置
 index_extra_percent_attack_speed = 13  # 13-P-speed-攻击速度 +X%
 index_extra_percent_magic_physical_crit_rate = 14  # 14-Q-critical-魔法/物理暴击率 +X%
 index_extra_active_skill_effect = 15  # 15-R-active-主动技能增加等级所带来的的影响（目前C的伤害计算没有计入该值，仅奶系职业用到）
@@ -670,7 +670,9 @@ def get_shuchu_bonus_attributes():
 
     return bonus_array
 
+
 g_speed_first = True
+
 
 def modify_slots_order(items, not_select_items, work_uniforms_items, transfer_slots_equips):
     if not g_speed_first:
@@ -685,6 +687,7 @@ def modify_slots_order(items, not_select_items, work_uniforms_items, transfer_sl
     # 跨界的备选装备
     _modify_slots_order(transfer_slots_equips)
 
+
 def _modify_slots_order(slots):
     # 默认槽位顺序为11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33
     # 这种情况下，神话分布在第一位、第六位、第十一位，由于不能同时搭配两个神话，会导致额外多计算很多搭配
@@ -693,6 +696,7 @@ def _modify_slots_order(slots):
 
     slots[0], slots[1], slots[2], slots[3], slots[4], slots[5], slots[6], slots[7], slots[8], slots[9], slots[10] = \
         slots[0], slots[5], slots[10], slots[1], slots[2], slots[3], slots[4], slots[6], slots[7], slots[8], slots[9]
+
 
 ## 计算函数##
 def calc():
@@ -1523,7 +1527,6 @@ def get_equips():
     for know_one in know_list:
         if eval('select_item["tg{}"]'.format(know_one)) == 1:
             eval('list{}.append(str({}))'.format(know_one[0:2], know_one))
-
 
     # 为了计算结果更精确，永远将100传说防具、普雷首饰、普雷特殊加入备选方案
     list11.append('11360')
@@ -2636,6 +2639,7 @@ def costum():
     tkinter.Button(custom_window, text="保存", font=mid_font, command=save_command, bg="lightyellow").place(x=190, y=295)
 
 
+# re:如果调整了装备顺序，一定要记得一一去矫正着这个函数中的各个装备对应的行数
 def save_custom(ele_type, cool_con, cus1, cus2, cus3, cus4, cus6, cus7, cus8, cus9, cus10, cus11, cus12, c_stat, b_stat,
                 b_style_lvl, c_style_lvl, b_plt, b_cri, ele1, ele2, ele3, ele4, ele5, ele6):
     try:
@@ -2645,89 +2649,148 @@ def save_custom(ele_type, cool_con, cus1, cus2, cus3, cus4, cus6, cus7, cus8, cu
         db_save_one = load_excel3["one"]
         db_save_set = load_excel3["set"]
 
+        #########################################################
+        #                     输出环境                           #
+        #########################################################
+
+        # 属性攻击
         db_custom1['B1'] = ele_type
-        if ele_type == '화':
-            db_save_one['L181'] = 0;
-            db_save_one['L165'] = 0;
-            db_save_one['L149'] = 24;
-            db_save_one['L129'] = 0
-        elif ele_type == '수':
-            db_save_one['L181'] = 0;
-            db_save_one['L165'] = 24;
-            db_save_one['L149'] = 0;
-            db_save_one['L129'] = 0
-        elif ele_type == '명':
-            db_save_one['L181'] = 24;
-            db_save_one['L165'] = 0;
-            db_save_one['L149'] = 0;
-            db_save_one['L129'] = 0
-        elif ele_type == '암':
-            db_save_one['L181'] = 0;
-            db_save_one['L165'] = 0;
-            db_save_one['L149'] = 0;
-            db_save_one['L129'] = 24
+        # 大自然防具会根据属性不同部位有不同的属强加成
+        pos_elemental_strength_work_uniform_pants = 'L130'  # 工作服裤子
+        pos_elemental_strength_work_uniform_shoulders = 'L150'  # 工作服头肩
+        pos_elemental_strength_work_uniform_belt = 'L166'  # 工作服腰带
+        pos_elemental_strength_work_uniform_shoes = 'L182'  # 工作服鞋子
 
+        db_save_one[pos_elemental_strength_work_uniform_pants] = 0
+        db_save_one[pos_elemental_strength_work_uniform_shoulders] = 0
+        db_save_one[pos_elemental_strength_work_uniform_belt] = 0
+        db_save_one[pos_elemental_strength_work_uniform_shoes] = 0
+
+        if ele_type == '火':
+            # 工作服头肩在火属性攻击时会增加火属性属强24点
+            db_save_one[pos_elemental_strength_work_uniform_shoulders] = 24
+        elif ele_type == '冰':
+            # 工作服腰带在冰属性攻击时会增加冰属性属强24点
+            db_save_one[pos_elemental_strength_work_uniform_belt] = 24
+        elif ele_type == '光':
+            # 工作服鞋子在光属性攻击时会增加光属性属强24点
+            db_save_one[pos_elemental_strength_work_uniform_shoes] = 24
+        elif ele_type == '暗':
+            # 工作服裤子在暗属性攻击时会增加暗属性属强24点
+            db_save_one[pos_elemental_strength_work_uniform_pants] = 24
+
+        # 冷却补正比例
         db_custom1['B2'] = float(cool_con)
-        for i in range(1, 257):
-            db_save_one.cell(i, 25).value = db_save_one.cell(i, 26).value * float(cool_con) / 100
-        for i in range(259, 351):
-            db_save_one.cell(i, 25).value = db_save_one.cell(i, 26).value * float(cool_con) / 100
+        # 行1：中文列名（我新加的）
+        # 行2-257：装备列表
+        # 行258-259：原作者加的英文缩写列名与序号
+        # 行260-351：套装列表
+        # 行352-353：原作者加的英文缩写列名与序号
+        # 行354-361：智慧产物列表
+        # 行362：套装编号与套装名称列
+        # 行363-400：套装编号与套装名称
+        for i in range(1, 400 + 1):
+            try:
+                db_save_one.cell(i, 25).value = db_save_one.cell(i, 26).value * float(cool_con) / 100
+            except:
+                pass
+
         for i in range(1, 93):
-            db_save_set.cell(i, 25).value = db_save_one.cell(i, 26).value * float(cool_con) / 100
+            try:
+                db_save_set.cell(i, 25).value = db_save_one.cell(i, 26).value * float(cool_con) / 100
+            except:
+                pass
 
-        db_custom1['B3'] = float(cus1);
-        db_save_one['O164'] = float(cus1)
-        db_custom1['B4'] = float(cus2);
-        db_save_one['O180'] = float(cus2)
-        db_custom1['B5'] = float(cus6);
-        db_save_one['O100'] = float(cus6);
+        #########################################################
+        #                     特殊装备补正                       #
+        #########################################################
+
+        # 歧路腰带=X%
+        db_custom1['B3'] = float(cus1)
+        db_save_one['O165'] = float(cus1)
+        # 歧路鞋子=X%
+        db_custom1['B4'] = float(cus2)
+        db_save_one['O181'] = float(cus2)
+        # 不息上衣=X%
+        db_custom1['B5'] = float(cus6)
         db_save_one['O101'] = float(cus6)
-        db_custom1['B6'] = float(cus7);
-        db_save_one['O127'] = float(cus7)
-        db_custom1['B7'] = float(cus8);
-        db_save_one['O147'] = float(cus8)
-        db_custom1['B8'] = float(cus9);
-        db_save_one['O163'] = float(cus9)
-        db_custom1['B9'] = float(cus10);
-        db_save_one['O179'] = float(cus10)
-        db_custom1['B10'] = float(cus11);
-        db_save_one['O295'] = float(cus11)
-        db_custom1['B11'] = float(cus12);
-        db_save_one['O296'] = float(cus12);
+        db_save_one['O102'] = float(cus6)
+        # 不息裤子=X%
+        db_custom1['B6'] = float(cus7)
+        db_save_one['O128'] = float(cus7)
+        # 不息护肩=X%
+        db_custom1['B7'] = float(cus8)
+        db_save_one['O148'] = float(cus8)
+        # 不息腰带=X%
+        db_custom1['B8'] = float(cus9)
+        db_save_one['O164'] = float(cus9)
+        # 不息鞋子=X%
+        db_custom1['B9'] = float(cus10)
+        db_save_one['O180'] = float(cus10)
+        # 不息2件套=X%
+        db_custom1['B10'] = float(cus11)
+        db_save_one['O296'] = float(cus11)
+        # 不息3件套=X%
+        db_custom1['B11'] = float(cus12)
         db_save_one['O297'] = float(cus12)
+        db_save_one['O298'] = float(cus12)
+        # 经验等级=英雄↑ 或 传说↓
         db_custom1['B12'] = cus3
-        if cus3 == '전설↓':
-            db_save_one['J86'] = 34;
-            db_save_one['F120'] = 34;
-            db_save_one['N140'] = 34;
-            db_save_one['L156'] = 68;
-            db_save_one['K172'] = 34;
-            db_save_one['G276'] = 40;
+        if cus3 == '传说↓':
+            # 传说↓
+            db_save_one['J87'] = 34  # 龙血玄黄-上衣
+            db_save_one['F121'] = 34  # 龙血玄黄-裤子
+            db_save_one['N141'] = 34  # 龙血玄黄-头肩
+            db_save_one['L157'] = 68  # 龙血玄黄-腰带
+            db_save_one['K173'] = 34  # 龙血玄黄-鞋子
+            db_save_one['G277'] = 40  # 龙血玄黄5
         else:
-            db_save_one['J86'] = 35;
-            db_save_one['F120'] = 35;
-            db_save_one['N140'] = 35;
-            db_save_one['L156'] = 72;
-            db_save_one['K172'] = 35;
-            db_save_one['G276'] = 41;
+            # 英雄↑
+            db_save_one['J87'] = 35  # 龙血玄黄-上衣
+            db_save_one['F121'] = 35  # 龙血玄黄-裤子
+            db_save_one['N141'] = 35  # 龙血玄黄-头肩
+            db_save_one['L157'] = 72  # 龙血玄黄-腰带
+            db_save_one['K173'] = 35  # 龙血玄黄-鞋子
+            db_save_one['G277'] = 41  # 龙血玄黄5
+        # 恍惚增幅等级
         db_custom1['B13'] = cus4
-        db_save_one['N189'] = int(cus4) + 4;
-        db_save_one['N190'] = int(cus4) + 4;
-        db_save_one['K205'] = int(cus4) + 4;
-        db_save_one['E214'] = int(cus4) + 4
+        db_save_one['N190'] = int(cus4) + 4  # 破晓-手镯
+        db_save_one['N191'] = int(cus4) + 4  # 破晓-神话手镯
+        db_save_one['K206'] = int(cus4) + 4  # 破晓-项链
+        db_save_one['E215'] = int(cus4) + 4  # 破晓-戒指
 
+        #########################################################
+        #                     奶量增幅相关                       #
+        #########################################################
+
+        # 面板体精智（左边的）
         db_custom1['H1'] = c_stat
+        # 面板体精智（右边的）
         db_custom1['H6'] = b_stat
+        # 祝福称号等级
         db_custom1['H2'] = b_style_lvl
+        # 一觉称号等级
         db_custom1['H3'] = c_style_lvl
+        # 祝福等级（左）
         db_custom1['H4'] = b_plt
+        # 祝福等级（右）
         db_custom1['H5'] = b_cri
 
+        #########################################################
+        #                        属强相关                        #
+        #########################################################
+
+        # 基础属强
         db_custom1['B14'] = ele1
+        # 其他属强
         db_custom1['B15'] = ele2
+        # 勋章属强
         db_custom1['B16'] = ele3
+        # 技能属强
         db_custom1['B17'] = ele4
+        # 怪物属抗
         db_custom1['B18'] = ele5
+        # 辅助减抗（如奶妈-60抗性）
         db_custom1['B19'] = ele6
 
         load_preset1.save("preset.xlsx")
