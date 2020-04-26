@@ -1704,8 +1704,8 @@ res_txt_readable_result = None
 
 
 # 用文字方式写成当前搭配，避免每次都得一个个肉眼对比图标来确认是啥装备
-def create_readable_result_area(weapon, equips):
-    global res_txt_readable_result
+def change_readable_result_area(weapon, equips, is_create):
+    global res_txt_readable_result, canvas_res
 
     readable_names = []
     readable_names.append(equip_index_to_realname[weapon])
@@ -1743,9 +1743,13 @@ def create_readable_result_area(weapon, equips):
         readable_result += name
         line_word_count += len(name)
 
-    res_txt_readable_result = canvas_res.create_text(res_txt_readable_result_center_x, res_txt_readable_result_center_y,
-                                                     text=pretty_words(readable_names, 40, ' | '),
+    content = pretty_words(readable_names, 40, ' | ')
+    if is_create:
+        res_txt_readable_result = canvas_res.create_text(res_txt_readable_result_center_x, res_txt_readable_result_center_y,
+                                                     text=content,
                                                      font=guide_font, fill='white')
+    else:
+        canvas_res.itemconfig(res_txt_readable_result, text=content)
 
 
 # 展示当前搭配的各装备名称
@@ -1980,7 +1984,7 @@ def show_result(rank_list, job_type, ele_skill):
 
         weapon = rank_setting[0][0]
         equips = rank_setting[0][1:]
-        create_readable_result_area(weapon, equips)
+        change_readable_result_area(weapon, equips, True)
 
         wep_index = weapon
 
@@ -2305,7 +2309,7 @@ def show_result(rank_list, job_type, ele_skill):
 
         weapon = rank_setting3[0][0]
         equips = rank_setting3[0][1:]
-        create_readable_result_area(weapon, equips)
+        change_readable_result_area(weapon, equips, True)
 
         wep_index = weapon
 
@@ -2388,7 +2392,10 @@ def change_rank(now, job_type):
             canvas_res.itemconfig(res_stat, text=rank_stat[now])
             canvas_res.itemconfig(res_stat2, text=rank_stat2[now])
 
-            canvas_res.itemconfig(res_txt_weapon, text=equip_index_to_realname[g_rank_equips[now][0]])
+            current_weapon = g_rank_equips[now][0]
+            current_equips = g_rank_equips[now][1:]
+            canvas_res.itemconfig(res_txt_weapon, text=equip_index_to_realname[current_weapon])
+            change_readable_result_area(current_weapon, current_equips, False)
         except KeyError as error:
             c = 1
 
@@ -2430,7 +2437,11 @@ def change_rank(now, job_type):
                 res_txtbbg = canvas_res.create_text(178, 147, text="百变怪=>", fill='white')
                 res_imgbbg = canvas_res.create_image(219, 147, image=image_changed['bbg'])  # 百变怪
 
-            canvas_res.itemconfig(res_txt_weapon, text=equip_index_to_realname[g_rank_equips[g_current_buff_type][now][0]])
+            current_weapon = g_rank_equips[g_current_buff_type][now][0]
+            current_equips = g_rank_equips[g_current_buff_type][now][1:]
+            canvas_res.itemconfig(res_txt_weapon, text=equip_index_to_realname[current_weapon])
+            change_readable_result_area(current_weapon, current_equips, False)
+
         except KeyError as error:
             c = 1
 
@@ -2502,7 +2513,10 @@ def change_rank_type(in_type):
         except KeyError as error:
             c = 1
 
-    canvas_res.itemconfig(res_txt_weapon, text=equip_index_to_realname[g_rank_equips[g_current_buff_type][0][0]])
+    current_weapon = g_rank_equips[g_current_buff_type][0][0]
+    current_equips = g_rank_equips[g_current_buff_type][0][1:]
+    canvas_res.itemconfig(res_txt_weapon, text=equip_index_to_realname[current_weapon])
+    change_readable_result_area(current_weapon, current_equips, False)
 
 
 def costum():
