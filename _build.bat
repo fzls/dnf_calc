@@ -1,3 +1,5 @@
+python export_excel_to_txt.py
+
 :: 使用pyinstaller打包
 pyinstaller.exe --hidden-import pkg_resources.py2_warn  --noconsole -F "再度魔改版史诗装备计算器_by风之凌殇.py"
 

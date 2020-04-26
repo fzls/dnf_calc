@@ -10,6 +10,7 @@
 
 from openpyxl import load_workbook
 
+
 def dump_excels(workbook_names, save_filename):
     lines = []
     for workbook_name in sorted(workbook_names):
@@ -26,6 +27,7 @@ def dump_excels(workbook_names, save_filename):
 
     with open(save_filename, 'w', encoding='utf-8') as save_file:
         save_file.write('\n'.join(lines))
+
 
 if __name__ == '__main__':
     dump_excels(["DATA.xlsx", "preset.XLSX"], "txt_from_excel.txt")
