@@ -3629,6 +3629,10 @@ for filename in os.listdir(image_directory):
     index = filename[:-5]  # 装备的key(除去后五位后剩余的字符串)：22390240
     newImage = PhotoImage(file="image/{}".format(filename))  #
     if filename[-5] == "n":  # 根据倒数第五位决定使用哪个list
+        # 神话装备会有三个文件，以11011为例，分别为11011f.png/11011n.gif/11011n.png，其中后面两个为点亮时的样式，
+        # 为了跟原版一致，当是神话装备时，加载点亮样式时，优先使用gif版本的
+        if  is_god(index) and index in image_list and filename.endswith(".png"):
+            continue
         image_list[index] = newImage
     else:
         image_list2[index] = newImage
