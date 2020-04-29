@@ -3658,7 +3658,7 @@ tkinter.Button(self, command=reset, image=reset_img, borderwidth=0, activebackgr
 
 wep_list = []
 wep_name_to_index = {}
-for i in range(0, 75):
+for i in range(0, 76):
     wep_index = name_one[str(i + 111001)][0]
     wep_name = name_one[str(i + 111001)][1]
 
