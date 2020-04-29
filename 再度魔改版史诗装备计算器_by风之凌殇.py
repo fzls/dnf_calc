@@ -2848,7 +2848,13 @@ def load_checklist_noconfirm(ssnum1):
     # 增加读取武器、职业等选项
     col_custom_save_value = g_col_custom_save_value_begin + ssnum1
     wep_combopicker.set((load_cell(g_row_custom_save_weapon, col_custom_save_value).value or "").split(','))
-    jobup_select.set(load_cell(g_row_custom_save_job, col_custom_save_value).value)
+    job_name = load_cell(g_row_custom_save_job, col_custom_save_value).value
+    # 调整名称后，为保证兼容之前的存档，需要替换存档中的名称为新的名字
+    job_name = job_name.replace("(奶系)奶妈", "(奶系)炽天使").replace("(奶系)奶萝", "(奶系)冥月女神").replace("(奶系)奶爸", "(奶系)神思者")\
+        .replace("剑神", "极诣·剑魂").replace("黑暗君主", "极诣·鬼泣").replace("帝血弑天", "极诣·狂战士").replace("天帝", "极诣·阿修罗").replace("夜见罗刹", "极诣·剑影")\
+        .replace("剑皇", "极诣·驭剑士").replace("裁决女神", "极诣·暗殿骑士").replace("弑神者", "极诣·契魔者").replace("剑帝", "极诣·流浪武士")\
+        .replace("铁血教父", "铁血统帅")
+    jobup_select.set(job_name)
     time_select.set(load_cell(g_row_custom_save_fight_time, col_custom_save_value).value)
     style = load_cell(g_row_custom_save_title, col_custom_save_value).value
     # 由于调整了国服特色的实现，若找不到之前版本存档的称号，则换为第一个称号
