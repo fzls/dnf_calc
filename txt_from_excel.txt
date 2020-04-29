@@ -754,7 +754,7 @@ info,name,stat,att,damper,criper,bonper,elebon,allper,attper,staper,ele,sloper,s
 1342,天命3,0,0,7,0,18,0,0,0,11.6666666666667,0,0,12.35,0,12.25,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,None,None
 1351,悲剧2,0,0,0,0,0,0,23,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,None,None
 1352,悲剧3,0,0,0,0,0,0,23,29,0,0,0,0,7,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,None,None
-1360,传说防具2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,None,None
+1360,None,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,None,None
 1361,传说防具3,0,0,10,10,0,0,0,5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,None,None
 1362,传说防具5,0,0,10,10,20,0,12,5,0,0,0,0,0,0,8,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,None,None
 1370,None,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,None,None

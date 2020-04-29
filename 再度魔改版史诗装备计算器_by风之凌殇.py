@@ -912,7 +912,7 @@ def calc():
                     god = 0
                     if has_god or is_god(equip):
                         god = 1
-                    set_list = ["1" + str(selected_combination[x][2:4]) for x in range(0, 11)]
+                    set_list = ["1" + str(get_set_name(selected_combination[x])) for x in range(0, 11)]
                     set_val = Counter(set_list)
                     del set_val['136', '137', '138']
                     # 1件价值量=0，两件=1，三件、四件=2，五件=3，神话额外增加1价值量
@@ -1037,7 +1037,7 @@ def calc():
         god = 0
         if selected_has_god:
             god = 1
-        set_list = ["1" + str(selected_combination[x][2:4]) for x in range(0, len(selected_combination))]
+        set_list = ["1" + str(get_set_name(selected_combination[x])) for x in range(0, len(selected_combination))]
         set_val = Counter(set_list)
         del set_val['136', '137', '138']
         # 1件价值量=0，两件=1，三件、四件=2，五件=3，神话额外增加1价值量
@@ -1060,7 +1060,7 @@ def calc():
         show_number = 1
 
         def process(calc_now, baibianguai, upgrade_work_uniforms, transfered_equips):
-            set_list = ["1" + str(calc_now[x][2:4]) for x in range(0, 11)]
+            set_list = ["1" + str(get_set_name(calc_now[x])) for x in range(0, 11)]
             set_on = [];
             setapp = set_on.append
             setcount = set_list.count
@@ -1225,7 +1225,7 @@ def calc():
         show_number = 1
 
         def process(calc_now, baibianguai, upgrade_work_uniforms, transfered_equips):
-            set_list = ["1" + str(calc_now[x][2:4]) for x in range(0, 11)]
+            set_list = ["1" + str(get_set_name(calc_now[x])) for x in range(0, 11)]
             set_val = Counter(set_list)
             del set_val['136', '137', '138']
             set_on = [];
@@ -1579,6 +1579,18 @@ def is_god(equip):
     return int(equip[-1]) == 1
 
 
+def get_set_name(equip):
+    # eg. 31290	圣者-辅助装备中29表示该装备属于套装29=圣者
+    return equip[2:4]
+
+# 36套装为传说
+def is_legend(equip):
+    return get_set_name(equip) == "36"
+
+# 37为普雷首饰，38为普雷特殊
+def is_pulei(equip):
+    return get_set_name(equip) in ["37", "38"]
+
 # 百变怪是否可以转换成该装备
 def can_convert_from_baibianguai(equip):
     # 百变怪不能转换为神话装备
@@ -1589,6 +1601,9 @@ def can_convert_from_baibianguai(equip):
         return False
     # 百变怪不能转化为智慧产物
     if equip in the_product_of_wisdoms:
+        return False
+    # 百变怪不能转化为传说、普雷
+    if is_legend(equip) or is_pulei(equip):
         return False
 
     return True
@@ -1726,7 +1741,7 @@ def change_readable_result_area(weapon, equips, is_create):
     readable_names.append(equip_index_to_realname[weapon])
 
     # 智慧产物以外的套装信息
-    set_list = ["1" + str(equips[x][2:4]) for x in range(0, 11) if len(equips[x]) < 8]
+    set_list = ["1" + str(get_set_name(equips[x])) for x in range(0, 11) if len(equips[x]) < 8]
     for set_index, count in collections.Counter(set_list).most_common():
         readable_names.append("{}-{}".format(equip_index_to_realname[set_index], count))
 
@@ -3441,7 +3456,7 @@ def click_equipment(code):
         eval('select_{}'.format(code))['image'] = image_list2[str(code)]
         select_item['tg' + str('{}'.format(code))] = 0
     if len(str(code)) == 5:
-        check_set(int('1' + str(code)[2:4]))
+        check_set(int('1' + get_set_name(str(code))))
 
 
 def check_equipment():
