@@ -376,6 +376,7 @@ g_row_custom_save_has_baibianguai = 9  # 是否拥有百变怪
 g_row_custom_save_can_upgrade_work_uniforms_nums = 10  # 当前拥有的材料够升级多少件工作服
 g_row_custom_save_transfer_from = 11  # 跨界来源账户列表
 g_row_custom_save_max_transfer_count = 12  # 最大跨界数目
+g_row_custom_save_use_pulei_legend_by_default = 13  # 是否默认将普雷传说装备加入备选池
 
 # 国服特色
 styles = [
@@ -1544,20 +1545,55 @@ def get_equips():
         if eval('select_item["tg{}"]'.format(know_one)) == 1:
             eval('list{}.append(str({}))'.format(know_one[0:2], know_one))
 
-    # 为了计算结果更精确，永远将100传说防具、普雷首饰、普雷特殊加入备选方案
-    list11.append('11360')
-    list12.append('12360')
-    list13.append('13360')
-    list14.append('14360')
-    list15.append('15360')
+    if use_pulei_legend_by_default():
+        list11.append('11360')
+        list12.append('12360')
+        list13.append('13360')
+        list14.append('14360')
+        list15.append('15360')
 
-    list21.append('21370')
-    list22.append('22370')
-    list23.append('23370')
+        list21.append('21370')
+        list22.append('22370')
+        list23.append('23370')
 
-    list31.append('31380');
-    list32.append('32380');
-    list33.append('33380')
+        list31.append('31380')
+        list32.append('32380')
+        list33.append('33380')
+    else:
+        # 如果不默认使用普雷传说，则仅在对应槽位没有其他任何可选装备的时候才加入
+        # 防具任意部位不存在可选装备时将所有传说防具加入备选池
+        if len(list11) == 0 or len(list12) == 0 or len(list13) == 0 or len(list14) == 0 or len(list15) == 0:
+            list11.append('11360')
+            list12.append('12360')
+            list13.append('13360')
+            list14.append('14360')
+            list15.append('15360')
+
+        # 如果首饰至少两个部位不存在可选装备，则将所有普雷首饰加入备选池
+        if len(list21) == 0 and len(list22) == 0 or len(list22) == 0 and len(list23) == 0 or len(list23) == 0 and len(list21) == 0:
+            list21.append('21370')
+            list22.append('22370')
+            list23.append('23370')
+
+        # 如果特殊装备至少两个部位不存在可选装备，则将所有普雷特殊装备加入备选池
+        if len(list31) == 0 and len(list32) == 0 or len(list32) == 0 and len(list33) == 0 or len(list33) == 0 and len(list31) == 0:
+            list31.append('31380')
+            list32.append('32380')
+            list33.append('33380')
+
+        # 若首饰特殊某个部位不存在可选装备，则将对应槽位的普雷装备加入备选池
+        if len(list21) == 0:
+            list21.append('21370')
+        if len(list22) == 0:
+            list22.append('22370')
+        if len(list23) == 0:
+            list23.append('23370')
+        if len(list31) == 0:
+            list31.append('31380')
+        if len(list32) == 0:
+            list32.append('32380')
+        if len(list33) == 0:
+            list33.append('33380')
 
     # 所有已选装备
     items = [list11, list12, list13, list14, list15, list21, list22, list23, list31, list32, list33]
@@ -1583,13 +1619,16 @@ def get_set_name(equip):
     # eg. 31290	圣者-辅助装备中29表示该装备属于套装29=圣者
     return equip[2:4]
 
+
 # 36套装为传说
 def is_legend(equip):
     return get_set_name(equip) == "36"
 
+
 # 37为普雷首饰，38为普雷特殊
 def is_pulei(equip):
     return get_set_name(equip) in ["37", "38"]
+
 
 # 百变怪是否可以转换成该装备
 def can_convert_from_baibianguai(equip):
@@ -1651,6 +1690,11 @@ def get_can_transfer_nums():
         can_transfer_nums = can_transfer_nums_str_2_int[
             can_transfer_nums_select.get()]
     return can_transfer_nums
+
+
+# 是否默认将普雷传说装备加入备选池
+def use_pulei_legend_by_default():
+    return use_pulei_legend_by_default_select.get() == txt_use_pulei_legend_by_default
 
 
 # 获取选定的账号的各部位所拥有的当前账户未拥有的装备列表
@@ -1776,8 +1820,8 @@ def change_readable_result_area(weapon, equips, is_create):
     content = pretty_words(readable_names, 40, ' | ')
     if is_create:
         res_txt_readable_result = canvas_res.create_text(res_txt_readable_result_center_x, res_txt_readable_result_center_y,
-                                                     text=content,
-                                                     font=guide_font, fill='white')
+                                                         text=content,
+                                                         font=guide_font, fill='white')
     else:
         canvas_res.itemconfig(res_txt_readable_result, text=content)
 
@@ -2880,9 +2924,9 @@ def load_checklist_noconfirm(ssnum1):
     wep_combopicker.set((load_cell(g_row_custom_save_weapon, col_custom_save_value).value or "").split(','))
     job_name = load_cell(g_row_custom_save_job, col_custom_save_value).value
     # 调整名称后，为保证兼容之前的存档，需要替换存档中的名称为新的名字
-    job_name = job_name.replace("(奶系)奶妈", "(奶系)炽天使").replace("(奶系)奶萝", "(奶系)冥月女神").replace("(奶系)奶爸", "(奶系)神思者")\
-        .replace("剑神", "极诣·剑魂").replace("黑暗君主", "极诣·鬼泣").replace("帝血弑天", "极诣·狂战士").replace("天帝", "极诣·阿修罗").replace("夜见罗刹", "极诣·剑影")\
-        .replace("剑皇", "极诣·驭剑士").replace("裁决女神", "极诣·暗殿骑士").replace("弑神者", "极诣·契魔者").replace("剑帝", "极诣·流浪武士")\
+    job_name = job_name.replace("(奶系)奶妈", "(奶系)炽天使").replace("(奶系)奶萝", "(奶系)冥月女神").replace("(奶系)奶爸", "(奶系)神思者") \
+        .replace("剑神", "极诣·剑魂").replace("黑暗君主", "极诣·鬼泣").replace("帝血弑天", "极诣·狂战士").replace("天帝", "极诣·阿修罗").replace("夜见罗刹", "极诣·剑影") \
+        .replace("剑皇", "极诣·驭剑士").replace("裁决女神", "极诣·暗殿骑士").replace("弑神者", "极诣·契魔者").replace("剑帝", "极诣·流浪武士") \
         .replace("铁血教父", "铁血统帅")
     jobup_select.set(job_name)
     time_select.set(load_cell(g_row_custom_save_fight_time, col_custom_save_value).value)
@@ -2905,6 +2949,7 @@ def load_checklist_noconfirm(ssnum1):
         txt_can_upgrade_work_unifrom_nums[0])
     transfer_equip_combopicker.set((load_cell(g_row_custom_save_transfer_from, col_custom_save_value).value or "").split(','))
     can_transfer_nums_select.set(load_cell(g_row_custom_save_max_transfer_count, col_custom_save_value).value or txt_can_transfer_nums[0])
+    use_pulei_legend_by_default_select.set(load_cell(g_row_custom_save_use_pulei_legend_by_default, col_custom_save_value).value or txt_not_use_pulei_legend_by_default)
 
     load_preset3.close()
     check_equipment()
@@ -2963,6 +3008,7 @@ def save_checklist():
             save_my_custom(save_cell, g_row_custom_save_can_upgrade_work_uniforms_nums, col_custom_save_value, "材料够升级的工作服数目", can_upgrade_work_unifrom_nums_select.get())
             save_my_custom(save_cell, g_row_custom_save_transfer_from, col_custom_save_value, "跨界来源账户列表", transfer_equip_combopicker.current_value)
             save_my_custom(save_cell, g_row_custom_save_max_transfer_count, col_custom_save_value, "最大跨界数目", can_transfer_nums_select.get())
+            save_my_custom(save_cell, g_row_custom_save_use_pulei_legend_by_default, col_custom_save_value, "是否默认将普雷传说装备加入备选池", use_pulei_legend_by_default_select.get())
 
             load_preset4.save("preset.xlsx")
             load_preset4.close()
@@ -3435,6 +3481,10 @@ can_transfer_nums_str_2_int = {}
 for idx, txt in enumerate(txt_can_transfer_nums):
     can_transfer_nums_str_2_int[txt] = idx
 
+# 是否默认将普雷传说加入备选
+txt_not_use_pulei_legend_by_default = "不加入备选池"
+txt_use_pulei_legend_by_default = "加入备选池"
+
 
 ###########################################################
 #                        ui相关函数                        #
@@ -3667,7 +3717,7 @@ for filename in os.listdir(image_directory):
     if filename[-5] == "n":  # 根据倒数第五位决定使用哪个list
         # 神话装备会有三个文件，以11011为例，分别为11011f.png/11011n.gif/11011n.png，其中后面两个为点亮时的样式，
         # 为了跟原版一致，当是神话装备时，加载点亮样式时，优先使用gif版本的
-        if  is_god(index) and index in image_list and filename.endswith(".png"):
+        if is_god(index) and index in image_list and filename.endswith(".png"):
             continue
         image_list[index] = newImage
     else:
@@ -3733,10 +3783,10 @@ stop_img = PhotoImage(file="ext_img/stop.png")
 tkinter.Button(self, image=stop_img, borderwidth=0, activebackground=dark_main, command=stop_calc, bg=dark_main).place(
     x=390 - 35, y=62)
 
-timeline_img = PhotoImage(file="ext_img/timeline.png")
-select_custom = tkinter.Button(self, image=timeline_img, borderwidth=0, activebackground=dark_main,
-                               command=timeline_select, bg=dark_sub)
-select_custom.place(x=345 + 165, y=340 - 100)
+# timeline_img = PhotoImage(file="ext_img/timeline.png")
+# select_custom = tkinter.Button(self, image=timeline_img, borderwidth=0, activebackground=dark_main,
+#                                command=timeline_select, bg=dark_sub)
+# select_custom.place(x=345 + 165, y=340 - 100)
 custom_img = PhotoImage(file="ext_img/custom.png")
 select_custom2 = tkinter.Button(self, image=custom_img, borderwidth=0, activebackground=dark_main, command=costum,
                                 bg=dark_sub)
@@ -3782,6 +3832,13 @@ transfer_equip_combopicker.place(x=390 - 17, y=447)
 can_transfer_nums_select = tkinter.ttk.Combobox(self, width=2, values=txt_can_transfer_nums)
 can_transfer_nums_select.set(txt_can_transfer_nums[0])
 can_transfer_nums_select.place(x=457, y=447)
+
+use_pulei_legend_by_default_txt = tkinter.Label(self, text="传说普雷默认", font=guide_font, fg="white", bg=dark_sub)
+use_pulei_legend_by_default_txt.place(x=510, y=240)
+use_pulei_legend_by_default_select = tkinter.ttk.Combobox(self, width=8,
+                                                          values=[txt_not_use_pulei_legend_by_default, txt_use_pulei_legend_by_default])
+use_pulei_legend_by_default_select.set(txt_not_use_pulei_legend_by_default)
+use_pulei_legend_by_default_select.place(x=510, y=270)
 
 show_count = tkinter.Label(self, font=guide_font, fg="white", bg=dark_sub)
 show_count.place(x=490, y=40)
