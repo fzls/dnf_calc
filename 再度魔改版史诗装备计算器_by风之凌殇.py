@@ -721,7 +721,7 @@ def calc():
         result_window.destroy()
     except NameError as error:
         pass
-    if select_speed.get() == '慢速':
+    if select_speed.get() == speed_slow:
         set_perfect = 1
     else:
         set_perfect = 0
@@ -867,7 +867,8 @@ def calc():
     can_upgrade_work_unifrom_nums = get_can_upgrade_work_unifrom_nums()
     has_uniforms = pre_calc_has_uniforms(items, work_uniforms_items)
     # 超慢速时不进行任何剪枝操作，装备搭配对比的标准是最终计算出的伤害与奶量倍率
-    dont_pruning = select_speed.get() == '超慢速'
+    dont_pruning = select_speed.get() == speed_super_slow
+    dont_prefer_god = not prefer_god()
 
     # 看了看，主要性能瓶颈在于直接使用了itertools.product遍历所有的笛卡尔积组合，导致无法提前剪枝，只能在每个组合计算前通过条件判断是否要跳过
     # 背景，假设当前处理到下标n（0-10）的装备，前面装备已选择的组合为selected_combination(of size n)，未处理装备为后面11-n-1个，其对应组合数为rcp=len(Cartesian Product(后面11-n-1个装备部位))
@@ -911,7 +912,7 @@ def calc():
                 else:
                     # 仅当当前搭配的价值评估函数值不低于历史最高值时才视为有效搭配
                     god = 0
-                    if has_god or is_god(equip):
+                    if not dont_prefer_god and (has_god or is_god(equip)):
                         god = 1
                     set_list = ["1" + str(get_set_name(selected_combination[x])) for x in range(0, 11)]
                     set_val = Counter(set_list)
@@ -1036,7 +1037,7 @@ def calc():
 
     def calc_equip_value(selected_combination, selected_has_god):
         god = 0
-        if selected_has_god:
+        if selected_has_god and prefer_god():
             god = 1
         set_list = ["1" + str(get_set_name(selected_combination[x])) for x in range(0, len(selected_combination))]
         set_val = Counter(set_list)
@@ -1531,7 +1532,7 @@ def get_equips():
         except KeyError as error:
             c = 1
     algo_list = ['11', '12', '13', '14', '15', '21', '22', '23', '31', '32', '33']
-    if select_speed.get() == '快速':
+    if select_speed.get() == speed_quick:
         for i in list_setnum:
             if list_setnum.count(i) == 1:
                 if i[-1] != '1':
@@ -1695,6 +1696,10 @@ def get_can_transfer_nums():
 # 是否默认将普雷传说装备加入备选池
 def use_pulei_legend_by_default():
     return use_pulei_legend_by_default_select.get() == txt_use_pulei_legend_by_default
+
+# 是否偏好神话
+def prefer_god():
+    return select_speed.get() != speed_middle_not_prefer_god
 
 
 # 获取选定的账号的各部位所拥有的当前账户未拥有的装备列表
@@ -3485,15 +3490,30 @@ for idx, txt in enumerate(txt_can_transfer_nums):
 txt_not_use_pulei_legend_by_default = "不加入备选池"
 txt_use_pulei_legend_by_default = "加入备选池"
 
-
 ###########################################################
 #                        ui相关函数                        #
 ###########################################################
+
+speed_quick = '快速'
+speed_middle = '中速'
+speed_middle_not_prefer_god = '中速(不偏好神话)'
+speed_slow = '慢速'
+speed_super_slow = '超慢速'
+
+speeds = [
+    speed_quick,
+    speed_middle,
+    speed_middle_not_prefer_god,
+    speed_slow,
+    speed_super_slow
+]
+
 
 def guide_speed():
     tkinter.messagebox.showinfo("准确度选择", (
         "快速=不太精确-删除单一散件\n"
         "中速=稍精确-包括散件, 神话优先\n"
+        "中速(不偏好神话)=稍精确-包括散件, 神话同等优先级\n"
         "慢速=比较精确-所有限制解除(非常慢)(保留价值预估函数过滤)\n"
         "超慢速=非常精确-所有限制解除(天荒地老海枯石烂的慢)"))
 
@@ -3732,9 +3752,9 @@ bg_img = PhotoImage(file="ext_img/bg_img.png")
 bg_wall = tkinter.Label(self, image=bg_img)
 bg_wall.place(x=0, y=0)
 
-select_speed = tkinter.ttk.Combobox(self, values=['快速', '中速', '慢速', '超慢速'], width=15)
+select_speed = tkinter.ttk.Combobox(self, values=speeds, width=15)
 select_speed.place(x=145, y=11)
-select_speed.set('中速')
+select_speed.set(speed_middle)
 select_speed_img = PhotoImage(file="ext_img/select_speed.png")
 tkinter.Button(self, command=guide_speed, image=select_speed_img, borderwidth=0, activebackground=dark_main,
                bg=dark_main).place(x=29, y=7)
