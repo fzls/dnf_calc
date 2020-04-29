@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 import collections
 
-now_version = "v3.2.8.1"
-ver_time = '2020-04-26'
+now_version = "v3.2.8.2"
+ver_time = '2020-04-30'
 
 ## 코드를 무단으로 복제하여 개조 및 배포하지 말 것##
 
