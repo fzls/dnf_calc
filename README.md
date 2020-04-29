@@ -1,9 +1,9 @@
 # 前言
-本计算器基于[韩服dawnclass-黎明工作室](https://blog.naver.com/PostView.nhn?blogId=dawnclass16&logNo=221931875095#)所写、[韩械](https://space.bilibili.com/4952736)汉化并加入国服特色的一键史诗搭配计算器，在其上进行了一些性能优化、扩展功能、易用性改动及bugfix。
+本计算器基于[韩服dawnclass-黎明工作室](https://blog.naver.com/PostView.nhn?blogId=dawnclass16&logNo=221931875095#)所写计算器v2.3.1、[韩械](https://space.bilibili.com/4952736)汉化并加入国服特色的一键史诗搭配计算器，在其上进行了一些性能优化、扩展功能、易用性改动及bugfix。
 
 目前实现了搜索百变怪、升级工作服、跨界、多武器搭配等功能，并对启动和搜索性能做了一定优化，在操作易用性上加了一些调整。具体改动内容可见下文
 
-# 韩服黎明工作室原版
+# 韩服黎明工作室原版v2.4.0（更新于2020/4/27)
 ## 源码发布
 https://blog.naver.com/PostView.nhn?blogId=dawnclass16&logNo=221931875095#
 ## 二进制发布
