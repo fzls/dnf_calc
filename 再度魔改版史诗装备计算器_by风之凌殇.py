@@ -1047,7 +1047,7 @@ def calc():
 
         return setopt_num
 
-    is_shuchu_job = job_name[4:7] not in ["奶爸", "奶妈", "奶萝"]
+    is_shuchu_job = job_name not in ["(奶系)神思者", "(奶系)炽天使", "(奶系)冥月女神"]
     if is_shuchu_job:
 
         # 代码名称
@@ -1290,7 +1290,7 @@ def calc():
                     c_per = (c_per / 100 + 1) * (no_cut[7] / 100 + 1) * 100 - 100
                     oneonelist.append(no_cut)
 
-                if job_name[4:7] == "奶爸":
+                if job_name == "(奶系)神思者":
                     b_base_att = lvlget('hol_b_atta')[int(base_array[8])]
                     stat_pas0lvl_b = lvlget('pas0')[int(base_array[11]) + base_pas0_b] + lvlget('hol_pas0_1')[
                         int(base_array[12])]
@@ -1319,10 +1319,10 @@ def calc():
                         int(base_array[8])) + "级)]"
 
                 else:
-                    if job_name[4:7] == "奶妈":
+                    if job_name == "(奶系)炽天使":
                         b_value = 675
                         aria = 1.25 + 0.05 * base_array[10]
-                    if job_name[4:7] == "奶萝":
+                    if job_name == "(奶系)冥月女神":
                         b_value = 665
                         aria = (1.20 + 0.05 * base_array[10]) * 1.20
 
