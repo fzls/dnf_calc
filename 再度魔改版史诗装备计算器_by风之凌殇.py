@@ -392,7 +392,7 @@ styles = [
 ]
 creatures = [
     '弓手维多利亚', '神官格洛丽亚', '雷光之箭维多利亚', '暴风圣女格洛丽亚',  # 2020春节普通宠物和至尊宠物
-    '骑士莱恩', '吟游诗人薇泽达', '古国英豪莱恩', '太初之音薇泽达',  # 2019春节普通宠物和至尊宠物
+    '骑士莱恩', '吟游诗人薇泽达', '古国英豪莱恩', '太初之音薇泽达', '神迹·古国英豪莱恩', '神迹·太初之音薇泽达',  # 2019春节普通宠物和至尊宠物，以及2020年升级后的2019至尊年宠
     '雪兔蒂娅', '火狐艾芙', '冰雪魔法师蒂娅', '炽焰咒术师艾芙',  # 2018春节普通宠物和至尊宠物
     '艾莉丝', '克里斯',  # 2017春节普通宠物
     '其他（直接比较）'
@@ -566,7 +566,7 @@ def get_shuchu_bonus_attributes():
     # 获取宠物的加成
     creature = creature_select.get()
     if creature in ['弓手维多利亚', '神官格洛丽亚']:
-        bonus_array[index_extra_percent_addtional_damage] += 10 * 10 / 30  # 宠物技能+10%攻击力，持续10s，冷却30s
+        bonus_array[index_extra_percent_final_damage] += 10 * 10 / 30  # 宠物技能+10%攻击力，持续10s，冷却30s
         bonus_array[index_extra_percent_attack_speed] += 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
         bonus_array[index_strength_and_intelligence] += 140  # 四维+140
         bonus_array[index_extra_percent_attack_speed] += 5  # 三速+5%
@@ -580,7 +580,7 @@ def get_shuchu_bonus_attributes():
         bonus_array[index_extra_percent_strength_and_intelligence] += 10  # 力智+10%
         bonus_array[index_cool_correction] += 1.75  # 技能冷却每减1%，冷却矫正系数增加0.35
     elif creature in ['雷光之箭维多利亚', '暴风圣女格洛丽亚']:
-        bonus_array[index_extra_percent_addtional_damage] += 10 * 10 / 30  # 宠物技能+10%攻击力，持续10s，冷却30s
+        bonus_array[index_extra_percent_final_damage] += 10 * 10 / 30  # 宠物技能+10%攻击力，持续10s，冷却30s
         bonus_array[index_extra_percent_attack_speed] += 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
         bonus_array[index_strength_and_intelligence] += 150  # 四维+150
         bonus_array[index_extra_percent_attack_speed] += 5  # 三速+5%
@@ -595,7 +595,7 @@ def get_shuchu_bonus_attributes():
         bonus_array[index_extra_percent_strength_and_intelligence] += 12  # 力智+12%
         bonus_array[index_cool_correction] += 1.75  # 技能冷却每减1%，冷却矫正系数增加0.35
     elif creature in ['骑士莱恩', '吟游诗人薇泽达']:
-        bonus_array[index_extra_percent_addtional_damage] += 10 * 10 / 30  # 宠物技能+10%攻击力，持续10s，冷却30s
+        bonus_array[index_extra_percent_final_damage] += 10 * 10 / 30  # 宠物技能+10%攻击力，持续10s，冷却30s
         bonus_array[index_extra_percent_attack_speed] += 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
         bonus_array[index_strength_and_intelligence] += 120  # 四维+120
         bonus_array[index_extra_percent_attack_speed] += 5  # 三速+5%
@@ -608,7 +608,7 @@ def get_shuchu_bonus_attributes():
         bonus_array[index_extra_percent_addtional_damage] += 12  # 攻击时，附加12%的伤害
         bonus_array[index_cool_correction] += 1.75  # 技能冷却每减1%，冷却矫正系数增加0.35
     elif creature in ['古国英豪莱恩', '太初之音薇泽达']:
-        bonus_array[index_extra_percent_addtional_damage] += 10 * 10 / 30  # 宠物技能+10%攻击力，持续10s，冷却30s
+        bonus_array[index_extra_percent_final_damage] += 10 * 10 / 30  # 宠物技能+10%攻击力，持续10s，冷却30s
         bonus_array[index_extra_percent_attack_speed] += 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
         bonus_array[index_strength_and_intelligence] += 120  # 四维+120
         bonus_array[index_extra_percent_attack_speed] += 5  # 三速+5%
@@ -621,8 +621,23 @@ def get_shuchu_bonus_attributes():
         bonus_array[index_extra_percent_addtional_damage] += 15  # 攻击时，附加15%的伤害
         bonus_array[index_extra_percent_final_damage] += 5  # 最终伤害+5%
         bonus_array[index_cool_correction] += 1.75  # 技能冷却每减1%，冷却矫正系数增加0.35
+    elif creature in ['神迹·古国英豪莱恩', '神迹·太初之音薇泽达']:
+        bonus_array[index_extra_percent_final_damage] += 10 * 10 / 30  # 宠物技能+10%攻击力，持续10s，冷却30s
+        bonus_array[index_extra_percent_attack_speed] += 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
+        bonus_array[index_strength_and_intelligence] += 120  # 四维+120
+        bonus_array[index_extra_percent_attack_speed] += 5  # 三速+5%
+        bonus_array[index_extra_all_element_strength] += 24  # 所有属强+24
+        bonus_array[index_extra_percent_magic_physical_crit_rate] += 10  # 暴击率+10%
+        bonus_array[index_extra_passive_transfer_skill] += 1  # 转职被动+1， 1-50lv+1
+        bonus_array[index_extra_passive_first_awaken_skill] += 1  # 一觉被动+1， 1-50lv+1
+        bonus_array[index_extra_active_skill_lv_1_45] += 1  # 1-45级主动+1， 1-50lv+1
+        bonus_array[index_extra_active_skill_lv_50] += 1  # 50级主动+1， 1-50lv+1
+        bonus_array[index_extra_percent_addtional_damage] += 15  # 攻击时，附加15%的伤害
+        bonus_array[index_extra_percent_final_damage] += 5  # 最终伤害+5%
+        bonus_array[index_extra_percent_strength_and_intelligence] += 8  # 力智+8%
+        bonus_array[index_cool_correction] += 1.75  # 技能冷却每减1%，冷却矫正系数增加0.35
     elif creature in ['雪兔蒂娅', '火狐艾芙']:
-        bonus_array[index_extra_percent_addtional_damage] += 10 * 10 / 30  # 宠物技能+10%攻击力，持续10s，冷却30s
+        bonus_array[index_extra_percent_final_damage] += 10 * 10 / 30  # 宠物技能+10%攻击力，持续10s，冷却30s
         bonus_array[index_extra_percent_attack_speed] += 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
         bonus_array[index_strength_and_intelligence] += 100  # 四维+100
         bonus_array[index_extra_percent_attack_speed] += 5  # 三速+5%
@@ -635,7 +650,7 @@ def get_shuchu_bonus_attributes():
         bonus_array[index_extra_percent_addtional_damage] += 10  # 攻击时，附加10%的伤害
         bonus_array[index_cool_correction] += 1.75  # 技能冷却每减1%，冷却矫正系数增加0.35
     elif creature in ['冰雪魔法师蒂娅', '炽焰咒术师艾芙']:
-        bonus_array[index_extra_percent_addtional_damage] += 10 * 10 / 30  # 宠物技能+10%攻击力，持续10s，冷却30s
+        bonus_array[index_extra_percent_final_damage] += 10 * 10 / 30  # 宠物技能+10%攻击力，持续10s，冷却30s
         bonus_array[index_extra_percent_attack_speed] += 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
         bonus_array[index_strength_and_intelligence] += 110  # 四维+110
         bonus_array[index_extra_percent_attack_speed] += 5  # 三速+5%
@@ -648,7 +663,7 @@ def get_shuchu_bonus_attributes():
         bonus_array[index_extra_percent_addtional_damage] += 12  # 攻击时，附加12%的伤害
         bonus_array[index_cool_correction] += 1.75  # 技能冷却每减1%，冷却矫正系数增加0.35
     elif creature in ['艾莉丝', '克里斯']:
-        bonus_array[index_extra_percent_addtional_damage] += 10 * 10 / 20  # 宠物技能+10%攻击力，持续10s，冷却20s
+        bonus_array[index_extra_percent_final_damage] += 10 * 10 / 20  # 宠物技能+10%攻击力，持续10s，冷却20s
         bonus_array[index_physical_magical_independent_attack_power] += 35  # 三攻+35
         bonus_array[index_extra_percent_attack_speed] += 4  # 三速+4%
         bonus_array[index_extra_all_element_strength] += 15  # 所有属强+15
