@@ -2733,7 +2733,10 @@ def costum():
     tkinter.Button(custom_window, text="保存", font=mid_font, command=save_command, bg="lightyellow").place(x=190, y=295)
 
 
-# re:如果调整了装备顺序，一定要记得一一去矫正着这个函数中的各个装备对应的行数
+# 根据装备编码，获取装备对应行号的字符串
+def get_row(equip_index):
+    return str(equip_index_to_row_index[equip_index])
+
 def save_custom(ele_type, cool_con, cus1, cus2, cus3, cus4, cus6, cus7, cus8, cus9, cus10, cus11, cus12, c_stat, b_stat,
                 b_style_lvl, c_style_lvl, b_plt, b_cri, ele1, ele2, ele3, ele4, ele5, ele6):
     try:
@@ -2750,28 +2753,23 @@ def save_custom(ele_type, cool_con, cus1, cus2, cus3, cus4, cus6, cus7, cus8, cu
         # 属性攻击
         db_custom1['B1'] = ele_type
         # 大自然防具会根据属性不同部位有不同的属强加成
-        pos_elemental_strength_work_uniform_pants = 'L130'  # 工作服裤子
-        pos_elemental_strength_work_uniform_shoulders = 'L150'  # 工作服头肩
-        pos_elemental_strength_work_uniform_belt = 'L166'  # 工作服腰带
-        pos_elemental_strength_work_uniform_shoes = 'L182'  # 工作服鞋子
-
-        db_save_one[pos_elemental_strength_work_uniform_pants] = 0
-        db_save_one[pos_elemental_strength_work_uniform_shoulders] = 0
-        db_save_one[pos_elemental_strength_work_uniform_belt] = 0
-        db_save_one[pos_elemental_strength_work_uniform_shoes] = 0
+        db_save_one["L" + get_row("12150")] = 0 # 工作服裤子
+        db_save_one["L" + get_row("13150")] = 0 # 工作服头肩
+        db_save_one["L" + get_row("14150")] = 0 # 工作服腰带
+        db_save_one["L" + get_row("15150")] = 0 # 工作服鞋子
 
         if ele_type == '火':
             # 工作服头肩在火属性攻击时会增加火属性属强24点
-            db_save_one[pos_elemental_strength_work_uniform_shoulders] = 24
+            db_save_one["L" + get_row("13150")] = 24 # 工作服头肩
         elif ele_type == '冰':
             # 工作服腰带在冰属性攻击时会增加冰属性属强24点
-            db_save_one[pos_elemental_strength_work_uniform_belt] = 24
+            db_save_one["L" + get_row("14150")] = 24  # 工作服腰带
         elif ele_type == '光':
             # 工作服鞋子在光属性攻击时会增加光属性属强24点
-            db_save_one[pos_elemental_strength_work_uniform_shoes] = 24
+            db_save_one["L" + get_row("15150")] = 24  # 工作服鞋子
         elif ele_type == '暗':
             # 工作服裤子在暗属性攻击时会增加暗属性属强24点
-            db_save_one[pos_elemental_strength_work_uniform_pants] = 24
+            db_save_one["L" + get_row("12150")] = 24  # 工作服裤子
 
         # 冷却补正比例
         db_custom1['B2'] = float(cool_con)
@@ -2783,13 +2781,13 @@ def save_custom(ele_type, cool_con, cus1, cus2, cus3, cus4, cus6, cus7, cus8, cu
         # 行354-361：智慧产物列表
         # 行362：套装编号与套装名称列
         # 行363-400：套装编号与套装名称
-        for i in range(1, 400 + 1):
+        for i in range(1, 400 + 50 + 1): # 保险起见，多写几行，避免日后添加新装备忘记更新，反正多写不会错
             try:
                 db_save_one.cell(i, 25).value = db_save_one.cell(i, 26).value * float(cool_con) / 100
             except:
                 pass
 
-        for i in range(1, 93):
+        for i in range(1, 93 + 50 + 1):  # 保险起见，多写几行，避免日后添加新装备忘记更新，反正多写不会错
             try:
                 db_save_set.cell(i, 25).value = db_save_one.cell(i, 26).value * float(cool_con) / 100
             except:
@@ -2801,57 +2799,57 @@ def save_custom(ele_type, cool_con, cus1, cus2, cus3, cus4, cus6, cus7, cus8, cu
 
         # 歧路腰带=X%
         db_custom1['B3'] = float(cus1)
-        db_save_one['O165'] = float(cus1)
+        db_save_one['O' + get_row("14140")] = float(cus1)
         # 歧路鞋子=X%
         db_custom1['B4'] = float(cus2)
-        db_save_one['O181'] = float(cus2)
+        db_save_one['O' + get_row("15140")] = float(cus2)
         # 不息上衣=X%
         db_custom1['B5'] = float(cus6)
-        db_save_one['O101'] = float(cus6)
-        db_save_one['O102'] = float(cus6)
+        db_save_one['O' + get_row("11130")] = float(cus6)
+        db_save_one['O' + get_row("11131")] = float(cus6)
         # 不息裤子=X%
         db_custom1['B6'] = float(cus7)
-        db_save_one['O128'] = float(cus7)
+        db_save_one['O' + get_row("12130")] = float(cus7)
         # 不息护肩=X%
         db_custom1['B7'] = float(cus8)
-        db_save_one['O148'] = float(cus8)
+        db_save_one['O' + get_row("13130")] = float(cus8)
         # 不息腰带=X%
         db_custom1['B8'] = float(cus9)
-        db_save_one['O164'] = float(cus9)
+        db_save_one['O' + get_row("14130")] = float(cus9)
         # 不息鞋子=X%
         db_custom1['B9'] = float(cus10)
-        db_save_one['O180'] = float(cus10)
+        db_save_one['O' + get_row("15130")] = float(cus10)
         # 不息2件套=X%
         db_custom1['B10'] = float(cus11)
-        db_save_one['O296'] = float(cus11)
+        db_save_one['O' + get_row("1131")] = float(cus11)
         # 不息3件套=X%
         db_custom1['B11'] = float(cus12)
-        db_save_one['O297'] = float(cus12)
-        db_save_one['O298'] = float(cus12)
+        db_save_one['O' + get_row("1132")] = float(cus12)
+        db_save_one['O' + get_row("1133")] = float(cus12)
         # 经验等级=英雄↑ 或 传说↓
         db_custom1['B12'] = cus3
         if cus3 == '传说↓':
             # 传说↓
-            db_save_one['J87'] = 34  # 龙血玄黄-上衣
-            db_save_one['F121'] = 34  # 龙血玄黄-裤子
-            db_save_one['N141'] = 34  # 龙血玄黄-头肩
-            db_save_one['L157'] = 68  # 龙血玄黄-腰带
-            db_save_one['K173'] = 34  # 龙血玄黄-鞋子
-            db_save_one['G277'] = 40  # 龙血玄黄5
+            db_save_one['J' + get_row("11060")] = 34  # 龙血玄黄-上衣
+            db_save_one['F' + get_row("12060")] = 34  # 龙血玄黄-裤子
+            db_save_one['N' + get_row("13060")] = 34  # 龙血玄黄-头肩
+            db_save_one['L' + get_row("14060")] = 68  # 龙血玄黄-腰带
+            db_save_one['K' + get_row("15060")] = 34  # 龙血玄黄-鞋子
+            db_save_one['G' + get_row("1063") ] = 40  # 龙血玄黄5
         else:
             # 英雄↑
-            db_save_one['J87'] = 35  # 龙血玄黄-上衣
-            db_save_one['F121'] = 35  # 龙血玄黄-裤子
-            db_save_one['N141'] = 35  # 龙血玄黄-头肩
-            db_save_one['L157'] = 72  # 龙血玄黄-腰带
-            db_save_one['K173'] = 35  # 龙血玄黄-鞋子
-            db_save_one['G277'] = 41  # 龙血玄黄5
+            db_save_one['J' + get_row("11060")] = 35  # 龙血玄黄-上衣
+            db_save_one['F' + get_row("12060")] = 35  # 龙血玄黄-裤子
+            db_save_one['N' + get_row("13060")] = 35  # 龙血玄黄-头肩
+            db_save_one['L' + get_row("14060")] = 72  # 龙血玄黄-腰带
+            db_save_one['K' + get_row("15060")] = 35  # 龙血玄黄-鞋子
+            db_save_one['G' + get_row("1063") ] = 41  # 龙血玄黄5
         # 恍惚增幅等级
         db_custom1['B13'] = cus4
-        db_save_one['N190'] = int(cus4) + 4  # 破晓-手镯
-        db_save_one['N191'] = int(cus4) + 4  # 破晓-神话手镯
-        db_save_one['K206'] = int(cus4) + 4  # 破晓-项链
-        db_save_one['E215'] = int(cus4) + 4  # 破晓-戒指
+        db_save_one['N' + get_row("21170")] = int(cus4) + 4  # 破晓-手镯
+        db_save_one['N' + get_row("21171")] = int(cus4) + 4  # 破晓-神话手镯
+        db_save_one['K' + get_row("22170")] = int(cus4) + 4  # 破晓-项链
+        db_save_one['E' + get_row("23170")] = int(cus4) + 4  # 破晓-戒指
 
         #########################################################
         #                     奶量增幅相关                       #
@@ -2894,7 +2892,7 @@ def save_custom(ele_type, cool_con, cus1, cus2, cus3, cus4, cus6, cus7, cus8, cu
         custom_window.destroy()
         tkinter.messagebox.showinfo("通知", "保存完成")
     except PermissionError as error:
-        tkinter.messagebox.showerror("错误", "请重试")
+        tkinter.messagebox.showerror("错误", "{}\n请关闭文件后重试".format(error))
 
 
 def load_checklist():
@@ -3220,6 +3218,7 @@ load_excel1 = load_workbook("DATA.xlsx", read_only=True, data_only=True)
 db_one = load_excel1["one"]
 name_one = {}
 equip_index_to_realname = {}
+equip_index_to_row_index = {}
 for row in db_one.rows:
     row_value = [cell.value for cell in row]
 
@@ -3228,6 +3227,8 @@ for row in db_one.rows:
 
     name_one[index] = row_value
     equip_index_to_realname[index] = realname
+    if len(row) != 0:
+        equip_index_to_row_index[index] = row[0].row
 
 db_job = load_excel1["lvl"]
 opt_job = {}
