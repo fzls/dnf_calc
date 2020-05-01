@@ -435,6 +435,10 @@ index_extra_active_skill_lv_100 = 27  # 27-AT-pas5-100主动技能
 #                         逻辑相关函数                     #
 ###########################################################
 
+# 计算乘算的词条在增加对应比例后新的比率。如原先为增加20%技攻，新的词条额外增加50%技攻，则实际为1.2*1.5-1=80%技攻提升率
+def multiply_entry(old_inc_percent, add_inc_percent):
+    return (old_inc_percent / 100 + 1) * (add_inc_percent / 100 + 1) * 100 - 100
+
 # 获取国服特殊加成属性
 def get_shuchu_bonus_attributes():
     bonus_array = np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
@@ -568,7 +572,8 @@ def get_shuchu_bonus_attributes():
     # 获取宠物的加成
     creature = creature_select.get()
     if creature in ['弓手维多利亚', '神官格洛丽亚']:
-        bonus_array[index_extra_percent_final_damage] += 10 * 10 / 30  # 宠物技能+10%攻击力，持续10s，冷却30s
+        # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
+        bonus_array[index_extra_percent_skill_attack_power] = multiply_entry(bonus_array[index_extra_percent_skill_attack_power], 10) # 宠物技能+10%攻击力，持续10s，冷却30s
         bonus_array[index_extra_percent_attack_speed] += 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
         bonus_array[index_strength_and_intelligence] += 140  # 四维+140
         bonus_array[index_extra_percent_attack_speed] += 5  # 三速+5%
@@ -582,7 +587,8 @@ def get_shuchu_bonus_attributes():
         bonus_array[index_extra_percent_strength_and_intelligence] += 10  # 力智+10%
         bonus_array[index_cool_correction] += 1.75  # 技能冷却每减1%，冷却矫正系数增加0.35
     elif creature in ['雷光之箭维多利亚', '暴风圣女格洛丽亚']:
-        bonus_array[index_extra_percent_final_damage] += 10 * 10 / 30  # 宠物技能+10%攻击力，持续10s，冷却30s
+        # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
+        bonus_array[index_extra_percent_skill_attack_power] = multiply_entry(bonus_array[index_extra_percent_skill_attack_power], 10) # 宠物技能+10%攻击力，持续10s，冷却30s
         bonus_array[index_extra_percent_attack_speed] += 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
         bonus_array[index_strength_and_intelligence] += 150  # 四维+150
         bonus_array[index_extra_percent_attack_speed] += 5  # 三速+5%
@@ -597,7 +603,8 @@ def get_shuchu_bonus_attributes():
         bonus_array[index_extra_percent_strength_and_intelligence] += 12  # 力智+12%
         bonus_array[index_cool_correction] += 1.75  # 技能冷却每减1%，冷却矫正系数增加0.35
     elif creature in ['骑士莱恩', '吟游诗人薇泽达']:
-        bonus_array[index_extra_percent_final_damage] += 10 * 10 / 30  # 宠物技能+10%攻击力，持续10s，冷却30s
+        # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
+        bonus_array[index_extra_percent_skill_attack_power] = multiply_entry(bonus_array[index_extra_percent_skill_attack_power], 10) # 宠物技能+10%攻击力，持续10s，冷却30s
         bonus_array[index_extra_percent_attack_speed] += 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
         bonus_array[index_strength_and_intelligence] += 120  # 四维+120
         bonus_array[index_extra_percent_attack_speed] += 5  # 三速+5%
@@ -610,7 +617,8 @@ def get_shuchu_bonus_attributes():
         bonus_array[index_extra_percent_addtional_damage] += 12  # 攻击时，附加12%的伤害
         bonus_array[index_cool_correction] += 1.75  # 技能冷却每减1%，冷却矫正系数增加0.35
     elif creature in ['古国英豪莱恩', '太初之音薇泽达']:
-        bonus_array[index_extra_percent_final_damage] += 10 * 10 / 30  # 宠物技能+10%攻击力，持续10s，冷却30s
+        # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
+        bonus_array[index_extra_percent_skill_attack_power] = multiply_entry(bonus_array[index_extra_percent_skill_attack_power], 10) # 宠物技能+10%攻击力，持续10s，冷却30s
         bonus_array[index_extra_percent_attack_speed] += 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
         bonus_array[index_strength_and_intelligence] += 120  # 四维+120
         bonus_array[index_extra_percent_attack_speed] += 5  # 三速+5%
@@ -624,7 +632,8 @@ def get_shuchu_bonus_attributes():
         bonus_array[index_extra_percent_final_damage] += 5  # 最终伤害+5%
         bonus_array[index_cool_correction] += 1.75  # 技能冷却每减1%，冷却矫正系数增加0.35
     elif creature in ['神迹·古国英豪莱恩', '神迹·太初之音薇泽达']:
-        bonus_array[index_extra_percent_final_damage] += 10 * 10 / 30  # 宠物技能+10%攻击力，持续10s，冷却30s
+        # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
+        bonus_array[index_extra_percent_skill_attack_power] = multiply_entry(bonus_array[index_extra_percent_skill_attack_power], 10) # 宠物技能+10%攻击力，持续10s，冷却30s
         bonus_array[index_extra_percent_attack_speed] += 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
         bonus_array[index_strength_and_intelligence] += 120  # 四维+120
         bonus_array[index_extra_percent_attack_speed] += 5  # 三速+5%
@@ -639,7 +648,8 @@ def get_shuchu_bonus_attributes():
         bonus_array[index_extra_percent_strength_and_intelligence] += 8  # 力智+8%
         bonus_array[index_cool_correction] += 1.75  # 技能冷却每减1%，冷却矫正系数增加0.35
     elif creature in ['雪兔蒂娅', '火狐艾芙']:
-        bonus_array[index_extra_percent_final_damage] += 10 * 10 / 30  # 宠物技能+10%攻击力，持续10s，冷却30s
+        # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
+        bonus_array[index_extra_percent_skill_attack_power] = multiply_entry(bonus_array[index_extra_percent_skill_attack_power], 10) # 宠物技能+10%攻击力，持续10s，冷却30s
         bonus_array[index_extra_percent_attack_speed] += 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
         bonus_array[index_strength_and_intelligence] += 100  # 四维+100
         bonus_array[index_extra_percent_attack_speed] += 5  # 三速+5%
@@ -652,7 +662,8 @@ def get_shuchu_bonus_attributes():
         bonus_array[index_extra_percent_addtional_damage] += 10  # 攻击时，附加10%的伤害
         bonus_array[index_cool_correction] += 1.75  # 技能冷却每减1%，冷却矫正系数增加0.35
     elif creature in ['冰雪魔法师蒂娅', '炽焰咒术师艾芙']:
-        bonus_array[index_extra_percent_final_damage] += 10 * 10 / 30  # 宠物技能+10%攻击力，持续10s，冷却30s
+        # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
+        bonus_array[index_extra_percent_skill_attack_power] = multiply_entry(bonus_array[index_extra_percent_skill_attack_power], 10) # 宠物技能+10%攻击力，持续10s，冷却30s
         bonus_array[index_extra_percent_attack_speed] += 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
         bonus_array[index_strength_and_intelligence] += 110  # 四维+110
         bonus_array[index_extra_percent_attack_speed] += 5  # 三速+5%
@@ -665,7 +676,8 @@ def get_shuchu_bonus_attributes():
         bonus_array[index_extra_percent_addtional_damage] += 12  # 攻击时，附加12%的伤害
         bonus_array[index_cool_correction] += 1.75  # 技能冷却每减1%，冷却矫正系数增加0.35
     elif creature in ['艾莉丝', '克里斯']:
-        bonus_array[index_extra_percent_final_damage] += 10 * 10 / 20  # 宠物技能+10%攻击力，持续10s，冷却20s
+        # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
+        bonus_array[index_extra_percent_skill_attack_power] = multiply_entry(bonus_array[index_extra_percent_skill_attack_power], 10) # 宠物技能+10%攻击力，持续10s，冷却30s
         bonus_array[index_physical_magical_independent_attack_power] += 35  # 三攻+35
         bonus_array[index_extra_percent_attack_speed] += 4  # 三速+4%
         bonus_array[index_extra_all_element_strength] += 15  # 所有属强+15
@@ -1118,7 +1130,7 @@ def calc():
                         count_invalid = count_invalid + 1
                         return
                     cut = np.array(no_cut[0:20] + no_cut[22:23] + no_cut[34:35] + no_cut[38:44])
-                    skiper = (skiper / 100 + 1) * (cut[index_extra_percent_skill_attack_power] / 100 + 1) * 100 - 100
+                    skiper = multiply_entry(skiper, cut[index_extra_percent_skill_attack_power])
                     oneonelist.append(cut)
                 for i in range(oneone):
                     base_array = base_array + oneonelist[i]
