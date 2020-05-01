@@ -2700,7 +2700,7 @@ def costum():
     cus3.place(x=230, y=217)
     cus3.set(db_preset['B12'].value)
     tkinter.Label(custom_window, text="恍惚增幅=", font=guide_font).place(x=160, y=245)
-    lvl_list = [10, 11, 12, 13]
+    lvl_list = [lv for lv in range(0, 13+1)]
     cus4 = tkinter.ttk.Combobox(custom_window, width=2, values=lvl_list)
     cus4.place(x=230, y=247)
     cus4.set(db_preset['B13'].value)
