@@ -2676,116 +2676,116 @@ def costum():
     tkinter.Label(custom_window, text="<输出环境>", font=mid_font).place(x=100, y=10)
     tkinter.Label(custom_window, text="属性攻击=", font=guide_font).place(x=10, y=50)
     ele_list = ['火', '冰', '光', '暗']
-    ele_type = tkinter.ttk.Combobox(custom_window, width=5, values=ele_list);
+    ele_type = tkinter.ttk.Combobox(custom_window, width=5, values=ele_list)
     ele_type.place(x=80, y=52)  ##
     ele_type.set(db_preset['B1'].value)
     tkinter.Label(custom_window, text="冷却补正比例=          %", font=guide_font).place(x=160, y=50)  ##Y11/Z11
-    cool_con = tkinter.Entry(custom_window, width=5);
-    cool_con.place(x=230, y=52)
+    cool_con = tkinter.Entry(custom_window, width=5)
+    cool_con.place(x=255, y=52)
     cool_con.insert(END, db_preset['B2'].value)
 
     tkinter.Label(custom_window, text="<特殊装备补正>", font=mid_font).place(x=100, y=85)
     tkinter.Label(custom_window, text=" 输入窗口的数值会以对应百分比加成最终数值", fg="Red").place(x=30, y=120)
     tkinter.Label(custom_window, text="歧路腰带=          %", font=guide_font).place(x=160, y=155)  ##O164
-    cus1 = tkinter.Entry(custom_window, width=5);
+    cus1 = tkinter.Entry(custom_window, width=5)
     cus1.place(x=230, y=157)
     cus1.insert(END, db_preset['B3'].value)
     tkinter.Label(custom_window, text="歧路鞋子=          %", font=guide_font).place(x=160, y=185)  ##O180
-    cus2 = tkinter.Entry(custom_window, width=5);
+    cus2 = tkinter.Entry(custom_window, width=5)
     cus2.place(x=230, y=187)
     cus2.insert(END, db_preset['B4'].value)
     tkinter.Label(custom_window, text="经验等级=          ", font=guide_font).place(x=160, y=215)  ##G276
     lvl_list = ['传说↓', '英雄↑']
-    cus3 = tkinter.ttk.Combobox(custom_window, width=5, values=lvl_list);
+    cus3 = tkinter.ttk.Combobox(custom_window, width=5, values=lvl_list)
     cus3.place(x=230, y=217)
     cus3.set(db_preset['B12'].value)
-    tkinter.Label(custom_window, text="恍惚增幅等级=          강", font=guide_font).place(x=160, y=245)
+    tkinter.Label(custom_window, text="恍惚增幅=", font=guide_font).place(x=160, y=245)
     lvl_list = [10, 11, 12, 13]
-    cus4 = tkinter.ttk.Combobox(custom_window, width=2, values=lvl_list);
+    cus4 = tkinter.ttk.Combobox(custom_window, width=2, values=lvl_list)
     cus4.place(x=230, y=247)
     cus4.set(db_preset['B13'].value)
 
     tkinter.Label(custom_window, text="不息上衣=          %", font=guide_font).place(x=10, y=155)  ##O100
-    cus6 = tkinter.Entry(custom_window, width=5);
+    cus6 = tkinter.Entry(custom_window, width=5)
     cus6.place(x=80, y=157)
     cus6.insert(END, db_preset['B5'].value)
     tkinter.Label(custom_window, text="不息裤子=          %", font=guide_font).place(x=10, y=185)  ##O127
-    cus7 = tkinter.Entry(custom_window, width=5);
+    cus7 = tkinter.Entry(custom_window, width=5)
     cus7.place(x=80, y=187)
     cus7.insert(END, db_preset['B6'].value)
     tkinter.Label(custom_window, text="不息护肩=          %", font=guide_font).place(x=10, y=215)  ##O147
-    cus8 = tkinter.Entry(custom_window, width=5);
+    cus8 = tkinter.Entry(custom_window, width=5)
     cus8.place(x=80, y=217)
     cus8.insert(END, db_preset['B7'].value)
     tkinter.Label(custom_window, text="不息腰带=          %", font=guide_font).place(x=10, y=245)  ##O163
-    cus9 = tkinter.Entry(custom_window, width=5);
+    cus9 = tkinter.Entry(custom_window, width=5)
     cus9.place(x=80, y=247)
     cus9.insert(END, db_preset['B8'].value)
     tkinter.Label(custom_window, text="不息鞋子=          %", font=guide_font).place(x=10, y=275)  ##O179
-    cus10 = tkinter.Entry(custom_window, width=5);
+    cus10 = tkinter.Entry(custom_window, width=5)
     cus10.place(x=80, y=277)
     cus10.insert(END, db_preset['B9'].value)
-    tkinter.Label(custom_window, text="不息2件套=           %", font=guide_font).place(x=10, y=305)  ##O295
-    cus11 = tkinter.Entry(custom_window, width=5);
+    tkinter.Label(custom_window, text="不息2件套=         %", font=guide_font).place(x=10, y=305)  ##O295
+    cus11 = tkinter.Entry(custom_window, width=5)
     cus11.place(x=80, y=307)
     cus11.insert(END, db_preset['B10'].value)
-    tkinter.Label(custom_window, text="不息3件套=           %", font=guide_font).place(x=10, y=335)  ##O296,O297
-    cus12 = tkinter.Entry(custom_window, width=5);
+    tkinter.Label(custom_window, text="不息3件套=         %", font=guide_font).place(x=10, y=335)  ##O296,O297
+    cus12 = tkinter.Entry(custom_window, width=5)
     cus12.place(x=80, y=337)
     cus12.insert(END, db_preset['B11'].value)
 
     tkinter.Label(custom_window, text="<奶量增幅相关>", font=mid_font, fg='blue').place(x=410, y=5)
     tkinter.Label(custom_window, text="补正辅助角色的表现", fg="Red").place(x=350, y=33)
-    tkinter.Label(custom_window, text="面板体精智+          ", font=guide_font).place(x=320, y=75)  ##
-    c_stat = tkinter.Entry(custom_window, width=7);
-    c_stat.place(x=390, y=82)
+    tkinter.Label(custom_window, text="面板体精智+          ", font=guide_font).place(x=320, y=80)  ##
+    c_stat = tkinter.Entry(custom_window, width=7)
+    c_stat.place(x=398, y=80)
     c_stat.insert(END, db_preset['H1'].value)
-    tkinter.Label(custom_window, text="面板体精智+          ", font=guide_font).place(x=470, y=75)  ##
-    b_stat = tkinter.Entry(custom_window, width=7);
-    b_stat.place(x=540, y=82)
+    tkinter.Label(custom_window, text="面板体精智+          ", font=guide_font).place(x=470, y=80)  ##
+    b_stat = tkinter.Entry(custom_window, width=7)
+    b_stat.place(x=548, y=80)
     b_stat.insert(END, db_preset['H6'].value)
-    three = [0, 1, 2, 3];
+    three = [0, 1, 2, 3]
     two = [0, 1, 2]
     tkinter.Label(custom_window, text="祝福称号=", font=guide_font).place(x=320, y=110)
-    b_style_lvl = tkinter.ttk.Combobox(custom_window, width=5, values=three);
+    b_style_lvl = tkinter.ttk.Combobox(custom_window, width=5, values=three)
     b_style_lvl.place(x=390, y=112)  ##
     b_style_lvl.set(db_preset['H2'].value)
     tkinter.Label(custom_window, text="一觉称号=", font=guide_font).place(x=470, y=110)
-    c_style_lvl = tkinter.ttk.Combobox(custom_window, width=5, values=two);
+    c_style_lvl = tkinter.ttk.Combobox(custom_window, width=5, values=two)
     c_style_lvl.place(x=540, y=112)  ##
     c_style_lvl.set(db_preset['H3'].value)
     tkinter.Label(custom_window, text="祝福等级=", font=guide_font).place(x=320, y=140)
-    b_plt = tkinter.ttk.Combobox(custom_window, width=5, values=two);
+    b_plt = tkinter.ttk.Combobox(custom_window, width=5, values=two)
     b_plt.place(x=390, y=142)  ##
     b_plt.set(db_preset['H4'].value)
     tkinter.Label(custom_window, text="祝福等级=", font=guide_font).place(x=470, y=140)
-    b_cri = tkinter.ttk.Combobox(custom_window, width=5, values=[0, 1]);
+    b_cri = tkinter.ttk.Combobox(custom_window, width=5, values=[0, 1])
     b_cri.place(x=540, y=142)  ##
     b_cri.set(db_preset['H5'].value)
 
     tkinter.Label(custom_window, text="<属强提升>", font=mid_font).place(x=410, y=175)
     tkinter.Label(custom_window, text="基础属强=", font=guide_font).place(x=470, y=210)
-    ele1 = tkinter.Entry(custom_window, width=7);
+    ele1 = tkinter.Entry(custom_window, width=7)
     ele1.place(x=540, y=212)  ##
     ele1.insert(END, db_preset['B14'].value)
     tkinter.Label(custom_window, text="其他属强=", font=guide_font).place(x=470, y=240)
-    ele2 = tkinter.Entry(custom_window, width=7);
+    ele2 = tkinter.Entry(custom_window, width=7)
     ele2.place(x=540, y=242)  ##
     ele2.insert(END, db_preset['B15'].value)
     tkinter.Label(custom_window, text="勋章属强=", font=guide_font).place(x=470, y=270)
-    ele3 = tkinter.Entry(custom_window, width=7);
+    ele3 = tkinter.Entry(custom_window, width=7)
     ele3.place(x=540, y=272)  ##
     ele3.insert(END, db_preset['B16'].value)
     tkinter.Label(custom_window, text="技能属强= ", font=guide_font).place(x=320, y=210)
-    ele4 = tkinter.Entry(custom_window, width=7);
+    ele4 = tkinter.Entry(custom_window, width=7)
     ele4.place(x=390, y=212)  ##
     ele4.insert(END, db_preset['B17'].value)
     tkinter.Label(custom_window, text="怪物属抗=", font=guide_font).place(x=320, y=240)
-    ele5 = tkinter.Entry(custom_window, width=7);
+    ele5 = tkinter.Entry(custom_window, width=7)
     ele5.place(x=390, y=242)  ##
     ele5.insert(END, db_preset['B18'].value)
     tkinter.Label(custom_window, text="辅助减抗=", font=guide_font).place(x=320, y=270)
-    ele6 = tkinter.Entry(custom_window, width=7);
+    ele6 = tkinter.Entry(custom_window, width=7)
     ele6.place(x=390, y=272)  ##
     ele6.insert(END, db_preset['B19'].value)
 
