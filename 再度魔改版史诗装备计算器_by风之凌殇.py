@@ -8,7 +8,6 @@ ver_time = '2020-05-01'
 import collections
 import itertools
 import os
-import re
 import threading
 import time
 import tkinter.font
@@ -360,11 +359,17 @@ the_product_of_wisdoms = [
     "13390150", "22390240", "23390450", "33390750", "21400340", "31400540", "32410650",
 ]
 
+# 旧版本自定义存档的列定义
+g_old_col_custom_save_key = 14  # 旧版本中，存档项名所在的列
+g_old_col_custom_save_value_begin = 15  # 旧版本中，各个存档的该存档项所在的列的初始列，加上存档index（0-99）后得到其所在列
+g_old_row_custom_save_start = 0  # 旧版本中，下面的各个行加上这个后得到该存档项最终所在行数
+
 # 自定义存档的列定义
-g_col_custom_save_key = 14
-g_col_custom_save_value_begin = 15
+g_col_custom_save_key = 1  # 存档项名所在的列
+g_col_custom_save_value_begin = 2  # 各个存档的该存档项所在的列的初始列，加上存档index（0-99）后得到其所在列
 
 # 自定义存档的行定义
+g_row_custom_save_start = 300  # 各个自定义列对应的存档名所在的那一行，下面的各个行加上这个后得到该存档项最终所在行数
 g_row_custom_save_save_name = 1  # 存档名
 g_row_custom_save_weapon = 2  # 武器
 g_row_custom_save_job = 3  # 职业选择
@@ -438,6 +443,7 @@ index_extra_active_skill_lv_100 = 27  # 27-AT-pas5-100主动技能
 # 计算乘算的词条在增加对应比例后新的比率。如原先为增加20%技攻，新的词条额外增加50%技攻，则实际为1.2*1.5-1=80%技攻提升率
 def multiply_entry(old_inc_percent, add_inc_percent):
     return (old_inc_percent / 100 + 1) * (add_inc_percent / 100 + 1) * 100 - 100
+
 
 # 获取国服特殊加成属性
 def get_shuchu_bonus_attributes():
@@ -573,7 +579,7 @@ def get_shuchu_bonus_attributes():
     creature = creature_select.get()
     if creature in ['弓手维多利亚', '神官格洛丽亚']:
         # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
-        bonus_array[index_extra_percent_skill_attack_power] = multiply_entry(bonus_array[index_extra_percent_skill_attack_power], 10) # 宠物技能+10%攻击力，持续10s，冷却30s
+        bonus_array[index_extra_percent_skill_attack_power] = multiply_entry(bonus_array[index_extra_percent_skill_attack_power], 10)  # 宠物技能+10%攻击力，持续10s，冷却30s
         bonus_array[index_extra_percent_attack_speed] += 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
         bonus_array[index_strength_and_intelligence] += 140  # 四维+140
         bonus_array[index_extra_percent_attack_speed] += 5  # 三速+5%
@@ -588,7 +594,7 @@ def get_shuchu_bonus_attributes():
         bonus_array[index_cool_correction] += 1.75  # 技能冷却每减1%，冷却矫正系数增加0.35
     elif creature in ['雷光之箭维多利亚', '暴风圣女格洛丽亚']:
         # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
-        bonus_array[index_extra_percent_skill_attack_power] = multiply_entry(bonus_array[index_extra_percent_skill_attack_power], 10) # 宠物技能+10%攻击力，持续10s，冷却30s
+        bonus_array[index_extra_percent_skill_attack_power] = multiply_entry(bonus_array[index_extra_percent_skill_attack_power], 10)  # 宠物技能+10%攻击力，持续10s，冷却30s
         bonus_array[index_extra_percent_attack_speed] += 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
         bonus_array[index_strength_and_intelligence] += 150  # 四维+150
         bonus_array[index_extra_percent_attack_speed] += 5  # 三速+5%
@@ -604,7 +610,7 @@ def get_shuchu_bonus_attributes():
         bonus_array[index_cool_correction] += 1.75  # 技能冷却每减1%，冷却矫正系数增加0.35
     elif creature in ['骑士莱恩', '吟游诗人薇泽达']:
         # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
-        bonus_array[index_extra_percent_skill_attack_power] = multiply_entry(bonus_array[index_extra_percent_skill_attack_power], 10) # 宠物技能+10%攻击力，持续10s，冷却30s
+        bonus_array[index_extra_percent_skill_attack_power] = multiply_entry(bonus_array[index_extra_percent_skill_attack_power], 10)  # 宠物技能+10%攻击力，持续10s，冷却30s
         bonus_array[index_extra_percent_attack_speed] += 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
         bonus_array[index_strength_and_intelligence] += 120  # 四维+120
         bonus_array[index_extra_percent_attack_speed] += 5  # 三速+5%
@@ -618,7 +624,7 @@ def get_shuchu_bonus_attributes():
         bonus_array[index_cool_correction] += 1.75  # 技能冷却每减1%，冷却矫正系数增加0.35
     elif creature in ['古国英豪莱恩', '太初之音薇泽达']:
         # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
-        bonus_array[index_extra_percent_skill_attack_power] = multiply_entry(bonus_array[index_extra_percent_skill_attack_power], 10) # 宠物技能+10%攻击力，持续10s，冷却30s
+        bonus_array[index_extra_percent_skill_attack_power] = multiply_entry(bonus_array[index_extra_percent_skill_attack_power], 10)  # 宠物技能+10%攻击力，持续10s，冷却30s
         bonus_array[index_extra_percent_attack_speed] += 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
         bonus_array[index_strength_and_intelligence] += 120  # 四维+120
         bonus_array[index_extra_percent_attack_speed] += 5  # 三速+5%
@@ -633,7 +639,7 @@ def get_shuchu_bonus_attributes():
         bonus_array[index_cool_correction] += 1.75  # 技能冷却每减1%，冷却矫正系数增加0.35
     elif creature in ['神迹·古国英豪莱恩', '神迹·太初之音薇泽达']:
         # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
-        bonus_array[index_extra_percent_skill_attack_power] = multiply_entry(bonus_array[index_extra_percent_skill_attack_power], 10) # 宠物技能+10%攻击力，持续10s，冷却30s
+        bonus_array[index_extra_percent_skill_attack_power] = multiply_entry(bonus_array[index_extra_percent_skill_attack_power], 10)  # 宠物技能+10%攻击力，持续10s，冷却30s
         bonus_array[index_extra_percent_attack_speed] += 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
         bonus_array[index_strength_and_intelligence] += 120  # 四维+120
         bonus_array[index_extra_percent_attack_speed] += 5  # 三速+5%
@@ -649,7 +655,7 @@ def get_shuchu_bonus_attributes():
         bonus_array[index_cool_correction] += 1.75  # 技能冷却每减1%，冷却矫正系数增加0.35
     elif creature in ['雪兔蒂娅', '火狐艾芙']:
         # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
-        bonus_array[index_extra_percent_skill_attack_power] = multiply_entry(bonus_array[index_extra_percent_skill_attack_power], 10) # 宠物技能+10%攻击力，持续10s，冷却30s
+        bonus_array[index_extra_percent_skill_attack_power] = multiply_entry(bonus_array[index_extra_percent_skill_attack_power], 10)  # 宠物技能+10%攻击力，持续10s，冷却30s
         bonus_array[index_extra_percent_attack_speed] += 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
         bonus_array[index_strength_and_intelligence] += 100  # 四维+100
         bonus_array[index_extra_percent_attack_speed] += 5  # 三速+5%
@@ -663,7 +669,7 @@ def get_shuchu_bonus_attributes():
         bonus_array[index_cool_correction] += 1.75  # 技能冷却每减1%，冷却矫正系数增加0.35
     elif creature in ['冰雪魔法师蒂娅', '炽焰咒术师艾芙']:
         # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
-        bonus_array[index_extra_percent_skill_attack_power] = multiply_entry(bonus_array[index_extra_percent_skill_attack_power], 10) # 宠物技能+10%攻击力，持续10s，冷却30s
+        bonus_array[index_extra_percent_skill_attack_power] = multiply_entry(bonus_array[index_extra_percent_skill_attack_power], 10)  # 宠物技能+10%攻击力，持续10s，冷却30s
         bonus_array[index_extra_percent_attack_speed] += 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
         bonus_array[index_strength_and_intelligence] += 110  # 四维+110
         bonus_array[index_extra_percent_attack_speed] += 5  # 三速+5%
@@ -677,7 +683,7 @@ def get_shuchu_bonus_attributes():
         bonus_array[index_cool_correction] += 1.75  # 技能冷却每减1%，冷却矫正系数增加0.35
     elif creature in ['艾莉丝', '克里斯']:
         # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
-        bonus_array[index_extra_percent_skill_attack_power] = multiply_entry(bonus_array[index_extra_percent_skill_attack_power], 10) # 宠物技能+10%攻击力，持续10s，冷却30s
+        bonus_array[index_extra_percent_skill_attack_power] = multiply_entry(bonus_array[index_extra_percent_skill_attack_power], 10)  # 宠物技能+10%攻击力，持续10s，冷却30s
         bonus_array[index_physical_magical_independent_attack_power] += 35  # 三攻+35
         bonus_array[index_extra_percent_attack_speed] += 4  # 三速+4%
         bonus_array[index_extra_all_element_strength] += 15  # 所有属强+15
@@ -1770,7 +1776,8 @@ def get_transfer_slots_equips(items, sheet):
         account_index = 0
         try:
             account_index = save_name_list.index(account_name)
-        except Exception:
+        except Exception as err:
+            print("get_transfer_slots_equips 无法找到存档{}, err={}".format(account_name, err))
             continue
 
         # 读取各个装备的点亮情况
@@ -2715,7 +2722,7 @@ def costum():
     cus3.place(x=230, y=217)
     cus3.set(db_preset['B12'].value)
     tkinter.Label(custom_window, text="恍惚增幅=", font=guide_font).place(x=160, y=245)
-    lvl_list = [lv for lv in range(0, 13+1)]
+    lvl_list = [lv for lv in range(0, 13 + 1)]
     cus4 = tkinter.ttk.Combobox(custom_window, width=2, values=lvl_list)
     cus4.place(x=230, y=247)
     cus4.set(db_preset['B13'].value)
@@ -2979,77 +2986,194 @@ def save_custom(ele_type, cool_con, cus1, cus2, cus3, cus4, cus6, cus7, cus8, cu
 
 
 # 上次读档/存档时的存档名
-g_save_name_on_last_load_or_save = ""
+g_save_name_index_on_last_load_or_save = 0
 
 
 def load_checklist():
     ask_msg1 = tkinter.messagebox.askquestion('确认', "确认读取存档吗？", parent=self)
-    for snum in range(0, 10):
-        if save_select.get() == save_name_list[snum]:
-            ssnum1 = snum
     if ask_msg1 == 'yes':
-        load_checklist_noconfirm(ssnum1)
+        load_checklist_noconfirm(current_save_name_index)
 
 
-def load_checklist_noconfirm(ssnum1):
-    global g_save_name_on_last_load_or_save
+def load_checklist_noconfirm(account_index):
+    global g_save_name_index_on_last_load_or_save
 
-    load_preset3 = load_workbook("preset.xlsx")
-    db_load_check = load_preset3["one"]
-    load_cell = db_load_check.cell
-    # 读取各个装备的点亮情况
-    k = 1
-    for i in range(1, 264):
-        if load_cell(i, 2 + ssnum1).value == 1:
-            try:
-                select_item['tg{}'.format(load_cell(i, 1).value)] = 1
-            except KeyError as error:
-                passss = 1
-        elif load_cell(i, 2 + ssnum1).value == 0:
-            try:
-                select_item['tg{}'.format(load_cell(i, 1).value)] = 0
-            except KeyError as error:
-                passss = 1
+    try:
+        load_preset3 = load_workbook("preset.xlsx")
+        db_load_check = load_preset3["one"]
+        load_cell = db_load_check.cell
 
-    # 增加读取武器、职业等选项
-    col_custom_save_value = g_col_custom_save_value_begin + ssnum1
-    wep_combopicker.set((load_cell(g_row_custom_save_weapon, col_custom_save_value).value or "").split(','))
-    job_name = load_cell(g_row_custom_save_job, col_custom_save_value).value
-    # 调整名称后，为保证兼容之前的存档，需要替换存档中的名称为新的名字
-    job_name = job_name.replace("(奶系)奶妈", "(奶系)炽天使").replace("(奶系)奶萝", "(奶系)冥月女神").replace("(奶系)奶爸", "(奶系)神思者") \
-        .replace("剑神", "极诣·剑魂").replace("黑暗君主", "极诣·鬼泣").replace("帝血弑天", "极诣·狂战士").replace("天帝", "极诣·阿修罗").replace("夜见罗刹", "极诣·剑影") \
-        .replace("剑皇", "极诣·驭剑士").replace("裁决女神", "极诣·暗殿骑士").replace("弑神者", "极诣·契魔者").replace("剑帝", "极诣·流浪武士") \
-        .replace("铁血教父", "铁血统帅")
-    jobup_select.set(job_name)
-    time_select.set(load_cell(g_row_custom_save_fight_time, col_custom_save_value).value)
-    style = load_cell(g_row_custom_save_title, col_custom_save_value).value
-    # 由于调整了国服特色的实现，若找不到之前版本存档的称号，则换为第一个称号
-    if style not in styles:
-        style = styles[0]
-    style_select.set(style)
-    creature = load_cell(g_row_custom_save_pet, col_custom_save_value).value
-    # 由于调整了国服特色的实现，若找不到之前版本存档的称号，则换为第一个称号
-    if creature not in creatures:
-        creature = creatures[0]
-    creature_select.set(creature)
-    req_cool.set(load_cell(g_row_custom_save_cd, col_custom_save_value).value)
-    select_speed.set(load_cell(g_row_custom_save_speed, col_custom_save_value).value)
-    baibianguai_select.set(
-        load_cell(g_row_custom_save_has_baibianguai, col_custom_save_value).value or txt_no_baibianguai)
-    can_upgrade_work_unifrom_nums_select.set(
-        load_cell(g_row_custom_save_can_upgrade_work_uniforms_nums, col_custom_save_value).value or
-        txt_can_upgrade_work_unifrom_nums[0])
-    transfer_equip_combopicker.set((load_cell(g_row_custom_save_transfer_from, col_custom_save_value).value or "").split(','))
-    can_transfer_nums_select.set(load_cell(g_row_custom_save_max_transfer_count, col_custom_save_value).value or txt_can_transfer_nums[0])
-    use_pulei_legend_by_default_select.set(load_cell(g_row_custom_save_use_pulei_legend_by_default, col_custom_save_value).value or txt_not_use_pulei_legend_by_default)
+        # 存档所对应的列，从第二列开始
+        account_column = 2 + account_index
 
-    load_preset3.close()
-    check_equipment()
-    for i in range(101, 136):
-        check_set(i)
+        # 读取各个装备的点亮情况
+        # 1-263行为各个装备在各个存档下的点亮情况
+        for row in range(1, 264):
+            equip_index = load_cell(row, 1).value
+            if load_cell(row, account_column).value == 1:
+                try:
+                    select_item['tg{}'.format(equip_index)] = 1
+                except KeyError as error:
+                    pass
+            else:
+                try:
+                    select_item['tg{}'.format(equip_index)] = 0
+                except KeyError as error:
+                    pass
 
-    # 读档成功时更新上次存读档的存档名
-    g_save_name_on_last_load_or_save = save_select.get()
+        # 301行开始为自定义存档内容
+        # 如果存在老版本自定义内容(通过判断N2各自内容是否为 武器 )，先转为新版存档格式
+        if load_cell(g_old_row_custom_save_start + g_row_custom_save_weapon, g_old_col_custom_save_key).value == "武器":
+            sheet_one = db_load_check
+            # 转换老存档格式为新存档格式
+            transfer_old_custom_save(sheet_one)
+            # 保存
+            load_preset3.save("preset.xlsx")
+
+        col_custom_save_value = g_col_custom_save_value_begin + account_index
+
+        # 武器
+        wep_combopicker.set((load_cell(g_row_custom_save_start + g_row_custom_save_weapon, col_custom_save_value).value or "").split(','))
+
+        # 职业
+        job_name = load_cell(g_row_custom_save_start + g_row_custom_save_job, col_custom_save_value).value
+        # 调整名称后，为保证兼容之前的存档，需要替换存档中的名称为新的名字
+        if job_name is not None:
+            job_name = job_name.replace("(奶系)奶妈", "(奶系)炽天使").replace("(奶系)奶萝", "(奶系)冥月女神").replace("(奶系)奶爸", "(奶系)神思者") \
+                .replace("剑神", "极诣·剑魂").replace("黑暗君主", "极诣·鬼泣").replace("帝血弑天", "极诣·狂战士").replace("天帝", "极诣·阿修罗").replace("夜见罗刹", "极诣·剑影") \
+                .replace("剑皇", "极诣·驭剑士").replace("裁决女神", "极诣·暗殿骑士").replace("弑神者", "极诣·契魔者").replace("剑帝", "极诣·流浪武士") \
+                .replace("铁血教父", "铁血统帅")
+        jobup_select.set(job_name or "职业选择")
+
+        # 输出时间
+        time_select.set(load_cell(g_row_custom_save_start + g_row_custom_save_fight_time, col_custom_save_value).value or shuchu_times[0])
+
+        # 称号
+        style = load_cell(g_row_custom_save_start + g_row_custom_save_title, col_custom_save_value).value
+        # 由于调整了国服特色的实现，若找不到之前版本存档的称号，则换为第一个称号
+        if style not in styles:
+            style = styles[0]
+        style_select.set(style)
+
+        # 宠物
+        creature = load_cell(g_row_custom_save_start + g_row_custom_save_pet, col_custom_save_value).value
+        # 由于调整了国服特色的实现，若找不到之前版本存档的称号，则换为第一个称号
+        if creature not in creatures:
+            creature = creatures[0]
+        creature_select.set(creature)
+
+        # 冷却补正
+        req_cool.set(load_cell(g_row_custom_save_start + g_row_custom_save_cd, col_custom_save_value).value or cool_list[0])
+
+        # 速度设置
+        select_speed.set(load_cell(g_row_custom_save_start + g_row_custom_save_speed, col_custom_save_value).value or speed_middle)
+
+        # 是否拥有百变怪
+        baibianguai_select.set(
+            load_cell(g_row_custom_save_start + g_row_custom_save_has_baibianguai, col_custom_save_value).value or txt_no_baibianguai)
+
+        # 可升级的工作服数目
+        can_upgrade_work_unifrom_nums_select.set(
+            load_cell(g_row_custom_save_start + g_row_custom_save_can_upgrade_work_uniforms_nums, col_custom_save_value).value or
+            txt_can_upgrade_work_unifrom_nums[0])
+
+        # 跨界的来源账号（存档）列表
+        transfer_equip_combopicker.set((load_cell(g_row_custom_save_start + g_row_custom_save_transfer_from, col_custom_save_value).value or "").split(','))
+
+        # 最大可跨界的数目
+        can_transfer_nums_select.set(load_cell(g_row_custom_save_start + g_row_custom_save_max_transfer_count, col_custom_save_value).value or txt_can_transfer_nums[0])
+
+        # 是否默认将普雷传说加入备选池
+        use_pulei_legend_by_default_select.set(load_cell(g_row_custom_save_start + g_row_custom_save_use_pulei_legend_by_default, col_custom_save_value).value or txt_not_use_pulei_legend_by_default)
+
+        load_preset3.close()
+        check_equipment()
+        for row in range(101, 136):
+            check_set(row)
+
+        # 读档成功时更新上次存读档的存档名
+        g_save_name_index_on_last_load_or_save = account_index
+    except PermissionError as error:
+        tkinter.messagebox.showerror("错误", "请关闭preset.xlsx之后重试", parent=self)
+
+
+def transfer_old_custom_save(sheet_one):
+    # 旧版本共有10个存档，其自定义存档数据保存在N1到X13区域，
+    # 也就是cell(g_old_row_custom_save_start+g_row_custom_save_save_name, g_old_col_custom_save_key)到cell(g_old_row_custom_save_start+g_row_custom_save_save_name+12, g_old_col_custom_save_key+10)
+    for account_index in range(0, 10):
+        ####################################### 读取历史存档的数据 #######################################
+        col_old_custom_save_value = g_old_col_custom_save_value_begin + account_index
+        # 武器
+        weapons = sheet_one.cell(g_old_row_custom_save_start + g_row_custom_save_weapon, col_old_custom_save_value).value or ""
+
+        # 职业
+        job_name = sheet_one.cell(g_old_row_custom_save_start + g_row_custom_save_job, col_old_custom_save_value).value
+        if job_name is not None:
+            # 调整名称后，为保证兼容之前的存档，需要替换存档中的名称为新的名字
+            job_name = job_name.replace("(奶系)奶妈", "(奶系)炽天使").replace("(奶系)奶萝", "(奶系)冥月女神").replace("(奶系)奶爸", "(奶系)神思者") \
+                .replace("剑神", "极诣·剑魂").replace("黑暗君主", "极诣·鬼泣").replace("帝血弑天", "极诣·狂战士").replace("天帝", "极诣·阿修罗").replace("夜见罗刹", "极诣·剑影") \
+                .replace("剑皇", "极诣·驭剑士").replace("裁决女神", "极诣·暗殿骑士").replace("弑神者", "极诣·契魔者").replace("剑帝", "极诣·流浪武士") \
+                .replace("铁血教父", "铁血统帅")
+        job_name = job_name or "职业选择"
+
+        # 输出时间
+        shuchu_time = sheet_one.cell(g_old_row_custom_save_start + g_row_custom_save_fight_time, col_old_custom_save_value).value or shuchu_times[0]
+
+        # 称号
+        style = sheet_one.cell(g_old_row_custom_save_start + g_row_custom_save_title, col_old_custom_save_value).value
+        # 由于调整了国服特色的实现，若找不到之前版本存档的称号，则换为第一个称号
+        if style not in styles:
+            style = styles[0]
+
+        # 宠物
+        creature = sheet_one.cell(g_old_row_custom_save_start + g_row_custom_save_pet, col_old_custom_save_value).value
+        # 由于调整了国服特色的实现，若找不到之前版本存档的称号，则换为第一个称号
+        if creature not in creatures:
+            creature = creatures[0]
+
+        # 冷却补正
+        cool = sheet_one.cell(g_old_row_custom_save_start + g_row_custom_save_cd, col_old_custom_save_value).value or cool_list[0]
+
+        # 速度设置
+        speed = sheet_one.cell(g_old_row_custom_save_start + g_row_custom_save_speed, col_old_custom_save_value).value or speed_middle
+
+        # 是否拥有百变怪
+        baibianguai = sheet_one.cell(g_old_row_custom_save_start + g_row_custom_save_has_baibianguai, col_old_custom_save_value).value or txt_no_baibianguai
+
+        # 可升级的工作服数目
+        can_upgrade_work_unifrom_nums = sheet_one.cell(g_old_row_custom_save_start + g_row_custom_save_can_upgrade_work_uniforms_nums, col_old_custom_save_value).value or txt_can_upgrade_work_unifrom_nums[0]
+
+        # 跨界的来源账号（存档）列表
+        transfer_equip = sheet_one.cell(g_old_row_custom_save_start + g_row_custom_save_transfer_from, col_old_custom_save_value).value or ""
+
+        # 最大可跨界的数目
+        can_transfer_nums = sheet_one.cell(g_old_row_custom_save_start + g_row_custom_save_max_transfer_count, col_old_custom_save_value).value or txt_can_transfer_nums[0]
+
+        # 是否默认将普雷传说加入备选池
+        use_pulei_legend_by_default = sheet_one.cell(g_old_row_custom_save_start + g_row_custom_save_use_pulei_legend_by_default, col_old_custom_save_value).value or txt_not_use_pulei_legend_by_default
+
+        ####################################### 保存到新的存档区域 #######################################
+        col_custom_save_value = g_col_custom_save_value_begin + account_index
+        save_my_custom(sheet_one.cell, g_row_custom_save_start + g_row_custom_save_save_name, col_custom_save_value, "存档名", save_name_list[account_index])
+        save_my_custom(sheet_one.cell, g_row_custom_save_start + g_row_custom_save_weapon, col_custom_save_value, "武器", weapons)
+        save_my_custom(sheet_one.cell, g_row_custom_save_start + g_row_custom_save_job, col_custom_save_value, "职业选择", job_name)
+        save_my_custom(sheet_one.cell, g_row_custom_save_start + g_row_custom_save_fight_time, col_custom_save_value, "输出时间", shuchu_time)
+        save_my_custom(sheet_one.cell, g_row_custom_save_start + g_row_custom_save_title, col_custom_save_value, "称号选择", style)
+        save_my_custom(sheet_one.cell, g_row_custom_save_start + g_row_custom_save_pet, col_custom_save_value, "宠物选择", creature)
+        save_my_custom(sheet_one.cell, g_row_custom_save_start + g_row_custom_save_cd, col_custom_save_value, "冷却补正", cool)
+        save_my_custom(sheet_one.cell, g_row_custom_save_start + g_row_custom_save_speed, col_custom_save_value, "选择速度", speed)
+        save_my_custom(sheet_one.cell, g_row_custom_save_start + g_row_custom_save_has_baibianguai, col_custom_save_value, "是否拥有百变怪", baibianguai)
+        save_my_custom(sheet_one.cell, g_row_custom_save_start + g_row_custom_save_can_upgrade_work_uniforms_nums, col_custom_save_value, "材料够升级的工作服数目", can_upgrade_work_unifrom_nums)
+        save_my_custom(sheet_one.cell, g_row_custom_save_start + g_row_custom_save_transfer_from, col_custom_save_value, "跨界来源账户列表", transfer_equip)
+        save_my_custom(sheet_one.cell, g_row_custom_save_start + g_row_custom_save_max_transfer_count, col_custom_save_value, "最大跨界数目", can_transfer_nums)
+        save_my_custom(sheet_one.cell, g_row_custom_save_start + g_row_custom_save_use_pulei_legend_by_default, col_custom_save_value, "是否默认将普雷传说装备加入备选池", use_pulei_legend_by_default)
+
+    ####################################### 清空历史存档区域 #######################################
+    # 旧版本共有10个存档，其自定义存档数据保存在N1到X13区域，
+    # 也就是cell(g_old_row_custom_save_start+g_row_custom_save_save_name, g_old_col_custom_save_key)到cell(g_old_row_custom_save_start+g_row_custom_save_save_name+12, g_old_col_custom_save_key+10)
+    for row in range(g_old_row_custom_save_start + g_row_custom_save_save_name, g_old_row_custom_save_start + g_row_custom_save_save_name + 12 + 1):
+        for col in range(g_old_col_custom_save_key, g_old_col_custom_save_key + 10 + 1):
+            sheet_one.cell(row, col).value = "0"
 
 
 # save_idx为存档的下标，从0到9
@@ -3059,11 +3183,10 @@ def save_my_custom(sc, row, col_custom_save_value, name, value):
 
 
 def save_checklist():
-    global g_save_name_on_last_load_or_save
+    global g_save_name_index_on_last_load_or_save
 
     ask_msg2 = tkinter.messagebox.askquestion('确认', "确认保存吗？", parent=self)
-    current_save_name = save_select.get()
-    if ask_msg2 == "yes" and g_save_name_on_last_load_or_save != current_save_name:
+    if ask_msg2 == "yes" and g_save_name_index_on_last_load_or_save != current_save_name_index:
         # 如果上次读档时的存档名与当前要存档的存档名不一致时，很可能是误操作
         # 比如我选了角色A，读档，看了看，后面过了会我改为角色B，但是没有点读档，直接开始点亮操作，最后点存档，这时候会导致B的很多数据被A覆盖
         # 这货在哪个情况下额外谈弹一个确认框
@@ -3071,18 +3194,18 @@ def save_checklist():
                 "你上次执行读档的存档名为{0}\n"
                 "本次执行存档的读档名为{1}\n"
                 "两者不一致，执行存档后，前者({0})的内容与上次读档、本次存档之间的操作改动将覆盖到存档{1}中\n"
-                "你确定要这样做吗？").format(g_save_name_on_last_load_or_save, current_save_name), parent=self):
+                "你确定要这样做吗？").format(save_name_list[g_save_name_index_on_last_load_or_save], save_name_list[current_save_name_index]), parent=self):
             return
-    for snum in range(0, 10):
-        if current_save_name == save_name_list[snum]:
-            ssnum2 = snum
     try:
         if ask_msg2 == 'yes':
             load_preset4 = load_workbook("preset.xlsx")
             db_save_check = load_preset4["one"]
             save_cell = db_save_check.cell
 
+            account_index = current_save_name_index
+
             # 保存装备按钮的点亮情况
+            # 1-263行为各个装备在各个存档下的点亮情况
             opt_save = {}  # 装备按钮的index => 对应的行号（1-263）
             for i in range(1, 264):
                 opt_save[save_cell(i, 1).value] = i
@@ -3090,132 +3213,76 @@ def save_checklist():
             for code in opt_save.keys():
                 try:
                     if eval("select_item['tg{}']".format(code)) == 1:
-                        save_cell(opt_save[code], 2 + ssnum2).value = 1
+                        save_cell(opt_save[code], 2 + account_index).value = 1
                 except KeyError as error:
                     passss1 = 1
 
                 try:
                     if eval("select_item['tg{}']".format(code)) == 0:
-                        save_cell(opt_save[code], 2 + ssnum2).value = 0
+                        save_cell(opt_save[code], 2 + account_index).value = 0
                 except KeyError as error:
                     passss1 = 1
 
                 passss = 1
 
-            # 增加保存武器、职业等选项
-            col_custom_save_value = g_col_custom_save_value_begin + ssnum2
-            save_my_custom(save_cell, g_row_custom_save_save_name, col_custom_save_value, "存档名", current_save_name)
-            save_my_custom(save_cell, g_row_custom_save_weapon, col_custom_save_value, "武器", wep_combopicker.current_value)
-            save_my_custom(save_cell, g_row_custom_save_job, col_custom_save_value, "职业选择", jobup_select.get())
-            save_my_custom(save_cell, g_row_custom_save_fight_time, col_custom_save_value, "输出时间", time_select.get())
-            save_my_custom(save_cell, g_row_custom_save_title, col_custom_save_value, "称号选择", style_select.get())
-            save_my_custom(save_cell, g_row_custom_save_pet, col_custom_save_value, "宠物选择", creature_select.get())
-            save_my_custom(save_cell, g_row_custom_save_cd, col_custom_save_value, "冷却补正", req_cool.get())
-            save_my_custom(save_cell, g_row_custom_save_speed, col_custom_save_value, "选择速度", select_speed.get())
-            save_my_custom(save_cell, g_row_custom_save_has_baibianguai, col_custom_save_value, "是否拥有百变怪", baibianguai_select.get())
-            save_my_custom(save_cell, g_row_custom_save_can_upgrade_work_uniforms_nums, col_custom_save_value, "材料够升级的工作服数目", can_upgrade_work_unifrom_nums_select.get())
-            save_my_custom(save_cell, g_row_custom_save_transfer_from, col_custom_save_value, "跨界来源账户列表", transfer_equip_combopicker.current_value)
-            save_my_custom(save_cell, g_row_custom_save_max_transfer_count, col_custom_save_value, "最大跨界数目", can_transfer_nums_select.get())
-            save_my_custom(save_cell, g_row_custom_save_use_pulei_legend_by_default, col_custom_save_value, "是否默认将普雷传说装备加入备选池", use_pulei_legend_by_default_select.get())
+            # 301行开始为自定义存档内容
+            col_custom_save_value = g_col_custom_save_value_begin + account_index
+            save_my_custom(save_cell, g_row_custom_save_start + g_row_custom_save_save_name, col_custom_save_value, "存档名", save_name_list[current_save_name_index])
+            save_my_custom(save_cell, g_row_custom_save_start + g_row_custom_save_weapon, col_custom_save_value, "武器", wep_combopicker.current_value)
+            save_my_custom(save_cell, g_row_custom_save_start + g_row_custom_save_job, col_custom_save_value, "职业选择", jobup_select.get())
+            save_my_custom(save_cell, g_row_custom_save_start + g_row_custom_save_fight_time, col_custom_save_value, "输出时间", time_select.get())
+            save_my_custom(save_cell, g_row_custom_save_start + g_row_custom_save_title, col_custom_save_value, "称号选择", style_select.get())
+            save_my_custom(save_cell, g_row_custom_save_start + g_row_custom_save_pet, col_custom_save_value, "宠物选择", creature_select.get())
+            save_my_custom(save_cell, g_row_custom_save_start + g_row_custom_save_cd, col_custom_save_value, "冷却补正", req_cool.get())
+            save_my_custom(save_cell, g_row_custom_save_start + g_row_custom_save_speed, col_custom_save_value, "选择速度", select_speed.get())
+            save_my_custom(save_cell, g_row_custom_save_start + g_row_custom_save_has_baibianguai, col_custom_save_value, "是否拥有百变怪", baibianguai_select.get())
+            save_my_custom(save_cell, g_row_custom_save_start + g_row_custom_save_can_upgrade_work_uniforms_nums, col_custom_save_value, "材料够升级的工作服数目", can_upgrade_work_unifrom_nums_select.get())
+            save_my_custom(save_cell, g_row_custom_save_start + g_row_custom_save_transfer_from, col_custom_save_value, "跨界来源账户列表", transfer_equip_combopicker.current_value)
+            save_my_custom(save_cell, g_row_custom_save_start + g_row_custom_save_max_transfer_count, col_custom_save_value, "最大跨界数目", can_transfer_nums_select.get())
+            save_my_custom(save_cell, g_row_custom_save_start + g_row_custom_save_use_pulei_legend_by_default, col_custom_save_value, "是否默认将普雷传说装备加入备选池", use_pulei_legend_by_default_select.get())
 
             load_preset4.save("preset.xlsx")
             load_preset4.close()
             tkinter.messagebox.showinfo("通知", "保存完成", parent=self)
 
             # 存档成功时更新上次存读档的存档名
-            g_save_name_on_last_load_or_save = current_save_name
+            g_save_name_index_on_last_load_or_save = current_save_name_index
     except PermissionError as error:
         tkinter.messagebox.showerror("错误", "请关闭preset.xlsx之后重试", parent=self)
 
 
-def change_list_name():
-    global change_window
+# 修改当前存档的存档名为新输入的名称
+def change_save_name():
+    global save_name_list
     try:
-        change_window.destroy()
-    except NameError as error:
-        pass
-    change_window = tkinter.Toplevel(self)
-    change_window.attributes("-topmost", True)
-    change_window.title("修改存档名称")
-    change_window.focus_force()
-    change_window.geometry("{}x{}+{}+{}".format(change_window_width, change_window_height, change_window_x_offset, change_window_y_offset))
-    change_window.resizable(False, False)
-    tkinter.Label(change_window, text="1套").place(x=20, y=10)
-    tkinter.Label(change_window, text="2套").place(x=20, y=35)
-    tkinter.Label(change_window, text="3套").place(x=20, y=60)
-    tkinter.Label(change_window, text="4套").place(x=20, y=85)
-    tkinter.Label(change_window, text="5套").place(x=20, y=110)
-    tkinter.Label(change_window, text="6套").place(x=20, y=135)
-    tkinter.Label(change_window, text="7套").place(x=20, y=160)
-    tkinter.Label(change_window, text="8套").place(x=20, y=185)
-    tkinter.Label(change_window, text="9套").place(x=20, y=210)
-    tkinter.Label(change_window, text="10套").place(x=20, y=235)
-    entry_width = 20
-    entry1 = tkinter.Entry(change_window, width=entry_width);
-    entry1.place(x=95, y=12);
-    entry1.insert(END, save_name_list[0])
-    entry2 = tkinter.Entry(change_window, width=entry_width);
-    entry2.place(x=95, y=37);
-    entry2.insert(END, save_name_list[1])
-    entry3 = tkinter.Entry(change_window, width=entry_width);
-    entry3.place(x=95, y=62);
-    entry3.insert(END, save_name_list[2])
-    entry4 = tkinter.Entry(change_window, width=entry_width);
-    entry4.place(x=95, y=87);
-    entry4.insert(END, save_name_list[3])
-    entry5 = tkinter.Entry(change_window, width=entry_width);
-    entry5.place(x=95, y=112);
-    entry5.insert(END, save_name_list[4])
-    entry6 = tkinter.Entry(change_window, width=entry_width);
-    entry6.place(x=95, y=137);
-    entry6.insert(END, save_name_list[5])
-    entry7 = tkinter.Entry(change_window, width=entry_width);
-    entry7.place(x=95, y=162);
-    entry7.insert(END, save_name_list[6])
-    entry8 = tkinter.Entry(change_window, width=entry_width);
-    entry8.place(x=95, y=187);
-    entry8.insert(END, save_name_list[7])
-    entry9 = tkinter.Entry(change_window, width=entry_width);
-    entry9.place(x=95, y=212);
-    entry9.insert(END, save_name_list[8])
-    entry10 = tkinter.Entry(change_window, width=entry_width);
-    entry10.place(x=95, y=237);
-    entry10.insert(END, save_name_list[9])
+        current_index = current_save_name_index
+        new_save_name = save_select.get()
 
-    tkinter.Button(change_window, text="保存", font=mid_font,
-                   command=lambda: change_savelist(entry1.get(), entry2.get(), entry3.get(), entry4.get(), entry5.get(),
-                                                   entry6.get(), entry7.get(), entry8.get(), entry9.get(),
-                                                   entry10.get())).place(x=60, y=270)
+        if save_name_list[current_index] == new_save_name:
+            tkinter.messagebox.showinfo("提示", "存档名并未改变，无需操作")
+            return
 
+        if ',' in new_save_name:
+            tkinter.messagebox.showerror("错误", "存档名不允许使用 ,（英文小写逗号）")
+            return
 
-def change_savelist(in1, in2, in3, in4, in5, in6, in7, in8, in9, in10):
-    global change_window
-    in_list = [in1, in2, in3, in4, in5, in6, in7, in8, in9, in10]
-    try:
+        # 保存到preset表中
         load_preset5 = load_workbook("preset.xlsx", data_only=True)
+
         db_custom2 = load_preset5["custom"]
+        db_custom2.cell(current_index + 1, 5).value = new_save_name
 
-        for i in range(1, 11):
-            db_custom2.cell(i, 5).value = in_list[i - 1]
-        global save_name_list
+        db_one = load_preset5["one"]
+        db_one.cell(g_row_custom_save_start + g_row_custom_save_save_name, g_col_custom_save_value_begin + current_index, new_save_name)
 
-        # 更改存档名后，仍保持当前位置这个存档
-        current_index = 0
-        try:
-            current_index = save_name_list.index(save_select.get())
-        except ValueError:
-            current_index = 0
-
-        save_name_list = in_list
         load_preset5.save("preset.xlsx")
         load_preset5.close()
-        save_select.set(save_name_list[current_index])
-        save_select['values'] = save_name_list
-        change_window.destroy()
-        tkinter.messagebox.showinfo("通知", "保存完成", parent=self)
 
-        # 更新存档名称后，同步更新picker的列表，同时清空已选列表
-        transfer_equip_combopicker.set("")
+        # 更新内存信息和界面信息
+        save_name_list[current_index] = new_save_name
+        save_select.set(new_save_name)
+        save_select['values'] = save_name_list
+        tkinter.messagebox.showinfo("通知", "保存完成", parent=self)
     except PermissionError as error:
         tkinter.messagebox.showerror("错误", "请关闭preset.xlsx之后重试", parent=self)
 
@@ -3306,6 +3373,7 @@ def get_latest_version():
 def need_update(current_version, latest_version):
     return version_to_version_int_list(current_version) < version_to_version_int_list(latest_version)
 
+
 # 启动时检查是否有更新
 def check_update_on_start():
     try:
@@ -3358,8 +3426,6 @@ def reset():
 ###########################################################
 
 exit_calc = 1
-save_name_list = []
-save_select = 0
 count_valid = 0
 unique_index = 0
 count_invalid = 0
@@ -3414,9 +3480,12 @@ load_excel1.close()
 need_check_preset_file = False
 load_preset0 = load_workbook("preset.xlsx", read_only=not need_check_preset_file, data_only=True)
 db_custom = load_preset0["custom"]
+
+g_MAX_SAVE_COUNT = 100
 save_name_list = []
-for i in range(1, 11):
-    save_name_list.append(db_custom.cell(i, 5).value)
+for i in range(0, g_MAX_SAVE_COUNT):
+    save_name = db_custom.cell(i + 1, 5).value
+    save_name_list.append(save_name or "存档{}".format(i))
 
 if need_check_preset_file:
     ########## 버전 최초 구동 프리셋 업데이트 ###########
@@ -3859,8 +3928,7 @@ def hamjung():
 
 
 def get_other_account_names():
-    current_name = save_select.get()
-    return [name for name in save_name_list if name != current_name]
+    return [name for name in save_name_list if name != save_name_list[current_save_name_index]]
 
 
 ###########################################################
@@ -3940,8 +4008,9 @@ wep_g.place(x=29, y=55)
 wep_combopicker = Combopicker(self, values=wep_list, entrywidth=30)
 wep_combopicker.place(x=110, y=60)
 
-time_select = tkinter.ttk.Combobox(self, width=13, values=['20秒(觉醒占比↑)', '60秒(觉醒占比↓)'])
-time_select.set('20秒(觉醒占比↑)')
+shuchu_times = ['20秒(觉醒占比↑)', '60秒(觉醒占比↓)']
+time_select = tkinter.ttk.Combobox(self, width=13, values=shuchu_times)
+time_select.set(shuchu_times[0])
 time_select.place(x=390 - 17, y=220 + 52)
 jobup_select = tkinter.ttk.Combobox(self, width=13, values=jobs)
 jobup_select.set('职业选择')
@@ -3954,8 +4023,9 @@ creature_list = creatures
 creature_select = tkinter.ttk.Combobox(self, width=13, values=creature_list)
 creature_select.set(creatures[0])
 creature_select.place(x=390 - 17, y=280 + 52)
-req_cool = tkinter.ttk.Combobox(self, width=13, values=['X(纯伤害)', 'O(打开)'])
-req_cool.set('X(纯伤害)')
+cool_list = ['X(纯伤害)', 'O(打开)']
+req_cool = tkinter.ttk.Combobox(self, width=13, values=cool_list)
+req_cool.set(cool_list[0])
 req_cool.place(x=390 - 17, y=310 + 52)
 
 calc_img = PhotoImage(file="ext_img/calc.png")
@@ -3975,9 +4045,18 @@ select_custom2 = tkinter.Button(self, image=custom_img, borderwidth=0, activebac
                                 bg=dark_sub)
 select_custom2.place(x=435 + 165, y=340 - 100)
 
+current_save_name_index = 0
+
+
+def on_save_select_change(event):
+    global current_save_name_index
+    current_save_name_index = event.widget.current()
+
+
 save_select = tkinter.ttk.Combobox(self, width=8, values=save_name_list)
 save_select.place(x=345 + 165, y=410 - 100);
 save_select.set(save_name_list[0])
+save_select.bind('<<ComboboxSelected>>', on_save_select_change)
 save_img = PhotoImage(file="ext_img/SAVE.png")
 save = tkinter.Button(self, image=save_img, borderwidth=0, activebackground=dark_main, command=save_checklist,
                       bg=dark_sub)
@@ -3988,7 +4067,7 @@ load = tkinter.Button(self, image=load_img, borderwidth=0, activebackground=dark
 load.place(x=435 + 165, y=440 - 100)
 change_name_img = PhotoImage(file="ext_img/name_change.png")
 change_list_but = tkinter.Button(self, image=change_name_img, borderwidth=0, activebackground=dark_main,
-                                 command=change_list_name, bg=dark_sub)
+                                 command=change_save_name, bg=dark_sub)
 change_list_but.place(x=435 + 165, y=405 - 100)
 
 # 百变怪选项
