@@ -1123,35 +1123,52 @@ def calc():
                 for i in range(oneone):
                     base_array = base_array + oneonelist[i]
 
+                # 军神二件套且拥有军神-魔法石-军神的庇护宝石，说明遗书和古怪耳环（心之所念）不同时存在，减去5%的爆伤
                 if set_oncount('1201') == 1 and onecount('32200') == 1:
                     base_array[index_extra_percent_crit_damage] -= 5
+                # 拥有军神耳环，且不拥有军神辅助装备，需要减去10%力智加成
+                if onecount("33200") == 1 and onecount("31200") == 0:
+                    base_array[index_extra_percent_strength_and_intelligence] -= 10
+                # 能量的主宰装备，若拥有能量耳环或能量神话耳环
                 if onecount('33230') == 1 or onecount('33231') == 1:
+                    # 若不同时拥有能量辅助装备，则减去10%力智加成
                     if onecount('31230') == 0:
                         base_array[index_extra_percent_addtional_damage] -= 10
+                    # 如不同时拥有能量魔法石，则减去40点全属性属强
                     if onecount('32230') == 0:
                         base_array[index_extra_all_element_strength] -= 40
                 # 特殊处理天命无常套装
                 if onecount('15340') == 1 or onecount('23340') == 1 or onecount('33340') == 1 or onecount(
                         '33341') == 1:
-                    if set_oncount('1341') == 0 and set_oncount('1342') == 0:  # 1341=天命两件套 1342=天命三件套
+                    # 若只有散件
+                    if set_oncount('1341') == 0 and set_oncount('1342') == 0:
+                        # 天命鞋子，在两件套时，点数为双数增加40点属强，期望为20，若为散件则减去该属性
                         if onecount('15340') == 1:
                             base_array[index_extra_all_element_strength] -= 20
+                        # 天命戒指，在两件套时，点数大于2额外增加12%伤害，期望为10%（ps：原作者给，我觉得应该应该是4/6*12=8%?）
                         elif onecount('23340') == 1:  # 天命无常-戒指-命运的捉弄
                             base_array[index_extra_percent_attack_damage] -= 10
+                        # 天命耳环，在两件套时，点数为6时增加30%最终伤害，期望为5%
                         elif onecount('33340') == 1:
                             base_array[index_extra_percent_final_damage] -= 5  #
-                        else:  # 天命无常-神话耳环-命运反抗者
+                        # 天命神话耳环，在两件套时，点数为6时增加30%最终伤害，其中点数为1时重新投色子，期望为6%
+                        else:
                             base_array[index_extra_all_element_strength] -= 4  # ele=4
                             base_array[index_extra_percent_attack_damage] -= 2  # damper=2
                             base_array[index_extra_percent_final_damage] -= 1  # allper=6
                             base_array[index_extra_percent_strength_and_intelligence] -= 1.93  # staper=15
+                # 铁匠神话上衣
                 if onecount('11111') == 1:
+                    # 铁匠三件套或铁匠五件套
                     if set_oncount('1112') == 1 or set_oncount('1113') == 1:
                         base_array[index_cool_correction] += 10
+                # 命运神话上衣
                 if onecount('11301') == 1:
+                    # 未拥有命运项链
                     if onecount('22300') != 1:
                         base_array[index_extra_percent_addtional_damage] -= 10
                         base_array[index_extra_percent_physical_magical_independent_attack_power] += 10
+                    # 未拥有命运辅助装备
                     if onecount('31300') != 1:
                         base_array[index_extra_percent_addtional_damage] -= 10
                         base_array[index_extra_percent_physical_magical_independent_attack_power] += 10
