@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 import collections
 
-now_version = "v3.2.8.2"
-ver_time = '2020-04-30'
+now_version = "v3.2.8.3"
+ver_time = '2020-05-01'
 
 ## 코드를 무단으로 복제하여 개조 및 배포하지 말 것##
 
@@ -734,6 +734,8 @@ def calc():
     name_one = {}
     for row in db_one.rows:
         row_value = [cell.value for cell in row]
+        if len(row_value) == 0:
+            continue
 
         name = row_value[0]
         row_value_cut = row_value[2:]
@@ -745,6 +747,8 @@ def calc():
     opt_set = {}
     for row in db_set.rows:
         row_value = [cell.value for cell in row]
+        if len(row_value) == 0:
+            continue
 
         if len(row_value) == 0:
             continue
@@ -759,6 +763,8 @@ def calc():
     name_buf = {}
     for row in db_buf.rows:
         row_value = [cell.value for cell in row]
+        if len(row_value) == 0:
+            continue
 
         buf_index = row_value[0]
         row_value_cut = row_value[2:]
@@ -770,6 +776,8 @@ def calc():
     opt_buflvl = {}
     for row in db_buflvl.rows:
         row_value = [cell.value for cell in row]
+        if len(row_value) == 0:
+            continue
 
         buf_name = row_value[0]
         row_value_cut = row_value[2:]
@@ -782,7 +790,7 @@ def calc():
     try:
         ele_skill = int(opt_job_ele[job_name][1])
     except KeyError as error:
-        tkinter.messagebox.showerror('部分参数有误', "未选择职业或职业非法")
+        tkinter.messagebox.showerror('部分参数有误', "未选择职业或职业非法", parent=self)
         return
     ele_in = (int(db_preset["B14"].value) + int(db_preset["B15"].value) + int(db_preset["B16"].value) +
               int(ele_skill) - int(db_preset["B18"].value) + int(db_preset["B19"].value) + 13)
@@ -831,7 +839,7 @@ def calc():
         valid_weapon = False
 
     if not valid_weapon:
-        tkinter.messagebox.showerror('部分参数有误', "未选择武器或武器非法")
+        tkinter.messagebox.showerror('部分参数有误', "未选择武器或武器非法", parent=self)
         return
 
     # 获取当前装备、百变怪可选装备、工作服列表
@@ -855,7 +863,7 @@ def calc():
         showsta(text='开始计算')
         count_start_time = time.time()  # 开始计时
     except MemoryError as error:
-        tkinter.messagebox.showerror('内存误差', "已超过可用内存.")
+        tkinter.messagebox.showerror('内存误差', "已超过可用内存.", parent=self)
         showsta(text='已中止')
         return
 
@@ -1770,10 +1778,29 @@ def calc_upgrade_work_uniforms_add_counts(slots_equips, slots_not_select_equips,
 
     return total_add_counts
 
+main_window_width = 710
+main_window_height = 720
+main_window_x_offset = 0
+main_window_y_offset = 0
+
+
+other_window_x_offset = main_window_x_offset + main_window_width + 10
 
 result_window_width = 585
 result_window_readable_result_area_height = 18 * 3
 result_window_height = 402 + result_window_readable_result_area_height
+result_window_x_offset = other_window_x_offset
+result_window_y_offset = main_window_y_offset + (main_window_height - result_window_height) // 2
+
+custom_window_width = 620
+custom_window_height = 400
+custom_window_x_offset = other_window_x_offset
+custom_window_y_offset = main_window_y_offset + (main_window_height - custom_window_height) // 2
+
+change_window_width = 250
+change_window_height = 320
+change_window_x_offset = other_window_x_offset
+change_window_y_offset = main_window_y_offset + (main_window_height - change_window_height) // 2
 
 res_txt_readable_result_left_top_x = 0
 res_txt_readable_result_left_top_y = result_window_height - result_window_readable_result_area_height
@@ -1845,7 +1872,7 @@ def show_name():
     for equip in equips:
         readable_names.append(equip_index_to_realname[equip])
 
-    tkinter.messagebox.showinfo("装备详细信息", pretty_words(readable_names, 30, ' | '))
+    tkinter.messagebox.showinfo("装备详细信息", pretty_words(readable_names, 30, ' | '), parent=result_window)
 
 
 # 保证一行不会有太多词
@@ -1872,9 +1899,10 @@ def show_result(rank_list, job_type, ele_skill):
 
     global result_window
     result_window = tkinter.Toplevel(self)
-    # result_window.attributes("-topmost", True)
-    result_window.geometry("{}x{}+800+400".format(result_window_width, result_window_height))
     result_window.title("计算结果")
+    result_window.attributes("-topmost", True)
+    result_window.focus_force()
+    result_window.geometry("{}x{}+{}+{}".format(result_window_width, result_window_height, result_window_x_offset, result_window_y_offset))
     result_window.resizable(False, False)
     global canvas_res
     canvas_width = result_window_width + 2
@@ -2600,9 +2628,16 @@ def change_rank_type(in_type):
 
 def costum():
     global custom_window
+    try:
+        custom_window.destroy()
+    except NameError as error:
+        pass
     custom_window = tkinter.Toplevel(self)
+    custom_window.title("统一自定义")
     custom_window.attributes("-topmost", True)
-    custom_window.geometry("620x400+750+20")
+    custom_window.focus_force()
+    custom_window.geometry("{}x{}+{}+{}".format(custom_window_width, custom_window_height, custom_window_x_offset, custom_window_y_offset))
+    custom_window.resizable(False, False)
 
     load_preset = load_workbook("preset.xlsx", data_only=True)
     db_preset = load_preset["custom"]
@@ -2739,6 +2774,7 @@ def get_row(equip_index):
 
 def save_custom(ele_type, cool_con, cus1, cus2, cus3, cus4, cus6, cus7, cus8, cus9, cus10, cus11, cus12, c_stat, b_stat,
                 b_style_lvl, c_style_lvl, b_plt, b_cri, ele1, ele2, ele3, ele4, ele5, ele6):
+    global custom_window
     try:
         load_excel3 = load_workbook("DATA.xlsx")
         load_preset1 = load_workbook("preset.xlsx")
@@ -2890,13 +2926,16 @@ def save_custom(ele_type, cool_con, cus1, cus2, cus3, cus4, cus6, cus7, cus8, cu
         load_excel3.save("DATA.xlsx")
         load_excel3.close()
         custom_window.destroy()
-        tkinter.messagebox.showinfo("通知", "保存完成")
+        tkinter.messagebox.showinfo("通知", "保存完成", parent=self)
     except PermissionError as error:
-        tkinter.messagebox.showerror("错误", "{}\n请关闭文件后重试".format(error))
+        tkinter.messagebox.showerror("错误", "{}\n请关闭文件后重试".format(error), parent=self)
 
+
+# 上次读档/存档时的存档名
+g_save_name_on_last_load_or_save = ""
 
 def load_checklist():
-    ask_msg1 = tkinter.messagebox.askquestion('确认', "找回保存明细？")
+    ask_msg1 = tkinter.messagebox.askquestion('确认', "确认读取存档吗？", parent=self)
     for snum in range(0, 10):
         if save_select.get() == save_name_list[snum]:
             ssnum1 = snum
@@ -2905,6 +2944,8 @@ def load_checklist():
 
 
 def load_checklist_noconfirm(ssnum1):
+    global g_save_name_on_last_load_or_save
+
     load_preset3 = load_workbook("preset.xlsx")
     db_load_check = load_preset3["one"]
     load_cell = db_load_check.cell
@@ -2959,6 +3000,9 @@ def load_checklist_noconfirm(ssnum1):
     for i in range(101, 136):
         check_set(i)
 
+    # 读档成功时更新上次存读档的存档名
+    g_save_name_on_last_load_or_save = save_select.get()
+
 
 # save_idx为存档的下标，从0到9
 def save_my_custom(sc, row, col_custom_save_value, name, value):
@@ -2967,9 +3011,22 @@ def save_my_custom(sc, row, col_custom_save_value, name, value):
 
 
 def save_checklist():
-    ask_msg2 = tkinter.messagebox.askquestion('确认', "确认保存吗？")
+    global g_save_name_on_last_load_or_save
+
+    ask_msg2 = tkinter.messagebox.askquestion('确认', "确认保存吗？", parent=self)
+    current_save_name = save_select.get()
+    if ask_msg2 == "yes" and g_save_name_on_last_load_or_save != current_save_name:
+        # 如果上次读档时的存档名与当前要存档的存档名不一致时，很可能是误操作
+        # 比如我选了角色A，读档，看了看，后面过了会我改为角色B，但是没有点读档，直接开始点亮操作，最后点存档，这时候会导致B的很多数据被A覆盖
+        # 这货在哪个情况下额外谈弹一个确认框
+        if not tkinter.messagebox.askokcancel("误操作提醒", (
+                "你上次执行读档的存档名为{0}\n"
+                "本次执行存档的读档名为{1}\n"
+                "两者不一致，执行存档后，前者({0})的内容与上次读档、本次存档之间的操作改动将覆盖到存档{1}中\n"
+                "你确定要这样做吗？").format(g_save_name_on_last_load_or_save, current_save_name), parent=self):
+            return
     for snum in range(0, 10):
-        if save_select.get() == save_name_list[snum]:
+        if current_save_name == save_name_list[snum]:
             ssnum2 = snum
     try:
         if ask_msg2 == 'yes':
@@ -2999,7 +3056,7 @@ def save_checklist():
 
             # 增加保存武器、职业等选项
             col_custom_save_value = g_col_custom_save_value_begin + ssnum2
-            save_my_custom(save_cell, g_row_custom_save_save_name, col_custom_save_value, "存档名", save_select.get())
+            save_my_custom(save_cell, g_row_custom_save_save_name, col_custom_save_value, "存档名", current_save_name)
             save_my_custom(save_cell, g_row_custom_save_weapon, col_custom_save_value, "武器", wep_combopicker.current_value)
             save_my_custom(save_cell, g_row_custom_save_job, col_custom_save_value, "职业选择", jobup_select.get())
             save_my_custom(save_cell, g_row_custom_save_fight_time, col_custom_save_value, "输出时间", time_select.get())
@@ -3015,15 +3072,26 @@ def save_checklist():
 
             load_preset4.save("preset.xlsx")
             load_preset4.close()
-            tkinter.messagebox.showinfo("通知", "保存完成")
+            tkinter.messagebox.showinfo("通知", "保存完成", parent=self)
+
+            # 存档成功时更新上次存读档的存档名
+            g_save_name_on_last_load_or_save = current_save_name
     except PermissionError as error:
-        tkinter.messagebox.showerror("错误", "请关闭preset.xlsx之后重试")
+        tkinter.messagebox.showerror("错误", "请关闭preset.xlsx之后重试", parent=self)
 
 
 def change_list_name():
     global change_window
+    try:
+        change_window.destroy()
+    except NameError as error:
+        pass
     change_window = tkinter.Toplevel(self)
-    change_window.geometry("190x320+750+200")
+    change_window.attributes("-topmost", True)
+    change_window.title("修改存档名称")
+    change_window.focus_force()
+    change_window.geometry("{}x{}+{}+{}".format(change_window_width, change_window_height, change_window_x_offset, change_window_y_offset))
+    change_window.resizable(False, False)
     tkinter.Label(change_window, text="1套").place(x=20, y=10)
     tkinter.Label(change_window, text="2套").place(x=20, y=35)
     tkinter.Label(change_window, text="3套").place(x=20, y=60)
@@ -3034,34 +3102,35 @@ def change_list_name():
     tkinter.Label(change_window, text="8套").place(x=20, y=185)
     tkinter.Label(change_window, text="9套").place(x=20, y=210)
     tkinter.Label(change_window, text="10套").place(x=20, y=235)
-    entry1 = tkinter.Entry(change_window, width=10);
+    entry_width = 20
+    entry1 = tkinter.Entry(change_window, width=entry_width);
     entry1.place(x=95, y=12);
     entry1.insert(END, save_name_list[0])
-    entry2 = tkinter.Entry(change_window, width=10);
+    entry2 = tkinter.Entry(change_window, width=entry_width);
     entry2.place(x=95, y=37);
     entry2.insert(END, save_name_list[1])
-    entry3 = tkinter.Entry(change_window, width=10);
+    entry3 = tkinter.Entry(change_window, width=entry_width);
     entry3.place(x=95, y=62);
     entry3.insert(END, save_name_list[2])
-    entry4 = tkinter.Entry(change_window, width=10);
+    entry4 = tkinter.Entry(change_window, width=entry_width);
     entry4.place(x=95, y=87);
     entry4.insert(END, save_name_list[3])
-    entry5 = tkinter.Entry(change_window, width=10);
+    entry5 = tkinter.Entry(change_window, width=entry_width);
     entry5.place(x=95, y=112);
     entry5.insert(END, save_name_list[4])
-    entry6 = tkinter.Entry(change_window, width=10);
+    entry6 = tkinter.Entry(change_window, width=entry_width);
     entry6.place(x=95, y=137);
     entry6.insert(END, save_name_list[5])
-    entry7 = tkinter.Entry(change_window, width=10);
+    entry7 = tkinter.Entry(change_window, width=entry_width);
     entry7.place(x=95, y=162);
     entry7.insert(END, save_name_list[6])
-    entry8 = tkinter.Entry(change_window, width=10);
+    entry8 = tkinter.Entry(change_window, width=entry_width);
     entry8.place(x=95, y=187);
     entry8.insert(END, save_name_list[7])
-    entry9 = tkinter.Entry(change_window, width=10);
+    entry9 = tkinter.Entry(change_window, width=entry_width);
     entry9.place(x=95, y=212);
     entry9.insert(END, save_name_list[8])
-    entry10 = tkinter.Entry(change_window, width=10);
+    entry10 = tkinter.Entry(change_window, width=entry_width);
     entry10.place(x=95, y=237);
     entry10.insert(END, save_name_list[9])
 
@@ -3072,6 +3141,7 @@ def change_list_name():
 
 
 def change_savelist(in1, in2, in3, in4, in5, in6, in7, in8, in9, in10):
+    global change_window
     in_list = [in1, in2, in3, in4, in5, in6, in7, in8, in9, in10]
     try:
         load_preset5 = load_workbook("preset.xlsx", data_only=True)
@@ -3094,12 +3164,12 @@ def change_savelist(in1, in2, in3, in4, in5, in6, in7, in8, in9, in10):
         save_select.set(save_name_list[current_index])
         save_select['values'] = save_name_list
         change_window.destroy()
-        tkinter.messagebox.showinfo("通知", "保存完成")
+        tkinter.messagebox.showinfo("通知", "保存完成", parent=self)
 
         # 更新存档名称后，同步更新picker的列表，同时清空已选列表
         transfer_equip_combopicker.set("")
     except PermissionError as error:
-        tkinter.messagebox.showerror("错误", "请关闭preset.xlsx之后重试")
+        tkinter.messagebox.showerror("错误", "请关闭preset.xlsx之后重试", parent=self)
 
 
 def update_count():
@@ -3221,6 +3291,8 @@ equip_index_to_realname = {}
 equip_index_to_row_index = {}
 for row in db_one.rows:
     row_value = [cell.value for cell in row]
+    if len(row_value) == 0:
+        continue
 
     index = row_value[0]
     realname = row_value[1]
@@ -3237,6 +3309,8 @@ jobs = []
 
 for row in db_job.rows:
     row_value = [cell.value for cell in row]
+    if len(row_value) == 0:
+        continue
 
     job = row_value[0]
     if job in ["empty", "직업명"]:
@@ -3398,7 +3472,7 @@ if need_check_preset_file:
         load_preset0.save("preset.xlsx")
 
     except PermissionError as error:
-        tkinter.messagebox.showerror("错误", "更新失败. 请重新运行.")
+        tkinter.messagebox.showerror("错误", "更新失败. 请重新运行.", parent=self)
 
 load_preset0.close()
 
@@ -3516,7 +3590,7 @@ def guide_speed():
         "中速=稍精确-包括散件, 神话优先\n"
         "中速(不偏好神话)=稍精确-包括散件, 神话同等优先级\n"
         "慢速=比较精确-所有限制解除(非常慢)(保留价值预估函数过滤)\n"
-        "超慢速=非常精确-所有限制解除(天荒地老海枯石烂的慢)"))
+        "超慢速=非常精确-所有限制解除(天荒地老海枯石烂的慢)"), parent=self)
 
 
 def click_equipment(code):
@@ -3693,7 +3767,7 @@ def blog():
 
 def hamjung():
     tkinter.messagebox.showinfo("제작자 크레딧",
-                                "총제작자=Dawnclass(새벽반)\n이미지/그래픽=경철부동산\n직업/버퍼DB=대략볼록할철\n서버제공=던파오프\n기타조언=히든 도비 4,5,6호\n\n오류 제보는 블로그 덧글이나 던조 쪽지로")
+                                "총제작자=Dawnclass(새벽반)\n이미지/그래픽=경철부동산\n직업/버퍼DB=대략볼록할철\n서버제공=던파오프\n기타조언=히든 도비 4,5,6호\n\n오류 제보는 블로그 덧글이나 던조 쪽지로", parent=self)
 
 
 def get_other_account_names():
@@ -3706,8 +3780,8 @@ def get_other_account_names():
 ###########################################################
 
 self = tkinter.Tk()
-self.title("一键史诗搭配计算器-支持百变怪/升级工作服/跨界/多武器 ver" + now_version)
-self.geometry("710x720+0+0")
+self.title("一键史诗搭配计算器魔改版-支持百变怪/升级工作服/跨界/多武器 ver" + now_version + " by风之凌殇")
+self.geometry("{}x{}+{}+{}".format(main_window_width, main_window_height, main_window_x_offset, main_window_y_offset))
 self.resizable(False, False)
 self.configure(bg=dark_main)
 self.iconbitmap(r'ext_img/icon.ico')
