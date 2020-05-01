@@ -1,14 +1,14 @@
 ﻿#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import collections
-
-now_version = "v3.2.8.3"
+now_version = "3.2.8.3"
 ver_time = '2020-05-01'
 
 ## 코드를 무단으로 복제하여 개조 및 배포하지 말 것##
 
+import collections
 import itertools
 import os
+import re
 import threading
 import time
 import tkinter.font
@@ -21,6 +21,7 @@ from math import floor
 from tkinter import *
 
 import numpy as np
+import requests
 from openpyxl import load_workbook
 
 ###########################################################
@@ -1705,6 +1706,7 @@ def get_can_transfer_nums():
 def use_pulei_legend_by_default():
     return use_pulei_legend_by_default_select.get() == txt_use_pulei_legend_by_default
 
+
 # 是否偏好神话
 def prefer_god():
     return select_speed.get() != speed_middle_not_prefer_god
@@ -1778,11 +1780,11 @@ def calc_upgrade_work_uniforms_add_counts(slots_equips, slots_not_select_equips,
 
     return total_add_counts
 
+
 main_window_width = 710
 main_window_height = 720
 main_window_x_offset = 0
 main_window_y_offset = 0
-
 
 other_window_x_offset = main_window_x_offset + main_window_width + 10
 
@@ -2772,6 +2774,7 @@ def costum():
 def get_row(equip_index):
     return str(equip_index_to_row_index[equip_index])
 
+
 def save_custom(ele_type, cool_con, cus1, cus2, cus3, cus4, cus6, cus7, cus8, cus9, cus10, cus11, cus12, c_stat, b_stat,
                 b_style_lvl, c_style_lvl, b_plt, b_cri, ele1, ele2, ele3, ele4, ele5, ele6):
     global custom_window
@@ -2789,14 +2792,14 @@ def save_custom(ele_type, cool_con, cus1, cus2, cus3, cus4, cus6, cus7, cus8, cu
         # 属性攻击
         db_custom1['B1'] = ele_type
         # 大自然防具会根据属性不同部位有不同的属强加成
-        db_save_one["L" + get_row("12150")] = 0 # 工作服裤子
-        db_save_one["L" + get_row("13150")] = 0 # 工作服头肩
-        db_save_one["L" + get_row("14150")] = 0 # 工作服腰带
-        db_save_one["L" + get_row("15150")] = 0 # 工作服鞋子
+        db_save_one["L" + get_row("12150")] = 0  # 工作服裤子
+        db_save_one["L" + get_row("13150")] = 0  # 工作服头肩
+        db_save_one["L" + get_row("14150")] = 0  # 工作服腰带
+        db_save_one["L" + get_row("15150")] = 0  # 工作服鞋子
 
         if ele_type == '火':
             # 工作服头肩在火属性攻击时会增加火属性属强24点
-            db_save_one["L" + get_row("13150")] = 24 # 工作服头肩
+            db_save_one["L" + get_row("13150")] = 24  # 工作服头肩
         elif ele_type == '冰':
             # 工作服腰带在冰属性攻击时会增加冰属性属强24点
             db_save_one["L" + get_row("14150")] = 24  # 工作服腰带
@@ -2817,7 +2820,7 @@ def save_custom(ele_type, cool_con, cus1, cus2, cus3, cus4, cus6, cus7, cus8, cu
         # 行354-361：智慧产物列表
         # 行362：套装编号与套装名称列
         # 行363-400：套装编号与套装名称
-        for i in range(1, 400 + 50 + 1): # 保险起见，多写几行，避免日后添加新装备忘记更新，反正多写不会错
+        for i in range(1, 400 + 50 + 1):  # 保险起见，多写几行，避免日后添加新装备忘记更新，反正多写不会错
             try:
                 db_save_one.cell(i, 25).value = db_save_one.cell(i, 26).value * float(cool_con) / 100
             except:
@@ -2871,7 +2874,7 @@ def save_custom(ele_type, cool_con, cus1, cus2, cus3, cus4, cus6, cus7, cus8, cu
             db_save_one['N' + get_row("13060")] = 34  # 龙血玄黄-头肩
             db_save_one['L' + get_row("14060")] = 68  # 龙血玄黄-腰带
             db_save_one['K' + get_row("15060")] = 34  # 龙血玄黄-鞋子
-            db_save_one['G' + get_row("1063") ] = 40  # 龙血玄黄5
+            db_save_one['G' + get_row("1063")] = 40  # 龙血玄黄5
         else:
             # 英雄↑
             db_save_one['J' + get_row("11060")] = 35  # 龙血玄黄-上衣
@@ -2879,7 +2882,7 @@ def save_custom(ele_type, cool_con, cus1, cus2, cus3, cus4, cus6, cus7, cus8, cu
             db_save_one['N' + get_row("13060")] = 35  # 龙血玄黄-头肩
             db_save_one['L' + get_row("14060")] = 72  # 龙血玄黄-腰带
             db_save_one['K' + get_row("15060")] = 35  # 龙血玄黄-鞋子
-            db_save_one['G' + get_row("1063") ] = 41  # 龙血玄黄5
+            db_save_one['G' + get_row("1063")] = 41  # 龙血玄黄5
         # 恍惚增幅等级
         db_custom1['B13'] = cus4
         db_save_one['N' + get_row("21170")] = int(cus4) + 4  # 破晓-手镯
@@ -2933,6 +2936,7 @@ def save_custom(ele_type, cool_con, cus1, cus2, cus3, cus4, cus6, cus7, cus8, cu
 
 # 上次读档/存档时的存档名
 g_save_name_on_last_load_or_save = ""
+
 
 def load_checklist():
     ask_msg1 = tkinter.messagebox.askquestion('确认', "确认读取存档吗？", parent=self)
@@ -3228,15 +3232,55 @@ def display_realtime_counting_info():
             print("display_realtime_counting_info except: {}".format(e))
 
 
+# 启动时自动读取第一个配置
 def load_checklist_on_start():
-    # 启动时自动读取第一个配置
     load_checklist_noconfirm(0)
+
+
+# 3.2.2 => [3, 2, 2]
+def version_to_version_int_list(version):
+    return [int(subv) for subv in version.split('.')]
+
+
+# [3, 2, 2] => 3.2.2
+def version_int_list_to_version(version_int_list):
+    return '.'.join([str(subv) for subv in version_int_list])
+
+
+# 获取最新版本号
+def get_latest_version():
+    # 获取github本项目的readme页面内容
+    readme_html_text = requests.get("https://github.com/fzls/dnf_calc/blob/master/README.md").text
+    # 从更新日志中提取所有版本信息
+    versions = re.findall("(?<=[vV])[0-9.]+(?= \d+\.\d+\.\d+)", readme_html_text)
+    # 找出其中最新的那个版本号
+    latest_version = version_int_list_to_version(max(version_to_version_int_list(ver) for ver in versions))
+    return latest_version
+
+
+# 是否需要更新
+def need_update(current_version, latest_version):
+    return version_to_version_int_list(current_version) < version_to_version_int_list(latest_version)
+
+# 启动时检查是否有更新
+def check_update_on_start():
+    try:
+        latest_version = get_latest_version()
+        nu = need_update(now_version, latest_version)
+        if need_update(now_version, latest_version):
+            ask_update = tkinter.messagebox.askquestion('更新', "当前版本为{}，已有最新版本{}. 你需要更新吗?".format(now_version, latest_version))
+            if ask_update == 'yes':
+                webbrowser.open('https://pan.baidu.com/s/1-I8pMK6_yPH5qU4SWNMVog')
+                tkinter.messagebox.showinfo("百度网盘验证码", "百度网盘提取码为： 238m")
+    except Exception as err:
+        print("更新版本失败, 错误为{}".format(err))
 
 
 def update_thread():
     threading.Thread(target=update_count, daemon=True).start()
     threading.Thread(target=display_realtime_counting_info, daemon=True).start()
     threading.Thread(target=load_checklist_on_start, daemon=True).start()
+    threading.Thread(target=check_update_on_start, daemon=True).start()
 
 
 def reset():
