@@ -1,7 +1,7 @@
 ﻿#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-now_version = "3.2.8.3"
-ver_time = '2020-05-01'
+now_version = "3.2.9"
+ver_time = '2020-05-02'
 
 ## 코드를 무단으로 복제하여 개조 및 배포하지 말 것##
 
@@ -3606,7 +3606,7 @@ def get_latest_version():
     # 获取github本项目的readme页面内容
     readme_html_text = requests.get("https://github.com/fzls/dnf_calc/blob/master/README.md").text
     # 从更新日志中提取所有版本信息
-    versions = re.findall("(?<=[vV])[0-9.]+(?= \d+\.\d+\.\d+)", readme_html_text)
+    versions = re.findall("(?<=[vV])[0-9.]+(?=\s+\d+\.\d+\.\d+)", readme_html_text)
     # 找出其中最新的那个版本号
     latest_version = version_int_list_to_version(max(version_to_version_int_list(ver) for ver in versions))
     return latest_version
