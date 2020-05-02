@@ -1,3 +1,6 @@
+:: 发布前将代码推送到github
+call _git_push_remote.bat
+
 :: 调用构建脚本，打包
 call _build.bat
 
