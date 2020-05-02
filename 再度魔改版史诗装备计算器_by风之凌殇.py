@@ -21,7 +21,8 @@ from tkinter import *
 
 import numpy as np
 import requests
-from openpyxl import load_workbook
+import toml
+from openpyxl import load_workbook, Workbook
 
 ###########################################################
 #                         调试函数                        #
@@ -748,6 +749,20 @@ def _modify_slots_order(slots):
         slots[0], slots[5], slots[10], slots[1], slots[2], slots[3], slots[4], slots[6], slots[7], slots[8], slots[9]
 
 
+def _reverse_modify_slots_order(slots):
+    # 上面的_modify_slots_order的逆操作，调整后会变回默认顺序11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33
+    slots[0], slots[5], slots[10], slots[1], slots[2], slots[3], slots[4], slots[6], slots[7], slots[8], slots[9] = \
+        slots[0], slots[1], slots[2], slots[3], slots[4], slots[5], slots[6], slots[7], slots[8], slots[9], slots[10]
+
+
+# equip_indexes的顺序与上面的搜索顺序一致，这里需要调回来
+def get_slot_names(equip_indexes):
+    ordered_equip_indexes = list(equip_indexes)
+    _reverse_modify_slots_order(ordered_equip_indexes)
+
+    return [equip_index_to_realname[index] for index in ordered_equip_indexes]
+
+
 ## 计算函数##
 def calc():
     global result_window
@@ -817,6 +832,9 @@ def calc():
         row_value_cut = row_value[2:]
 
         opt_buflvl[buf_name] = row_value_cut
+
+    # 读取奶系自定义数据数据
+    load_buf_custom_data()
 
     load_presetc = load_workbook("preset.xlsx", data_only=True)
     db_preset = load_presetc["custom"]
@@ -1089,6 +1107,11 @@ def calc():
 
         return setopt_num
 
+    ui_top_n = 5
+    save_top_n = ui_top_n
+    if g_config['export_result_as_excel']['enable']:
+        save_top_n = max(save_top_n, g_config['export_result_as_excel']['export_rank_count'])
+
     is_shuchu_job = job_name not in ["(奶系)神思者", "(奶系)炽天使", "(奶系)冥月女神"]
     if is_shuchu_job:
 
@@ -1098,7 +1121,7 @@ def calc():
         # 13공속 14크확 / 15 액티브 / 16~19 패시브 /20 신화여부/21세트코드/22쿨감보정/23 원쿨감
         # 단품:24~33 저장소 / 34 二觉캐액티브
         getone = opt_one.get
-        minheap = MinHeap(5)
+        minheap = MinHeap(save_top_n)
         unique_index = 0
         max_setopt = 0
         show_number = 1
@@ -1256,14 +1279,19 @@ def calc():
         show_number = 0
         showsta(text='结果统计中')
 
+        all_ranking = minheap.getTop()
         ranking = []
-        for rank, data in enumerate(minheap.getTop()):
+        for rank, data in enumerate(all_ranking[:ui_top_n]):
             damage = data[0]
             value = data[2]
             ranking.append((damage, value))
             showsta(text='结果统计中' + str(rank + 1) + " / 5")
 
         show_result(ranking, 'deal', ele_skill)
+
+        export_result(ele_skill, deal_col_names, extract_deal_rank_cols, [
+            ("伤害排行", all_ranking)
+        ])
 
     else:
         # TODO: 增加支持对国服特色的支持
@@ -1277,9 +1305,9 @@ def calc():
         base_stat_h = 4308 - 45 - 83 + int(db_preset['H1'].value)
         base_pas0_1 = 0
         lvlget = opt_buflvl.get
-        minheap1 = MinHeap(5)
-        minheap2 = MinHeap(5)
-        minheap3 = MinHeap(5)
+        minheap1 = MinHeap(save_top_n)
+        minheap2 = MinHeap(save_top_n)
+        minheap3 = MinHeap(save_top_n)
         unique_index = 0
         setget = opt_buf.get
         max_setopt = 0
@@ -1428,24 +1456,33 @@ def calc():
         show_number = 0
         showsta(text='结果统计中')
 
-        ranking1 = [];
-        ranking2 = [];
+        all_ranking1 = minheap1.getTop()
+        all_ranking2 = minheap2.getTop()
+        all_ranking3 = minheap3.getTop()
+        ranking1 = []
+        ranking2 = []
         ranking3 = []
-        for rank, data in enumerate(minheap1.getTop()):
+        for rank, data in enumerate(all_ranking1[:ui_top_n]):
             damage = data[0]
             value = data[2]
             ranking1.append((damage, value))
-        for rank, data in enumerate(minheap2.getTop()):
+        for rank, data in enumerate(all_ranking2[:ui_top_n]):
             damage = data[0]
             value = data[2]
             ranking2.append((damage, value))
-        for rank, data in enumerate(minheap3.getTop()):
+        for rank, data in enumerate(all_ranking3[:ui_top_n]):
             damage = data[0]
             value = data[2]
             ranking3.append((damage, value))
 
         ranking = [ranking1, ranking2, ranking3]
         show_result(ranking, 'buf', ele_skill)
+
+        export_result(ele_skill, buf_col_names, extract_buf_rank_cols, [
+            ("祝福排行", all_ranking1),
+            ("太阳排行", all_ranking2),
+            ("综合排行", all_ranking3),
+        ])
 
     load_presetc.close()
     load_excel.close()
@@ -1462,6 +1499,167 @@ def calc_thread():
 def stop_calc():
     global exit_calc
     exit_calc = 1
+
+
+# re: 把下方可阅读区域作为一个单独字段也加到前面（加在武器和职业中间）
+
+# 输出职业的表格输出列名
+deal_col_names = (
+    "排行",
+    "伤害倍率",
+    "职业",
+    "搭配概览",
+    "武器",
+    "上衣",
+    "裤子",
+    "头肩",
+    "腰带",
+    "鞋子",
+    "手镯",
+    "项链",
+    "戒指",
+    "辅助装备",
+    "魔法石",
+    "耳环",
+    "百变怪",
+    "跨界或升级工作服得来的装备",
+    "力智",
+    "物理/魔法/独立攻击力",
+    "攻击时额外增加X%的伤害增加量",
+    "暴击时，额外增加X%的伤害增加量",
+    "攻击时，附加X%的伤害，也就是白字",
+    "攻击时，附加X%的属性伤害",
+    "最终伤害+X%",
+    "物理/魔法/独立攻击力 +X%",
+    "力智+X%",
+    "所有属性强化+X",
+    "发生持续伤害5秒，伤害量为对敌人造成伤害的X%",
+    "技能攻击力 +X%",
+    "特殊词条",
+    "攻击速度 +X%",
+    "魔法/物理暴击率 +X%",
+    "主动技能增加等级所带来的的影响",
+    "增加转职被动的等级",
+    "增加一绝被动的等级",
+    "增加二觉被动的等级",
+    "增加三觉被动的等级",
+    "冷却矫正系数，每冷却1%，记0.35这个值",
+    "二觉主动技能",
+    "1-45主动技能",
+    "50主动技能",
+    "60~80主动技能",
+    "85主动技能",
+    "95主动技能",
+    "100主动技能",
+    "冷却补正",
+    "技能属强补正",
+    "逆校正",
+)
+
+
+def extract_deal_rank_cols(ele_skill, rank, ranking_detail):
+    # (damage, unique_index, [calc_wep, base_array, baibianguai, tuple(not_owned_equips)])
+    damage = str(int(100 * ranking_detail[0])) + "%"
+    weapon_index = ranking_detail[2][0][0]
+    equip_indexes = ranking_detail[2][0][1:]
+    base_array = ranking_detail[2][1]
+    baibianguai = ranking_detail[2][2]
+    not_owned_equips = ranking_detail[2][3]
+
+    cols = []
+    cols.append(rank) # 排行
+    cols.append(damage)  # 伤害倍率
+    cols.append(jobup_select.get())  # 职业
+    cols.append(" | ".join(get_readable_names(weapon_index, equip_indexes))) # 搭配概览
+    cols.append(equip_index_to_realname[weapon_index])  # 武器
+    # 上衣 裤子 头肩 腰带 鞋子 手镯 项链 戒指 辅助装备 魔法石 耳环
+    cols.extend(get_slot_names(equip_indexes))
+    bbg = ""  # 百变怪
+    if baibianguai is not None:
+        bbg = equip_index_to_realname[baibianguai]
+    cols.append(bbg)
+    cols.append(",".join(equip_index_to_realname[equip_index] for equip_index in not_owned_equips))  # 跨界或升级工作服得来的装备
+    for i in range(28):
+        cols.append(base_array[i])
+    cols.append(req_cool.get())  # 冷却补正
+    cols.append(ele_skill)  # 技能属强补正
+    cols.append(str(round(100 * (1.05 / (1.05 + int(ele_skill) * 0.0045) - 1), 1)) + "%") # 逆补正
+
+    if len(cols) != len(deal_col_names):
+        raise Exception("col number not match")
+
+    return cols
+
+
+# 奶系职业的表格输出列名
+buf_col_names = (
+    "排行",
+    "得分",
+    "职业",
+    "搭配概览",
+    "武器",
+    "上衣",
+    "裤子",
+    "头肩",
+    "腰带",
+    "鞋子",
+    "手镯",
+    "项链",
+    "戒指",
+    "辅助装备",
+    "魔法石",
+    "耳环",
+    "百变怪",
+    "跨界或升级工作服得来的装备",
+    "祝福",
+    "一觉",
+    "一觉被动",
+    "自定义祝福+X级",
+    "自定义一觉+X级",
+    "祝福数据+",
+    "太阳数据+",
+)
+
+
+def extract_buf_rank_cols(ele_skill, rank, ranking_detail):
+    # (score, unique_index, [calc_wep, [save1, save2, pas1_out], baibianguai, tuple(not_owned_equips)])
+    score = ranking_detail[0]
+    weapon_index = ranking_detail[2][0][0]
+    equip_indexes = ranking_detail[2][0][1:]
+
+    score = ranking_detail[0] // 10  # xx标准
+    bless = ranking_detail[2][1][0]  # 祝福数据
+    taiyang = ranking_detail[2][1][1]  # 太阳数据
+    taiyang_passive = ranking_detail[2][1][2]  # 太阳被动
+
+    baibianguai = ranking_detail[2][2]
+    not_owned_equips = ranking_detail[2][3]
+
+    cols = []
+    cols.append(rank) # 排行
+    cols.append(score)  # 得分
+    cols.append(jobup_select.get())  # 职业
+    cols.append(" | ".join(get_readable_names(weapon_index, equip_indexes))) # 搭配概览
+    cols.append(equip_index_to_realname[weapon_index])  # 武器
+    # 上衣 裤子 头肩 腰带 鞋子 手镯 项链 戒指 辅助装备 魔法石 耳环
+    cols.extend(get_slot_names(equip_indexes))
+    bbg = ""  # 百变怪
+    if baibianguai is not None:
+        bbg = equip_index_to_realname[baibianguai]
+    cols.append(bbg)
+    cols.append(",".join(equip_index_to_realname[equip_index] for equip_index in not_owned_equips))  # 跨界或升级工作服得来的装备
+    cols.append(bless)  # 祝福
+    cols.append(taiyang)  # 一觉
+    cols.append(taiyang_passive)  # 一觉被动
+    cols.append(custom_buf_data["bless_level"])  # 自定义祝福+X级
+    cols.append(custom_buf_data["taiyang_level"])  # 自定义一觉+X级
+    cols.append(custom_buf_data["bless_data"])  # 祝福数据+
+    cols.append(custom_buf_data["taiyang_data"])  # 太阳数据+
+
+    if len(cols) != len(buf_col_names):
+        raise Exception("col number not match")
+
+    return cols
 
 
 def get_equips():
@@ -1772,6 +1970,8 @@ def get_transfer_slots_equips(items, sheet):
 
     transfer_slots_equips = [[] for i in range(0, 11)]
     for account_name in transfer_equip_combopicker.get_selected_entrys():
+        if account_name == "":
+            continue
         # 获取当前存档的index
         account_index = 0
         try:
@@ -1866,6 +2066,17 @@ res_txt_readable_result = None
 def change_readable_result_area(weapon, equips, is_create):
     global res_txt_readable_result, canvas_res
 
+    readable_names = get_readable_names(weapon, equips)
+    content = pretty_words(readable_names, 40, ' | ')
+    if is_create:
+        res_txt_readable_result = canvas_res.create_text(res_txt_readable_result_center_x, res_txt_readable_result_center_y,
+                                                         text=content,
+                                                         font=guide_font, fill='white')
+    else:
+        canvas_res.itemconfig(res_txt_readable_result, text=content)
+
+
+def get_readable_names(weapon, equips):
     readable_names = []
     readable_names.append(equip_index_to_realname[weapon])
 
@@ -1889,27 +2100,7 @@ def change_readable_result_area(weapon, equips, is_create):
     for wisdom_index in wisdom_indexs:
         readable_names.append(equip_index_to_realname[wisdom_index])
 
-    line_word_count = 0
-    max_line_word_count = 40
-    readable_result = ""
-    for name in readable_names:
-        if line_word_count + len(name) >= max_line_word_count:
-            line_word_count = 0
-            readable_result += "\n"
-        elif line_word_count != 0:
-            readable_result += ' | '
-
-        readable_result += name
-        line_word_count += len(name)
-
-    content = pretty_words(readable_names, 40, ' | ')
-    if is_create:
-        res_txt_readable_result = canvas_res.create_text(res_txt_readable_result_center_x, res_txt_readable_result_center_y,
-                                                         text=content,
-                                                         font=guide_font, fill='white')
-    else:
-        canvas_res.itemconfig(res_txt_readable_result, text=content)
-
+    return readable_names
 
 # 展示当前搭配的各装备名称
 def show_name():
@@ -1943,6 +2134,26 @@ def pretty_words(words, max_line_word_count, delimiter):
         line_word_count += len(word)
 
     return pretty_result
+
+
+# 奶系自定义数据
+custom_buf_data = {}
+
+
+def load_buf_custom_data():
+    global custom_buf_data
+
+    load_presetr = load_workbook("preset.xlsx", data_only=True)
+    r_preset = load_presetr["custom"]
+
+    custom_buf_data = {
+        "bless_level": str(int(r_preset['H2'].value) + int(r_preset['H4'].value) + int(r_preset['H5'].value)),
+        "taiyang_level": str(r_preset['H3'].value),
+        "bless_data": str(r_preset['H6'].value),
+        "taiyang_data": str(r_preset['H1'].value),
+    }
+
+    load_presetr.close()
 
 
 def show_result(rank_list, job_type, ele_skill):
@@ -2155,8 +2366,6 @@ def show_result(rank_list, job_type, ele_skill):
         length = len(rank_list)
 
     elif job_type == 'buf':  ##########################
-        load_presetr = load_workbook("preset.xlsx", data_only=True)
-        r_preset = load_presetr["custom"]
         global result_image_on1, result_image_on2, result_image_on3, rank_buf1, rank_buf2, rank_buf3, rank_type_buf, res_buf, res_img_list, res_buf_list, res_buf_ex1, res_buf_ex2, res_buf_ex3, rank_buf_ex1, rank_buf_ex2, rank_buf_ex3, res_buf_type_what
         rank_type_buf = 3
         rank_baibiaoguai1 = [0, 0, 0, 0, 0]
@@ -2406,17 +2615,19 @@ def show_result(rank_list, job_type, ele_skill):
         except IndexError as error:
             c = 1
 
-        canvas_res.create_text(122, 193, text="自定义 祝福+" + str(
-            int(r_preset['H2'].value) + int(r_preset['H4'].value) + int(
-                r_preset['H5'].value)) + "级 / " + "自定义 一觉+" + str(int(r_preset['H3'].value)) + "级\n祝福数据+" + str(
-            int(r_preset['H6'].value)) + " / 一觉数据+" + str(int(r_preset['H1'].value)), font=guide_font, fill='white')
+        canvas_res.create_text(122, 193, text=(
+                "自定义 祝福+" + custom_buf_data["bless_level"] + "级 / " +
+                "自定义 一觉+" + custom_buf_data["taiyang_level"] + "级\n" +
+                "祝福数据+" + custom_buf_data["bless_data"] + " / " +
+                "一觉数据+" + custom_buf_data["taiyang_data"]
+        ), font=guide_font, fill='white')
 
         res_buf = canvas_res.create_text(122, 125, text=rank_buf3[0], font=mid_font, fill='white')
         res_buf_type_what = canvas_res.create_text(122, 145, text="综合标准", font=guide_font, fill='white')
         res_buf_ex1 = canvas_res.create_text(123, 247, text="祝福=" + rank_buf_ex3[0][0], font=guide_font, fill='white')
         res_buf_ex2 = canvas_res.create_text(123 - 17, 282, text="一觉=" + rank_buf_ex3[0][1], font=guide_font,
                                              fill='white')
-        res_buf_ex3 = canvas_res.create_text(123 - 44, 312, text="一觉패=" + rank_buf_ex3[0][2], font=guide_font,
+        res_buf_ex3 = canvas_res.create_text(123 - 44, 312, text="一觉被动=" + rank_buf_ex3[0][2], font=guide_font,
                                              fill='white')
 
         res_img11 = canvas_res.create_image(57, 57, image=result_image_on3[0]['11'])
@@ -2481,8 +2692,6 @@ def show_result(rank_list, job_type, ele_skill):
                 ranks[rank] = rank_setting[rank]
             g_rank_equips[buf_type] = ranks
 
-        load_presetr.close()
-
     wep_name = equip_index_to_realname[wep_index]
     job_name = jobup_select.get()
     res_txt_weapon = canvas_res.create_text(122, 20, text=wep_name, font=guide_font, fill='white')
@@ -2519,6 +2728,40 @@ def show_result(rank_list, job_type, ele_skill):
     canvas_res.image = result_bg
     res_bt1.image = show_detail_img
     res_bt_show_name.image = show_name_img
+
+# 导出结果到excel
+def export_result(ele_skill, col_names, extract_rank_cols_func, rankings):
+    export_config = g_config["export_result_as_excel"]
+    if not export_config["enable"]:
+        return
+
+    def _export_reuslt():
+        book = Workbook()
+        book.remove_sheet(book.active)
+        for sheet_index, rt in enumerate(rankings):
+            # 为该排行榜创建sheet
+            sheet = book.create_sheet(rt[0], sheet_index)
+
+            row = 1
+            # 首行为列名
+            for col_index, col_name in enumerate(col_names):
+                sheet.cell(row, col_index + 1).value = col_name
+
+            # 其余行为各个排行条目
+            for index, ranking in enumerate(rt[1]):
+                rank = index + 1
+                col_values = extract_rank_cols_func(ele_skill, rank, ranking)
+
+                row += 1
+                for col_index, col_value in enumerate(col_values):
+                    sheet.cell(row, col_index + 1).value = col_value
+
+        # 保存文件
+        book.save(export_config["export_file_name"])
+        tkinter.messagebox.showinfo("排行结果已导出", "前{}排行数据已导出到当前目录下的{}，可打开进行查看".format(export_config["export_rank_count"], export_config["export_file_name"]))
+
+    threading.Thread(target=_export_reuslt, daemon=True).start()
+    return
 
 
 def change_rank(now, job_type):
@@ -3420,6 +3663,11 @@ def reset():
     transfer_equip_combopicker.set("")
     can_transfer_nums_select.set(txt_can_transfer_nums[0])
 
+
+###########################################################
+#                        读取自定义配置                    #
+###########################################################
+g_config = toml.load('config.toml')
 
 ###########################################################
 #                         逻辑初始化                       #

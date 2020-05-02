@@ -1,0 +1,10 @@
+# 额外配置选项，普通用户无需关注
+
+# 是否需要额外将输出结果导出为excel文件
+[export_result_as_excel]
+# 启用导出excel功能
+enable = false
+# 导出的文件名
+export_file_name = "排行结果.xlsx"
+# 导出前N名
+export_rank_count = 1000

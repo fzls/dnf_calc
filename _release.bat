@@ -17,6 +17,6 @@ cd "%target_dir%"
 :: 移除一些无需发布的文件，以及初始化相关存档
 xcopy preset_clear.XLSX preset.XLSX /Y/B
 RMDIR /S /Q ".git" ".idea"
-DEL /Q "DATA - 副本.xlsx" "preset_clear.XLSX" "test.py"
+DEL /Q "DATA - 副本.xlsx" "preset_clear.XLSX" "test.py" “排行结果.xlsx”
 ren "魔改后.py__" "魔改后.py"
 ren "calc.py__" "calc.py"
