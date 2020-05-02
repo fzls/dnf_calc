@@ -29,6 +29,9 @@ https://drive.google.com/file/d/1p8ZdzW_NzGKHHOtfPTuZSr1YgSEVtYCj/view
     新版本中增加了config.toml，其中增加了导出excel相关的配置，默认关闭，如果有需求，可以将enable的值设为true，调整导出名和导出数目，即可体验该功能
 2. 增加读取配置功能
 
+## bugfix
+1. 心悦宠物忘记加到宠物列表中了，虽然实际逻辑分支已经加了= =
+
 ## 代码调整
 1. 调整查找版本号的正则，使其更健壮
 
