@@ -1,0 +1,203 @@
+# 宠物配置表
+
+# 配置表格式
+# 首层为数组
+# 第二层包括两个字段
+# 1. names: 表示这个国服特色对应的名字列表（由于有些宠物、称号名字不同，但属性完全一致，所以这样处理比较方便）
+# 2. entries: 各个词条的列表，具体词条名称和含义对应关系可以参照下面的说明及现有例子
+
+# 词条名称及含义
+# strength_and_intelligence # 0-C-stat-力智
+# physical_magical_independent_attack_power # 1-D-att-物理/魔法/独立攻击力
+# extra_percent_attack_damage # 2-E-damper-攻击时额外增加X%的伤害增加量
+# extra_percent_crit_damage # 3-F-criper-暴击时，额外增加X%的伤害增加量
+# extra_percent_addtional_damage # 4-G-bonper-攻击时，附加X%的伤害，也就是白字
+# extra_percent_elemental_damage # 5-H-elebon-攻击时，附加X%的属性伤害
+# extra_percent_final_damage # 6-I-allper-最终伤害+X%
+# extra_percent_physical_magical_independent_attack_power # 7-J-attper-物理/魔法/独立攻击力 +X%
+# extra_percent_strength_and_intelligence # 8-K-staper-力智+X%
+# extra_all_element_strength # 9-L-ele-所有属性强化+X
+# extra_percent_continued_damage  # 10-M-sloper-发生持续伤害5秒，伤害量为对敌人造成伤害的X%
+# extra_percent_skill_attack_power  # 11-N-skiper-技能攻击力 +X%
+# extra_percent_special_effect  # 12-O-special-特殊词条补正，如歧路和不息的装备，详见自定义中这俩装备相关配置
+# extra_percent_attack_speed  # 13-P-speed-攻击速度 +X%
+# extra_percent_magic_physical_crit_rate  # 14-Q-critical-魔法/物理暴击率 +X%
+# extra_active_skill_effect  # 15-R-active-主动技能增加等级所带来的的影响（目前C的伤害计算没有计入该值，仅奶系职业用到）
+# extra_passive_transfer_skill  # 16-S-pas1-增加转职被动的等级
+# extra_passive_first_awaken_skill  # 17-T-pas2-增加一绝被动的等级
+# extra_passive_second_awaken_skill  # 18-U-pas3-增加二觉被动的等级
+# extra_passive_third_awaken_skill  # 19-V-pas4-增加三觉被动的等级
+# cool_correction  # 20-Y-cool_skill-冷却矫正系数，每冷却1%，记0.35这个值
+# extra_active_second_awaken_skill  # 21-AK-active2-二觉主动技能
+# extra_active_skill_lv_1_45  # 22-AO-pas0-1_45主动技能
+# extra_active_skill_lv_50  # 23-AP-pas1-50主动技能
+# extra_active_skill_lv_60_80  # 24-AQ-pas2-60_80主动技能
+# extra_active_skill_lv_85  # 25-AR-pas3-85主动技能
+# extra_active_skill_lv_95  # 26-AS-pas4-95主动技能
+# extra_active_skill_lv_100  # 27-AT-pas5-100主动技能
+- names:
+    - "弓手维多利亚"
+    - "神官格洛丽亚"
+  entries:
+      # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
+    - extra_percent_skill_attack_power: 10  # 宠物技能+10%攻击力，持续10s，冷却30s
+    - extra_percent_attack_speed: 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
+    - strength_and_intelligence: 140  # 四维+140
+    - extra_percent_attack_speed: 5  # 三速+5%
+    - extra_all_element_strength: 24  # 所有属强+24
+    - extra_percent_magic_physical_crit_rate: 10  # 暴击率+10%
+    - extra_passive_transfer_skill: 1  # 转职被动+1， 1-50lv+1
+    - extra_passive_first_awaken_skill: 1  # 一觉被动+1， 1-50lv+1
+    - extra_active_skill_lv_1_45: 1  # 1-45级主动+1， 1-50lv+1
+    - extra_active_skill_lv_50: 1  # 50级主动+1， 1-50lv+1
+    - extra_percent_addtional_damage: 12  # 攻击时，附加12%的伤害
+    - extra_percent_strength_and_intelligence: 10  # 力智+10%
+    - cool_correction: 1.75  # 技能冷却每减1%，冷却矫正系数增加0.35
+- names:
+    - "雷光之箭维多利亚"
+    - "暴风圣女格洛丽亚"
+  entries:
+      # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
+    - extra_percent_skill_attack_power: 10  # 宠物技能+10%攻击力，持续10s，冷却30s
+    - extra_percent_attack_speed: 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
+    - strength_and_intelligence: 150  # 四维+150
+    - extra_percent_attack_speed: 5  # 三速+5%
+    - extra_all_element_strength: 24  # 所有属强+24
+    - extra_percent_magic_physical_crit_rate: 10  # 暴击率+10%
+    - extra_passive_transfer_skill: 1  # 转职被动+1， 1-50lv+1
+    - extra_passive_first_awaken_skill: 1  # 一觉被动+1， 1-50lv+1
+    - extra_active_skill_lv_1_45: 1  # 1-45级主动+1， 1-50lv+1
+    - extra_active_skill_lv_50: 1  # 50级主动+1， 1-50lv+1
+    - extra_percent_addtional_damage: 15  # 攻击时，附加15%的伤害
+    - extra_percent_final_damage: 5  # 最终伤害+5%
+    - extra_percent_strength_and_intelligence: 12  # 力智+12%
+    - cool_correction: 1.75  # 技能冷却每减1%，冷却矫正系数增加0.35
+- names:
+    - "骑士莱恩"
+    - "吟游诗人薇泽达"
+  entries:
+      # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
+    - extra_percent_skill_attack_power: 10  # 宠物技能+10%攻击力，持续10s，冷却30s
+    - extra_percent_attack_speed: 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
+    - strength_and_intelligence: 120  # 四维+120
+    - extra_percent_attack_speed: 5  # 三速+5%
+    - extra_all_element_strength: 24  # 所有属强+24
+    - extra_percent_magic_physical_crit_rate: 10  # 暴击率+10%
+    - extra_passive_transfer_skill: 1  # 转职被动+1， 1-50lv+1
+    - extra_passive_first_awaken_skill: 1  # 一觉被动+1， 1-50lv+1
+    - extra_active_skill_lv_1_45: 1  # 1-45级主动+1， 1-50lv+1
+    - extra_active_skill_lv_50: 1  # 50级主动+1， 1-50lv+1
+    - extra_percent_addtional_damage: 12  # 攻击时，附加12%的伤害
+    - cool_correction: 1.75  # 技能冷却每减1%，冷却矫正系数增加0.35
+- names:
+    - "古国英豪莱恩"
+    - "太初之音薇泽达"
+  entries:
+      # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
+    - extra_percent_skill_attack_power: 10  # 宠物技能+10%攻击力，持续10s，冷却30s
+    - extra_percent_attack_speed: 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
+    - strength_and_intelligence: 120  # 四维+120
+    - extra_percent_attack_speed: 5  # 三速+5%
+    - extra_all_element_strength: 24  # 所有属强+24
+    - extra_percent_magic_physical_crit_rate: 10  # 暴击率+10%
+    - extra_passive_transfer_skill: 1  # 转职被动+1， 1-50lv+1
+    - extra_passive_first_awaken_skill: 1  # 一觉被动+1， 1-50lv+1
+    - extra_active_skill_lv_1_45: 1  # 1-45级主动+1， 1-50lv+1
+    - extra_active_skill_lv_50: 1  # 50级主动+1， 1-50lv+1
+    - extra_percent_addtional_damage: 15  # 攻击时，附加15%的伤害
+    - extra_percent_final_damage: 5  # 最终伤害+5%
+    - cool_correction: 1.75  # 技能冷却每减1%，冷却矫正系数增加0.35
+- names:
+    - "神迹·古国英豪莱恩"
+    - "神迹·太初之音薇泽达"
+  entries:
+      # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
+    - extra_percent_skill_attack_power: 10  # 宠物技能+10%攻击力，持续10s，冷却30s
+    - extra_percent_attack_speed: 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
+    - strength_and_intelligence: 120  # 四维+120
+    - extra_percent_attack_speed: 5  # 三速+5%
+    - extra_all_element_strength: 24  # 所有属强+24
+    - extra_percent_magic_physical_crit_rate: 10  # 暴击率+10%
+    - extra_passive_transfer_skill: 1  # 转职被动+1， 1-50lv+1
+    - extra_passive_first_awaken_skill: 1  # 一觉被动+1， 1-50lv+1
+    - extra_active_skill_lv_1_45: 1  # 1-45级主动+1， 1-50lv+1
+    - extra_active_skill_lv_50: 1  # 50级主动+1， 1-50lv+1
+    - extra_percent_addtional_damage: 15  # 攻击时，附加15%的伤害
+    - extra_percent_final_damage: 5  # 最终伤害+5%
+    - extra_percent_strength_and_intelligence: 8  # 力智+8%
+    - cool_correction: 1.75  # 技能冷却每减1%，冷却矫正系数增加0.35
+- names:
+    - "雪兔蒂娅"
+    - "火狐艾芙"
+  entries:
+      # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
+    - extra_percent_skill_attack_power: 10  # 宠物技能+10%攻击力，持续10s，冷却30s
+    - extra_percent_attack_speed: 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
+    - strength_and_intelligence: 100  # 四维+100
+    - extra_percent_attack_speed: 5  # 三速+5%
+    - extra_all_element_strength: 20  # 所有属强+20
+    - extra_percent_magic_physical_crit_rate: 10  # 暴击率+10%
+    - extra_passive_transfer_skill: 1  # 转职被动+1， 1-50lv+1
+    - extra_passive_first_awaken_skill: 1  # 一觉被动+1， 1-50lv+1
+    - extra_active_skill_lv_1_45: 1  # 1-45级主动+1， 1-50lv+1
+    - extra_active_skill_lv_50: 1  # 50级主动+1， 1-50lv+1
+    - extra_percent_addtional_damage: 10  # 攻击时，附加10%的伤害
+    - cool_correction: 1.75  # 技能冷却每减1%，冷却矫正系数增加0.35
+- names:
+    - "冰雪魔法师蒂娅"
+    - "炽焰咒术师艾芙"
+  entries:
+      # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
+    - extra_percent_skill_attack_power: 10  # 宠物技能+10%攻击力，持续10s，冷却30s
+    - extra_percent_attack_speed: 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
+    - strength_and_intelligence: 110  # 四维+110
+    - extra_percent_attack_speed: 5  # 三速+5%
+    - extra_all_element_strength: 22  # 所有属强+22
+    - extra_percent_magic_physical_crit_rate: 10  # 暴击率+10%
+    - extra_passive_transfer_skill: 1  # 转职被动+1， 1-50lv+1
+    - extra_passive_first_awaken_skill: 1  # 一觉被动+1， 1-50lv+1
+    - extra_active_skill_lv_1_45: 1  # 1-45级主动+1， 1-50lv+1
+    - extra_active_skill_lv_50: 1  # 50级主动+1， 1-50lv+1
+    - extra_percent_addtional_damage: 12  # 攻击时，附加12%的伤害
+    - cool_correction: 1.75  # 技能冷却每减1%，冷却矫正系数增加0.35
+- names:
+    - "艾莉丝"
+    - "克里斯"
+  entries:
+      # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
+    - extra_percent_skill_attack_power: 10  # 宠物技能+10%攻击力，持续10s，冷却30s
+    - physical_magical_independent_attack_power: 35  # 三攻+35
+    - extra_percent_attack_speed: 4  # 三速+4%
+    - extra_all_element_strength: 15  # 所有属强+15
+    - extra_percent_magic_physical_crit_rate: 10  # 暴击率+10%
+    - extra_passive_transfer_skill: 1  # 转职被动+1， 1-50lv+1
+    - extra_passive_first_awaken_skill: 1  # 一觉被动+1， 1-50lv+1
+    - extra_active_skill_lv_1_45: 1  # 1-45级主动+1， 1-50lv+1
+    - extra_active_skill_lv_50: 1  # 50级主动+1， 1-50lv+1
+- names:
+    - "牛小哞"
+    - "羊小咩"
+    - "弓小弦"
+  entries:
+    - strength_and_intelligence: 45  # 四维+45
+    - extra_percent_attack_speed: 3  # 三速+3%
+    - extra_all_element_strength: 15  # 所有属强+15
+    - extra_percent_magic_physical_crit_rate: 10  # 暴击率+10%
+    - extra_passive_transfer_skill: 1  # 转职被动+1， 1-50lv+1
+    - extra_passive_first_awaken_skill: 1  # 一觉被动+1， 1-50lv+1
+    - extra_active_skill_lv_1_45: 1  # 1-45级主动+1， 1-50lv+1
+    - extra_active_skill_lv_50: 1  # 50级主动+1， 1-50lv+1
+- names:
+    - "甜小鱼"
+  entries:
+    - strength_and_intelligence: 100  # 四维+100
+    - extra_percent_attack_speed: 5  # 三速+5%
+    - extra_all_element_strength: 20  # 所有属强+20
+    - extra_percent_magic_physical_crit_rate: 10  # 暴击率+10%
+    - extra_passive_transfer_skill: 1  # 转职被动+1， 1-50lv+1
+    - extra_passive_first_awaken_skill: 1  # 一觉被动+1， 1-50lv+1
+    - extra_active_skill_lv_1_45: 1  # 1-45级主动+1， 1-50lv+1
+    - extra_active_skill_lv_50: 1  # 50级主动+1， 1-50lv+1
+- names:
+    - "其他（直接比较）"
+  entries:

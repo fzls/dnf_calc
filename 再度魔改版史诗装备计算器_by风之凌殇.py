@@ -19,10 +19,11 @@ from heapq import heapify, heappush, heappushpop
 from math import floor
 from tkinter import *
 
+import munch
 import numpy as np
 import requests
 import toml
-import munch
+import yaml
 from openpyxl import load_workbook, Workbook
 
 ###########################################################
@@ -347,6 +348,45 @@ class Combopicker(tkinter.ttk.Entry, Picker):
 
 
 ###########################################################
+#                        读取自定义配置                    #
+###########################################################
+# 读取程序config
+g_config = munch.Munch.fromDict(toml.load('config.toml'))
+
+# 读取配置表
+g_setting = munch.Munch()
+
+settings = munch.Munch.fromDict([
+    {"name": "styles", "path": "setting/styles.yaml"},  # 称号的配置表
+    {"name": "creatures", "path": "setting/creatures.yaml"},  # 宠物的配置表
+])
+
+for setting in settings:
+    with open(setting.path, "r", encoding="utf-8") as setting_file:
+        g_setting[setting.name] = munch.Munch.fromDict(yaml.load(setting_file))
+
+
+# 获取配置表setting_name中名称为item_name的条目
+def get_setting(setting_name, item_name):
+    for setting in g_setting[setting_name]:
+        if item_name in setting.names:
+            return setting
+
+    return None
+
+
+def merge_arrays(arrays):
+    merged = []
+    for array in arrays:
+        merged.extend(array)
+    return merged
+
+
+# 国服特色
+styles = merge_arrays(style.names for style in g_setting.styles)
+creatures = merge_arrays(creature.names for creature in g_setting.creatures)
+
+###########################################################
 #                         逻辑相关常量                     #
 ###########################################################
 
@@ -386,29 +426,6 @@ g_row_custom_save_transfer_from = 11  # 跨界来源账户列表
 g_row_custom_save_max_transfer_count = 12  # 最大跨界数目
 g_row_custom_save_use_pulei_legend_by_default = 13  # 是否默认将普雷传说装备加入备选池
 
-# 国服特色
-styles = [
-    '使徒降临', '伟大的意志',  # 2020春节普通称号和至尊称号
-    '超越极限者',  # 2019国庆称号
-    '秘境迷踪', '神选之英杰',  # 2019春节普通称号和至尊称号
-    '神之试炼的奖赏',  # 2018国庆称号
-    '兽人守护神', '天选之人',  # 2018春节普通称号和至尊称号
-    '海洋霸主',  # 2017国庆称号
-    '龙之挑战', '龙之威仪',  # 2017春节普通称号和至尊称号
-    '最强战神',  # 心悦称号
-    '与贝奇邂逅',  # 我的奶妈在用的称号，方便自己用
-    '其他（直接比较）'
-]
-creatures = [
-    '弓手维多利亚', '神官格洛丽亚', '雷光之箭维多利亚', '暴风圣女格洛丽亚',  # 2020春节普通宠物和至尊宠物
-    '骑士莱恩', '吟游诗人薇泽达', '古国英豪莱恩', '太初之音薇泽达', '神迹·古国英豪莱恩', '神迹·太初之音薇泽达',  # 2019春节普通宠物和至尊宠物，以及2020年升级后的2019至尊年宠
-    '雪兔蒂娅', '火狐艾芙', '冰雪魔法师蒂娅', '炽焰咒术师艾芙',  # 2018春节普通宠物和至尊宠物
-    '艾莉丝', '克里斯',  # 2017春节普通宠物
-    '牛小哞', '羊小咩', '弓小弦',  # 心悦宠物
-    '甜小鱼', # 新的心悦宠物
-    '其他（直接比较）'
-]
-
 # 各个词条加成在base_array中的下标        # data.xlsx的one sheet字段说明
 index_strength_and_intelligence = 0  # 0-C-stat-力智
 index_physical_magical_independent_attack_power = 1  # 1-D-att-物理/魔法/独立攻击力
@@ -439,6 +456,37 @@ index_extra_active_skill_lv_85 = 25  # 25-AR-pas3-85主动技能
 index_extra_active_skill_lv_95 = 26  # 26-AS-pas4-95主动技能
 index_extra_active_skill_lv_100 = 27  # 27-AT-pas5-100主动技能
 
+entry_name_to_index = {
+    "strength_and_intelligence": index_strength_and_intelligence,  # 0-C-stat-力智
+    "physical_magical_independent_attack_power": index_physical_magical_independent_attack_power,  # 1-D-att-物理/魔法/独立攻击力
+    "extra_percent_attack_damage": index_extra_percent_attack_damage,  # 2-E-damper-攻击时额外增加X%的伤害增加量
+    "extra_percent_crit_damage": index_extra_percent_crit_damage,  # 3-F-criper-暴击时，额外增加X%的伤害增加量
+    "extra_percent_addtional_damage": index_extra_percent_addtional_damage,  # 4-G-bonper-攻击时，附加X%的伤害，也就是白字
+    "extra_percent_elemental_damage": index_extra_percent_elemental_damage,  # 5-H-elebon-攻击时，附加X%的属性伤害
+    "extra_percent_final_damage": index_extra_percent_final_damage,  # 6-I-allper-最终伤害+X%
+    "extra_percent_physical_magical_independent_attack_power": index_extra_percent_physical_magical_independent_attack_power,  # 7-J-attper-物理/魔法/独立攻击力 +X%
+    "extra_percent_strength_and_intelligence": index_extra_percent_strength_and_intelligence,  # 8-K-staper-力智+X%
+    "extra_all_element_strength": index_extra_all_element_strength,  # 9-L-ele-所有属性强化+X
+    "extra_percent_continued_damage": index_extra_percent_continued_damage,  # 10-M-sloper-发生持续伤害5秒，伤害量为对敌人造成伤害的X%
+    "extra_percent_skill_attack_power": index_extra_percent_skill_attack_power,  # 11-N-skiper-技能攻击力 +X%
+    "extra_percent_special_effect": index_extra_percent_special_effect,  # 12-O-special-特殊词条补正，如歧路和不息的装备，详见自定义中这俩装备相关配置
+    "extra_percent_attack_speed": index_extra_percent_attack_speed,  # 13-P-speed-攻击速度 +X%
+    "extra_percent_magic_physical_crit_rate": index_extra_percent_magic_physical_crit_rate,  # 14-Q-critical-魔法/物理暴击率 +X%
+    "extra_active_skill_effect": index_extra_active_skill_effect,  # 15-R-active-主动技能增加等级所带来的的影响（目前C的伤害计算没有计入该值，仅奶系职业用到）
+    "extra_passive_transfer_skill": index_extra_passive_transfer_skill,  # 16-S-pas1-增加转职被动的等级
+    "extra_passive_first_awaken_skill": index_extra_passive_first_awaken_skill,  # 17-T-pas2-增加一绝被动的等级
+    "extra_passive_second_awaken_skill": index_extra_passive_second_awaken_skill,  # 18-U-pas3-增加二觉被动的等级
+    "extra_passive_third_awaken_skill": index_extra_passive_third_awaken_skill,  # 19-V-pas4-增加三觉被动的等级
+    "cool_correction": index_cool_correction,  # 20-Y-cool_skill-冷却矫正系数，每冷却1%，记0.35这个值
+    "extra_active_second_awaken_skill": index_extra_active_second_awaken_skill,  # 21-AK-active2-二觉主动技能
+    "extra_active_skill_lv_1_45": index_extra_active_skill_lv_1_45,  # 22-AO-pas0-1_45主动技能
+    "extra_active_skill_lv_50": index_extra_active_skill_lv_50,  # 23-AP-pas1-50主动技能
+    "extra_active_skill_lv_60_80": index_extra_active_skill_lv_60_80,  # 24-AQ-pas2-60_80主动技能
+    "extra_active_skill_lv_85": index_extra_active_skill_lv_85,  # 25-AR-pas3-85主动技能
+    "extra_active_skill_lv_95": index_extra_active_skill_lv_95,  # 26-AS-pas4-95主动技能
+    "extra_active_skill_lv_100": index_extra_active_skill_lv_100,  # 27-AT-pas5-100主动技能
+}
+
 
 ###########################################################
 #                         逻辑相关函数                     #
@@ -448,273 +496,29 @@ index_extra_active_skill_lv_100 = 27  # 27-AT-pas5-100主动技能
 def multiply_entry(old_inc_percent, add_inc_percent):
     return (old_inc_percent / 100 + 1) * (add_inc_percent / 100 + 1) * 100 - 100
 
-# re: 称号、宠物改为使用json配置表配置
 
 # 获取国服特殊加成属性
 def get_shuchu_bonus_attributes():
     bonus_array = np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
-    # 获取称号的加成
-    style = style_select.get()
-    if style == '使徒降临':
-        bonus_array[index_physical_magical_independent_attack_power] += 60  # 三攻+60
-        bonus_array[index_strength_and_intelligence] += 80  # 四维+80
-        bonus_array[index_extra_percent_attack_speed] += 3  # 攻击速度+3%
-        bonus_array[index_extra_all_element_strength] += 15  # 所有属性强化+15
-        bonus_array[index_extra_percent_magic_physical_crit_rate] += 12  # 物理、魔法暴击率+12%
-        bonus_array[index_extra_percent_addtional_damage] += 12  # 攻击时，附加12%的伤害
-        bonus_array[index_extra_percent_strength_and_intelligence] += 3  # 增加3%的力量、智力
-        bonus_array[index_strength_and_intelligence] += 0.03 * 35 * 20 / 30  # 攻击时，3%概率增加35点力量，持续20s，冷却30s
-        bonus_array[
-            index_extra_percent_magic_physical_crit_rate] += 0.05 * 5 * 20 / 30  # 释放技能时，5%概率增加5%物理、魔法暴击率，持续20s，冷却30s
-    elif style == '伟大的意志':
-        bonus_array[index_physical_magical_independent_attack_power] += 65  # 三攻+65
-        bonus_array[index_strength_and_intelligence] += 90  # 四维+90
-        bonus_array[index_extra_percent_attack_speed] += 4  # 攻击速度+4%
-        bonus_array[index_extra_all_element_strength] += 20  # 所有属性强化+20
-        bonus_array[index_extra_percent_magic_physical_crit_rate] += 15  # 物理、魔法暴击率+15%
-        bonus_array[index_extra_percent_strength_and_intelligence] += 4  # 增加4%的力量、智力
-        bonus_array[index_extra_percent_crit_damage] += 18  # 暴击时，额外增加18%的伤害增加量
-        bonus_array[index_strength_and_intelligence] += 0.03 * 35 * 20 / 30  # 攻击时，3%概率增加35点力量，持续20s，冷却30s
-        bonus_array[
-            index_extra_percent_magic_physical_crit_rate] += 0.05 * 5 * 20 / 30  # 释放技能时，5%概率增加5%物理、魔法暴击率，持续20s，冷却30s
-    elif style == '超越极限者':
-        bonus_array[index_strength_and_intelligence] += 60  # 四维+60
-        bonus_array[index_extra_percent_attack_speed] += 3  # 攻击速度+3%
-        bonus_array[index_extra_all_element_strength] += 15  # 所有属性强化+15
-        bonus_array[index_extra_percent_magic_physical_crit_rate] += 12  # 物理、魔法暴击率+12%
-        bonus_array[index_extra_percent_crit_damage] += 15  # 暴击时，额外增加15%的伤害增加量
-        bonus_array[index_extra_all_element_strength] += 0.03 * 10 * 30 / 40  # 攻击时，3%概率增加10点属强，持续30s，冷却40s
-        bonus_array[index_extra_percent_attack_speed] += 0.03 * 3 * 30 / 40  # 攻击时，3%概率增加3%三速，持续30s，冷却40s
-    elif style == '秘境迷踪':
-        bonus_array[index_physical_magical_independent_attack_power] += 40  # 三攻+40
-        bonus_array[index_strength_and_intelligence] += 70  # 四维+70
-        bonus_array[index_extra_percent_attack_speed] += 3  # 攻击速度+3%
-        bonus_array[index_extra_all_element_strength] += 15  # 所有属性强化+15
-        bonus_array[index_extra_percent_magic_physical_crit_rate] += 12  # 物理、魔法暴击率+12%
-        bonus_array[index_extra_percent_addtional_damage] += 10  # 攻击时，附加10%的伤害
-        bonus_array[index_strength_and_intelligence] += 0.03 * 35 * 20 / 30  # 攻击时，3%概率增加35点力量，持续20s，冷却30s
-        bonus_array[
-            index_extra_percent_magic_physical_crit_rate] += 0.05 * 5 * 20 / 30  # 释放技能时，5%概率增加5%物理、魔法暴击率，持续20s，冷却30s
-    elif style == '神选之英杰':
-        bonus_array[index_physical_magical_independent_attack_power] += 45  # 三攻+45
-        bonus_array[index_strength_and_intelligence] += 75  # 四维+75
-        bonus_array[index_extra_percent_attack_speed] += 4  # 攻击速度+4%
-        bonus_array[index_extra_all_element_strength] += 20  # 所有属性强化+20
-        bonus_array[index_extra_percent_magic_physical_crit_rate] += 15  # 物理、魔法暴击率+15%
-        bonus_array[index_extra_percent_crit_damage] += 18  # 暴击时，额外增加18%的伤害增加量
-        bonus_array[index_strength_and_intelligence] += 0.03 * 35 * 20 / 30  # 攻击时，3%概率增加35点力量，持续20s，冷却30s
-        bonus_array[
-            index_extra_percent_magic_physical_crit_rate] += 0.05 * 6 * 20 / 30  # 释放技能时，5%概率增加6%物理、魔法暴击率，持续20s，冷却30s
-    elif style == '神之试炼的奖赏':
-        bonus_array[index_strength_and_intelligence] += 55  # 四维+55
-        bonus_array[index_extra_percent_attack_speed] += 3  # 攻击速度+3%
-        bonus_array[index_extra_all_element_strength] += 15  # 所有属性强化+15
-        bonus_array[index_extra_percent_magic_physical_crit_rate] += 10  # 物理、魔法暴击率+10%
-        bonus_array[index_extra_percent_crit_damage] += 15  # 暴击时，额外增加15%的伤害增加量
-        bonus_array[index_extra_all_element_strength] += 0.03 * 10 * 30 / 40  # 攻击时，3%概率增加10点属强，持续30s，冷却40s
-        bonus_array[index_extra_percent_attack_speed] += 0.03 * 3 * 30 / 40  # 攻击时，3%概率增加3%三速，持续30s，冷却40s
-    elif style == '兽人守护神':
-        bonus_array[index_physical_magical_independent_attack_power] += 30  # 三攻+30
-        bonus_array[index_strength_and_intelligence] += 70  # 四维+70
-        bonus_array[index_extra_percent_attack_speed] += 3  # 攻击速度+3%
-        bonus_array[index_extra_all_element_strength] += 15  # 所有属性强化+15
-        bonus_array[index_extra_percent_magic_physical_crit_rate] += 12  # 物理、魔法暴击率+12%
-        bonus_array[index_extra_percent_addtional_damage] += 10  # 攻击时，附加10%的伤害
-        bonus_array[index_strength_and_intelligence] += 0.03 * 35 * 20 / 30  # 攻击时，3%概率增加35点力量，持续20s，冷却30s
-        bonus_array[
-            index_extra_percent_magic_physical_crit_rate] += 0.05 * 5 * 20 / 30  # 释放技能时，5%概率增加5%物理、魔法暴击率，持续20s，冷却30s
-    elif style == '天选之人':
-        bonus_array[index_physical_magical_independent_attack_power] += 35  # 三攻+35
-        bonus_array[index_strength_and_intelligence] += 75  # 四维+75
-        bonus_array[index_extra_percent_attack_speed] += 4  # 攻击速度+4%
-        bonus_array[index_extra_all_element_strength] += 20  # 所有属性强化+20
-        bonus_array[index_extra_percent_magic_physical_crit_rate] += 15  # 物理、魔法暴击率+15%
-        bonus_array[index_extra_percent_final_damage] += 12  # 最终伤害增加12%
-        bonus_array[index_strength_and_intelligence] += 0.03 * 35 * 20 / 30  # 攻击时，3%概率增加35点力量，持续20s，冷却30s
-        bonus_array[
-            index_extra_percent_magic_physical_crit_rate] += 0.05 * 6 * 20 / 30  # 释放技能时，5%概率增加6%物理、魔法暴击率，持续20s，冷却30s
-    elif style == '海洋霸主':
-        bonus_array[index_strength_and_intelligence] += 55  # 四维+55
-        bonus_array[index_extra_percent_attack_speed] += 3  # 攻击速度+3%
-        bonus_array[index_extra_all_element_strength] += 15  # 所有属性强化+15
-        bonus_array[index_extra_percent_magic_physical_crit_rate] += 10  # 物理、魔法暴击率+10%
-        bonus_array[index_extra_percent_crit_damage] += 10  # 暴击时，额外增加10%的伤害增加量
-        bonus_array[index_extra_all_element_strength] += 0.03 * 10 * 30 / 40  # 攻击时，3%概率增加10点属强，持续30s，冷却40s
-        bonus_array[index_extra_percent_attack_speed] += 0.03 * 3 * 30 / 40  # 攻击时，3%概率增加3%三速，持续30s，冷却40s
-    elif style == '龙之挑战':
-        bonus_array[index_physical_magical_independent_attack_power] += 30  # 三攻+30
-        bonus_array[index_strength_and_intelligence] += 60  # 四维+60
-        bonus_array[index_extra_percent_attack_speed] += 3  # 攻击速度+3%
-        bonus_array[index_extra_all_element_strength] += 15  # 所有属性强化+15
-        bonus_array[index_extra_percent_magic_physical_crit_rate] += 10  # 物理、魔法暴击率+10%
-        bonus_array[index_extra_percent_addtional_damage] += 10  # 攻击时，附加10%的伤害
-        bonus_array[index_strength_and_intelligence] += 0.03 * 35 * 20 / 30  # 攻击时，3%概率增加35点力量，持续20s，冷却30s
-        bonus_array[
-            index_extra_percent_magic_physical_crit_rate] += 0.05 * 5 * 20 / 30  # 释放技能时，5%概率增加5%物理、魔法暴击率，持续20s，冷却30s
-    elif style == '龙之威仪':
-        bonus_array[index_physical_magical_independent_attack_power] += 35  # 三攻+35
-        bonus_array[index_strength_and_intelligence] += 65  # 四维+65
-        bonus_array[index_extra_percent_attack_speed] += 3  # 攻击速度+3%
-        bonus_array[index_extra_all_element_strength] += 15  # 所有属性强化+15
-        bonus_array[index_extra_percent_magic_physical_crit_rate] += 10  # 物理、魔法暴击率+10%
-        bonus_array[index_extra_percent_addtional_damage] += 12  # 攻击时，附加12%的伤害
-        bonus_array[index_strength_and_intelligence] += 0.03 * 35 * 20 / 30  # 攻击时，3%概率增加35点力量，持续20s，冷却30s
-        bonus_array[
-            index_extra_percent_magic_physical_crit_rate] += 0.05 * 6 * 20 / 30  # 释放技能时，5%概率增加6%物理、魔法暴击率，持续20s，冷却30s
-    elif style == '最强战神':
-        bonus_array[index_physical_magical_independent_attack_power] += 35  # 三攻+35
-        bonus_array[index_strength_and_intelligence] += 75  # 四维+75
-        bonus_array[index_extra_percent_attack_speed] += 4  # 攻击速度+4%
-        bonus_array[index_extra_all_element_strength] += 20  # 所有属性强化+20
-        bonus_array[index_extra_percent_magic_physical_crit_rate] += 15  # 物理、魔法暴击率+15%
-        bonus_array[index_extra_percent_final_damage] += 12  # 最终伤害增加12%
-        bonus_array[index_strength_and_intelligence] += 0.03 * 35 * 20 / 30  # 攻击时，3%概率增加35点力量，持续20s，冷却30s
-        bonus_array[
-            index_extra_percent_magic_physical_crit_rate] += 0.05 * 6 * 20 / 30  # 释放技能时，5%概率增加6%物理、魔法暴击率，持续20s，冷却30s
-    elif style == '与贝奇邂逅':
-        bonus_array[index_strength_and_intelligence] += 90  # 四维+90
-        bonus_array[index_extra_percent_attack_speed] += 3  # 攻击速度+3%
-        bonus_array[index_extra_all_element_strength] += 12  # 所有属性强化+12
-        bonus_array[index_extra_percent_magic_physical_crit_rate] += 8  # 物理、魔法暴击率+8%
-        bonus_array[index_extra_percent_addtional_damage] += 10  # 攻击时，附加10%的伤害
-        bonus_array[index_strength_and_intelligence] += 0.05 * 25 * 30 / 30  # 攻击时，5%概率增加25点力量，持续30s，冷却30s
-        bonus_array[index_extra_percent_attack_speed] += 0.05 * 2 * 30 / 30  # 攻击时，5%概率增加2%三速，持续30s，冷却30s
 
-    # 获取宠物的加成
-    creature = creature_select.get()
-    if creature in ['弓手维多利亚', '神官格洛丽亚']:
-        # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
-        bonus_array[index_extra_percent_skill_attack_power] = multiply_entry(bonus_array[index_extra_percent_skill_attack_power], 10)  # 宠物技能+10%攻击力，持续10s，冷却30s
-        bonus_array[index_extra_percent_attack_speed] += 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
-        bonus_array[index_strength_and_intelligence] += 140  # 四维+140
-        bonus_array[index_extra_percent_attack_speed] += 5  # 三速+5%
-        bonus_array[index_extra_all_element_strength] += 24  # 所有属强+24
-        bonus_array[index_extra_percent_magic_physical_crit_rate] += 10  # 暴击率+10%
-        bonus_array[index_extra_passive_transfer_skill] += 1  # 转职被动+1， 1-50lv+1
-        bonus_array[index_extra_passive_first_awaken_skill] += 1  # 一觉被动+1， 1-50lv+1
-        bonus_array[index_extra_active_skill_lv_1_45] += 1  # 1-45级主动+1， 1-50lv+1
-        bonus_array[index_extra_active_skill_lv_50] += 1  # 50级主动+1， 1-50lv+1
-        bonus_array[index_extra_percent_addtional_damage] += 12  # 攻击时，附加12%的伤害
-        bonus_array[index_extra_percent_strength_and_intelligence] += 10  # 力智+10%
-        bonus_array[index_cool_correction] += 1.75  # 技能冷却每减1%，冷却矫正系数增加0.35
-    elif creature in ['雷光之箭维多利亚', '暴风圣女格洛丽亚']:
-        # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
-        bonus_array[index_extra_percent_skill_attack_power] = multiply_entry(bonus_array[index_extra_percent_skill_attack_power], 10)  # 宠物技能+10%攻击力，持续10s，冷却30s
-        bonus_array[index_extra_percent_attack_speed] += 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
-        bonus_array[index_strength_and_intelligence] += 150  # 四维+150
-        bonus_array[index_extra_percent_attack_speed] += 5  # 三速+5%
-        bonus_array[index_extra_all_element_strength] += 24  # 所有属强+24
-        bonus_array[index_extra_percent_magic_physical_crit_rate] += 10  # 暴击率+10%
-        bonus_array[index_extra_passive_transfer_skill] += 1  # 转职被动+1， 1-50lv+1
-        bonus_array[index_extra_passive_first_awaken_skill] += 1  # 一觉被动+1， 1-50lv+1
-        bonus_array[index_extra_active_skill_lv_1_45] += 1  # 1-45级主动+1， 1-50lv+1
-        bonus_array[index_extra_active_skill_lv_50] += 1  # 50级主动+1， 1-50lv+1
-        bonus_array[index_extra_percent_addtional_damage] += 15  # 攻击时，附加15%的伤害
-        bonus_array[index_extra_percent_final_damage] += 5  # 最终伤害+5%
-        bonus_array[index_extra_percent_strength_and_intelligence] += 12  # 力智+12%
-        bonus_array[index_cool_correction] += 1.75  # 技能冷却每减1%，冷却矫正系数增加0.35
-    elif creature in ['骑士莱恩', '吟游诗人薇泽达']:
-        # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
-        bonus_array[index_extra_percent_skill_attack_power] = multiply_entry(bonus_array[index_extra_percent_skill_attack_power], 10)  # 宠物技能+10%攻击力，持续10s，冷却30s
-        bonus_array[index_extra_percent_attack_speed] += 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
-        bonus_array[index_strength_and_intelligence] += 120  # 四维+120
-        bonus_array[index_extra_percent_attack_speed] += 5  # 三速+5%
-        bonus_array[index_extra_all_element_strength] += 24  # 所有属强+24
-        bonus_array[index_extra_percent_magic_physical_crit_rate] += 10  # 暴击率+10%
-        bonus_array[index_extra_passive_transfer_skill] += 1  # 转职被动+1， 1-50lv+1
-        bonus_array[index_extra_passive_first_awaken_skill] += 1  # 一觉被动+1， 1-50lv+1
-        bonus_array[index_extra_active_skill_lv_1_45] += 1  # 1-45级主动+1， 1-50lv+1
-        bonus_array[index_extra_active_skill_lv_50] += 1  # 50级主动+1， 1-50lv+1
-        bonus_array[index_extra_percent_addtional_damage] += 12  # 攻击时，附加12%的伤害
-        bonus_array[index_cool_correction] += 1.75  # 技能冷却每减1%，冷却矫正系数增加0.35
-    elif creature in ['古国英豪莱恩', '太初之音薇泽达']:
-        # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
-        bonus_array[index_extra_percent_skill_attack_power] = multiply_entry(bonus_array[index_extra_percent_skill_attack_power], 10)  # 宠物技能+10%攻击力，持续10s，冷却30s
-        bonus_array[index_extra_percent_attack_speed] += 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
-        bonus_array[index_strength_and_intelligence] += 120  # 四维+120
-        bonus_array[index_extra_percent_attack_speed] += 5  # 三速+5%
-        bonus_array[index_extra_all_element_strength] += 24  # 所有属强+24
-        bonus_array[index_extra_percent_magic_physical_crit_rate] += 10  # 暴击率+10%
-        bonus_array[index_extra_passive_transfer_skill] += 1  # 转职被动+1， 1-50lv+1
-        bonus_array[index_extra_passive_first_awaken_skill] += 1  # 一觉被动+1， 1-50lv+1
-        bonus_array[index_extra_active_skill_lv_1_45] += 1  # 1-45级主动+1， 1-50lv+1
-        bonus_array[index_extra_active_skill_lv_50] += 1  # 50级主动+1， 1-50lv+1
-        bonus_array[index_extra_percent_addtional_damage] += 15  # 攻击时，附加15%的伤害
-        bonus_array[index_extra_percent_final_damage] += 5  # 最终伤害+5%
-        bonus_array[index_cool_correction] += 1.75  # 技能冷却每减1%，冷却矫正系数增加0.35
-    elif creature in ['神迹·古国英豪莱恩', '神迹·太初之音薇泽达']:
-        # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
-        bonus_array[index_extra_percent_skill_attack_power] = multiply_entry(bonus_array[index_extra_percent_skill_attack_power], 10)  # 宠物技能+10%攻击力，持续10s，冷却30s
-        bonus_array[index_extra_percent_attack_speed] += 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
-        bonus_array[index_strength_and_intelligence] += 120  # 四维+120
-        bonus_array[index_extra_percent_attack_speed] += 5  # 三速+5%
-        bonus_array[index_extra_all_element_strength] += 24  # 所有属强+24
-        bonus_array[index_extra_percent_magic_physical_crit_rate] += 10  # 暴击率+10%
-        bonus_array[index_extra_passive_transfer_skill] += 1  # 转职被动+1， 1-50lv+1
-        bonus_array[index_extra_passive_first_awaken_skill] += 1  # 一觉被动+1， 1-50lv+1
-        bonus_array[index_extra_active_skill_lv_1_45] += 1  # 1-45级主动+1， 1-50lv+1
-        bonus_array[index_extra_active_skill_lv_50] += 1  # 50级主动+1， 1-50lv+1
-        bonus_array[index_extra_percent_addtional_damage] += 15  # 攻击时，附加15%的伤害
-        bonus_array[index_extra_percent_final_damage] += 5  # 最终伤害+5%
-        bonus_array[index_extra_percent_strength_and_intelligence] += 8  # 力智+8%
-        bonus_array[index_cool_correction] += 1.75  # 技能冷却每减1%，冷却矫正系数增加0.35
-    elif creature in ['雪兔蒂娅', '火狐艾芙']:
-        # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
-        bonus_array[index_extra_percent_skill_attack_power] = multiply_entry(bonus_array[index_extra_percent_skill_attack_power], 10)  # 宠物技能+10%攻击力，持续10s，冷却30s
-        bonus_array[index_extra_percent_attack_speed] += 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
-        bonus_array[index_strength_and_intelligence] += 100  # 四维+100
-        bonus_array[index_extra_percent_attack_speed] += 5  # 三速+5%
-        bonus_array[index_extra_all_element_strength] += 20  # 所有属强+20
-        bonus_array[index_extra_percent_magic_physical_crit_rate] += 10  # 暴击率+10%
-        bonus_array[index_extra_passive_transfer_skill] += 1  # 转职被动+1， 1-50lv+1
-        bonus_array[index_extra_passive_first_awaken_skill] += 1  # 一觉被动+1， 1-50lv+1
-        bonus_array[index_extra_active_skill_lv_1_45] += 1  # 1-45级主动+1， 1-50lv+1
-        bonus_array[index_extra_active_skill_lv_50] += 1  # 50级主动+1， 1-50lv+1
-        bonus_array[index_extra_percent_addtional_damage] += 10  # 攻击时，附加10%的伤害
-        bonus_array[index_cool_correction] += 1.75  # 技能冷却每减1%，冷却矫正系数增加0.35
-    elif creature in ['冰雪魔法师蒂娅', '炽焰咒术师艾芙']:
-        # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
-        bonus_array[index_extra_percent_skill_attack_power] = multiply_entry(bonus_array[index_extra_percent_skill_attack_power], 10)  # 宠物技能+10%攻击力，持续10s，冷却30s
-        bonus_array[index_extra_percent_attack_speed] += 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
-        bonus_array[index_strength_and_intelligence] += 110  # 四维+110
-        bonus_array[index_extra_percent_attack_speed] += 5  # 三速+5%
-        bonus_array[index_extra_all_element_strength] += 22  # 所有属强+22
-        bonus_array[index_extra_percent_magic_physical_crit_rate] += 10  # 暴击率+10%
-        bonus_array[index_extra_passive_transfer_skill] += 1  # 转职被动+1， 1-50lv+1
-        bonus_array[index_extra_passive_first_awaken_skill] += 1  # 一觉被动+1， 1-50lv+1
-        bonus_array[index_extra_active_skill_lv_1_45] += 1  # 1-45级主动+1， 1-50lv+1
-        bonus_array[index_extra_active_skill_lv_50] += 1  # 50级主动+1， 1-50lv+1
-        bonus_array[index_extra_percent_addtional_damage] += 12  # 攻击时，附加12%的伤害
-        bonus_array[index_cool_correction] += 1.75  # 技能冷却每减1%，冷却矫正系数增加0.35
-    elif creature in ['艾莉丝', '克里斯']:
-        # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
-        bonus_array[index_extra_percent_skill_attack_power] = multiply_entry(bonus_array[index_extra_percent_skill_attack_power], 10)  # 宠物技能+10%攻击力，持续10s，冷却30s
-        bonus_array[index_physical_magical_independent_attack_power] += 35  # 三攻+35
-        bonus_array[index_extra_percent_attack_speed] += 4  # 三速+4%
-        bonus_array[index_extra_all_element_strength] += 15  # 所有属强+15
-        bonus_array[index_extra_percent_magic_physical_crit_rate] += 10  # 暴击率+10%
-        bonus_array[index_extra_passive_transfer_skill] += 1  # 转职被动+1， 1-50lv+1
-        bonus_array[index_extra_passive_first_awaken_skill] += 1  # 一觉被动+1， 1-50lv+1
-        bonus_array[index_extra_active_skill_lv_1_45] += 1  # 1-45级主动+1， 1-50lv+1
-        bonus_array[index_extra_active_skill_lv_50] += 1  # 50级主动+1， 1-50lv+1
-    elif creature in ['牛小哞', '羊小咩', '弓小弦']:
-        bonus_array[index_strength_and_intelligence] += 45  # 四维+45
-        bonus_array[index_extra_percent_attack_speed] += 3  # 三速+3%
-        bonus_array[index_extra_all_element_strength] += 15  # 所有属强+15
-        bonus_array[index_extra_percent_magic_physical_crit_rate] += 10  # 暴击率+10%
-        bonus_array[index_extra_passive_transfer_skill] += 1  # 转职被动+1， 1-50lv+1
-        bonus_array[index_extra_passive_first_awaken_skill] += 1  # 一觉被动+1， 1-50lv+1
-        bonus_array[index_extra_active_skill_lv_1_45] += 1  # 1-45级主动+1， 1-50lv+1
-        bonus_array[index_extra_active_skill_lv_50] += 1  # 50级主动+1， 1-50lv+1
-    elif creature in ['甜小鱼']:
-        bonus_array[index_strength_and_intelligence] += 100  # 四维+100
-        bonus_array[index_extra_percent_attack_speed] += 5  # 三速+5%
-        bonus_array[index_extra_all_element_strength] += 20  # 所有属强+20
-        bonus_array[index_extra_percent_magic_physical_crit_rate] += 10  # 暴击率+10%
-        bonus_array[index_extra_passive_transfer_skill] += 1  # 转职被动+1， 1-50lv+1
-        bonus_array[index_extra_passive_first_awaken_skill] += 1  # 一觉被动+1， 1-50lv+1
-        bonus_array[index_extra_active_skill_lv_1_45] += 1  # 1-45级主动+1， 1-50lv+1
-        bonus_array[index_extra_active_skill_lv_50] += 1  # 50级主动+1， 1-50lv+1
+    guofu_teses = munch.Munch.fromDict([
+        {"name": "称号", "setting_name": "styles", "selected": style_select.get()},
+        {"name": "宠物", "setting_name": "creatures", "selected": creature_select.get()},
+    ])
+
+    for tese in guofu_teses:
+        setting = get_setting(tese.setting_name, tese.selected)
+        if setting is not None and setting.entries is not None:
+            for entry in setting.entries:
+                for name, value in entry.items():
+                    entry_index = entry_name_to_index[name]
+                    entry_value = eval(str(value))
+                    if entry_index == index_extra_percent_skill_attack_power:
+                        # 技攻需要乘算
+                        bonus_array[entry_index] = multiply_entry(bonus_array[entry_index], entry_value)
+                    else:
+                        # 其余加算
+                        bonus_array[entry_index] += entry_value
 
     # todo：加上各种技能宝珠、光环、皮肤、徽章等国服特色的支持
 
@@ -1119,6 +923,8 @@ def calc():
     if g_config.export_result_as_excel.enable:
         save_top_n = max(save_top_n, g_config.export_result_as_excel.export_rank_count)
 
+    shuchu_bonus_attributes = get_shuchu_bonus_attributes()
+
     is_shuchu_job = job_name not in ["(奶系)神思者", "(奶系)炽天使", "(奶系)冥月女神"]
     if is_shuchu_job:
 
@@ -1164,7 +970,7 @@ def calc():
                 calc_wep = (wep_num,) + tuple(calc_now)
                 damage = 0
                 # 获取输出职业的国服特色数值作为初始值
-                base_array = get_shuchu_bonus_attributes()
+                base_array = shuchu_bonus_attributes.copy()
                 # 加上职业的基础属强
                 base_array[index_extra_all_element_strength] += ele_in
 
@@ -2124,7 +1930,6 @@ def show_name():
         equips = g_rank_equips[g_current_rank]
     else:
         equips = g_rank_equips[g_current_buff_type][g_current_rank]
-
 
     # 确保按照正常排列的顺序展示
     ordered_equip_indexes = list(equips[1:])
@@ -3652,7 +3457,7 @@ def check_update_on_start():
                 webbrowser.open('https://pan.baidu.com/s/1-I8pMK6_yPH5qU4SWNMVog')
                 tkinter.messagebox.showinfo("百度网盘验证码", "百度网盘提取码为： 238m")
         else:
-            print("当前版本{}已是最新版本，无需更新".format(now_version) )
+            print("当前版本{}已是最新版本，无需更新".format(now_version))
     except Exception as err:
         print("更新版本失败, 错误为{}".format(err))
 
@@ -3689,11 +3494,6 @@ def reset():
     transfer_equip_combopicker.set("")
     can_transfer_nums_select.set(txt_can_transfer_nums[0])
 
-
-###########################################################
-#                        读取自定义配置                    #
-###########################################################
-g_config = munch.Munch.fromDict(toml.load('config.toml'))
 
 ###########################################################
 #                         逻辑初始化                       #

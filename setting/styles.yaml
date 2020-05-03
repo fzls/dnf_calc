@@ -1,0 +1,181 @@
+# 称号配置表
+
+# 配置表格式
+# 首层为数组
+# 第二层包括两个字段
+# 1. names: 表示这个国服特色对应的名字列表（由于有些宠物、称号名字不同，但属性完全一致，所以这样处理比较方便）
+# 2. entries: 各个词条的列表，具体词条名称和含义对应关系可以参照下面的说明及现有例子
+
+# 词条名称及含义
+# strength_and_intelligence # 0-C-stat-力智
+# physical_magical_independent_attack_power # 1-D-att-物理/魔法/独立攻击力
+# extra_percent_attack_damage # 2-E-damper-攻击时额外增加X%的伤害增加量
+# extra_percent_crit_damage # 3-F-criper-暴击时，额外增加X%的伤害增加量
+# extra_percent_addtional_damage # 4-G-bonper-攻击时，附加X%的伤害，也就是白字
+# extra_percent_elemental_damage # 5-H-elebon-攻击时，附加X%的属性伤害
+# extra_percent_final_damage # 6-I-allper-最终伤害+X%
+# extra_percent_physical_magical_independent_attack_power # 7-J-attper-物理/魔法/独立攻击力 +X%
+# extra_percent_strength_and_intelligence # 8-K-staper-力智+X%
+# extra_all_element_strength # 9-L-ele-所有属性强化+X
+# extra_percent_continued_damage  # 10-M-sloper-发生持续伤害5秒，伤害量为对敌人造成伤害的X%
+# extra_percent_skill_attack_power  # 11-N-skiper-技能攻击力 +X%
+# extra_percent_special_effect  # 12-O-special-特殊词条补正，如歧路和不息的装备，详见自定义中这俩装备相关配置
+# extra_percent_attack_speed  # 13-P-speed-攻击速度 +X%
+# extra_percent_magic_physical_crit_rate  # 14-Q-critical-魔法/物理暴击率 +X%
+# extra_active_skill_effect  # 15-R-active-主动技能增加等级所带来的的影响（目前C的伤害计算没有计入该值，仅奶系职业用到）
+# extra_passive_transfer_skill  # 16-S-pas1-增加转职被动的等级
+# extra_passive_first_awaken_skill  # 17-T-pas2-增加一绝被动的等级
+# extra_passive_second_awaken_skill  # 18-U-pas3-增加二觉被动的等级
+# extra_passive_third_awaken_skill  # 19-V-pas4-增加三觉被动的等级
+# cool_correction  # 20-Y-cool_skill-冷却矫正系数，每冷却1%，记0.35这个值
+# extra_active_second_awaken_skill  # 21-AK-active2-二觉主动技能
+# extra_active_skill_lv_1_45  # 22-AO-pas0-1_45主动技能
+# extra_active_skill_lv_50  # 23-AP-pas1-50主动技能
+# extra_active_skill_lv_60_80  # 24-AQ-pas2-60_80主动技能
+# extra_active_skill_lv_85  # 25-AR-pas3-85主动技能
+# extra_active_skill_lv_95  # 26-AS-pas4-95主动技能
+# extra_active_skill_lv_100  # 27-AT-pas5-100主动技能
+- names:
+    - "使徒降临"
+  entries:
+    - physical_magical_independent_attack_power: 60  # 三攻+60
+    - strength_and_intelligence: 80  # 四维+80
+    - extra_percent_attack_speed: 3  # 攻击速度+3%
+    - extra_all_element_strength: 15  # 所有属性强化+15
+    - extra_percent_magic_physical_crit_rate: 12  # 物理、魔法暴击率+12%
+    - extra_percent_addtional_damage: 12  # 攻击时，附加12%的伤害
+    - extra_percent_strength_and_intelligence: 3  # 增加3%的力量、智力
+    - strength_and_intelligence: 0.03 * 35 * 20 / 30  # 攻击时，3%概率增加35点力量，持续20s，冷却30s
+    - extra_percent_magic_physical_crit_rate: 0.05 * 5 * 20 / 30  # 释放技能时，5%概率增加5%物理、魔法暴击率，持续20s，冷却30s
+- names:
+    - "伟大的意志"
+  entries:
+    - physical_magical_independent_attack_power: 65  # 三攻+65
+    - strength_and_intelligence: 90  # 四维+90
+    - extra_percent_attack_speed: 4  # 攻击速度+4%
+    - extra_all_element_strength: 20  # 所有属性强化+20
+    - extra_percent_magic_physical_crit_rate: 15  # 物理、魔法暴击率+15%
+    - extra_percent_strength_and_intelligence: 4  # 增加4%的力量、智力
+    - extra_percent_crit_damage: 18  # 暴击时，额外增加18%的伤害增加量
+    - strength_and_intelligence: 0.03 * 35 * 20 / 30  # 攻击时，3%概率增加35点力量，持续20s，冷却30s
+    - extra_percent_magic_physical_crit_rate: 0.05 * 5 * 20 / 30  # 释放技能时，5%概率增加5%物理、魔法暴击率，持续20s，冷却30s
+- names:
+    - "超越极限者"
+  entries:
+    - strength_and_intelligence: 60  # 四维+60
+    - extra_percent_attack_speed: 3  # 攻击速度+3%
+    - extra_all_element_strength: 15  # 所有属性强化+15
+    - extra_percent_magic_physical_crit_rate: 12  # 物理、魔法暴击率+12%
+    - extra_percent_crit_damage: 15  # 暴击时，额外增加15%的伤害增加量
+    - extra_all_element_strength: 0.03 * 10 * 30 / 40  # 攻击时，3%概率增加10点属强，持续30s，冷却40s
+    - extra_percent_attack_speed: 0.03 * 3 * 30 / 40  # 攻击时，3%概率增加3%三速，持续30s，冷却40s
+- names:
+    - "秘境迷踪"
+  entries:
+    - physical_magical_independent_attack_power: 40  # 三攻+40
+    - strength_and_intelligence: 70  # 四维+70
+    - extra_percent_attack_speed: 3  # 攻击速度+3%
+    - extra_all_element_strength: 15  # 所有属性强化+15
+    - extra_percent_magic_physical_crit_rate: 12  # 物理、魔法暴击率+12%
+    - extra_percent_addtional_damage: 10  # 攻击时，附加10%的伤害
+    - strength_and_intelligence: 0.03 * 35 * 20 / 30  # 攻击时，3%概率增加35点力量，持续20s，冷却30s
+    - extra_percent_magic_physical_crit_rate: 0.05 * 5 * 20 / 30  # 释放技能时，5%概率增加5%物理、魔法暴击率，持续20s，冷却30s
+- names:
+    - "神选之英杰"
+  entries:
+    - physical_magical_independent_attack_power: 45  # 三攻+45
+    - strength_and_intelligence: 75  # 四维+75
+    - extra_percent_attack_speed: 4  # 攻击速度+4%
+    - extra_all_element_strength: 20  # 所有属性强化+20
+    - extra_percent_magic_physical_crit_rate: 15  # 物理、魔法暴击率+15%
+    - extra_percent_crit_damage: 18  # 暴击时，额外增加18%的伤害增加量
+    - strength_and_intelligence: 0.03 * 35 * 20 / 30  # 攻击时，3%概率增加35点力量，持续20s，冷却30s
+    - extra_percent_magic_physical_crit_rate: 0.05 * 6 * 20 / 30  # 释放技能时，5%概率增加6%物理、魔法暴击率，持续20s，冷却30s
+- names:
+    - "神之试炼的奖赏"
+  entries:
+    - strength_and_intelligence: 55  # 四维+55
+    - extra_percent_attack_speed: 3  # 攻击速度+3%
+    - extra_all_element_strength: 15  # 所有属性强化+15
+    - extra_percent_magic_physical_crit_rate: 10  # 物理、魔法暴击率+10%
+    - extra_percent_crit_damage: 15  # 暴击时，额外增加15%的伤害增加量
+    - extra_all_element_strength: 0.03 * 10 * 30 / 40  # 攻击时，3%概率增加10点属强，持续30s，冷却40s
+    - extra_percent_attack_speed: 0.03 * 3 * 30 / 40  # 攻击时，3%概率增加3%三速，持续30s，冷却40s
+- names:
+    - "兽人守护神"
+  entries:
+    - physical_magical_independent_attack_power: 30  # 三攻+30
+    - strength_and_intelligence: 70  # 四维+70
+    - extra_percent_attack_speed: 3  # 攻击速度+3%
+    - extra_all_element_strength: 15  # 所有属性强化+15
+    - extra_percent_magic_physical_crit_rate: 12  # 物理、魔法暴击率+12%
+    - extra_percent_addtional_damage: 10  # 攻击时，附加10%的伤害
+    - strength_and_intelligence: 0.03 * 35 * 20 / 30  # 攻击时，3%概率增加35点力量，持续20s，冷却30s
+    - extra_percent_magic_physical_crit_rate: 0.05 * 5 * 20 / 30  # 释放技能时，5%概率增加5%物理、魔法暴击率，持续20s，冷却30s
+- names:
+    - "天选之人"
+  entries:
+    - physical_magical_independent_attack_power: 35  # 三攻+35
+    - strength_and_intelligence: 75  # 四维+75
+    - extra_percent_attack_speed: 4  # 攻击速度+4%
+    - extra_all_element_strength: 20  # 所有属性强化+20
+    - extra_percent_magic_physical_crit_rate: 15  # 物理、魔法暴击率+15%
+    - extra_percent_final_damage: 12  # 最终伤害增加12%
+    - strength_and_intelligence: 0.03 * 35 * 20 / 30  # 攻击时，3%概率增加35点力量，持续20s，冷却30s
+    - extra_percent_magic_physical_crit_rate: 0.05 * 6 * 20 / 30  # 释放技能时，5%概率增加6%物理、魔法暴击率，持续20s，冷却30s
+- names:
+    - "海洋霸主"
+  entries:
+    - strength_and_intelligence: 55  # 四维+55
+    - extra_percent_attack_speed: 3  # 攻击速度+3%
+    - extra_all_element_strength: 15  # 所有属性强化+15
+    - extra_percent_magic_physical_crit_rate: 10  # 物理、魔法暴击率+10%
+    - extra_percent_crit_damage: 10  # 暴击时，额外增加10%的伤害增加量
+    - extra_all_element_strength: 0.03 * 10 * 30 / 40  # 攻击时，3%概率增加10点属强，持续30s，冷却40s
+    - extra_percent_attack_speed: 0.03 * 3 * 30 / 40  # 攻击时，3%概率增加3%三速，持续30s，冷却40s
+- names:
+    - "龙之挑战"
+  entries:
+    - physical_magical_independent_attack_power: 30  # 三攻+30
+    - strength_and_intelligence: 60  # 四维+60
+    - extra_percent_attack_speed: 3  # 攻击速度+3%
+    - extra_all_element_strength: 15  # 所有属性强化+15
+    - extra_percent_magic_physical_crit_rate: 10  # 物理、魔法暴击率+10%
+    - extra_percent_addtional_damage: 10  # 攻击时，附加10%的伤害
+    - strength_and_intelligence: 0.03 * 35 * 20 / 30  # 攻击时，3%概率增加35点力量，持续20s，冷却30s
+    - extra_percent_magic_physical_crit_rate: 0.05 * 5 * 20 / 30  # 释放技能时，5%概率增加5%物理、魔法暴击率，持续20s，冷却30s
+- names:
+    - "龙之威仪"
+  entries:
+    - physical_magical_independent_attack_power: 35  # 三攻+35
+    - strength_and_intelligence: 65  # 四维+65
+    - extra_percent_attack_speed: 3  # 攻击速度+3%
+    - extra_all_element_strength: 15  # 所有属性强化+15
+    - extra_percent_magic_physical_crit_rate: 10  # 物理、魔法暴击率+10%
+    - extra_percent_addtional_damage: 12  # 攻击时，附加12%的伤害
+    - strength_and_intelligence: 0.03 * 35 * 20 / 30  # 攻击时，3%概率增加35点力量，持续20s，冷却30s
+    - extra_percent_magic_physical_crit_rate: 0.05 * 6 * 20 / 30  # 释放技能时，5%概率增加6%物理、魔法暴击率，持续20s，冷却30s
+- names:
+    - "最强战神"
+  entries:
+    - physical_magical_independent_attack_power: 35  # 三攻+35
+    - strength_and_intelligence: 75  # 四维+75
+    - extra_percent_attack_speed: 4  # 攻击速度+4%
+    - extra_all_element_strength: 20  # 所有属性强化+20
+    - extra_percent_magic_physical_crit_rate: 15  # 物理、魔法暴击率+15%
+    - extra_percent_final_damage: 12  # 最终伤害增加12%
+    - strength_and_intelligence: 0.03 * 35 * 20 / 30  # 攻击时，3%概率增加35点力量，持续20s，冷却30s
+    - extra_percent_magic_physical_crit_rate: 0.05 * 6 * 20 / 30  # 释放技能时，5%概率增加6%物理、魔法暴击率，持续20s，冷却30s
+- names:
+    - "与贝奇邂逅"
+  entries:
+    - strength_and_intelligence: 90  # 四维+90
+    - extra_percent_attack_speed: 3  # 攻击速度+3%
+    - extra_all_element_strength: 12  # 所有属性强化+12
+    - extra_percent_magic_physical_crit_rate: 8  # 物理、魔法暴击率+8%
+    - extra_percent_addtional_damage: 10  # 攻击时，附加10%的伤害
+    - strength_and_intelligence: 0.05 * 25 * 30 / 30  # 攻击时，5%概率增加25点力量，持续30s，冷却30s
+    - extra_percent_attack_speed: 0.05 * 2 * 30 / 30  # 攻击时，5%概率增加2%三速，持续30s，冷却30s
+- names:
+    - "其他（直接比较）"
+  entries:
