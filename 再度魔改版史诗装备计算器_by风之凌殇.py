@@ -403,7 +403,7 @@ creatures = [
     '骑士莱恩', '吟游诗人薇泽达', '古国英豪莱恩', '太初之音薇泽达', '神迹·古国英豪莱恩', '神迹·太初之音薇泽达',  # 2019春节普通宠物和至尊宠物，以及2020年升级后的2019至尊年宠
     '雪兔蒂娅', '火狐艾芙', '冰雪魔法师蒂娅', '炽焰咒术师艾芙',  # 2018春节普通宠物和至尊宠物
     '艾莉丝', '克里斯',  # 2017春节普通宠物
-    '牛小哞', '羊小咩', # 心悦宠物
+    '牛小哞', '羊小咩',  # 心悦宠物
     '其他（直接比较）'
 ]
 
@@ -1568,10 +1568,10 @@ def extract_deal_rank_cols(ele_skill, rank, ranking_detail):
     not_owned_equips = ranking_detail[2][3]
 
     cols = []
-    cols.append(rank) # 排行
+    cols.append(rank)  # 排行
     cols.append(damage)  # 伤害倍率
     cols.append(jobup_select.get())  # 职业
-    cols.append(" | ".join(get_readable_names(weapon_index, equip_indexes))) # 搭配概览
+    cols.append(" | ".join(get_readable_names(weapon_index, equip_indexes)))  # 搭配概览
     cols.append(equip_index_to_realname[weapon_index])  # 武器
     # 上衣 裤子 头肩 腰带 鞋子 手镯 项链 戒指 辅助装备 魔法石 耳环
     cols.extend(get_slot_names(equip_indexes))
@@ -1584,7 +1584,7 @@ def extract_deal_rank_cols(ele_skill, rank, ranking_detail):
         cols.append(base_array[i])
     cols.append(req_cool.get())  # 冷却补正
     cols.append(ele_skill)  # 技能属强补正
-    cols.append(str(round(100 * (1.05 / (1.05 + int(ele_skill) * 0.0045) - 1), 1)) + "%") # 逆补正
+    cols.append(str(round(100 * (1.05 / (1.05 + int(ele_skill) * 0.0045) - 1), 1)) + "%")  # 逆补正
 
     if len(cols) != len(deal_col_names):
         raise Exception("col number not match")
@@ -1637,10 +1637,10 @@ def extract_buf_rank_cols(ele_skill, rank, ranking_detail):
     not_owned_equips = ranking_detail[2][3]
 
     cols = []
-    cols.append(rank) # 排行
+    cols.append(rank)  # 排行
     cols.append(score)  # 得分
     cols.append(jobup_select.get())  # 职业
-    cols.append(" | ".join(get_readable_names(weapon_index, equip_indexes))) # 搭配概览
+    cols.append(" | ".join(get_readable_names(weapon_index, equip_indexes)))  # 搭配概览
     cols.append(equip_index_to_realname[weapon_index])  # 武器
     # 上衣 裤子 头肩 腰带 鞋子 手镯 项链 戒指 辅助装备 魔法石 耳环
     cols.extend(get_slot_names(equip_indexes))
@@ -2077,13 +2077,18 @@ def change_readable_result_area(weapon, equips, is_create):
         canvas_res.itemconfig(res_txt_readable_result, text=content)
 
 
+# 计数器排序规则：次数多的在前面，同等次数下，套装序号小的放前面
+def sort_counter_key(counter_item):
+    return -counter_item[1], int(counter_item[0])
+
+
 def get_readable_names(weapon, equips):
     readable_names = []
     readable_names.append(equip_index_to_realname[weapon])
 
     # 智慧产物以外的套装信息
     set_list = ["1" + str(get_set_name(equips[x])) for x in range(0, 11) if len(equips[x]) < 8]
-    for set_index, count in collections.Counter(set_list).most_common():
+    for set_index, count in sorted(collections.Counter(set_list).most_common(), key=sort_counter_key):
         readable_names.append("{}-{}".format(equip_index_to_realname[set_index], count))
 
     # 智慧产物单独列出
@@ -2102,6 +2107,7 @@ def get_readable_names(weapon, equips):
         readable_names.append(equip_index_to_realname[wisdom_index])
 
     return readable_names
+
 
 # 展示当前搭配的各装备名称
 def show_name():
@@ -2729,6 +2735,7 @@ def show_result(rank_list, job_type, ele_skill):
     canvas_res.image = result_bg
     res_bt1.image = show_detail_img
     res_bt_show_name.image = show_name_img
+
 
 # 导出结果到excel
 def export_result(ele_skill, col_names, extract_rank_cols_func, rankings):
