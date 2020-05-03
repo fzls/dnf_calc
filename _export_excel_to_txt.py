@@ -21,7 +21,7 @@ def dump_excels(workbook_names, save_filename):
             lines.append('{}sheet: {}{}'.format('-' * 30, sheet_name, '-' * 30))
 
             for row_index, row in enumerate(load_excel[sheet_name].rows):
-                lines.append(','.join([str(cell.value) for cell in row]))
+                lines.append(','.join([str(cell.value).replace('\n', '$CRLF$') for cell in row]))
 
         load_excel.close()
 
