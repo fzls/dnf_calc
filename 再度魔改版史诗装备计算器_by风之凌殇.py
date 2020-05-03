@@ -548,6 +548,8 @@ def get_base_array_with_bonus_attributes(ele_in):
 
     # todo：加上各种技能宝珠、光环、皮肤、徽章等国服特色的支持
 
+    # re: 最终国服特色改为最终版时，移除下面的东西
+
     # from 韩械，原先他在Data.xlsx中所有武器的1-45和50级的被动技能中各增加了2级，其中1级为宠物的技能等级，另一极暂时不确定是哪里来的，可能是其他国服特色
     # 为了保持一致，根据他的建议，把data中所有武器的1-45和50级的主动技能减少两级，然后另外一个技能补正加在这个位置
     base_array_with_deal_bonus_attributes[index_extra_active_skill_lv_1_45] += 1  # 1-45级主动+1， 1-50lv+1
@@ -588,8 +590,24 @@ def get_base_array_with_buf_bonus_attributes(ele_in):
     base_array_with_buf_bonus_attributes[index_buf_job_passive_lv15] += base_job_passive_lv15  # 15级职业被动Lv+X
     base_array_with_buf_bonus_attributes[index_buf_naiba_protect_badge_lv25] += base_naiba_protect_badge_lv25  # 奶爸25级守护徽章等级+X
 
-    # re: 加上国服特色
-    base_array_with_deal_bonus_attributes = get_base_array_with_bonus_attributes(ele_in)
+    # # re: 先写一版山寨的方式，由输出职业的特色数据转换来，之后改为正式的
+    bd = get_base_array_with_bonus_attributes(ele_in)
+    # 四维词条可以增加奶爸的体力、精神
+    base_array_with_buf_bonus_attributes[index_buf_physical_and_mental_strength] += bd[index_strength_and_intelligence]
+    # 四维词条可以增加奶妈、奶萝的智力
+    base_array_with_buf_bonus_attributes[index_buf_intelligence] += bd[index_strength_and_intelligence]
+    # 1-45级主动技能对应奶的祝福技能、15级职业被动
+    base_array_with_buf_bonus_attributes[index_buf_bless_lv30] += bd[index_extra_active_skill_lv_1_45]
+    # base_array_with_buf_bonus_attributes[index_buf_job_passive_lv15] += bd[index_extra_active_skill_lv_1_45]
+    # base_array_with_buf_bonus_attributes[index_buf_naiba_protect_badge_lv25] += bd[index_extra_active_skill_lv_1_45]
+    # base_array_with_buf_bonus_attributes[index_buf_first_awaken_passive_lv48] += bd[index_extra_active_skill_lv_1_45]
+    # # 50级主动技能对应奶的太阳技能
+    # base_array_with_buf_bonus_attributes[index_buf_taiyang_lv50] += bd[index_extra_active_skill_lv_50]
+    # # 冷却
+    # cool = bd[index_cool_correction] // 0.35
+    # base_array_with_buf_bonus_attributes[index_buf_hymn_cool] += cool
+    # base_array_with_buf_bonus_attributes[index_buf_wisteria_whip_cool] += cool
+
 
     return base_array_with_buf_bonus_attributes
 
@@ -2114,7 +2132,6 @@ def load_buf_custom_data():
     load_presetr = load_workbook("preset.xlsx", data_only=True)
     r_preset = load_presetr["custom"]
 
-    # re: 把其他用到这些格子的地方也用这个来读取
     custom_buf_data = {
         "bless_level": int(r_preset['H2'].value) + int(r_preset['H4'].value) + int(r_preset['H5'].value),
         "taiyang_level": int(r_preset['H3'].value),
