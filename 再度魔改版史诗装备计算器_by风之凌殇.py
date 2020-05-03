@@ -2119,8 +2119,15 @@ def show_name():
     else:
         equips = g_rank_equips[g_current_buff_type][g_current_rank]
 
+
+    # 确保按照正常排列的顺序展示
+    ordered_equip_indexes = list(equips[1:])
+    _reverse_modify_slots_order(ordered_equip_indexes)
+
+    ordered_equip_indexes.insert(0, equips[0])
+
     readable_names = []
-    for equip in equips:
+    for equip in ordered_equip_indexes:
         readable_names.append(equip_index_to_realname[equip])
 
     tkinter.messagebox.showinfo("装备详细信息", pretty_words(readable_names, 30, ' | '), parent=result_window)
