@@ -426,68 +426,37 @@ g_row_custom_save_transfer_from = 11  # 跨界来源账户列表
 g_row_custom_save_max_transfer_count = 12  # 最大跨界数目
 g_row_custom_save_use_pulei_legend_by_default = 13  # 是否默认将普雷传说装备加入备选池
 
-# 各个词条加成的枚举，与输出职业base_array中的下标一致        # data.xlsx的one sheet字段说明
-index_strength_and_intelligence = 0  # 0-C-stat-力智
-index_physical_magical_independent_attack_power = 1  # 1-D-att-物理/魔法/独立攻击力
-index_extra_percent_attack_damage = 2  # 2-E-damper-攻击时额外增加X%的伤害增加量
-index_extra_percent_crit_damage = 3  # 3-F-criper-暴击时，额外增加X%的伤害增加量
-index_extra_percent_addtional_damage = 4  # 4-G-bonper-攻击时，附加X%的伤害，也就是白字
-index_extra_percent_elemental_damage = 5  # 5-H-elebon-攻击时，附加X%的属性伤害
-index_extra_percent_final_damage = 6  # 6-I-allper-最终伤害+X%
-index_extra_percent_physical_magical_independent_attack_power = 7  # 7-J-attper-物理/魔法/独立攻击力 +X%
-index_extra_percent_strength_and_intelligence = 8  # 8-K-staper-力智+X%
-index_extra_all_element_strength = 9  # 9-L-ele-所有属性强化+X
-index_extra_percent_continued_damage = 10  # 10-M-sloper-发生持续伤害5秒，伤害量为对敌人造成伤害的X%
-index_extra_percent_skill_attack_power = 11  # 11-N-skiper-技能攻击力 +X%
-index_extra_percent_special_effect = 12  # 12-O-special-特殊词条补正，如歧路和不息的装备，详见自定义中这俩装备相关配置
-index_extra_percent_attack_speed = 13  # 13-P-speed-攻击速度 +X%
-index_extra_percent_magic_physical_crit_rate = 14  # 14-Q-critical-魔法/物理暴击率 +X%
-index_extra_active_skill_effect = 15  # 15-R-active-主动技能增加等级所带来的的影响（目前C的伤害计算没有计入该值，仅奶系职业用到）
-index_extra_passive_transfer_skill = 16  # 16-S-pas1-增加转职被动的等级
-index_extra_passive_first_awaken_skill = 17  # 17-T-pas2-增加一绝被动的等级
-index_extra_passive_second_awaken_skill = 18  # 18-U-pas3-增加二觉被动的等级
-index_extra_passive_third_awaken_skill = 19  # 19-V-pas4-增加三觉被动的等级
-index_cool_correction = 20  # 20-Y-cool_skill-冷却矫正系数，每冷却1%，记0.35这个值
-index_extra_active_second_awaken_skill = 21  # 21-AK-active2-二觉主动技能
-index_extra_active_skill_lv_1_45 = 22  # 22-AO-pas0-1_45主动技能
-index_extra_active_skill_lv_50 = 23  # 23-AP-pas1-50主动技能
-index_extra_active_skill_lv_60_80 = 24  # 24-AQ-pas2-60_80主动技能
-index_extra_active_skill_lv_85 = 25  # 25-AR-pas3-85主动技能
-index_extra_active_skill_lv_95 = 26  # 26-AS-pas4-95主动技能
-index_extra_active_skill_lv_100 = 27  # 27-AT-pas5-100主动技能
+# 输出职业base_array中的各个下标的含义
+index_deal_strength_and_intelligence = 0  # 0-C-stat-力智
+index_deal_physical_magical_independent_attack_power = 1  # 1-D-att-物理/魔法/独立攻击力
+index_deal_extra_percent_attack_damage = 2  # 2-E-damper-攻击时额外增加X%的伤害增加量
+index_deal_extra_percent_crit_damage = 3  # 3-F-criper-暴击时，额外增加X%的伤害增加量
+index_deal_extra_percent_addtional_damage = 4  # 4-G-bonper-攻击时，附加X%的伤害，也就是白字
+index_deal_extra_percent_elemental_damage = 5  # 5-H-elebon-攻击时，附加X%的属性伤害
+index_deal_extra_percent_final_damage = 6  # 6-I-allper-最终伤害+X%
+index_deal_extra_percent_physical_magical_independent_attack_power = 7  # 7-J-attper-物理/魔法/独立攻击力 +X%
+index_deal_extra_percent_strength_and_intelligence = 8  # 8-K-staper-力智+X%
+index_deal_extra_all_element_strength = 9  # 9-L-ele-所有属性强化+X
+index_deal_extra_percent_continued_damage = 10  # 10-M-sloper-发生持续伤害5秒，伤害量为对敌人造成伤害的X%
+index_deal_extra_percent_skill_attack_power = 11  # 11-N-skiper-技能攻击力 +X%
+index_deal_extra_percent_special_effect = 12  # 12-O-special-特殊词条补正，如歧路和不息的装备，详见自定义中这俩装备相关配置
+index_deal_extra_percent_attack_speed = 13  # 13-P-speed-攻击速度 +X%
+index_deal_extra_percent_magic_physical_crit_rate = 14  # 14-Q-critical-魔法/物理暴击率 +X%
+index_deal_extra_active_skill_effect = 15  # 15-R-active-主动技能增加等级所带来的的影响（目前C的伤害计算没有计入该值，仅奶系职业用到）
+index_deal_extra_passive_transfer_skill = 16  # 16-S-pas1-增加转职被动的等级
+index_deal_extra_passive_first_awaken_skill = 17  # 17-T-pas2-增加一绝被动的等级
+index_deal_extra_passive_second_awaken_skill = 18  # 18-U-pas3-增加二觉被动的等级
+index_deal_extra_passive_third_awaken_skill = 19  # 19-V-pas4-增加三觉被动的等级
+index_deal_cool_correction = 20  # 20-Y-cool_skill-冷却矫正系数，每冷却1%，记0.35这个值
+index_deal_extra_active_second_awaken_skill = 21  # 21-AK-active2-二觉主动技能
+index_deal_extra_active_skill_lv_1_45 = 22  # 22-AO-pas0-1_45主动技能
+index_deal_extra_active_skill_lv_50 = 23  # 23-AP-pas1-50主动技能
+index_deal_extra_active_skill_lv_60_80 = 24  # 24-AQ-pas2-60_80主动技能
+index_deal_extra_active_skill_lv_85 = 25  # 25-AR-pas3-85主动技能
+index_deal_extra_active_skill_lv_95 = 26  # 26-AS-pas4-95主动技能
+index_deal_extra_active_skill_lv_100 = 27  # 27-AT-pas5-100主动技能
 
-entry_name_to_index = {
-    "strength_and_intelligence": index_strength_and_intelligence,  # 0-C-stat-力智
-    "physical_magical_independent_attack_power": index_physical_magical_independent_attack_power,  # 1-D-att-物理/魔法/独立攻击力
-    "extra_percent_attack_damage": index_extra_percent_attack_damage,  # 2-E-damper-攻击时额外增加X%的伤害增加量
-    "extra_percent_crit_damage": index_extra_percent_crit_damage,  # 3-F-criper-暴击时，额外增加X%的伤害增加量
-    "extra_percent_addtional_damage": index_extra_percent_addtional_damage,  # 4-G-bonper-攻击时，附加X%的伤害，也就是白字
-    "extra_percent_elemental_damage": index_extra_percent_elemental_damage,  # 5-H-elebon-攻击时，附加X%的属性伤害
-    "extra_percent_final_damage": index_extra_percent_final_damage,  # 6-I-allper-最终伤害+X%
-    "extra_percent_physical_magical_independent_attack_power": index_extra_percent_physical_magical_independent_attack_power,  # 7-J-attper-物理/魔法/独立攻击力 +X%
-    "extra_percent_strength_and_intelligence": index_extra_percent_strength_and_intelligence,  # 8-K-staper-力智+X%
-    "extra_all_element_strength": index_extra_all_element_strength,  # 9-L-ele-所有属性强化+X
-    "extra_percent_continued_damage": index_extra_percent_continued_damage,  # 10-M-sloper-发生持续伤害5秒，伤害量为对敌人造成伤害的X%
-    "extra_percent_skill_attack_power": index_extra_percent_skill_attack_power,  # 11-N-skiper-技能攻击力 +X%
-    "extra_percent_special_effect": index_extra_percent_special_effect,  # 12-O-special-特殊词条补正，如歧路和不息的装备，详见自定义中这俩装备相关配置
-    "extra_percent_attack_speed": index_extra_percent_attack_speed,  # 13-P-speed-攻击速度 +X%
-    "extra_percent_magic_physical_crit_rate": index_extra_percent_magic_physical_crit_rate,  # 14-Q-critical-魔法/物理暴击率 +X%
-    "extra_active_skill_effect": index_extra_active_skill_effect,  # 15-R-active-主动技能增加等级所带来的的影响（目前C的伤害计算没有计入该值，仅奶系职业用到）
-    "extra_passive_transfer_skill": index_extra_passive_transfer_skill,  # 16-S-pas1-增加转职被动的等级
-    "extra_passive_first_awaken_skill": index_extra_passive_first_awaken_skill,  # 17-T-pas2-增加一绝被动的等级
-    "extra_passive_second_awaken_skill": index_extra_passive_second_awaken_skill,  # 18-U-pas3-增加二觉被动的等级
-    "extra_passive_third_awaken_skill": index_extra_passive_third_awaken_skill,  # 19-V-pas4-增加三觉被动的等级
-    "cool_correction": index_cool_correction,  # 20-Y-cool_skill-冷却矫正系数，每冷却1%，记0.35这个值
-    "extra_active_second_awaken_skill": index_extra_active_second_awaken_skill,  # 21-AK-active2-二觉主动技能
-    "extra_active_skill_lv_1_45": index_extra_active_skill_lv_1_45,  # 22-AO-pas0-1_45主动技能
-    "extra_active_skill_lv_50": index_extra_active_skill_lv_50,  # 23-AP-pas1-50主动技能
-    "extra_active_skill_lv_60_80": index_extra_active_skill_lv_60_80,  # 24-AQ-pas2-60_80主动技能
-    "extra_active_skill_lv_85": index_extra_active_skill_lv_85,  # 25-AR-pas3-85主动技能
-    "extra_active_skill_lv_95": index_extra_active_skill_lv_95,  # 26-AS-pas4-95主动技能
-    "extra_active_skill_lv_100": index_extra_active_skill_lv_100,  # 27-AT-pas5-100主动技能
-}
-
-# 奶系职业适用的词条在其base_array中的下标
+# 奶系职业base_array中的各个下标的含义
 index_buf_physical_and_mental_strength = 0  # 0-C-[守护恩赐]体力、精神 +X
 index_buf_intelligence = 1  # 1-D-[启示:圣歌]、[人偶操纵者]智力 +X
 index_buf_bless_extra_percent_strength_and_intelligence = 2  # 2-E-[荣誉祝福]、[勇气祝福]、[禁忌诅咒]力量、智力增加量 +X%
@@ -507,8 +476,97 @@ index_buf_second_awaken_lv85 = 15  # 15-R-2觉等级+X
 index_buf_third_awaken_passive_lv95 = 16  # 16-S-3觉被动等级+X
 index_buf_belief_halo = 17  # 17-T-[信念光环]体力、精神 +X
 index_buf_piety_halo_or_girs_love = 18  # 18-U-[虞诚信念]、[少女的爱]力量/智力 +X
-index_buf_hymn_cool = 19  # 19-V-圣歌冷却减少X%
-index_buf_wisteria_whip_cool = 20  # 20-W-藤鞭冷却减少X%
+index_buf_hymn_cool = 19  # 19-V-圣歌冷却减少X% (re: 目前好像没实装)
+index_buf_wisteria_whip_cool = 20  # 20-W-藤鞭冷却减少X% (re: 目前好像没实装)
+
+# 国服特色词条（宠物、称号、徽章、皮肤、宝珠、武器装扮等等）
+# re: 遍历之前的称号、宠物的实际内容，定义对应词条
+entry_name_to_indexes = munch.Munch.fromDict({
+    # 物理/魔法/独立攻击力 +X
+    "physical_magical_independent_attack_power": {
+        "deal": [index_deal_physical_magical_independent_attack_power],
+    },
+    # 力量/智力 +X
+    "strength_and_intelligence": {
+        "deal": [index_deal_strength_and_intelligence],
+        "buf": [index_buf_intelligence],
+    },
+    # 体力/精神 +X
+    "physical_and_mental_strength": {
+        "buf": [index_buf_physical_and_mental_strength],
+    },
+    # 攻击速度+X%
+    "extra_percent_attack_speed": {
+        "deal": [index_deal_extra_percent_attack_speed],
+    },
+    # 所有属性强化 +X
+    "extra_all_element_strength": {
+        "deal": [index_deal_extra_all_element_strength],
+    },
+    # 物理、魔法暴击率 +X%
+    "extra_percent_magic_physical_crit_rate": {
+        "deal": [index_deal_extra_percent_magic_physical_crit_rate],
+    },
+    # 攻击时，附加X%的伤害
+    "extra_percent_addtional_damage": {
+        "deal": [index_deal_extra_percent_addtional_damage],
+    },
+    # 增加X%的力量、智力
+    "extra_percent_strength_and_intelligence": {
+        "deal": [index_deal_extra_percent_strength_and_intelligence],
+    },
+    # 攻击时，有X1几率增加X2点力量、智力、体力、精神，效果持续X3秒。（冷却时间X4秒）
+    # ps：只对输出职业生效，由于站街不生效，奶不用管这个词条，所以名字需要跟四维那个区分开来
+    "strength_and_intelligence_when_attack": {
+        "deal": [index_deal_strength_and_intelligence],
+    },
+    # 暴击时，额外增加X%的伤害增加量。（决斗场中，适用一般效果）
+    "extra_percent_crit_damage": {
+        "deal": [index_deal_extra_percent_crit_damage],
+    },
+    # 最终伤害增加X%
+    "extra_percent_final_damage": {
+        "deal": [index_deal_extra_percent_final_damage],
+    },
+    # 所有职业Lv1~50全部技能Lv+1（特性技能除外）
+    "all_job_all_level_1_50_skill_increase_1": {
+        "deal": [
+            index_deal_extra_passive_transfer_skill,
+            index_deal_extra_passive_first_awaken_skill,
+            index_deal_extra_active_skill_lv_1_45,
+            index_deal_extra_active_skill_lv_50,
+        ],
+        "buf": [
+            index_buf_bless_lv30,
+            index_buf_taiyang_lv50,
+            index_buf_job_passive_lv15,
+            index_buf_naiba_protect_badge_lv25,
+            index_buf_first_awaken_passive_lv48,
+        ]
+    },
+    # 冷却矫正系数（仅输出职业）
+    "cool_correction": {
+        "deal": [index_deal_cool_correction]
+    },
+    # 冷却减少时间-X%（仅奶系职业）
+    "reduce_percent_cool":{
+        "buf": [
+            index_buf_hymn_cool,
+index_buf_wisteria_whip_cool,
+        ]
+    },
+    # 宠物技能：使主人增加X%的攻击力，是乘算，且加到最终伤害中，所以可以视为输出职业的技能攻击力词条来处理
+    "creature_increase_owner_attack_power": {
+        "deal": [index_deal_extra_percent_skill_attack_power],
+    },
+
+})
+
+
+# undone: 明天再做啦
+# re: 重新按照新的方式填写配置表
+
+# re: 按照新的方式来解析配置表
 
 
 ###########################################################
@@ -520,96 +578,48 @@ def multiply_entry(old_inc_percent, add_inc_percent):
     return (old_inc_percent / 100 + 1) * (add_inc_percent / 100 + 1) * 100 - 100
 
 
-# 获取国服特殊加成属性
-def get_base_array_with_bonus_attributes(ele_in):
-    base_array_with_deal_bonus_attributes = np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
-    # 加上基础数据
-    base_array_with_deal_bonus_attributes[index_extra_percent_skill_attack_power] = 1
-    base_array_with_deal_bonus_attributes[index_extra_all_element_strength] += ele_in
-
+# 获取国服特殊加成属性, job_type = "buf" or "deal"
+def add_bonus_attributes_to_base_array(job_type, base_array):
     guofu_teses = munch.Munch.fromDict([
         {"name": "称号", "setting_name": "styles", "selected": style_select.get()},
         {"name": "宠物", "setting_name": "creatures", "selected": creature_select.get()},
     ])
 
     for tese in guofu_teses:
+        # 处理每一种特色
         setting = get_setting(tese.setting_name, tese.selected)
         if setting is not None and setting.entries is not None:
+            # 增加当前选择的特色的各个词条对应的该类型职业的属性
             for entry in setting.entries:
                 for name, value in entry.items():
-                    entry_index = entry_name_to_index[name]
+                    entry_indexes = entry_name_to_indexes[name]
                     entry_value = eval(str(value))
-                    if entry_index == index_extra_percent_skill_attack_power:
-                        # 技攻需要乘算
-                        base_array_with_deal_bonus_attributes[entry_index] = multiply_entry(base_array_with_deal_bonus_attributes[entry_index], entry_value)
+                    if job_type == "deal":
+                        # 处理输出职业的对应属性
+                        for entry_index in entry_indexes.deal:
+                            if entry_index == index_deal_extra_percent_skill_attack_power:
+                                # 技攻需要乘算
+                                base_array[entry_index] = multiply_entry(base_array[entry_index], entry_value)
+                            else:
+                                # 其余加算
+                                base_array[entry_index] += entry_value
                     else:
-                        # 其余加算
-                        base_array_with_deal_bonus_attributes[entry_index] += entry_value
+                        # 处理奶系职业的对应属性
+                        for entry_index in entry_indexes.buf:
+                            # 全部加算
+                            base_array[entry_index] += entry_value
 
     # todo：加上各种技能宝珠、光环、皮肤、徽章等国服特色的支持
 
     # re: 最终国服特色改为最终版时，移除下面的东西
+    if job_type == "deal":
+        # from 韩械，原先他在Data.xlsx中所有武器的1-45和50级的被动技能中各增加了2级，其中1级为宠物的技能等级，另一极暂时不确定是哪里来的，可能是其他国服特色
+        # 为了保持一致，根据他的建议，把data中所有武器的1-45和50级的主动技能减少两级，然后另外一个技能补正加在这个位置
+        base_array[index_deal_extra_active_skill_lv_1_45] += 1  # 1-45级主动+1， 1-50lv+1
+        base_array[index_deal_extra_active_skill_lv_50] += 1  # 50级主动+1， 1-50lv+1
 
-    # from 韩械，原先他在Data.xlsx中所有武器的1-45和50级的被动技能中各增加了2级，其中1级为宠物的技能等级，另一极暂时不确定是哪里来的，可能是其他国服特色
-    # 为了保持一致，根据他的建议，把data中所有武器的1-45和50级的主动技能减少两级，然后另外一个技能补正加在这个位置
-    base_array_with_deal_bonus_attributes[index_extra_active_skill_lv_1_45] += 1  # 1-45级主动+1， 1-50lv+1
-    base_array_with_deal_bonus_attributes[index_extra_active_skill_lv_50] += 1  # 50级主动+1， 1-50lv+1
-
-    # 经韩械反馈，属强多出来了80点，应该是之前他在data.xlsx中补正的数值我这边重新计算了一遍- -，暂时先在这里减去吧
-    base_array_with_deal_bonus_attributes[index_extra_all_element_strength] -= 44
-
-    return base_array_with_deal_bonus_attributes
-
-
-# 获取输出职业的特色加成列表
-def get_base_array_with_deal_bonus_attributes(ele_in):
-    return get_base_array_with_bonus_attributes(ele_in)
-
-
-# 获取奶系职业的特色加成列表
-def get_base_array_with_buf_bonus_attributes(ele_in):
-    # 基础体力、精神
-    base_stat_physical_and_mental = 4308 - 45 - 83 + custom_buf_data["taiyang_data"]
-    # 基础智力
-    base_stat_intelligence = 4166 + 74 - 126 + custom_buf_data["taiyang_data"]
-    # 祝福等级
-    base_bless_level = 10 + custom_buf_data["bless_level"] + 1
-    # 太阳等级
-    base_taiyang_level = 12 + custom_buf_data["taiyang_level"] + 1
-    # 15级转职被动等级
-    base_job_passive_lv15 = 0
-    # 基础奶爸25级守护徽章等级
-    base_naiba_protect_badge_lv25 = 0
-
-    base_array_with_buf_bonus_attributes = np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
-    # 加上基础数据
-    base_array_with_buf_bonus_attributes[index_buf_physical_and_mental_strength] += base_stat_physical_and_mental  # 体力、精神 +X
-    base_array_with_buf_bonus_attributes[index_buf_intelligence] += base_stat_intelligence  # 智力 +X
-    base_array_with_buf_bonus_attributes[index_buf_bless_lv30] += base_bless_level  # 祝福技能祝福等级+X
-    base_array_with_buf_bonus_attributes[index_buf_taiyang_lv50] += base_taiyang_level  # 太阳技能太阳等级+X
-    base_array_with_buf_bonus_attributes[index_buf_job_passive_lv15] += base_job_passive_lv15  # 15级职业被动Lv+X
-    base_array_with_buf_bonus_attributes[index_buf_naiba_protect_badge_lv25] += base_naiba_protect_badge_lv25  # 奶爸25级守护徽章等级+X
-
-    # # re: 先写一版山寨的方式，由输出职业的特色数据转换来，之后改为正式的
-    bd = get_base_array_with_bonus_attributes(ele_in)
-    # 四维词条可以增加奶爸的体力、精神
-    base_array_with_buf_bonus_attributes[index_buf_physical_and_mental_strength] += bd[index_strength_and_intelligence]
-    # 四维词条可以增加奶妈、奶萝的智力
-    base_array_with_buf_bonus_attributes[index_buf_intelligence] += bd[index_strength_and_intelligence]
-    # 1-45级主动技能对应奶的祝福技能、15级职业被动
-    base_array_with_buf_bonus_attributes[index_buf_bless_lv30] += bd[index_extra_active_skill_lv_1_45]
-    # base_array_with_buf_bonus_attributes[index_buf_job_passive_lv15] += bd[index_extra_active_skill_lv_1_45]
-    # base_array_with_buf_bonus_attributes[index_buf_naiba_protect_badge_lv25] += bd[index_extra_active_skill_lv_1_45]
-    # base_array_with_buf_bonus_attributes[index_buf_first_awaken_passive_lv48] += bd[index_extra_active_skill_lv_1_45]
-    # # 50级主动技能对应奶的太阳技能
-    # base_array_with_buf_bonus_attributes[index_buf_taiyang_lv50] += bd[index_extra_active_skill_lv_50]
-    # # 冷却
-    # cool = bd[index_cool_correction] // 0.35
-    # base_array_with_buf_bonus_attributes[index_buf_hymn_cool] += cool
-    # base_array_with_buf_bonus_attributes[index_buf_wisteria_whip_cool] += cool
-
-
-    return base_array_with_buf_bonus_attributes
+        # 经韩械反馈，属强多出来了80点，应该是之前他在data.xlsx中补正的数值我这边重新计算了一遍- -，暂时先在这里减去吧
+        base_array[index_deal_extra_all_element_strength] -= 44
 
 
 g_speed_first = True
@@ -1007,7 +1017,14 @@ def calc():
         unique_index = 0
         max_setopt = 0
         show_number = 1
-        base_array_with_deal_bonus_attributes = get_base_array_with_deal_bonus_attributes(ele_in)
+
+        base_array_with_deal_bonus_attributes = np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+        # 加上基础数据
+        base_array_with_deal_bonus_attributes[index_deal_extra_percent_skill_attack_power] = 1
+        base_array_with_deal_bonus_attributes[index_deal_extra_all_element_strength] += ele_in
+
+        # 加入输出职业的特色加成
+        add_bonus_attributes_to_base_array("deal", base_array_with_deal_bonus_attributes)
 
         def process(calc_now, baibianguai, upgrade_work_uniforms, transfered_equips):
             set_list = ["1" + str(get_set_name(calc_now[x])) for x in range(0, 11)]
@@ -1055,25 +1072,25 @@ def calc():
                         count_invalid = count_invalid + 1
                         return
                     cut = np.array(no_cut[0:20] + no_cut[22:23] + no_cut[34:35] + no_cut[38:44])
-                    skiper = multiply_entry(skiper, cut[index_extra_percent_skill_attack_power])
+                    skiper = multiply_entry(skiper, cut[index_deal_extra_percent_skill_attack_power])
                     oneonelist.append(cut)
                 for i in range(oneone):
                     base_array = base_array + oneonelist[i]
 
                 # 军神二件套且拥有军神-魔法石-军神的庇护宝石，说明遗书和古怪耳环（心之所念）不同时存在，减去5%的爆伤
                 if set_oncount('1201') == 1 and onecount('32200') == 1:
-                    base_array[index_extra_percent_crit_damage] -= 5
+                    base_array[index_deal_extra_percent_crit_damage] -= 5
                 # 拥有军神耳环，且不拥有军神辅助装备，需要减去10%力智加成
                 if onecount("33200") == 1 and onecount("31200") == 0:
-                    base_array[index_extra_percent_strength_and_intelligence] -= 10
+                    base_array[index_deal_extra_percent_strength_and_intelligence] -= 10
                 # 能量的主宰装备，若拥有能量耳环或能量神话耳环
                 if onecount('33230') == 1 or onecount('33231') == 1:
                     # 若不同时拥有能量辅助装备，则减去10%力智加成
                     if onecount('31230') == 0:
-                        base_array[index_extra_percent_addtional_damage] -= 10
+                        base_array[index_deal_extra_percent_addtional_damage] -= 10
                     # 如不同时拥有能量魔法石，则减去40点全属性属强
                     if onecount('32230') == 0:
-                        base_array[index_extra_all_element_strength] -= 40
+                        base_array[index_deal_extra_all_element_strength] -= 40
                 # 特殊处理天命无常套装
                 if onecount('15340') == 1 or onecount('23340') == 1 or onecount('33340') == 1 or onecount(
                         '33341') == 1:
@@ -1081,69 +1098,69 @@ def calc():
                     if set_oncount('1341') == 0 and set_oncount('1342') == 0:
                         # 天命鞋子，在两件套时，点数为双数增加40点属强，期望为20，若为散件则减去该属性
                         if onecount('15340') == 1:
-                            base_array[index_extra_all_element_strength] -= 20
+                            base_array[index_deal_extra_all_element_strength] -= 20
                         # 天命戒指，在两件套时，点数大于2额外增加12%伤害，期望为10%（ps：原作者给，我觉得应该应该是4/6*12=8%?）
                         elif onecount('23340') == 1:  # 天命无常-戒指-命运的捉弄
-                            base_array[index_extra_percent_attack_damage] -= 10
+                            base_array[index_deal_extra_percent_attack_damage] -= 10
                         # 天命耳环，在两件套时，点数为6时增加30%最终伤害，期望为5%
                         elif onecount('33340') == 1:
-                            base_array[index_extra_percent_final_damage] -= 5  #
+                            base_array[index_deal_extra_percent_final_damage] -= 5  #
                         # 天命神话耳环，在两件套时，点数为6时增加30%最终伤害，其中点数为1时重新投色子，期望为6%
                         else:
-                            base_array[index_extra_all_element_strength] -= 4  # ele=4
-                            base_array[index_extra_percent_attack_damage] -= 2  # damper=2
-                            base_array[index_extra_percent_final_damage] -= 1  # allper=6
-                            base_array[index_extra_percent_strength_and_intelligence] -= 1.93  # staper=15
+                            base_array[index_deal_extra_all_element_strength] -= 4  # ele=4
+                            base_array[index_deal_extra_percent_attack_damage] -= 2  # damper=2
+                            base_array[index_deal_extra_percent_final_damage] -= 1  # allper=6
+                            base_array[index_deal_extra_percent_strength_and_intelligence] -= 1.93  # staper=15
                 # 铁匠神话上衣
                 if onecount('11111') == 1:
                     # 铁匠三件套或铁匠五件套
                     if set_oncount('1112') == 1 or set_oncount('1113') == 1:
-                        base_array[index_cool_correction] += 10
+                        base_array[index_deal_cool_correction] += 10
                 # 命运神话上衣
                 if onecount('11301') == 1:
                     # 未拥有命运项链
                     if onecount('22300') != 1:
-                        base_array[index_extra_percent_addtional_damage] -= 10
-                        base_array[index_extra_percent_physical_magical_independent_attack_power] += 10
+                        base_array[index_deal_extra_percent_addtional_damage] -= 10
+                        base_array[index_deal_extra_percent_physical_magical_independent_attack_power] += 10
                     # 未拥有命运辅助装备
                     if onecount('31300') != 1:
-                        base_array[index_extra_percent_addtional_damage] -= 10
-                        base_array[index_extra_percent_physical_magical_independent_attack_power] += 10
+                        base_array[index_deal_extra_percent_addtional_damage] -= 10
+                        base_array[index_deal_extra_percent_physical_magical_independent_attack_power] += 10
 
-                base_array[index_extra_percent_skill_attack_power] = skiper  # 技能攻击力 +X%
-                real_bon = (base_array[index_extra_percent_addtional_damage] +  # 攻击时，附加X%的伤害，也就是白字
-                            base_array[index_extra_percent_elemental_damage] *  # 攻击时，附加X%的属性伤害
-                            (base_array[index_extra_all_element_strength] * 0.0045 + 1.05))  # 所有属性强化+X
-                actlvl = ((base_array[index_extra_active_second_awaken_skill] +  # 二觉主动技能
-                           base_array[index_extra_active_skill_lv_1_45] * job_lv1 +  # 1_45主动技能
-                           base_array[index_extra_active_skill_lv_50] * job_lv2 +  # 50主动技能
-                           base_array[index_extra_active_skill_lv_60_80] * job_lv3 +  # 60_80主动技能
-                           base_array[index_extra_active_skill_lv_85] * job_lv4 +  # 85主动技能
-                           base_array[index_extra_active_skill_lv_95] * job_lv5 +  # 95主动技能
-                           base_array[index_extra_active_skill_lv_100] * job_lv6  # 100主动技能
+                base_array[index_deal_extra_percent_skill_attack_power] = skiper  # 技能攻击力 +X%
+                real_bon = (base_array[index_deal_extra_percent_addtional_damage] +  # 攻击时，附加X%的伤害，也就是白字
+                            base_array[index_deal_extra_percent_elemental_damage] *  # 攻击时，附加X%的属性伤害
+                            (base_array[index_deal_extra_all_element_strength] * 0.0045 + 1.05))  # 所有属性强化+X
+                actlvl = ((base_array[index_deal_extra_active_second_awaken_skill] +  # 二觉主动技能
+                           base_array[index_deal_extra_active_skill_lv_1_45] * job_lv1 +  # 1_45主动技能
+                           base_array[index_deal_extra_active_skill_lv_50] * job_lv2 +  # 50主动技能
+                           base_array[index_deal_extra_active_skill_lv_60_80] * job_lv3 +  # 60_80主动技能
+                           base_array[index_deal_extra_active_skill_lv_85] * job_lv4 +  # 85主动技能
+                           base_array[index_deal_extra_active_skill_lv_95] * job_lv5 +  # 95主动技能
+                           base_array[index_deal_extra_active_skill_lv_100] * job_lv6  # 100主动技能
                            ) / 100 + 1)
-                paslvl = (((100 + base_array[index_extra_passive_transfer_skill] * job_pas0) / 100) *  # 增加转职被动的等级
-                          ((100 + base_array[index_extra_passive_first_awaken_skill] * job_pas1) / 100) *  # 增加一绝被动的等级
-                          ((100 + base_array[index_extra_passive_second_awaken_skill] * job_pas2) / 100) *  # 增加二觉被动的等级
-                          ((100 + base_array[index_extra_passive_third_awaken_skill] * job_pas3) / 100)  # 增加三觉被动的等级
+                paslvl = (((100 + base_array[index_deal_extra_passive_transfer_skill] * job_pas0) / 100) *  # 增加转职被动的等级
+                          ((100 + base_array[index_deal_extra_passive_first_awaken_skill] * job_pas1) / 100) *  # 增加一绝被动的等级
+                          ((100 + base_array[index_deal_extra_passive_second_awaken_skill] * job_pas2) / 100) *  # 增加二觉被动的等级
+                          ((100 + base_array[index_deal_extra_passive_third_awaken_skill] * job_pas3) / 100)  # 增加三觉被动的等级
                           )
-                damage = ((base_array[index_extra_percent_attack_damage] / 100 + 1) *  # 攻击时额外增加X%的伤害增加量
-                          (base_array[index_extra_percent_crit_damage] / 100 + 1) *  # 暴击时，额外增加X%的伤害增加量
+                damage = ((base_array[index_deal_extra_percent_attack_damage] / 100 + 1) *  # 攻击时额外增加X%的伤害增加量
+                          (base_array[index_deal_extra_percent_crit_damage] / 100 + 1) *  # 暴击时，额外增加X%的伤害增加量
                           (real_bon / 100 + 1) *  # 白字与属强的最终综合值
-                          (base_array[index_extra_percent_final_damage] / 100 + 1) *  # 最终伤害+X%
-                          (base_array[index_extra_percent_physical_magical_independent_attack_power] / 100 + 1) *  # 物理/魔法/独立攻击力 +X%
-                          (base_array[index_extra_percent_strength_and_intelligence] / 100 + 1) *  # 力智+X%
-                          (base_array[index_extra_all_element_strength] * 0.0045 + 1.05) *  # 所有属性强化+X
-                          (base_array[index_extra_percent_continued_damage] / 100 + 1) *  # 发生持续伤害5秒，伤害量为对敌人造成伤害的X%
+                          (base_array[index_deal_extra_percent_final_damage] / 100 + 1) *  # 最终伤害+X%
+                          (base_array[index_deal_extra_percent_physical_magical_independent_attack_power] / 100 + 1) *  # 物理/魔法/独立攻击力 +X%
+                          (base_array[index_deal_extra_percent_strength_and_intelligence] / 100 + 1) *  # 力智+X%
+                          (base_array[index_deal_extra_all_element_strength] * 0.0045 + 1.05) *  # 所有属性强化+X
+                          (base_array[index_deal_extra_percent_continued_damage] / 100 + 1) *  # 发生持续伤害5秒，伤害量为对敌人造成伤害的X%
                           (skiper / 100 + 1) *  # 技能攻击力 +X%
-                          (base_array[index_extra_percent_special_effect] / 100 + 1) *  # 特殊词条，作者为每个特殊词条打了相应的强度百分比分，如一叶障目对忍者一些技能的特殊改变被认为可以强化9%，守护的抉择（歧路鞋）的护石增强词条被认为可以增强21%
+                          (base_array[index_deal_extra_percent_special_effect] / 100 + 1) *  # 特殊词条，作者为每个特殊词条打了相应的强度百分比分，如一叶障目对忍者一些技能的特殊改变被认为可以强化9%，守护的抉择（歧路鞋）的护石增强词条被认为可以增强21%
                           actlvl * paslvl *  # 主动技能与被动技能的影响
-                          ((54500 + 3.31 * base_array[index_strength_and_intelligence]) / 54500) *  # 力智
-                          ((4800 + base_array[index_physical_magical_independent_attack_power]) / 4800) *  # 物理/魔法/独立攻击力
-                          (1 + cool_on * base_array[index_cool_correction] / 100) /  # 冷却矫正系数，每冷却1%，记0.35这个值
+                          ((54500 + 3.31 * base_array[index_deal_strength_and_intelligence]) / 54500) *  # 力智
+                          ((4800 + base_array[index_deal_physical_magical_independent_attack_power]) / 4800) *  # 物理/魔法/独立攻击力
+                          (1 + cool_on * base_array[index_deal_cool_correction] / 100) /  # 冷却矫正系数，每冷却1%，记0.35这个值
                           (1.05 + 0.0045 * int(ele_skill)))  # 不太确定，可能是属性抗性？속강
 
-                base_array[index_extra_percent_addtional_damage] = real_bon
+                base_array[index_deal_extra_percent_addtional_damage] = real_bon
                 global unique_index
                 unique_index += 1
                 not_owned_equips = [uwu for uwu in upgrade_work_uniforms]
@@ -1190,7 +1207,31 @@ def calc():
         setget = opt_buf.get
         max_setopt = 0
         show_number = 1
-        base_array_with_buf_bonus_attributes = get_base_array_with_buf_bonus_attributes(ele_in)
+
+        # 基础体力、精神
+        base_stat_physical_and_mental = 4308 - 45 - 83 + custom_buf_data["taiyang_data"]
+        # 基础智力
+        base_stat_intelligence = 4166 + 74 - 126 + custom_buf_data["taiyang_data"]
+        # 祝福等级
+        base_bless_level = 10 + custom_buf_data["bless_level"] + 1
+        # 太阳等级
+        base_taiyang_level = 12 + custom_buf_data["taiyang_level"] + 1
+        # 15级转职被动等级
+        base_job_passive_lv15 = 0
+        # 基础奶爸25级守护徽章等级
+        base_naiba_protect_badge_lv25 = 0
+
+        base_array_with_buf_bonus_attributes = np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+        # 加上基础数据
+        base_array_with_buf_bonus_attributes[index_buf_physical_and_mental_strength] += base_stat_physical_and_mental  # 体力、精神 +X
+        base_array_with_buf_bonus_attributes[index_buf_intelligence] += base_stat_intelligence  # 智力 +X
+        base_array_with_buf_bonus_attributes[index_buf_bless_lv30] += base_bless_level  # 祝福技能祝福等级+X
+        base_array_with_buf_bonus_attributes[index_buf_taiyang_lv50] += base_taiyang_level  # 太阳技能太阳等级+X
+        base_array_with_buf_bonus_attributes[index_buf_job_passive_lv15] += base_job_passive_lv15  # 15级职业被动Lv+X
+        base_array_with_buf_bonus_attributes[index_buf_naiba_protect_badge_lv25] += base_naiba_protect_badge_lv25  # 奶爸25级守护徽章等级+X
+
+        # 增加奶系的国服特色
+        add_bonus_attributes_to_base_array("buf", base_array_with_buf_bonus_attributes)
 
         def process(calc_now, baibianguai, upgrade_work_uniforms, transfered_equips):
             set_list = ["1" + str(get_set_name(calc_now[x])) for x in range(0, 11)]
@@ -2285,18 +2326,18 @@ def show_result(rank_list, job_type, ele_skill):
                     "攻速={gongsu}%\n"
                     "暴击率={baojilv}%"
                 ).format(
-                    zengsu=int(rss[i][index_extra_percent_attack_damage]),
-                    baoshang=int(rss[i][index_extra_percent_crit_damage]),
-                    baizi=int(rss[i][index_extra_percent_addtional_damage]),
-                    suogong=int(rss[i][index_extra_percent_final_damage]),
-                    sangong=int(rss[i][index_extra_percent_physical_magical_independent_attack_power]),
-                    lizhi=int(rss[i][index_extra_percent_strength_and_intelligence]),
-                    shuqiang=int(rss[i][index_extra_all_element_strength]),
-                    chixu=int(rss[i][index_extra_percent_continued_damage]),
-                    jigong=int(rss[i][index_extra_percent_skill_attack_power]),
-                    teshu=int(rss[i][index_extra_percent_special_effect]),
-                    gongsu=int(rss[i][index_extra_percent_attack_speed]),
-                    baojilv=int(rss[i][index_extra_percent_magic_physical_crit_rate])
+                    zengsu=int(rss[i][index_deal_extra_percent_attack_damage]),
+                    baoshang=int(rss[i][index_deal_extra_percent_crit_damage]),
+                    baizi=int(rss[i][index_deal_extra_percent_addtional_damage]),
+                    suogong=int(rss[i][index_deal_extra_percent_final_damage]),
+                    sangong=int(rss[i][index_deal_extra_percent_physical_magical_independent_attack_power]),
+                    lizhi=int(rss[i][index_deal_extra_percent_strength_and_intelligence]),
+                    shuqiang=int(rss[i][index_deal_extra_all_element_strength]),
+                    chixu=int(rss[i][index_deal_extra_percent_continued_damage]),
+                    jigong=int(rss[i][index_deal_extra_percent_skill_attack_power]),
+                    teshu=int(rss[i][index_deal_extra_percent_special_effect]),
+                    gongsu=int(rss[i][index_deal_extra_percent_attack_speed]),
+                    baojilv=int(rss[i][index_deal_extra_percent_magic_physical_crit_rate])
                 )
                 rank_stat2[i] = (
                     "   <主动>\n"
@@ -2313,16 +2354,16 @@ def show_result(rank_list, job_type, ele_skill):
                     "  二觉被动= {passive_lv_85}级\n"
                     "  三觉被动= {passive_lv_95}级"
                 ).format(
-                    lv_1_45=round(rss[i][index_extra_active_skill_lv_1_45], 1),
-                    lv_50=int(rss[i][index_extra_active_skill_lv_50]),
-                    lv_60_80=round(rss[i][index_extra_active_skill_lv_60_80], 1),
-                    lv_85=int(rss[i][index_extra_active_skill_lv_85]),
-                    lv_95=int(rss[i][index_extra_active_skill_lv_95]),
-                    lv_100=int(rss[i][index_extra_active_skill_lv_100]),
-                    passive_lv_15=round(rss[i][index_extra_passive_transfer_skill], 1),
-                    passive_lv_48=int(rss[i][index_extra_passive_first_awaken_skill]),
-                    passive_lv_85=int(rss[i][index_extra_passive_second_awaken_skill]),
-                    passive_lv_95=int(rss[i][index_extra_passive_third_awaken_skill]),
+                    lv_1_45=round(rss[i][index_deal_extra_active_skill_lv_1_45], 1),
+                    lv_50=int(rss[i][index_deal_extra_active_skill_lv_50]),
+                    lv_60_80=round(rss[i][index_deal_extra_active_skill_lv_60_80], 1),
+                    lv_85=int(rss[i][index_deal_extra_active_skill_lv_85]),
+                    lv_95=int(rss[i][index_deal_extra_active_skill_lv_95]),
+                    lv_100=int(rss[i][index_deal_extra_active_skill_lv_100]),
+                    passive_lv_15=round(rss[i][index_deal_extra_passive_transfer_skill], 1),
+                    passive_lv_48=int(rss[i][index_deal_extra_passive_first_awaken_skill]),
+                    passive_lv_85=int(rss[i][index_deal_extra_passive_second_awaken_skill]),
+                    passive_lv_95=int(rss[i][index_deal_extra_passive_third_awaken_skill]),
                 )
             except TypeError as error:
                 c = 1
