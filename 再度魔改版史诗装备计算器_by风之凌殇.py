@@ -22,6 +22,7 @@ from tkinter import *
 import numpy as np
 import requests
 import toml
+import munch
 from openpyxl import load_workbook, Workbook
 
 ###########################################################
@@ -447,6 +448,7 @@ index_extra_active_skill_lv_100 = 27  # 27-AT-pas5-100主动技能
 def multiply_entry(old_inc_percent, add_inc_percent):
     return (old_inc_percent / 100 + 1) * (add_inc_percent / 100 + 1) * 100 - 100
 
+# re: 称号、宠物改为使用json配置表配置
 
 # 获取国服特殊加成属性
 def get_shuchu_bonus_attributes():
@@ -1114,8 +1116,8 @@ def calc():
 
     ui_top_n = 5
     save_top_n = ui_top_n
-    if g_config['export_result_as_excel']['enable']:
-        save_top_n = max(save_top_n, g_config['export_result_as_excel']['export_rank_count'])
+    if g_config.export_result_as_excel.enable:
+        save_top_n = max(save_top_n, g_config.export_result_as_excel.export_rank_count)
 
     is_shuchu_job = job_name not in ["(奶系)神思者", "(奶系)炽天使", "(奶系)冥月女神"]
     if is_shuchu_job:
@@ -2750,8 +2752,8 @@ def show_result(rank_list, job_type, ele_skill):
 
 # 导出结果到excel
 def export_result(ele_skill, col_names, extract_rank_cols_func, rankings):
-    export_config = g_config["export_result_as_excel"]
-    if not export_config["enable"]:
+    export_config = g_config.export_result_as_excel
+    if not export_config.enable:
         return
 
     def _export_reuslt():
@@ -2776,8 +2778,8 @@ def export_result(ele_skill, col_names, extract_rank_cols_func, rankings):
                     sheet.cell(row, col_index + 1).value = col_value
 
         # 保存文件
-        book.save(export_config["export_file_name"])
-        tkinter.messagebox.showinfo("排行结果已导出", "前{}排行数据已导出到当前目录下的{}，可打开进行查看".format(export_config["export_rank_count"], export_config["export_file_name"]))
+        book.save(export_config.export_file_name)
+        tkinter.messagebox.showinfo("排行结果已导出", "前{}排行数据已导出到当前目录下的{}，可打开进行查看".format(export_config.export_rank_count, export_config.export_file_name))
 
     threading.Thread(target=_export_reuslt, daemon=True).start()
     return
@@ -3686,7 +3688,7 @@ def reset():
 ###########################################################
 #                        读取自定义配置                    #
 ###########################################################
-g_config = toml.load('config.toml')
+g_config = munch.Munch.fromDict(toml.load('config.toml'))
 
 ###########################################################
 #                         逻辑初始化                       #
