@@ -1144,11 +1144,11 @@ def calc():
 
         all_ranking = minheap.getTop()
         ranking = []
-        for rank, data in enumerate(all_ranking[:ui_top_n]):
+        for index, data in enumerate(all_ranking[:ui_top_n]):
             damage = data[0]
             value = data[2]
             ranking.append((damage, value))
-            showsta(text='结果统计中' + str(rank + 1) + " / 5")
+            showsta(text='结果统计中 {} / 5'.format(index + 1))
 
         show_result(ranking, 'deal', ele_skill)
 
@@ -1284,12 +1284,17 @@ def calc():
                     # 信念光环增加的体力、精神数值
                     belief_halo_increase_physical_and_mental_strength = int(lvlget('hol_pas1_out')[int(base_array[index_buf_first_awaken_passive_lv48])] + 213 + base_array[index_buf_belief_halo])
                     # 一觉被动概览
-                    first_awaken_passive_overview = \
-                        str(int(lvlget('hol_pas1_out')[int(base_array[index_buf_first_awaken_passive_lv48])] + 213 + base_array[index_buf_belief_halo])) + "  (" + \
-                        str(int(20 + base_array[index_buf_first_awaken_passive_lv48])) + "级)"
+                    first_awaken_passive_overview = "{increase_intelligence_and_strength}  ({level}级)".format(
+                        increase_intelligence_and_strength=int(lvlget('hol_pas1_out')[int(base_array[index_buf_first_awaken_passive_lv48])] + 213 + base_array[index_buf_belief_halo]),
+                        level=int(20 + base_array[index_buf_first_awaken_passive_lv48])
+                    )
                     # 祝福概览
-                    bless_overview = str(bless_final_increase_strength_and_intelligence) + "/" + str(bless_final_increase_attack_power_average) + "   [" + str(int(physical_and_mental_strength_bless)) + "(" + str(
-                        int(base_array[index_buf_bless_lv30])) + "级)]"
+                    bless_overview = "{increase_intelligence_and_strength}/{increase_attack_power_average}   [{physical_and_mental_strength}({level}级)]".format(
+                        increase_intelligence_and_strength=bless_final_increase_strength_and_intelligence,
+                        increase_attack_power_average=bless_final_increase_attack_power_average,
+                        physical_and_mental_strength=physical_and_mental_strength_bless,
+                        level=int(base_array[index_buf_bless_lv30]),
+                    )
                     # 太阳适用的面板数值（奶爸为体精、奶妈奶萝为智力）
                     physical_and_mental_strength_or_intelligence_taiyang = physical_and_mental_strength_taiyang
                     # 一觉被动增加的面板数值（奶爸为体精、奶妈奶萝为智力）
@@ -1352,20 +1357,31 @@ def calc():
                     # 虔诚信念或少女的爱增加的智力数值
                     piety_halo_or_girs_love_increase_intelligence = int(first_awaken_passive_increase_intelligence + 442)
                     # 一觉被动概览
-                    first_awaken_passive_overview = \
-                        str(int(first_awaken_passive_increase_intelligence + 442)) + "  (" + str(int(20 + base_array[index_buf_first_awaken_passive_lv48])) + "级)"
+                    first_awaken_passive_overview = "{increase_intelligence_and_strength}  ({level}级)".format(
+                        increase_intelligence_and_strength=int(first_awaken_passive_increase_intelligence + 442),
+                        level=int(20 + base_array[index_buf_first_awaken_passive_lv48])
+                    )
                     # 祝福概览
-                    bless_overview = str(bless_final_increase_strength_and_intelligence) + "(" + str(int(bless_final_increase_strength_and_intelligence / sing_song_increase_rate)) + ")/ " + str(
-                        bless_final_increase_attack_power_average) + "(" + str(int(bless_final_increase_attack_power_average / sing_song_increase_rate)) + ")\n                  [" + str(int(intelligence_bless)) + "(" + str(
-                        int(base_array[index_buf_bless_lv30])) + "级)]"
-                    # re: 调整这上面的拼字符串的方式
+                    bless_overview = ("{increase_lizhi_with_sing_song}({increase_lizhi})/ {increase_ap_with_sing_song}({increase_ap})\n"
+                                      "                  [{intelligence}({level}级)]").format(
+                        increase_lizhi_with_sing_song=bless_final_increase_strength_and_intelligence,
+                        increase_lizhi=int(bless_final_increase_strength_and_intelligence / sing_song_increase_rate),
+                        increase_ap_with_sing_song=bless_final_increase_attack_power_average,
+                        increase_ap=int(bless_final_increase_attack_power_average / sing_song_increase_rate),
+                        intelligence=int(intelligence_bless),
+                        level=int(base_array[index_buf_bless_lv30]),
+                    )
                     # 太阳适用的面板数值（奶爸为体精、奶妈奶萝为智力）
                     physical_and_mental_strength_or_intelligence_taiyang = intelligence_taiyang
                     # 一觉被动增加的面板数值（奶爸为体精、奶妈奶萝为智力）
                     first_awaken_increase_physical_and_mental_strength_or_intelligence = piety_halo_or_girs_love_increase_intelligence
 
                 # 太阳概览
-                taiyang_overview = str(taiyang_final_increase_strength_and_intelligence) + "    [" + str(int(physical_and_mental_strength_or_intelligence_taiyang)) + "(" + str(int(base_array[9])) + "级)]"
+                taiyang_overview = "{increase_intelligence_and_strength} [{physical_and_mental_strength_or_intelligence_taiyang}({level}级)]".format(
+                    increase_intelligence_and_strength=taiyang_final_increase_strength_and_intelligence,
+                    physical_and_mental_strength_or_intelligence_taiyang=int(physical_and_mental_strength_or_intelligence_taiyang),
+                    level=int(base_array[index_buf_taiyang_lv50]),
+                )
 
                 global unique_index
                 unique_index += 1
@@ -1402,15 +1418,15 @@ def calc():
         ranking1 = []
         ranking2 = []
         ranking3 = []
-        for rank, data in enumerate(all_ranking1[:ui_top_n]):
+        for index, data in enumerate(all_ranking1[:ui_top_n]):
             damage = data[0]
             value = data[2]
             ranking1.append((damage, value))
-        for rank, data in enumerate(all_ranking2[:ui_top_n]):
+        for index, data in enumerate(all_ranking2[:ui_top_n]):
             damage = data[0]
             value = data[2]
             ranking2.append((damage, value))
-        for rank, data in enumerate(all_ranking3[:ui_top_n]):
+        for index, data in enumerate(all_ranking3[:ui_top_n]):
             damage = data[0]
             value = data[2]
             ranking3.append((damage, value))
@@ -1499,7 +1515,7 @@ deal_col_names = (
 
 def extract_deal_rank_cols(ele_skill, rank, ranking_detail):
     # (damage, unique_index, [calc_wep, base_array, baibianguai, tuple(not_owned_equips)])
-    damage = str(int(100 * ranking_detail[0])) + "%"
+    damage = "{}%".format(int(100 * ranking_detail[0]))
     weapon_index = ranking_detail[2][0][0]
     equip_indexes = ranking_detail[2][0][1:]
     base_array = ranking_detail[2][1]
@@ -1523,7 +1539,7 @@ def extract_deal_rank_cols(ele_skill, rank, ranking_detail):
         cols.append(base_array[i])
     cols.append(req_cool.get())  # 冷却补正
     cols.append(ele_skill)  # 技能属强补正
-    cols.append(str(round(100 * (1.05 / (1.05 + int(ele_skill) * 0.0045) - 1), 1)) + "%")  # 逆补正
+    cols.append("{}%".format(round(100 * (1.05 / (1.05 + int(ele_skill) * 0.0045) - 1), 1)))  # 逆补正
 
     if len(cols) != len(deal_col_names):
         raise Exception("col number not match")
@@ -2150,7 +2166,7 @@ def show_result(rank_list, job_type, ele_skill):
             # rank => [score, [calc_wep, base_array, baibianguai, not_owned_equips]]
             rank_baibiaoguai[0] = rank_list[0][1][2]
             rank_not_owned_equips[0] = rank_list[0][1][3]
-            rank_dam[0] = str(int(100 * rank_list[0][0])) + "%"
+            rank_dam[0] = "{}%".format(int(100 * rank_list[0][0]))
             rank_setting[0] = rank_list[0][1][0]  ##0号是排名
             rss[0] = rank_list[0][1][1]
             for i in [11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33]:
@@ -2166,7 +2182,7 @@ def show_result(rank_list, job_type, ele_skill):
 
             rank_baibiaoguai[1] = rank_list[1][1][2]
             rank_not_owned_equips[1] = rank_list[1][1][3]
-            rank_dam[1] = str(int(100 * rank_list[1][0])) + "%"
+            rank_dam[1] = "{}%".format(int(100 * rank_list[1][0]))
             rank_setting[1] = rank_list[1][1][0]
             rss[1] = rank_list[1][1][1]
             for i in [11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33]:
@@ -2182,7 +2198,7 @@ def show_result(rank_list, job_type, ele_skill):
 
             rank_baibiaoguai[2] = rank_list[2][1][2]
             rank_not_owned_equips[2] = rank_list[2][1][3]
-            rank_dam[2] = str(int(100 * rank_list[2][0])) + "%"
+            rank_dam[2] = "{}%".format(int(100 * rank_list[2][0]))
             rank_setting[2] = rank_list[2][1][0]
             rss[2] = rank_list[2][1][1]
             for i in [11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33]:
@@ -2198,7 +2214,7 @@ def show_result(rank_list, job_type, ele_skill):
 
             rank_baibiaoguai[3] = rank_list[3][1][2]
             rank_not_owned_equips[3] = rank_list[3][1][3]
-            rank_dam[3] = str(int(100 * rank_list[3][0])) + "%"
+            rank_dam[3] = "{}%".format(int(100 * rank_list[3][0]))
             rank_setting[3] = rank_list[3][1][0]
             rss[3] = rank_list[3][1][1]
             for i in [11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33]:
@@ -2214,7 +2230,7 @@ def show_result(rank_list, job_type, ele_skill):
 
             rank_baibiaoguai[4] = rank_list[4][1][2]
             rank_not_owned_equips[4] = rank_list[4][1][3]
-            rank_dam[4] = str(int(100 * rank_list[4][0])) + "%"
+            rank_dam[4] = "{}%".format(int(100 * rank_list[4][0]))
             rank_setting[4] = rank_list[4][1][0]
             rss[4] = rank_list[4][1][1]
             for i in [11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33]:
@@ -2237,30 +2253,60 @@ def show_result(rank_list, job_type, ele_skill):
         rank_stat2 = [0, 0, 0, 0, 0]
         for i in range(0, 5):
             try:
-                rank_stat[i] = ("增伤= " + str(int(rss[i][index_extra_percent_attack_damage])) +
-                                "%\n爆伤= " + str(int(rss[i][index_extra_percent_crit_damage])) +
-                                "%\n白字= " + str(int(rss[i][index_extra_percent_addtional_damage])) +
-                                "%\n所攻= " + str(int(rss[i][index_extra_percent_final_damage])) +
-                                "%\n三攻= " + str(int(rss[i][index_extra_percent_physical_magical_independent_attack_power])) +
-                                "%\n力智= " + str(int(rss[i][index_extra_percent_strength_and_intelligence])) +
-                                "%\n属强= " + str(int(rss[i][index_extra_all_element_strength])) +
-                                "\n持续= " + str(int(rss[i][index_extra_percent_continued_damage])) +
-                                "%\n技攻= " + str(int(rss[i][index_extra_percent_skill_attack_power])) +
-                                "%\n特殊= " + str(int(rss[i][index_extra_percent_special_effect])) +
-                                "%\n\n攻速= " + str(int(rss[i][index_extra_percent_attack_speed])) +
-                                "%\n暴击率= " + str(int(rss[i][index_extra_percent_magic_physical_crit_rate])) + "%")
-                rank_stat2[i] = ("   <主动>"
-                                 "\n  1~45技能= " + str(round(rss[i][index_extra_active_skill_lv_1_45], 1)) + "级" +
-                                 "\n    50技能= " + str(int(rss[i][index_extra_active_skill_lv_50])) + "级" +
-                                 "\n 60~80技能= " + str(round(rss[i][index_extra_active_skill_lv_60_80], 1)) + "级" +
-                                 "\n    85技能= " + str(int(rss[i][index_extra_active_skill_lv_85])) + "级" +
-                                 "\n    95技能= " + str(int(rss[i][index_extra_active_skill_lv_95])) + "级" +
-                                 "\n   100技能= " + str(int(rss[i][index_extra_active_skill_lv_100])) + "级" +
-                                 "\n\n   <被动>" +
-                                 "\n  转职被动= " + str(round(rss[i][index_extra_passive_transfer_skill], 1)) + "级" +
-                                 "\n  一觉被动= " + str(int(rss[i][index_extra_passive_first_awaken_skill])) + "级" +
-                                 "\n  二觉被动= " + str(int(rss[i][index_extra_passive_second_awaken_skill])) + "级" +
-                                 "\n  三觉被动= " + str(int(rss[i][index_extra_passive_third_awaken_skill])) + "级")
+                rank_stat[i] = (
+                    "增伤={zengsu}%\n"
+                    "爆伤={baoshang}%\n"
+                    "白字={baizi}%\n"
+                    "所攻={suogong}%\n"
+                    "三攻={sangong}%\n"
+                    "力智={lizhi}%\n"
+                    "属强={shuqiang}\n"
+                    "持续={chixu}%\n"
+                    "技攻={jigong}%\n"
+                    "特殊={teshu}%\n"
+                    "\n"
+                    "攻速={gongsu}%\n"
+                    "暴击率={baojilv}%"
+                ).format(
+                    zengsu=int(rss[i][index_extra_percent_attack_damage]),
+                    baoshang=int(rss[i][index_extra_percent_crit_damage]),
+                    baizi=int(rss[i][index_extra_percent_addtional_damage]),
+                    suogong=int(rss[i][index_extra_percent_final_damage]),
+                    sangong=int(rss[i][index_extra_percent_physical_magical_independent_attack_power]),
+                    lizhi=int(rss[i][index_extra_percent_strength_and_intelligence]),
+                    shuqiang=int(rss[i][index_extra_all_element_strength]),
+                    chixu=int(rss[i][index_extra_percent_continued_damage]),
+                    jigong=int(rss[i][index_extra_percent_skill_attack_power]),
+                    teshu=int(rss[i][index_extra_percent_special_effect]),
+                    gongsu=int(rss[i][index_extra_percent_attack_speed]),
+                    baojilv=int(rss[i][index_extra_percent_magic_physical_crit_rate])
+                )
+                rank_stat2[i] = (
+                    "   <主动>\n"
+                    "  1~45技能= {lv_1_45}级\n"
+                    "    50技能= {lv_50}级\n"
+                    " 60~80技能= {lv_60_80}级\n"
+                    "    85技能= {lv_85}级\n"
+                    "    95技能= {lv_95}级\n"
+                    "   100技能= {lv_100}级\n"
+                    "\n"
+                    "   <被动>\n"
+                    "  转职被动= {passive_lv_15}级\n"
+                    "  一觉被动= {passive_lv_48}级\n"
+                    "  二觉被动= {passive_lv_85}级\n"
+                    "  三觉被动= {passive_lv_95}级"
+                ).format(
+                    lv_1_45=round(rss[i][index_extra_active_skill_lv_1_45], 1),
+                    lv_50=int(rss[i][index_extra_active_skill_lv_50]),
+                    lv_60_80=round(rss[i][index_extra_active_skill_lv_60_80], 1),
+                    lv_85=int(rss[i][index_extra_active_skill_lv_85]),
+                    lv_95=int(rss[i][index_extra_active_skill_lv_95]),
+                    lv_100=int(rss[i][index_extra_active_skill_lv_100]),
+                    passive_lv_15=round(rss[i][index_extra_passive_transfer_skill], 1),
+                    passive_lv_48=int(rss[i][index_extra_passive_first_awaken_skill]),
+                    passive_lv_85=int(rss[i][index_extra_passive_second_awaken_skill]),
+                    passive_lv_95=int(rss[i][index_extra_passive_third_awaken_skill]),
+                )
             except TypeError as error:
                 c = 1
 
@@ -2272,8 +2318,8 @@ def show_result(rank_list, job_type, ele_skill):
             cool_txt = "纯伤害"
         canvas_res.create_text(122, 145, text=cool_txt, font=guide_font, fill='white')
         if int(ele_skill) != 0:
-            canvas_res.create_text(122, 170, text="技能属强补正=" + str(int(ele_skill)) + " / 逆校正%=" + str(
-                round(100 * (1.05 / (1.05 + int(ele_skill) * 0.0045) - 1), 1)) + "%", font=guide_font, fill='white')
+            canvas_res.create_text(122, 170, font=guide_font, fill='white',
+                                   text="技能属强补正={} / 逆校正%={}%".format(int(ele_skill), round(100 * (1.05 / (1.05 + int(ele_skill) * 0.0045) - 1), 1)))
         res_dam = canvas_res.create_text(122, 125, text=rank_dam[0], font=mid_font, fill='white')
         res_stat = canvas_res.create_text(65, 293, text=rank_stat[0], fill='white')
         res_stat2 = canvas_res.create_text(185, 293, text=rank_stat2[0], fill='white')
@@ -2568,19 +2614,20 @@ def show_result(rank_list, job_type, ele_skill):
         except IndexError as error:
             c = 1
 
-        canvas_res.create_text(122, 193, text=(
-                "自定义 祝福+" + str(custom_buf_data["bless_level"]) + "级 / " +
-                "自定义 一觉+" + str(custom_buf_data["taiyang_level"]) + "级\n" +
-                "祝福数据+" + str(custom_buf_data["bless_data"]) + " / " +
-                "一觉数据+" + str(custom_buf_data["taiyang_data"])
-        ), font=guide_font, fill='white')
+        canvas_res.create_text(122, 193, font=guide_font, fill='white', text=(
+            "自定义 祝福+{}级 / 自定义 一觉+{}级\n"
+            "祝福数据+{} / 一觉数据+{}"
+        ).format(
+            custom_buf_data["bless_level"], custom_buf_data["taiyang_level"],
+            custom_buf_data["bless_data"], custom_buf_data["taiyang_data"],
+        ))
 
         res_buf = canvas_res.create_text(122, 125, text=rank_buf3[0], font=mid_font, fill='white')
         res_buf_type_what = canvas_res.create_text(122, 145, text="综合标准", font=guide_font, fill='white')
-        res_buf_ex1 = canvas_res.create_text(123, 247, text="祝福=" + rank_buf_ex3[0][0], font=guide_font, fill='white')
-        res_buf_ex2 = canvas_res.create_text(123 - 17, 282, text="一觉=" + rank_buf_ex3[0][1], font=guide_font,
+        res_buf_ex1 = canvas_res.create_text(123, 247, text="祝福={}".format(rank_buf_ex3[0][0]), font=guide_font, fill='white')
+        res_buf_ex2 = canvas_res.create_text(123 - 17, 282, text="一觉={}".format(rank_buf_ex3[0][1]), font=guide_font,
                                              fill='white')
-        res_buf_ex3 = canvas_res.create_text(123 - 44, 312, text="一觉被动=" + rank_buf_ex3[0][2], font=guide_font,
+        res_buf_ex3 = canvas_res.create_text(123 - 44, 312, text="一觉被动={}".format(rank_buf_ex3[0][2]), font=guide_font,
                                              fill='white')
 
         res_img11 = canvas_res.create_image(57, 57, image=result_image_on3[0]['11'])
@@ -3495,7 +3542,7 @@ def update_count():
     remaining_time_str = "0s"
     while True:
         try:
-            show_str = str(count_valid) + "有效搭配/" + str(count_invalid) + "无效"
+            show_str = "{}有效搭配/{}无效".format(count_valid, count_invalid)
             if exit_calc == 0:
                 using_time = time.time() - count_start_time
                 using_time_str = format_time(using_time)
@@ -3506,10 +3553,15 @@ def update_count():
                     remaining_time_str = format_time(remaining_time)
                 else:
                     remaining_time_str = "0s(未经确计数)"
-            showcon(text=(str(count_valid) + "有效搭配/" + str(count_invalid) + "无效" +
-                          "\n用时=" + using_time_str + "" +
-                          "\n剩余=" + remaining_time_str)
-                    )
+            showcon(text=(
+                "{}有效搭配/{}无效\n"
+                "用时={}\n"
+                "剩余={}"
+            ).format(
+                count_valid, count_invalid,
+                using_time_str,
+                remaining_time_str,
+            ))
             time.sleep(0.1)
         except Exception as e:
             print("update_count except: {}".format(e))
@@ -4138,7 +4190,7 @@ def get_other_account_names():
 ###########################################################
 
 self = tkinter.Tk()
-self.title("一键史诗搭配计算器魔改版-支持百变怪/升级工作服/跨界/多武器 ver" + now_version + " by风之凌殇")
+self.title("一键史诗搭配计算器魔改版-ver" + now_version + " 魔改by风之凌殇 原创by黎明工作室（韩服）dawnclass16")
 self.geometry("{}x{}+{}+{}".format(main_window_width, main_window_height, main_window_x_offset, main_window_y_offset))
 self.resizable(False, False)
 self.configure(bg=dark_main)
