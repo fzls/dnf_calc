@@ -1,5 +1,8 @@
 # 额外配置选项，普通用户无需关注
 
+# 是否检查更新
+check_update_on_start = true
+
 # 是否需要额外将输出结果导出为excel文件
 [export_result_as_excel]
 # 启用导出excel功能

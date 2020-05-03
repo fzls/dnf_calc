@@ -3641,13 +3641,18 @@ def need_update(current_version, latest_version):
 # 启动时检查是否有更新
 def check_update_on_start():
     try:
+        if not g_config.check_update_on_start:
+            print("启动时检查更新被禁用，若需启用请在config.toml中设置")
+            return
+
         latest_version = get_latest_version()
-        nu = need_update(now_version, latest_version)
         if need_update(now_version, latest_version):
             ask_update = tkinter.messagebox.askquestion('更新', "当前版本为{}，已有最新版本{}. 你需要更新吗?".format(now_version, latest_version))
             if ask_update == 'yes':
                 webbrowser.open('https://pan.baidu.com/s/1-I8pMK6_yPH5qU4SWNMVog')
                 tkinter.messagebox.showinfo("百度网盘验证码", "百度网盘提取码为： 238m")
+        else:
+            print("当前版本{}已是最新版本，无需更新".format(now_version) )
     except Exception as err:
         print("更新版本失败, 错误为{}".format(err))
 
