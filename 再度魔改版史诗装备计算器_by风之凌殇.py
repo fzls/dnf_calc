@@ -403,7 +403,8 @@ creatures = [
     '骑士莱恩', '吟游诗人薇泽达', '古国英豪莱恩', '太初之音薇泽达', '神迹·古国英豪莱恩', '神迹·太初之音薇泽达',  # 2019春节普通宠物和至尊宠物，以及2020年升级后的2019至尊年宠
     '雪兔蒂娅', '火狐艾芙', '冰雪魔法师蒂娅', '炽焰咒术师艾芙',  # 2018春节普通宠物和至尊宠物
     '艾莉丝', '克里斯',  # 2017春节普通宠物
-    '牛小哞', '羊小咩',  # 心悦宠物
+    '牛小哞', '羊小咩', '弓小弦',  # 心悦宠物
+    '甜小鱼', # 新的心悦宠物
     '其他（直接比较）'
 ]
 
@@ -694,16 +695,19 @@ def get_shuchu_bonus_attributes():
         bonus_array[index_extra_passive_first_awaken_skill] += 1  # 一觉被动+1， 1-50lv+1
         bonus_array[index_extra_active_skill_lv_1_45] += 1  # 1-45级主动+1， 1-50lv+1
         bonus_array[index_extra_active_skill_lv_50] += 1  # 50级主动+1， 1-50lv+1
-    elif creature in ['牛小哞', '羊小咩']:
-        # 力量+45；智力+45；体力+45；精神+45
-        # 攻击速度+3% 移动速度+3% 施放速度+3%
-        # 所有属性强化+15
-        # 物理暴击率+10% 魔法暴击率+10%
-        # 城镇内移动速度+10%
-        # 所有职业Lv1~50全部技能Lv+1（特殊技能除外） Lv1就已精通的技能无法提升
+    elif creature in ['牛小哞', '羊小咩', '弓小弦']:
         bonus_array[index_strength_and_intelligence] += 45  # 四维+45
         bonus_array[index_extra_percent_attack_speed] += 3  # 三速+3%
         bonus_array[index_extra_all_element_strength] += 15  # 所有属强+15
+        bonus_array[index_extra_percent_magic_physical_crit_rate] += 10  # 暴击率+10%
+        bonus_array[index_extra_passive_transfer_skill] += 1  # 转职被动+1， 1-50lv+1
+        bonus_array[index_extra_passive_first_awaken_skill] += 1  # 一觉被动+1， 1-50lv+1
+        bonus_array[index_extra_active_skill_lv_1_45] += 1  # 1-45级主动+1， 1-50lv+1
+        bonus_array[index_extra_active_skill_lv_50] += 1  # 50级主动+1， 1-50lv+1
+    elif creature in ['甜小鱼']:
+        bonus_array[index_strength_and_intelligence] += 100  # 四维+100
+        bonus_array[index_extra_percent_attack_speed] += 5  # 三速+5%
+        bonus_array[index_extra_all_element_strength] += 20  # 所有属强+20
         bonus_array[index_extra_percent_magic_physical_crit_rate] += 10  # 暴击率+10%
         bonus_array[index_extra_passive_transfer_skill] += 1  # 转职被动+1， 1-50lv+1
         bonus_array[index_extra_passive_first_awaken_skill] += 1  # 一觉被动+1， 1-50lv+1
