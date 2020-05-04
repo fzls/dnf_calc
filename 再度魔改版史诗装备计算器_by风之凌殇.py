@@ -3774,6 +3774,8 @@ def check_update_on_start():
             if ask_update == 'yes':
                 webbrowser.open('https://pan.baidu.com/s/1-I8pMK6_yPH5qU4SWNMVog')
                 tkinter.messagebox.showinfo("百度网盘验证码", "百度网盘提取码为： 238m")
+            else:
+                tkinter.messagebox.showinfo("取消启动时自动检查更新方法", "如果想停留在当前版本，不想每次启动都弹出前面这个提醒更新的框框，可以前往config.toml，将check_update_on_start的值设为false即可")
         else:
             print("当前版本{}已是最新版本，无需更新".format(now_version))
     except Exception as err:
