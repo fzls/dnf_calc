@@ -5,7 +5,7 @@ call _git_push_remote.bat
 call _build.bat
 
 :: 设置目标目录
-set target_dir=.\..\..\..\downloads\(发布魔改计算器\再度魔改版史诗装备计算器_v3.2.填写实际的小版本号_by风之凌殇
+set target_dir=.\..\..\..\downloads\(发布魔改计算器\再度魔改版史诗装备计算器_v填写实际的小版本号_by风之凌殇
 
 :: 删除目标目录并重建
 RMDIR /S /Q "%target_dir%"
