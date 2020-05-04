@@ -24,7 +24,6 @@ import numpy as np
 import requests
 import toml
 import yaml
-import json
 from openpyxl import load_workbook, Workbook
 
 ###########################################################
@@ -367,6 +366,7 @@ for setting in settings:
     with open(setting.path, "r", encoding="utf-8") as setting_file:
         g_setting[setting.name] = munch.Munch.fromDict(yaml.load(setting_file))
 
+
 # 获取配置表setting_name中名称为item_name的条目
 def get_setting(setting_name, item_name):
     if g_setting[setting_name] is not None:
@@ -458,6 +458,37 @@ index_deal_extra_active_skill_lv_85 = 25  # 25-AR-pas3-85主动技能
 index_deal_extra_active_skill_lv_95 = 26  # 26-AS-pas4-95主动技能
 index_deal_extra_active_skill_lv_100 = 27  # 27-AT-pas5-100主动技能
 
+deal_entry_index_to_name = {
+    index_deal_strength_and_intelligence: "0-C-stat-力智",
+    index_deal_physical_magical_independent_attack_power: "1-D-att-物理/魔法/独立攻击力",
+    index_deal_extra_percent_attack_damage: "2-E-damper-攻击时额外增加X%的伤害增加量",
+    index_deal_extra_percent_crit_damage: "3-F-criper-暴击时，额外增加X%的伤害增加量",
+    index_deal_extra_percent_addtional_damage: "4-G-bonper-攻击时，附加X%的伤害，也就是白字",
+    index_deal_extra_percent_elemental_damage: "5-H-elebon-攻击时，附加X%的属性伤害",
+    index_deal_extra_percent_final_damage: "6-I-allper-最终伤害+X%",
+    index_deal_extra_percent_physical_magical_independent_attack_power: "7-J-attper-物理/魔法/独立攻击力 +X%",
+    index_deal_extra_percent_strength_and_intelligence: "8-K-staper-力智+X%",
+    index_deal_extra_all_element_strength: "9-L-ele-所有属性强化+X",
+    index_deal_extra_percent_continued_damage: "10-M-sloper-发生持续伤害5秒，伤害量为对敌人造成伤害的X%",
+    index_deal_extra_percent_skill_attack_power: "11-N-skiper-技能攻击力 +X%",
+    index_deal_extra_percent_special_effect: "12-O-special-特殊词条补正，如歧路和不息的装备，详见自定义中这俩装备相关配置",
+    index_deal_extra_percent_attack_speed: "13-P-speed-攻击速度 +X%",
+    index_deal_extra_percent_magic_physical_crit_rate: "14-Q-critical-魔法/物理暴击率 +X%",
+    index_deal_extra_active_skill_effect: "15-R-active-主动技能增加等级所带来的的影响（目前C的伤害计算没有计入该值，仅奶系职业用到）",
+    index_deal_extra_passive_transfer_skill: "16-S-pas1-增加转职被动的等级",
+    index_deal_extra_passive_first_awaken_skill: "17-T-pas2-增加一绝被动的等级",
+    index_deal_extra_passive_second_awaken_skill: "18-U-pas3-增加二觉被动的等级",
+    index_deal_extra_passive_third_awaken_skill: "19-V-pas4-增加三觉被动的等级",
+    index_deal_cool_correction: "20-Y-cool_skill-冷却矫正系数，每冷却1%，记0.35这个值",
+    index_deal_extra_active_second_awaken_skill: "21-AK-active2-二觉主动技能",
+    index_deal_extra_active_skill_lv_1_45: "22-AO-pas0-1_45主动技能",
+    index_deal_extra_active_skill_lv_50: "23-AP-pas1-50主动技能",
+    index_deal_extra_active_skill_lv_60_80: "24-AQ-pas2-60_80主动技能",
+    index_deal_extra_active_skill_lv_85: "25-AR-pas3-85主动技能",
+    index_deal_extra_active_skill_lv_95: "26-AS-pas4-95主动技能",
+    index_deal_extra_active_skill_lv_100: "27-AT-pas5-100主动技能",
+}
+
 # 奶系职业base_array中的各个下标的含义
 index_buf_physical_and_mental_strength = 0  # 0-C-[守护恩赐]体力、精神 +X
 index_buf_intelligence = 1  # 1-D-[启示:圣歌]、[人偶操纵者]智力 +X
@@ -481,8 +512,31 @@ index_buf_piety_halo_or_girs_love = 18  # 18-U-[虞诚信念]、[少女的爱]�
 index_buf_hymn_cool = 19  # 19-V-圣歌冷却减少X% (re: 目前好像没实装)
 index_buf_wisteria_whip_cool = 20  # 20-W-藤鞭冷却减少X% (re: 目前好像没实装)
 
+buf_entry_index_to_name = {
+    index_buf_physical_and_mental_strength: "0-C-[守护恩赐]体力、精神 +X",
+    index_buf_intelligence: "1-D-[启示:圣歌]、[人偶操纵者]智力 +X",
+    index_buf_bless_extra_percent_strength_and_intelligence: "2-E-[荣誉祝福]、[勇气祝福]、[禁忌诅咒]力量、智力增加量 +X%",
+    index_buf_bless_extra_percent_physical_attack_power: "3-F-[荣誉祝福]、[勇气祝福]、[禁忌诅咒]物理攻击力增加量 +X%",
+    index_buf_bless_extra_percent_magical_attack_power: "4-G-[荣誉祝福]、[勇气祝福]、[禁忌诅咒]魔法攻击力增加量 +X%",
+    index_buf_bless_extra_percent_independent_attack_power: "5-H-[荣誉祝福]、[勇气祝福]、[禁忌诅咒]独立攻击力增加量 +X%",
+    index_buf_taiyang_extra_strength_and_intelligence: "6-I-[天启之珠]、[圣光天启]、[开幕！人偶剧场]力量/智力 +X",
+    index_buf_taiyang_extra_percent_strength_and_intelligence: "7-J-[天启之珠]、[圣光天启]、[开幕！人偶剧场]力量、智力增加量 +X%",
+    index_buf_bless_lv30: "8-K-30级技能或直接指定祝福技能祝福等级+X",
+    index_buf_taiyang_lv50: "9-L-50级技能或直接指定太阳技能太阳等级+X",
+    index_buf_amplification: "[守护徽章]体力、精神增加量 +15%[勇气圣歌]BUFF效果增幅量 +5%[死命召唤]BUFF效果增幅量 +5%是否buff效果增幅",
+    index_buf_job_passive_lv15: "11-N-[守护恩赐]、[启示：圣歌]、[人偶操纵者]15级职业被动Lv+X",
+    index_buf_naiba_protect_badge_lv25: "12-O-奶爸25级守护徽章等级+X",
+    index_buf_first_awaken_passive_lv48: "13-P-1觉被动等级+X",
+    index_buf_second_awaken_passive_lv75: "14-Q-2觉被动等级+X",
+    index_buf_second_awaken_lv85: "15-R-2觉等级+X",
+    index_buf_third_awaken_passive_lv95: "16-S-3觉被动等级+X",
+    index_buf_belief_halo: "17-T-[信念光环]体力、精神 +X",
+    index_buf_piety_halo_or_girs_love: "18-U-[虞诚信念]、[少女的爱]力量/智力 +X",
+    index_buf_hymn_cool: "19-V-圣歌冷却减少X% (re: 目前好像没实装)",
+    index_buf_wisteria_whip_cool: "20-W-藤鞭冷却减少X% (re: 目前好像没实装)",
+}
+
 # 国服特色词条（宠物、称号、徽章、皮肤、宝珠、武器装扮等等）
-# re: 遍历之前的称号、宠物的实际内容，定义对应词条
 entry_name_to_indexes = munch.Munch.fromDict({
     # 物理/魔法/独立攻击力 +X
     "physical_magical_independent_attack_power": {
@@ -563,11 +617,23 @@ entry_name_to_indexes = munch.Munch.fromDict({
     },
 })
 
-
-# undone: 明天再做啦
-# re: 对照宠物、称号截图和现有配置，重新按照新的方式填写配置表
-
-# re: 按照新的方式来解析配置表
+entry_name_to_name = {
+    "physical_magical_independent_attack_power": "物理/魔法/独立攻击力 +X",
+    "strength_and_intelligence": "力量/智力 +X",
+    "physical_and_mental_strength": "体力/精神 +X",
+    "extra_percent_attack_speed": "攻击速度+X%",
+    "extra_all_element_strength": "所有属性强化 +X",
+    "extra_percent_magic_physical_crit_rate": "物理、魔法暴击率 +X%",
+    "extra_percent_addtional_damage": "攻击时，附加X%的伤害",
+    "extra_percent_strength_and_intelligence": "增加X%的力量、智力",
+    "strength_and_intelligence_when_attack": "攻击时，有X1几率增加X2点力量、智力、体力、精神，效果持续X3秒。（冷却时间X4秒） ps：只对输出职业生效，由于站街不生效，奶不用管这个词条，所以名字需要跟四维那个区分开来",
+    "extra_percent_crit_damage": "暴击时，额外增加X%的伤害增加量。（决斗场中，适用一般效果）",
+    "extra_percent_final_damage": "最终伤害增加X%",
+    "extra_all_job_all_level_1_50_skill": "所有职业Lv1~50全部技能Lv+1（特性技能除外）",
+    "cool_correction": "冷却矫正系数（仅输出职业）",
+    "reduce_percent_cool": "冷却减少时间-X%（仅奶系职业）",
+    "creature_increase_owner_attack_power": "宠物技能：使主人增加X%的攻击力，是乘算，且加到最终伤害中，所以可以视为输出职业的技能攻击力词条来处理",
+}
 
 
 ###########################################################
@@ -584,7 +650,7 @@ def add_bonus_attributes_to_base_array(job_type, base_array):
     guofu_teses = munch.Munch.fromDict([
         {"name": "称号", "setting_name": "styles", "selected": style_select.get()},
         {"name": "宠物", "setting_name": "creatures", "selected": creature_select.get()},
-        {"name": "其余特色", "setting_name": "account_other_bonus_attributes", "selected":  save_name_list[current_save_name_index]},
+        {"name": "其余特色", "setting_name": "account_other_bonus_attributes", "selected": save_name_list[current_save_name_index]},
     ])
 
     for tese in guofu_teses:
@@ -592,12 +658,16 @@ def add_bonus_attributes_to_base_array(job_type, base_array):
         setting = get_setting(tese.setting_name, tese.selected)
         if setting is not None and setting.entries is not None:
             # 增加当前选择的特色的各个词条对应的该类型职业的属性
+            print("应用国服特色：{}({})".format(tese.selected, tese.name))
             for entry in setting.entries:
                 for name, value in entry.items():
                     entry_indexes = entry_name_to_indexes[name]
                     entry_value = eval(str(value))
+                    entry_writen = False
                     if job_type == "deal":
                         # 处理输出职业的对应属性
+                        if "deal" not in entry_indexes:
+                            continue
                         for entry_index in entry_indexes.deal:
                             if entry_index == index_deal_extra_percent_skill_attack_power:
                                 # 技攻需要乘算
@@ -605,18 +675,21 @@ def add_bonus_attributes_to_base_array(job_type, base_array):
                             else:
                                 # 其余加算
                                 base_array[entry_index] += entry_value
+                            if not entry_writen:
+                                print("\t词条：{} {}".format(entry_name_to_name[name], entry_value))
+                                entry_writen = True
+                            print("\t\t{} => {}".format(deal_entry_index_to_name[entry_index], entry_value))
                     else:
                         # 处理奶系职业的对应属性
+                        if "buf" not in entry_indexes:
+                            continue
                         for entry_index in entry_indexes.buf:
                             # 全部加算
                             base_array[entry_index] += entry_value
-            # 打印出应用了的词条
-            print("applying tese: category={} name={}, entries=\n{}".format(
-                tese.name,
-                tese.selected,
-                json.dumps(setting.entries.toDict(), indent=2, ensure_ascii=False),
-            ))
-
+                            if not entry_writen:
+                                print("\t词条：{} => {}".format(entry_name_to_name[name], entry_value))
+                                entry_writen = True
+                            print("\t\t{} => {}".format(buf_entry_index_to_name[entry_index], entry_value))
 
     # re: 最终国服特色改为最终版时，移除下面的东西
     if job_type == "deal":
