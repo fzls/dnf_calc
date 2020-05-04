@@ -19,7 +19,6 @@ from heapq import heapify, heappush, heappushpop
 from math import floor
 from tkinter import *
 
-import munch
 import numpy as np
 import requests
 import toml
@@ -351,27 +350,27 @@ class Combopicker(tkinter.ttk.Entry, Picker):
 #                        读取自定义配置                    #
 ###########################################################
 # 读取程序config
-g_config = munch.Munch.fromDict(toml.load('config.toml'))
+g_config = toml.load('config.toml')
 
 # 读取配置表
-g_setting = munch.Munch()
+g_setting = {}
 
-settings = munch.Munch.fromDict([
+settings = [
     {"name": "styles", "path": "setting/styles.yaml"},  # 称号的配置表
     {"name": "creatures", "path": "setting/creatures.yaml"},  # 宠物的配置表
     {"name": "account_other_bonus_attributes", "path": "setting/account_other_bonus_attributes.yaml"},  # 其余特色的配置表
-])
+]
 
 for setting in settings:
-    with open(setting.path, "r", encoding="utf-8") as setting_file:
-        g_setting[setting.name] = munch.Munch.fromDict(yaml.load(setting_file))
+    with open(setting["path"], "r", encoding="utf-8") as setting_file:
+        g_setting[setting["name"]] = yaml.load(setting_file)
 
 
 # 获取配置表setting_name中名称为item_name的条目
 def get_setting(setting_name, item_name):
     if g_setting[setting_name] is not None:
         for setting in g_setting[setting_name]:
-            if item_name in setting.names:
+            if item_name in setting["names"]:
                 return setting
 
     return None
@@ -385,8 +384,8 @@ def merge_arrays(arrays):
 
 
 # 国服特色
-styles = merge_arrays(style.names for style in g_setting.styles)
-creatures = merge_arrays(creature.names for creature in g_setting.creatures)
+styles = merge_arrays(style["names"] for style in g_setting["styles"])
+creatures = merge_arrays(creature["names"] for creature in g_setting["creatures"])
 
 ###########################################################
 #                         逻辑相关常量                     #
@@ -537,7 +536,7 @@ buf_entry_index_to_name = {
 }
 
 # 国服特色词条（宠物、称号、徽章、皮肤、宝珠、武器装扮等等）
-entry_name_to_indexes = munch.Munch.fromDict({
+entry_name_to_indexes = {
     # 物理/魔法/独立攻击力 +X
     "physical_magical_independent_attack_power": {
         "deal": [index_deal_physical_magical_independent_attack_power],
@@ -615,7 +614,7 @@ entry_name_to_indexes = munch.Munch.fromDict({
     "creature_increase_owner_attack_power": {
         "deal": [index_deal_extra_percent_skill_attack_power],
     },
-})
+}
 
 entry_name_to_name = {
     "physical_magical_independent_attack_power": "物理/魔法/独立攻击力 +X",
@@ -647,19 +646,19 @@ def multiply_entry(old_inc_percent, add_inc_percent):
 
 # 获取国服特殊加成属性, job_type = "buf" or "deal"
 def add_bonus_attributes_to_base_array(job_type, base_array):
-    guofu_teses = munch.Munch.fromDict([
+    guofu_teses = [
         {"name": "称号", "setting_name": "styles", "selected": style_select.get()},
         {"name": "宠物", "setting_name": "creatures", "selected": creature_select.get()},
         {"name": "其余特色", "setting_name": "account_other_bonus_attributes", "selected": save_name_list[current_save_name_index]},
-    ])
+    ]
 
     for tese in guofu_teses:
         # 处理每一种特色
-        setting = get_setting(tese.setting_name, tese.selected)
-        if setting is not None and setting.entries is not None:
+        setting = get_setting(tese["setting_name"], tese["selected"])
+        if setting is not None and setting["entries"] is not None:
             # 增加当前选择的特色的各个词条对应的该类型职业的属性
-            print("应用国服特色：{}({})".format(tese.selected, tese.name))
-            for entry in setting.entries:
+            print("应用国服特色：{}({})".format(tese["selected"], tese["name"]))
+            for entry in setting["entries"]:
                 for name, value in entry.items():
                     entry_indexes = entry_name_to_indexes[name]
                     entry_value = eval(str(value))
@@ -668,7 +667,7 @@ def add_bonus_attributes_to_base_array(job_type, base_array):
                         # 处理输出职业的对应属性
                         if "deal" not in entry_indexes:
                             continue
-                        for entry_index in entry_indexes.deal:
+                        for entry_index in entry_indexes["deal"]:
                             if entry_index == index_deal_extra_percent_skill_attack_power:
                                 # 技攻需要乘算
                                 base_array[entry_index] = multiply_entry(base_array[entry_index], entry_value)
@@ -683,7 +682,7 @@ def add_bonus_attributes_to_base_array(job_type, base_array):
                         # 处理奶系职业的对应属性
                         if "buf" not in entry_indexes:
                             continue
-                        for entry_index in entry_indexes.buf:
+                        for entry_index in entry_indexes["buf"]:
                             # 全部加算
                             base_array[entry_index] += entry_value
                             if not entry_writen:
@@ -1087,8 +1086,8 @@ def calc():
 
     ui_top_n = 5
     save_top_n = ui_top_n
-    if g_config.export_result_as_excel.enable:
-        save_top_n = max(save_top_n, g_config.export_result_as_excel.export_rank_count)
+    if g_config["export_result_as_excel"]["enable"]:
+        save_top_n = max(save_top_n, g_config["export_result_as_excel"]["export_rank_count"])
 
     is_shuchu_job = job_name not in ["(奶系)神思者", "(奶系)炽天使", "(奶系)冥月女神"]
     if is_shuchu_job:
@@ -2870,8 +2869,8 @@ def show_result(rank_list, job_type, ele_skill):
 
 # 导出结果到excel
 def export_result(ele_skill, col_names, extract_rank_cols_func, rankings):
-    export_config = g_config.export_result_as_excel
-    if not export_config.enable:
+    export_config = g_config["export_result_as_excel"]
+    if not export_config["enable"]:
         return
 
     def _export_reuslt():
@@ -2896,8 +2895,8 @@ def export_result(ele_skill, col_names, extract_rank_cols_func, rankings):
                     sheet.cell(row, col_index + 1).value = col_value
 
         # 保存文件
-        book.save(export_config.export_file_name)
-        tkinter.messagebox.showinfo("排行结果已导出", "前{}排行数据已导出到当前目录下的{}，可打开进行查看".format(export_config.export_rank_count, export_config.export_file_name))
+        book.save(export_config["export_file_name"])
+        tkinter.messagebox.showinfo("排行结果已导出", "前{}排行数据已导出到当前目录下的{}，可打开进行查看".format(export_config["export_rank_count"], export_config["export_file_name"]))
 
     threading.Thread(target=_export_reuslt, daemon=True).start()
     return
@@ -3764,7 +3763,7 @@ def need_update(current_version, latest_version):
 # 启动时检查是否有更新
 def check_update_on_start():
     try:
-        if not g_config.check_update_on_start:
+        if not g_config["check_update_on_start"]:
             print("启动时检查更新被禁用，若需启用请在config.toml中设置")
             return
 
