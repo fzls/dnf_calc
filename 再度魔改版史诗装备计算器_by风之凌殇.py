@@ -24,6 +24,7 @@ import numpy as np
 import requests
 import toml
 import yaml
+import json
 from openpyxl import load_workbook, Workbook
 
 ###########################################################
@@ -359,18 +360,19 @@ g_setting = munch.Munch()
 settings = munch.Munch.fromDict([
     {"name": "styles", "path": "setting/styles.yaml"},  # 称号的配置表
     {"name": "creatures", "path": "setting/creatures.yaml"},  # 宠物的配置表
+    {"name": "account_other_bonus_attributes", "path": "setting/account_other_bonus_attributes.yaml"},  # 其余特色的配置表
 ])
 
 for setting in settings:
     with open(setting.path, "r", encoding="utf-8") as setting_file:
         g_setting[setting.name] = munch.Munch.fromDict(yaml.load(setting_file))
 
-
 # 获取配置表setting_name中名称为item_name的条目
 def get_setting(setting_name, item_name):
-    for setting in g_setting[setting_name]:
-        if item_name in setting.names:
-            return setting
+    if g_setting[setting_name] is not None:
+        for setting in g_setting[setting_name]:
+            if item_name in setting.names:
+                return setting
 
     return None
 
@@ -549,17 +551,16 @@ entry_name_to_indexes = munch.Munch.fromDict({
         "deal": [index_deal_cool_correction]
     },
     # 冷却减少时间-X%（仅奶系职业）
-    "reduce_percent_cool":{
+    "reduce_percent_cool": {
         "buf": [
             index_buf_hymn_cool,
-index_buf_wisteria_whip_cool,
+            index_buf_wisteria_whip_cool,
         ]
     },
     # 宠物技能：使主人增加X%的攻击力，是乘算，且加到最终伤害中，所以可以视为输出职业的技能攻击力词条来处理
     "creature_increase_owner_attack_power": {
         "deal": [index_deal_extra_percent_skill_attack_power],
     },
-
 })
 
 
@@ -583,6 +584,7 @@ def add_bonus_attributes_to_base_array(job_type, base_array):
     guofu_teses = munch.Munch.fromDict([
         {"name": "称号", "setting_name": "styles", "selected": style_select.get()},
         {"name": "宠物", "setting_name": "creatures", "selected": creature_select.get()},
+        {"name": "其余特色", "setting_name": "account_other_bonus_attributes", "selected":  save_name_list[current_save_name_index]},
     ])
 
     for tese in guofu_teses:
@@ -608,8 +610,13 @@ def add_bonus_attributes_to_base_array(job_type, base_array):
                         for entry_index in entry_indexes.buf:
                             # 全部加算
                             base_array[entry_index] += entry_value
+            # 打印出应用了的词条
+            print("applying tese: category={} name={}, entries=\n{}".format(
+                tese.name,
+                tese.selected,
+                json.dumps(setting.entries.toDict(), indent=2, ensure_ascii=False),
+            ))
 
-    # todo：加上各种技能宝珠、光环、皮肤、徽章等国服特色的支持
 
     # re: 最终国服特色改为最终版时，移除下面的东西
     if job_type == "deal":

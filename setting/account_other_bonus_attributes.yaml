@@ -1,0 +1,43 @@
+# 除称号、宠物外的其他国服特色的统一配置表
+
+# 配置表格式
+# 首层为数组
+# 第二层包括两个字段
+# 1. names: 表示存档名称，计算时会尝试从本表中查找当前存档是否存在对应特色配置，若存在，则会将各个词条一一应用
+# 2. entries: 各个词条的列表，具体词条名称和含义对应关系可以参照下面的说明及现有例子
+
+# 词条名称及含义
+#             词条名称                                 词条含义
+# physical_magical_independent_attack_power:    物理/魔法/独立攻击力 +X
+# strength_and_intelligence:                    力量/智力 +X
+# physical_and_mental_strength:                 体力/精神 +X
+# extra_percent_attack_speed:                   攻击速度+X%
+# extra_all_element_strength:                   所有属性强化 +X
+# extra_percent_magic_physical_crit_rate:       物理、魔法暴击率 +X%
+# extra_percent_addtional_damage:               攻击时，附加X%的伤害
+# extra_percent_strength_and_intelligence:      增加X%的力量、智力
+# strength_and_intelligence_when_attack:        攻击时，有X1几率增加X2点力量、智力、体力、精神，效果持续X3秒。（冷却时间X4秒） ps：只对输出职业生效，由于站街不生效，奶不用管这个词条，所以名字需要跟四维那个区分开来
+# extra_percent_crit_damage:                    暴击时，额外增加X%的伤害增加量。（决斗场中，适用一般效果）
+# extra_percent_final_damage:                   最终伤害增加X%
+# extra_all_job_all_level_1_50_skill:           所有职业Lv1~50全部技能Lv+1（特性技能除外）
+# cool_correction:                              冷却矫正系数（仅输出职业）
+# reduce_percent_cool:                          冷却减少时间-X%（仅奶系职业）
+# creature_increase_owner_attack_power:          宠物技能：使主人增加X%的攻击力，是乘算，且加到最终伤害中，所以可以视为输出职业的技能攻击力词条来处理
+
+## 简单示例如下
+#- names:
+#    - "召唤"
+#  entries:
+#    # 头肩
+#    # 技能宝珠 1-50lv+1
+#    - extra_all_job_all_level_1_50_skill: 1 # 所有职业Lv1~50全部技能Lv+1（特性技能除外）
+#    # 红色徽章 +25智力
+#    - strength_and_intelligence: 80  # 四维(力智)+80
+#- names:
+#    - "奶妈"
+#  entries:
+#    # 头肩
+#    # 技能宝珠 1-50lv+1
+#    - extra_all_job_all_level_1_50_skill: 1 # 所有职业Lv1~50全部技能Lv+1（特性技能除外）
+#    # 红色徽章 +25智力
+#    - strength_and_intelligence: 80  # 四维(力智)+80
