@@ -22,7 +22,7 @@
 # extra_all_job_all_level_1_50_skill:           所有职业Lv1~50全部技能Lv+1（特性技能除外）
 # cool_correction:                              冷却矫正系数（仅输出职业）
 # reduce_percent_cool:                          冷却减少时间-X%（仅奶系职业）
-# creature_increase_owner_attack_power:          宠物技能：使主人增加X%的攻击力，是乘算，且加到最终伤害中，所以可以视为输出职业的技能攻击力词条来处理
+# creature_increase_owner_attack_power:         宠物技能：使主人增加X%的攻击力，是乘算，且加到最终伤害中，所以可以视为输出职业的技能攻击力词条来处理
 
 - names:
     - "使徒降临"
