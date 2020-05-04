@@ -4331,7 +4331,7 @@ def get_other_account_names():
 self = tkinter.Tk()
 self.title("一键史诗搭配计算器魔改版-ver" + now_version + " 魔改by风之凌殇 原创by黎明工作室（韩服）dawnclass16")
 self.geometry("{}x{}+{}+{}".format(main_window_width, main_window_height, main_window_x_offset, main_window_y_offset))
-self.resizable(False, False)
+self.resizable(g_config["main_window_resizable"], g_config["main_window_resizable"])
 self.configure(bg=dark_main)
 self.iconbitmap(r'ext_img/icon.ico')
 

@@ -3,6 +3,9 @@
 # 是否检查更新
 check_update_on_start = true
 
+# 是否允许主界面缩放（界面实际布局是固定大小的）
+main_window_resizable = false
+
 # 是否需要额外将输出结果导出为excel文件
 [export_result_as_excel]
 # 启用导出excel功能
