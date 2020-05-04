@@ -1,49 +1,49 @@
 ------------------------------workbook: DATA.xlsx------------------------------
 ------------------------------sheet: Sheet1------------------------------
-None,None,None,None,None,None,None,None,None,None,None,None,None,None
-None,None,None,None,None,None,None,None,None,None,None,None,None,None
-None,智慧产物,None,None,单件,None,None,套装,None,None,None,None,None,None
-None,2-2-2-1 位置,None,None,2-2-1 位置,None,None,1-2-1 位置,None,None,None,None,None,None
-None,部位-'39'-代码-改造,None,None,部位-套装-是否神话,None,None,1-套装-个数,None,None,None,None,None,None
-None,None,None,None,None,None,武器,10,None,None,3.3,1.43,1.43,1.58730158730158
-None,None,None,None,大祭司,01,上衣,11,None,None,None,None,None,None
-None,None,None,None,魔法师,02,裤子,12,None,None,None,None,None,None
-None,None,None,None,舞姬,03,护肩,13,None,None,None,最终统计,None,None
-None,None,None,None,阴影,04,腰带,14,None,荣誉祝福,None,4308,None,None
-None,None,None,None,裁决者,05,鞋子,15,None,天启之珠,None,4308,None,None
-None,None,None,None,龙血玄黄,06,手镯,21,None,勇气祝福,None,4166,None,None
-None,None,None,None,沙漠,07,项链,22,None,圣光天启,None,4166,None,None
-None,None,None,None,灸炎,08,戒指,23,None,禁忌诅咒,None,4166,None,None
-None,None,None,None,擎天,09,左槽,31,None,人偶剧场,None,4166,None,None
-None,None,None,None,地狱,10,右槽,32,None,None,None,None,None,None
-None,None,None,None,铁匠,11,耳环,33,None,None,None,None,None,None
-None,None,None,None,荆棘,12,None,None,None,祝福系数,None,None,None,None
-None,None,None,None,不息,13,None,None,None,奶爸,630,None,None,None
-None,None,None,None,歧路,14,None,None,None,奶妈,675,None,None,None
-None,None,None,None,大自然,15,None,None,None,奶萝,665,None,None,None
-None,None,None,None,尘封术式,16,None,None,None,None,None,None,None,None
-None,None,None,None,破晓,17,None,None,None,1觉 750,None,None,None,None
-None,None,None,None,三角,18,None,None,None,None,None,None,None,None
-None,None,None,None,权能,19,None,None,None,None,None,None,None,None
-None,None,None,None,军神,20,None,None,None,None,None,None,None,None
-None,None,None,None,灵宝,21,None,None,None,None,None,None,None,None
-None,None,None,None,时间,22,None,None,None,None,None,None,None,None
-None,None,None,None,能量,23,None,None,None,None,None,None,None,None
-None,None,None,None,黑魔法,24,None,None,None,None,None,None,None,None
-None,None,None,None,时空,25,None,None,None,None,None,None,None,None
-None,None,None,None,呐喊,26,None,None,None,None,None,None,None,None
-None,None,None,None,狂乱,27,None,None,None,None,None,None,None,None
-None,None,None,None,深渊,28,None,None,None,None,None,None,None,None
-None,None,None,None,圣者,29,None,None,None,None,None,None,None,None
-None,None,None,None,命运,30,None,None,None,None,None,None,None,None
-None,None,None,None,愤怒,31,None,None,None,None,None,None,None,None
-None,None,None,None,求道者,32,None,None,None,None,None,None,None,None
-None,None,None,None,次元,33,None,None,None,None,None,None,None,None
-None,None,None,None,天命,34,None,None,None,None,None,None,None,None
-None,None,None,None,悲剧,35,None,None,None,None,None,None,None,None
-None,None,None,None,传说防具,36,None,None,None,None,None,None,None,None
-None,None,None,None,普雷首饰,37,None,None,None,None,None,None,None,None
-None,None,None,None,普雷特殊,38,None,None,None,None,None,None,None,None
+None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None
+None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None
+None,智慧产物,None,None,单件,None,None,套装,None,None,None,None,None,None,None,None,None
+None,2-2-2-1 位置,None,None,2-2-1 位置,None,None,1-2-1 位置,None,None,None,None,None,None,None,None,None
+None,部位-'39'-代码-改造,None,None,部位-套装-是否神话,None,None,1-套装-个数,None,None,None,None,None,None,None,None,None
+None,None,None,None,None,None,武器,10,None,None,3.3,1.43,1.43,1.58730158730158,None,None,None
+None,None,None,None,大祭司,01,上衣,11,None,None,None,None,None,None,None,None,None
+None,None,None,None,魔法师,02,裤子,12,None,None,None,None,None,None,None,buflvl字段说明,None
+None,None,None,None,舞姬,03,护肩,13,None,None,None,最终统计,None,None,None,奶爸,None
+None,None,None,None,阴影,04,腰带,14,None,荣誉祝福,None,4308,None,None,None,hol_b_atta,祝福增加的三攻
+None,None,None,None,裁决者,05,鞋子,15,None,天启之珠,None,4308,None,None,None,pas0,守护恩赐（15级）增加的体力、精神数值（祝福）
+None,None,None,None,龙血玄黄,06,手镯,21,None,勇气祝福,None,4166,None,None,None,hol_pas0_1,守护徽章（25级）增加的体力、精神数值（祝福）
+None,None,None,None,沙漠,07,项链,22,None,圣光天启,None,4166,None,None,None,hol_pas1,一觉被动（信念光环）增加的体力、精神数值
+None,None,None,None,灸炎,08,戒指,23,None,禁忌诅咒,None,4166,None,None,None,hol_act2,二觉增加的体力、精神数值
+None,None,None,None,擎天,09,左槽,31,None,人偶剧场,None,4166,None,None,None,pas3,三觉被动增加的体力、精神数值
+None,None,None,None,地狱,10,右槽,32,None,None,None,None,None,None,None,hol_b_stat,祝福增加的力智
+None,None,None,None,铁匠,11,耳环,33,None,None,None,None,None,None,None,c_stat,太阳增加的力智
+None,None,None,None,荆棘,12,None,None,None,祝福系数,None,None,None,None,None,hol_pas1_out,信念光环增加的体力、精神数值
+None,None,None,None,不息,13,None,None,None,奶爸,630,None,None,None,None,None,None
+None,None,None,None,歧路,14,None,None,None,奶妈,675,None,None,None,None,奶妈、奶萝,None
+None,None,None,None,大自然,15,None,None,None,奶萝,665,None,None,None,None,se_b_atta,祝福增加的三攻
+None,None,None,None,尘封术式,16,None,None,None,None,None,None,None,None,None,pas0,[启示：圣歌]、[人偶操纵者] 增加的智力数值
+None,None,None,None,破晓,17,None,None,None,1觉 750,None,None,None,None,None,se_pas1,一觉被动（[虞诚信念]、[少女的爱]）增加的智力数值
+None,None,None,None,三角,18,None,None,None,None,None,None,None,None,None,se_pas2,二觉被动增加的智力数值
+None,None,None,None,权能,19,None,None,None,None,None,None,None,None,None,pas3,三觉被动增加的智力数值
+None,None,None,None,军神,20,None,None,None,None,None,None,None,None,None,se_b_stat,祝福增加的力智
+None,None,None,None,灵宝,21,None,None,None,None,None,None,None,None,None,c_stat,太阳增加的力智
+None,None,None,None,时间,22,None,None,None,None,None,None,None,None,None,None,None
+None,None,None,None,能量,23,None,None,None,None,None,None,None,None,None,None,None
+None,None,None,None,黑魔法,24,None,None,None,None,None,None,None,None,None,None,None
+None,None,None,None,时空,25,None,None,None,None,None,None,None,None,None,None,None
+None,None,None,None,呐喊,26,None,None,None,None,None,None,None,None,None,None,None
+None,None,None,None,狂乱,27,None,None,None,None,None,None,None,None,None,None,None
+None,None,None,None,深渊,28,None,None,None,None,None,None,None,None,None,None,None
+None,None,None,None,圣者,29,None,None,None,None,None,None,None,None,None,None,None
+None,None,None,None,命运,30,None,None,None,None,None,None,None,None,None,None,None
+None,None,None,None,愤怒,31,None,None,None,None,None,None,None,None,None,None,None
+None,None,None,None,求道者,32,None,None,None,None,None,None,None,None,None,None,None
+None,None,None,None,次元,33,None,None,None,None,None,None,None,None,None,None,None
+None,None,None,None,天命,34,None,None,None,None,None,None,None,None,None,None,None
+None,None,None,None,悲剧,35,None,None,None,None,None,None,None,None,None,None,None
+None,None,None,None,传说防具,36,None,None,None,None,None,None,None,None,None,None,None
+None,None,None,None,普雷首饰,37,None,None,None,None,None,None,None,None,None,None,None
+None,None,None,None,普雷特殊,38,None,None,None,None,None,None,None,None,None,None,None
 ------------------------------sheet: buf------------------------------
 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22
 0,None,0,0,祝福,None,None,None,1觉,None,30,50,0,15,25,48,75,85,95,0,0,0,0
