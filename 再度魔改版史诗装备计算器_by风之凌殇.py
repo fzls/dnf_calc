@@ -1381,7 +1381,7 @@ def calc():
                                                                                       + lvlget('hol_pas0_1')[int(base_array[index_buf_naiba_protect_badge_lv25])]
                     # 一觉被动（信念光环）增加的体力、精神数值
                     first_awaken_passive_increase_physical_and_mental_strength = lvlget('hol_pas1')[int(base_array[index_buf_first_awaken_passive_lv48])]
-                    # 二觉被动增加的体力、精神数值
+                    # 二觉增加的体力、精神数值
                     second_awaken_increase_physical_and_mental_strength = lvlget('hol_act2')[int(base_array[index_buf_second_awaken_lv85])]
                     # 三觉被动增加的体力、精神数值
                     third_awaken_passive_increase_physical_and_mental_strength = lvlget('pas3')[int(base_array[index_buf_third_awaken_passive_lv95])]
@@ -4427,6 +4427,16 @@ select_all.place(x=390 - 35, y=7)
 stop_img = PhotoImage(file="ext_img/stop.png")
 tkinter.Button(self, image=stop_img, borderwidth=0, activebackground=dark_main, command=stop_calc, bg=dark_main).place(
     x=390 - 35, y=62)
+
+
+def show_more_tese():
+    tkinter.messagebox.showinfo("操作方法", "如需设置更多国服特色，请前往setting/account_other_bonus_attributes.yaml，阅读配置示例后自行配置")
+
+
+# 更多国服特色
+more_tese_img = PhotoImage(file="ext_img/more_tese.png")
+select_all = tkinter.Button(self, image=more_tese_img, borderwidth=0, activebackground=dark_main, command=show_more_tese, bg=dark_main)
+select_all.place(x=275, y=10)
 
 # timeline_img = PhotoImage(file="ext_img/timeline.png")
 # select_custom = tkinter.Button(self, image=timeline_img, borderwidth=0, activebackground=dark_main,
