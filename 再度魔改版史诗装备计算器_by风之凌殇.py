@@ -529,7 +529,7 @@ entry_name_to_indexes = munch.Munch.fromDict({
         "deal": [index_deal_extra_percent_final_damage],
     },
     # 所有职业Lv1~50全部技能Lv+1（特性技能除外）
-    "all_job_all_level_1_50_skill_increase_1": {
+    "extra_all_job_all_level_1_50_skill": {
         "deal": [
             index_deal_extra_passive_transfer_skill,
             index_deal_extra_passive_first_awaken_skill,
@@ -564,7 +564,7 @@ index_buf_wisteria_whip_cool,
 
 
 # undone: 明天再做啦
-# re: 重新按照新的方式填写配置表
+# re: 对照宠物、称号截图和现有配置，重新按照新的方式填写配置表
 
 # re: 按照新的方式来解析配置表
 
