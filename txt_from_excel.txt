@@ -1019,7 +1019,7 @@ set_wave_2,0,%,None,存档10,None,None,None,None,None,None
 set_wave_3,0,%,None,None,None,None,None,None,None,None
 set_bet_lvl,英雄↑,None,None,None,None,None,None,None,None,None
 set_sun_rein,11,강,None,None,None,None,None,None,None,None
-ele_inchant,245,None,None,None,None,None,None,None,None,None
+ele_inchant,19,None,None,None,None,None,None,None,None,None
 ele_ora,0,None,None,None,None,None,None,None,None,None
 ele_gem,0,None,None,None,None,None,None,None,None,None
 ele_skill,0,None,None,None,None,None,None,None,None,None
