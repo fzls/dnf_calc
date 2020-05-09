@@ -2286,7 +2286,7 @@ def show_result(rank_list, job_type, ele_skill):
     canvas_res.create_image(canvas_width // 2, canvas_height // 2, image=result_bg)
 
     global image_list, image_list2
-    global res_img11, res_img12, res_img13, res_img14, res_img15, res_img21, res_img22, res_img23, res_img31, res_img32, res_img33, res_txtbbg, res_imgbbg, wep_combopicker, jobup_select, res_txt_weapon
+    global res_img11, res_img12, res_img13, res_img14, res_img15, res_img21, res_img22, res_img23, res_img31, res_img32, res_img33, res_txtbbgs, res_imgbbgs, wep_combopicker, jobup_select, res_txt_weapon
 
     wep_index = ""
 
@@ -2472,9 +2472,11 @@ def show_result(rank_list, job_type, ele_skill):
         res_img31 = canvas_res.create_image(189, 87, image=result_image_on[0]['31'])  # 辅助装备
         res_img32 = canvas_res.create_image(219, 117, image=result_image_on[0]['32'])  # 魔法石
         res_img33 = canvas_res.create_image(189, 117, image=result_image_on[0]['33'])  # 耳环
+        res_txtbbgs = [None, None, None, None, None, None] # 0-4 => 右边的展示区间， 5 => 左边的那个百变怪
+        res_imgbbgs = [None, None, None, None, None, None] # 0-4 => 右边的展示区间， 5 => 左边的那个百变怪
         if 'bbg' in result_image_on[0]:
-            res_txtbbg = canvas_res.create_text(178, 147, text="百变怪=>", font=guide_font, fill='white')
-            res_imgbbg = canvas_res.create_image(219, 147, image=result_image_on[0]['bbg'])  # 百变怪
+            res_txtbbgs[5] = canvas_res.create_text(178, 147, text="百变怪=>", font=guide_font, fill='white')
+            res_imgbbgs[5] = canvas_res.create_image(219, 147, image=result_image_on[0]['bbg'])  # 百变怪
         cn1 = 0
         for j in range(0, 5):
             try:
@@ -2482,8 +2484,8 @@ def show_result(rank_list, job_type, ele_skill):
                     canvas_res.create_image(268 + cn1 * 29, 67 + 78 * j, image=result_image_on[j][str(i)])
                     cn1 = cn1 + 1
                 if 'bbg' in result_image_on[j]:
-                    canvas_res.create_text(268 + 5 * 29 + 14, 38 + 78 * j, text="百变怪=>", font=guide_font, fill='white')
-                    canvas_res.create_image(268 + 7 * 29, 37 + 78 * j, image=result_image_on[j]['bbg'])
+                    res_txtbbgs[j] = canvas_res.create_text(268 + 5 * 29 + 14, 38 + 78 * j, text="百变怪=>", font=guide_font, fill='white')
+                    res_imgbbgs[j] = canvas_res.create_image(268 + 7 * 29, 37 + 78 * j, image=result_image_on[j]['bbg'])
                 cn1 = 0
                 canvas_res.create_text(346, 34 + 78 * j, text=rank_dam[j], font=mid_font, fill='white')
             except KeyError as error:
@@ -2778,9 +2780,11 @@ def show_result(rank_list, job_type, ele_skill):
         res_img31 = canvas_res.create_image(189, 87, image=result_image_on3[0]['31'])
         res_img32 = canvas_res.create_image(219, 117, image=result_image_on3[0]['32'])
         res_img33 = canvas_res.create_image(189, 117, image=result_image_on3[0]['33'])
+        res_txtbbgs = [None, None, None, None, None, None] # 0-4 => 右边的展示区间， 5 => 左边的那个百变怪
+        res_imgbbgs = [None, None, None, None, None, None] # 0-4 => 右边的展示区间， 5 => 左边的那个百变怪
         if 'bbg' in result_image_on3[0]:
-            res_txtbbg = canvas_res.create_text(178, 147, text="百变怪=>", font=guide_font, fill='white')
-            res_imgbbg = canvas_res.create_image(219, 147, image=result_image_on3[0]['bbg'])  # 百变怪
+            res_txtbbgs[5] = canvas_res.create_text(178, 147, text="百变怪=>", font=guide_font, fill='white')
+            res_imgbbgs[5] = canvas_res.create_image(219, 147, image=result_image_on3[0]['bbg'])  # 百变怪
         cn1 = 0
         res_img_list = {}
         res_buf_list = {}
@@ -2791,8 +2795,8 @@ def show_result(rank_list, job_type, ele_skill):
                     res_img_list[str(j) + str(i)] = temp_res
                     cn1 = cn1 + 1
                 if 'bbg' in result_image_on3[j]:
-                    canvas_res.create_text(268 + 5 * 29 + 14, 38 + 78 * j, text="百变怪=>", font=guide_font, fill='white')
-                    canvas_res.create_image(268 + 7 * 29, 37 + 78 * j, image=result_image_on3[j]['bbg'])
+                    res_txtbbgs[j] = canvas_res.create_text(268 + 5 * 29 + 14, 38 + 78 * j, text="百变怪=>", font=guide_font, fill='white')
+                    res_imgbbgs[j] = canvas_res.create_image(268 + 7 * 29, 37 + 78 * j, image=result_image_on3[j]['bbg'])
                 cn1 = 0
                 temp_buf = canvas_res.create_text(346, 34 + 78 * j, text=rank_buf3[j], font=mid_font, fill='white')
                 res_buf_list[j] = temp_buf
@@ -2906,7 +2910,7 @@ def change_rank(now, job_type):
     global g_current_rank
     g_current_rank = now
 
-    global image_list, canvas_res, res_img11, res_img12, res_img13, res_img14, res_img15, res_img21, res_img22, res_img23, res_img31, res_img32, res_img33, res_txtbbg, res_imgbbg
+    global image_list, canvas_res, res_img11, res_img12, res_img13, res_img14, res_img15, res_img21, res_img22, res_img23, res_img31, res_img32, res_img33, res_txtbbgs, res_imgbbgs
     if job_type == 'deal':
         global res_dam, res_stat, res_stat2, rank_stat, rank_stat2, result_image_on
         try:
@@ -2922,13 +2926,16 @@ def change_rank(now, job_type):
             canvas_res.itemconfig(res_img31, image=image_changed['31'])
             canvas_res.itemconfig(res_img32, image=image_changed['32'])
             canvas_res.itemconfig(res_img33, image=image_changed['33'])
-            if 'res_txtbbg' in globals() and res_txtbbg is not None:
-                canvas_res.delete(res_txtbbg)
-            if 'res_imgbbg' in globals() and res_imgbbg is not None:
-                canvas_res.delete(res_imgbbg)
+            if res_txtbbgs[5] is not None:
+                canvas_res.delete(res_txtbbgs[5])
+            if res_imgbbgs[5] is not None:
+                canvas_res.delete(res_imgbbgs[5])
             if 'bbg' in image_changed:
-                res_txtbbg = canvas_res.create_text(178, 147, text="百变怪=>", fill='white')
-                res_imgbbg = canvas_res.create_image(219, 147, image=image_changed['bbg'])  # 百变怪
+                res_txtbbgs[5] = canvas_res.create_text(178, 147, text="百变怪=>", fill='white')
+                res_imgbbgs[5] = canvas_res.create_image(219, 147, image=image_changed['bbg'])  # 百变怪
+            else:
+                res_txtbbgs[5] = None
+                res_imgbbgs[5] = None
             canvas_res.itemconfig(res_dam, text=rank_dam[now])
             canvas_res.itemconfig(res_stat, text=rank_stat[now])
             canvas_res.itemconfig(res_stat2, text=rank_stat2[now])
@@ -2970,13 +2977,16 @@ def change_rank(now, job_type):
             canvas_res.itemconfig(res_img31, image=image_changed['31'])
             canvas_res.itemconfig(res_img32, image=image_changed['32'])
             canvas_res.itemconfig(res_img33, image=image_changed['33'])
-            if 'res_txtbbg' in globals() and res_txtbbg is not None:
-                canvas_res.delete(res_txtbbg)
-            if 'res_imgbbg' in globals() and res_imgbbg is not None:
-                canvas_res.delete(res_imgbbg)
+            if res_txtbbgs[5] is not None:
+                canvas_res.delete(res_txtbbgs[5])
+            if res_imgbbgs[5] is not None:
+                canvas_res.delete(res_imgbbgs[5])
             if 'bbg' in image_changed:
-                res_txtbbg = canvas_res.create_text(178, 147, text="百变怪=>", fill='white')
-                res_imgbbg = canvas_res.create_image(219, 147, image=image_changed['bbg'])  # 百变怪
+                res_txtbbgs[5] = canvas_res.create_text(178, 147, text="百变怪=>", fill='white')
+                res_imgbbgs[5] = canvas_res.create_image(219, 147, image=image_changed['bbg'])  # 百变怪
+            else:
+                res_txtbbgs[5] = None
+                res_imgbbgs[5] = None
 
             current_weapon = g_rank_equips[g_current_buff_type][now][0]
             current_equips = g_rank_equips[g_current_buff_type][now][1:]
@@ -2991,7 +3001,7 @@ def change_rank_type(in_type):
     global g_current_rank
     g_current_rank = 0
     global g_current_buff_type
-    global image_list, canvas_res, res_img11, res_img12, res_img13, res_img14, res_img15, res_img21, res_img22, res_img23, res_img31, res_img32, res_img33, res_txtbbg, res_imgbbg
+    global image_list, canvas_res, res_img11, res_img12, res_img13, res_img14, res_img15, res_img21, res_img22, res_img23, res_img31, res_img32, res_img33, res_txtbbgs, res_imgbbgs
     global result_image_on1, result_image_on2, result_image_on3, rank_buf1, rank_buf2, rank_buf3, rank_type_buf, res_img_list, res_buf_list, res_buf_ex1, res_buf_ex2, res_buf_ex3, rank_buf_ex1, rank_buf_ex2, rank_buf_ex3, res_buf_type_what
     if in_type == 1:
         rank_type_buf = 1
@@ -3033,22 +3043,35 @@ def change_rank_type(in_type):
     canvas_res.itemconfig(res_img31, image=image_changed['31'])
     canvas_res.itemconfig(res_img32, image=image_changed['32'])
     canvas_res.itemconfig(res_img33, image=image_changed['33'])
-    if 'res_txtbbg' in globals() and res_txtbbg is not None:
-        canvas_res.delete(res_txtbbg)
-    if 'res_imgbbg' in globals() and res_imgbbg is not None:
-        canvas_res.delete(res_imgbbg)
+    if res_txtbbgs[5] is not None:
+        canvas_res.delete(res_txtbbgs[5])
+    if res_imgbbgs[5] is not None:
+        canvas_res.delete(res_imgbbgs[5])
     if 'bbg' in image_changed:
-        res_txtbbg = canvas_res.create_text(178, 147, text="百变怪=>", fill='white')
-        res_imgbbg = canvas_res.create_image(219, 147, image=image_changed['bbg'])  # 百变怪
+        res_txtbbgs[5] = canvas_res.create_text(178, 147, text="百变怪=>", fill='white')
+        res_imgbbgs[5] = canvas_res.create_image(219, 147, image=image_changed['bbg'])  # 百变怪
+    else:
+        res_txtbbgs[5] = None
+        res_imgbbgs[5] = None
+
     cn2 = 0
     for j in range(0, 5):
         try:
             for i in [11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33]:
                 canvas_res.itemconfig(res_img_list[str(j) + str(i)], image=image_changed_all[j][str(i)])
                 cn2 = cn2 + 2
+
+            if res_txtbbgs[j] is not None:
+                canvas_res.delete(res_txtbbgs[j])
+            if res_imgbbgs[j] is not None:
+                canvas_res.delete(res_imgbbgs[j])
             if 'bbg' in image_changed_all[j]:
-                canvas_res.create_text(268 + 5 * 29 + 14, 38 + 78 * j, text="百变怪=>", font=guide_font, fill='white')
-                canvas_res.create_image(268 + 7 * 29, 37 + 78 * j, image=image_changed_all[j]['bbg'])
+                res_txtbbgs[j] = canvas_res.create_text(268 + 5 * 29 + 14, 38 + 78 * j, text="百变怪=>", font=guide_font, fill='white')
+                res_imgbbgs[j] = canvas_res.create_image(268 + 7 * 29, 37 + 78 * j, image=image_changed_all[j]['bbg'])
+            else:
+                res_txtbbgs[j] = None
+                res_imgbbgs[j] = None
+
             cn2 = 0
             canvas_res.itemconfig(res_buf_list[j], text=rank_changed[j], font=mid_font, fill='white')
         except KeyError as error:
