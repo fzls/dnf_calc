@@ -808,7 +808,7 @@ def calc():
         buf_name = row_value[0]
         row_value_cut = row_value[1:]
 
-        opt_buflvl[buf_name] = [0] + row_value_cut # 首位0用来占位，这样后面就可以直接用等级索引对应等级的数值
+        opt_buflvl[buf_name] = [0] + row_value_cut  # 首位0用来占位，这样后面就可以直接用等级索引对应等级的数值
 
     # 读取奶系自定义数据数据
     load_buf_custom_data()
@@ -1369,7 +1369,6 @@ def calc():
                     oneonelist.append(no_cut)
 
                 if job_name == "(奶系)神思者":
-                    # undone: 把lvlbuf中的字段改成更加容易理解的名称（代码与表格中要保持一致）
                     # 祝福增加的三攻
                     bless_increase_attack_power = lvlget('hol_b_atta')[int(base_array[index_buf_bless_lv30])]
                     # 守护恩赐（15级）和守护徽章（25级）增加的体力、精神数值（祝福）
@@ -1594,8 +1593,6 @@ def stop_calc():
     global exit_calc
     exit_calc = 1
 
-
-# re: 把下方可阅读区域作为一个单独字段也加到前面（加在武器和职业中间）
 
 # 输出职业的表格输出列名
 deal_col_names = (
@@ -2472,8 +2469,8 @@ def show_result(rank_list, job_type, ele_skill):
         res_img31 = canvas_res.create_image(189, 87, image=result_image_on[0]['31'])  # 辅助装备
         res_img32 = canvas_res.create_image(219, 117, image=result_image_on[0]['32'])  # 魔法石
         res_img33 = canvas_res.create_image(189, 117, image=result_image_on[0]['33'])  # 耳环
-        res_txtbbgs = [None, None, None, None, None, None] # 0-4 => 右边的展示区间， 5 => 左边的那个百变怪
-        res_imgbbgs = [None, None, None, None, None, None] # 0-4 => 右边的展示区间， 5 => 左边的那个百变怪
+        res_txtbbgs = [None, None, None, None, None, None]  # 0-4 => 右边的展示区间， 5 => 左边的那个百变怪
+        res_imgbbgs = [None, None, None, None, None, None]  # 0-4 => 右边的展示区间， 5 => 左边的那个百变怪
         if 'bbg' in result_image_on[0]:
             res_txtbbgs[5] = canvas_res.create_text(178, 147, text="百变怪=>", font=guide_font, fill='white')
             res_imgbbgs[5] = canvas_res.create_image(219, 147, image=result_image_on[0]['bbg'])  # 百变怪
@@ -2780,8 +2777,8 @@ def show_result(rank_list, job_type, ele_skill):
         res_img31 = canvas_res.create_image(189, 87, image=result_image_on3[0]['31'])
         res_img32 = canvas_res.create_image(219, 117, image=result_image_on3[0]['32'])
         res_img33 = canvas_res.create_image(189, 117, image=result_image_on3[0]['33'])
-        res_txtbbgs = [None, None, None, None, None, None] # 0-4 => 右边的展示区间， 5 => 左边的那个百变怪
-        res_imgbbgs = [None, None, None, None, None, None] # 0-4 => 右边的展示区间， 5 => 左边的那个百变怪
+        res_txtbbgs = [None, None, None, None, None, None]  # 0-4 => 右边的展示区间， 5 => 左边的那个百变怪
+        res_imgbbgs = [None, None, None, None, None, None]  # 0-4 => 右边的展示区间， 5 => 左边的那个百变怪
         if 'bbg' in result_image_on3[0]:
             res_txtbbgs[5] = canvas_res.create_text(178, 147, text="百变怪=>", font=guide_font, fill='white')
             res_imgbbgs[5] = canvas_res.create_image(219, 147, image=result_image_on3[0]['bbg'])  # 百变怪
