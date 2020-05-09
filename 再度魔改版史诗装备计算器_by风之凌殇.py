@@ -584,7 +584,7 @@ entry_name_to_indexes = {
         "deal": [index_deal_extra_percent_final_damage],
     },
     # 所有职业Lv1~50全部技能Lv+1（特性技能除外）
-    "extra_all_job_all_level_1_50_skill": {
+    "extra_all_job_all_skill_lv_1_50": {
         "deal": [
             index_deal_extra_passive_transfer_skill,
             index_deal_extra_passive_first_awaken_skill,
@@ -614,6 +614,46 @@ entry_name_to_indexes = {
     "creature_increase_owner_attack_power": {
         "deal": [index_deal_extra_percent_skill_attack_power],
     },
+    # 所有职业Lv1~50全部主动技能Lv+X（特性技能除外）
+    "extra_all_job_all_active_skill_lv_1_50": {
+        "deal": [
+            index_deal_extra_active_skill_lv_1_45,
+            index_deal_extra_active_skill_lv_50,
+        ],
+        "buf": [
+            index_buf_bless_lv30,
+            index_buf_taiyang_lv50,
+            index_buf_naiba_protect_badge_lv25,
+        ]
+    },
+    # 所有职业Lv1~30全部主动技能Lv+X（特性技能除外）
+    "extra_all_job_all_active_skill_lv_1_30": {
+        "deal": [
+            index_deal_extra_active_skill_lv_1_45, # 由于原版中输出职业没有1-30这样的词条,这个好像不太好处理?暂时先打个折?
+        ],
+        "buf": [
+            index_buf_bless_lv30,
+            index_buf_naiba_protect_badge_lv25,
+        ]
+    },
+    # 勇气祝福(奶系) +X
+    "extra_bless_skill": {
+        "buf": [
+            index_buf_bless_lv30,
+        ]
+    },
+    # 太阳(奶系) +X
+    "extra_taiyang_skill": {
+        "buf": [
+            index_buf_taiyang_lv50,
+        ]
+    },
+    # [荣誉祝福]、[勇气祝福]、[禁忌诅咒]力量、智力增加量 +X%
+    "extra_percent_bless_strength_and_intelligence": {
+        "buf": [
+            index_buf_bless_extra_percent_strength_and_intelligence,
+        ]
+    }
 }
 
 entry_name_to_name = {
@@ -628,10 +668,15 @@ entry_name_to_name = {
     "strength_and_intelligence_when_attack": "攻击时，有X1几率增加X2点力量、智力、体力、精神，效果持续X3秒。（冷却时间X4秒） ps：只对输出职业生效，由于站街不生效，奶不用管这个词条，所以名字需要跟四维那个区分开来",
     "extra_percent_crit_damage": "暴击时，额外增加X%的伤害增加量。（决斗场中，适用一般效果）",
     "extra_percent_final_damage": "最终伤害增加X%",
-    "extra_all_job_all_level_1_50_skill": "所有职业Lv1~50全部技能Lv+1（特性技能除外）",
+    "extra_all_job_all_skill_lv_1_50": "所有职业Lv1~50全部技能Lv+1（特性技能除外）",
     "cool_correction": "冷却矫正系数（仅输出职业）",
     "reduce_percent_cool": "冷却减少时间-X%（仅奶系职业）",
     "creature_increase_owner_attack_power": "宠物技能：使主人增加X%的攻击力，是乘算，且加到最终伤害中，所以可以视为输出职业的技能攻击力词条来处理",
+    "extra_all_job_all_active_skill_lv_1_50": "所有职业Lv1~50全部主动技能Lv+X（特性技能除外）",
+    "extra_all_job_all_active_skill_lv_1_30": "所有职业Lv1~30全部主动技能Lv+X（特性技能除外）",
+    "extra_bless_skill": "勇气祝福(奶系) +X",
+    "extra_taiyang_skill": "太阳(奶系) +X",
+    "extra_percent_bless_strength_and_intelligence": "[荣誉祝福]、[勇气祝福]、[禁忌诅咒]力量、智力增加量 +X%",
 }
 
 
@@ -673,7 +718,12 @@ def add_bonus_attributes_to_base_array(job_type, base_array):
                                 base_array[entry_index] = multiply_entry(base_array[entry_index], entry_value)
                             else:
                                 # 其余加算
-                                base_array[entry_index] += entry_value
+                                if name == "extra_all_job_all_active_skill_lv_1_30" and entry_index == index_deal_extra_active_skill_lv_1_45:
+                                    # 由于词条[所有职业Lv1~30全部主动技能Lv+X（特性技能除外）]不能直接对应输出职业的1-45主动技能,需要打个折,可以自行配置折扣率
+                                    base_array[entry_index] += entry_value * g_config["data_fixup"]["extra_all_job_all_active_skill_lv_1_30_deal_1_45_rate"]
+                                else:
+                                    # 正常情况
+                                    base_array[entry_index] += entry_value
                             if not entry_writen:
                                 print("\t词条：{} {}".format(entry_name_to_name[name], entry_value))
                                 entry_writen = True

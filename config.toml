@@ -14,3 +14,8 @@ enable = false
 export_file_name = "排行结果.xlsx"
 # 导出前N名
 export_rank_count = 1000
+
+# 一些需要特殊补正的数据
+[data_fixup]
+# 由于词条[所有职业Lv1~30全部主动技能Lv+X（特性技能除外）]不能直接对应输出职业的1-45主动技能,需要打个折,可以自行配置折扣率
+extra_all_job_all_active_skill_lv_1_30_deal_1_45_rate = 0.8

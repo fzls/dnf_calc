@@ -8,21 +8,26 @@
 
 # 词条名称及含义
 #             词条名称                                 词条含义
-# physical_magical_independent_attack_power:    物理/魔法/独立攻击力 +X
-# strength_and_intelligence:                    力量/智力 +X
-# physical_and_mental_strength:                 体力/精神 +X
-# extra_percent_attack_speed:                   攻击速度+X%
-# extra_all_element_strength:                   所有属性强化 +X
-# extra_percent_magic_physical_crit_rate:       物理、魔法暴击率 +X%
-# extra_percent_addtional_damage:               攻击时，附加X%的伤害
-# extra_percent_strength_and_intelligence:      增加X%的力量、智力
-# strength_and_intelligence_when_attack:        攻击时，有X1几率增加X2点力量、智力、体力、精神，效果持续X3秒。（冷却时间X4秒） ps：只对输出职业生效，由于站街不生效，奶不用管这个词条，所以名字需要跟四维那个区分开来
-# extra_percent_crit_damage:                    暴击时，额外增加X%的伤害增加量。（决斗场中，适用一般效果）
-# extra_percent_final_damage:                   最终伤害增加X%
-# extra_all_job_all_level_1_50_skill:           所有职业Lv1~50全部技能Lv+1（特性技能除外）
-# cool_correction:                              冷却矫正系数（仅输出职业）
-# reduce_percent_cool:                          冷却减少时间-X%（仅奶系职业）
-# creature_increase_owner_attack_power:         宠物技能：使主人增加X%的攻击力，是乘算，且加到最终伤害中，所以可以视为输出职业的技能攻击力词条来处理
+# physical_magical_independent_attack_power:      物理/魔法/独立攻击力 +X
+# strength_and_intelligence:                      力量/智力 +X
+# physical_and_mental_strength:                   体力/精神 +X
+# extra_percent_attack_speed:                     攻击速度+X%
+# extra_all_element_strength:                     所有属性强化 +X
+# extra_percent_magic_physical_crit_rate:         物理、魔法暴击率 +X%
+# extra_percent_addtional_damage:                 攻击时，附加X%的伤害
+# extra_percent_strength_and_intelligence:        增加X%的力量、智力
+# strength_and_intelligence_when_attack:          攻击时，有X1几率增加X2点力量、智力、体力、精神，效果持续X3秒。（冷却时间X4秒） ps：只对输出职业生效，由于站街不生效，奶不用管这个词条，所以名字需要跟四维那个区分开来
+# extra_percent_crit_damage:                      暴击时，额外增加X%的伤害增加量。（决斗场中，适用一般效果）
+# extra_percent_final_damage:                     最终伤害增加X%
+# extra_all_job_all_skill_lv_1_50:                所有职业Lv1~50全部技能Lv+X（特性技能除外）
+# cool_correction:                                冷却矫正系数（仅输出职业）
+# reduce_percent_cool:                            冷却减少时间-X%（仅奶系职业）
+# creature_increase_owner_attack_power:           宠物技能：使主人增加X%的攻击力，是乘算，且加到最终伤害中，所以可以视为输出职业的技能攻击力词条来处理
+# extra_all_job_all_active_skill_lv_1_50:         所有职业Lv1~50全部主动技能Lv+X（特性技能除外）
+# extra_all_job_all_active_skill_lv_1_30:         所有职业Lv1~30全部主动技能Lv+X（特性技能除外）
+# extra_bless_skill:                              勇气祝福(奶系) +X
+# extra_taiyang_skill:                            太阳(奶系) +1
+# extra_percent_bless_strength_and_intelligence:  [荣誉祝福]、[勇气祝福]、[禁忌诅咒]力量、智力增加量 +X%
 
 - names:
     - "使徒降临"

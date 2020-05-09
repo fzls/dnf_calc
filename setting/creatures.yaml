@@ -8,27 +8,32 @@
 
 # 词条名称及含义
 #             词条名称                                 词条含义
-# physical_magical_independent_attack_power:    物理/魔法/独立攻击力 +X
-# strength_and_intelligence:                    力量/智力 +X
-# physical_and_mental_strength:                 体力/精神 +X
-# extra_percent_attack_speed:                   攻击速度+X%
-# extra_all_element_strength:                   所有属性强化 +X
-# extra_percent_magic_physical_crit_rate:       物理、魔法暴击率 +X%
-# extra_percent_addtional_damage:               攻击时，附加X%的伤害
-# extra_percent_strength_and_intelligence:      增加X%的力量、智力
-# strength_and_intelligence_when_attack:        攻击时，有X1几率增加X2点力量、智力、体力、精神，效果持续X3秒。（冷却时间X4秒） ps：只对输出职业生效，由于站街不生效，奶不用管这个词条，所以名字需要跟四维那个区分开来
-# extra_percent_crit_damage:                    暴击时，额外增加X%的伤害增加量。（决斗场中，适用一般效果）
-# extra_percent_final_damage:                   最终伤害增加X%
-# extra_all_job_all_level_1_50_skill:           所有职业Lv1~50全部技能Lv+1（特性技能除外）
-# cool_correction:                              冷却矫正系数（仅输出职业）
-# reduce_percent_cool:                          冷却减少时间-X%（仅奶系职业）
-# creature_increase_owner_attack_power:         宠物技能：使主人增加X%的攻击力，是乘算，且加到最终伤害中，所以可以视为输出职业的技能攻击力词条来处理
+# physical_magical_independent_attack_power:      物理/魔法/独立攻击力 +X
+# strength_and_intelligence:                      力量/智力 +X
+# physical_and_mental_strength:                   体力/精神 +X
+# extra_percent_attack_speed:                     攻击速度+X%
+# extra_all_element_strength:                     所有属性强化 +X
+# extra_percent_magic_physical_crit_rate:         物理、魔法暴击率 +X%
+# extra_percent_addtional_damage:                 攻击时，附加X%的伤害
+# extra_percent_strength_and_intelligence:        增加X%的力量、智力
+# strength_and_intelligence_when_attack:          攻击时，有X1几率增加X2点力量、智力、体力、精神，效果持续X3秒。（冷却时间X4秒） ps：只对输出职业生效，由于站街不生效，奶不用管这个词条，所以名字需要跟四维那个区分开来
+# extra_percent_crit_damage:                      暴击时，额外增加X%的伤害增加量。（决斗场中，适用一般效果）
+# extra_percent_final_damage:                     最终伤害增加X%
+# extra_all_job_all_skill_lv_1_50:                所有职业Lv1~50全部技能Lv+X（特性技能除外）
+# cool_correction:                                冷却矫正系数（仅输出职业）
+# reduce_percent_cool:                            冷却减少时间-X%（仅奶系职业）
+# creature_increase_owner_attack_power:           宠物技能：使主人增加X%的攻击力，是乘算，且加到最终伤害中，所以可以视为输出职业的技能攻击力词条来处理
+# extra_all_job_all_active_skill_lv_1_50:         所有职业Lv1~50全部主动技能Lv+X（特性技能除外）
+# extra_all_job_all_active_skill_lv_1_30:         所有职业Lv1~30全部主动技能Lv+X（特性技能除外）
+# extra_bless_skill:                              勇气祝福(奶系) +X
+# extra_taiyang_skill:                            太阳(奶系) +1
+# extra_percent_bless_strength_and_intelligence:  [荣誉祝福]、[勇气祝福]、[禁忌诅咒]力量、智力增加量 +X%
 
 - names:
     - "弓手维多利亚"
     - "神官格洛丽亚"
   entries:
-      # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
+    # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
     - creature_increase_owner_attack_power: 10  # 宠物技能+10%攻击力，持续10s，冷却30s
     - extra_percent_attack_speed: 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
     - strength_and_intelligence: 140  # 四维(力智)+140
@@ -36,7 +41,7 @@
     - extra_percent_attack_speed: 5  # 三速+5%
     - extra_all_element_strength: 24  # 所有属强+24
     - extra_percent_magic_physical_crit_rate: 10  # 暴击率+10%
-    - extra_all_job_all_level_1_50_skill: 1 # 所有职业Lv1~50全部技能Lv+1（特性技能除外）
+    - extra_all_job_all_skill_lv_1_50: 1 # 所有职业Lv1~50全部技能Lv+1（特性技能除外）
     - extra_percent_addtional_damage: 12  # 攻击时，附加12%的伤害
     - extra_percent_strength_and_intelligence: 10  # 力智+10%
     - cool_correction: 5*0.35  # 冷却矫正系数（仅输出职业），技能冷却每减1%，冷却矫正系数增加0.35，若修改了自定义配置中的基准冷却矫正系数，这里自行修正，若修改了自定义配置中的冷却矫正系数，这里自行修正
@@ -45,7 +50,7 @@
     - "雷光之箭维多利亚"
     - "暴风圣女格洛丽亚"
   entries:
-      # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
+    # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
     - creature_increase_owner_attack_power: 10  # 宠物技能+10%攻击力，持续10s，冷却30s
     - extra_percent_attack_speed: 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
     - strength_and_intelligence: 150  # 四维(力智)+150
@@ -53,7 +58,7 @@
     - extra_percent_attack_speed: 5  # 三速+5%
     - extra_all_element_strength: 24  # 所有属强+24
     - extra_percent_magic_physical_crit_rate: 10  # 暴击率+10%
-    - extra_all_job_all_level_1_50_skill: 1 # 所有职业Lv1~50全部技能Lv+1（特性技能除外）
+    - extra_all_job_all_skill_lv_1_50: 1 # 所有职业Lv1~50全部技能Lv+1（特性技能除外）
     - extra_percent_addtional_damage: 15  # 攻击时，附加15%的伤害
     - extra_percent_final_damage: 5  # 最终伤害+5%
     - extra_percent_strength_and_intelligence: 12  # 力智+12%
@@ -63,7 +68,7 @@
     - "骑士莱恩"
     - "吟游诗人薇泽达"
   entries:
-      # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
+    # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
     - creature_increase_owner_attack_power: 10  # 宠物技能+10%攻击力，持续10s，冷却30s
     - extra_percent_attack_speed: 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
     - strength_and_intelligence: 120  # 四维(力智)+120
@@ -71,7 +76,7 @@
     - extra_percent_attack_speed: 5  # 三速+5%
     - extra_all_element_strength: 24  # 所有属强+24
     - extra_percent_magic_physical_crit_rate: 10  # 暴击率+10%
-    - extra_all_job_all_level_1_50_skill: 1 # 所有职业Lv1~50全部技能Lv+1（特性技能除外）
+    - extra_all_job_all_skill_lv_1_50: 1 # 所有职业Lv1~50全部技能Lv+1（特性技能除外）
     - extra_percent_addtional_damage: 12  # 攻击时，附加12%的伤害
     - cool_correction: 5*0.35  # 冷却矫正系数（仅输出职业），技能冷却每减1%，冷却矫正系数增加0.35，若修改了自定义配置中的基准冷却矫正系数，这里自行修正，若修改了自定义配置中的冷却矫正系数，这里自行修正
     - reduce_percent_cool: 5 # 冷却减少时间-X%（仅奶系职业）
@@ -79,7 +84,7 @@
     - "古国英豪莱恩"
     - "太初之音薇泽达"
   entries:
-      # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
+    # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
     - creature_increase_owner_attack_power: 10  # 宠物技能+10%攻击力，持续10s，冷却30s
     - extra_percent_attack_speed: 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
     - strength_and_intelligence: 120  # 四维(力智)+120
@@ -87,7 +92,7 @@
     - extra_percent_attack_speed: 5  # 三速+5%
     - extra_all_element_strength: 24  # 所有属强+24
     - extra_percent_magic_physical_crit_rate: 10  # 暴击率+10%
-    - extra_all_job_all_level_1_50_skill: 1 # 所有职业Lv1~50全部技能Lv+1（特性技能除外）
+    - extra_all_job_all_skill_lv_1_50: 1 # 所有职业Lv1~50全部技能Lv+1（特性技能除外）
     - extra_percent_addtional_damage: 15  # 攻击时，附加15%的伤害
     - extra_percent_final_damage: 5  # 最终伤害+5%
     - cool_correction: 5*0.35  # 冷却矫正系数（仅输出职业），技能冷却每减1%，冷却矫正系数增加0.35，若修改了自定义配置中的基准冷却矫正系数，这里自行修正，若修改了自定义配置中的冷却矫正系数，这里自行修正
@@ -96,7 +101,7 @@
     - "神迹·古国英豪莱恩"
     - "神迹·太初之音薇泽达"
   entries:
-      # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
+    # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
     - creature_increase_owner_attack_power: 10  # 宠物技能+10%攻击力，持续10s，冷却30s
     - extra_percent_attack_speed: 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
     - strength_and_intelligence: 120  # 四维(力智)+120
@@ -104,7 +109,7 @@
     - extra_percent_attack_speed: 5  # 三速+5%
     - extra_all_element_strength: 24  # 所有属强+24
     - extra_percent_magic_physical_crit_rate: 10  # 暴击率+10%
-    - extra_all_job_all_level_1_50_skill: 1 # 所有职业Lv1~50全部技能Lv+1（特性技能除外）
+    - extra_all_job_all_skill_lv_1_50: 1 # 所有职业Lv1~50全部技能Lv+1（特性技能除外）
     - extra_percent_addtional_damage: 15  # 攻击时，附加15%的伤害
     - extra_percent_final_damage: 5  # 最终伤害+5%
     - extra_percent_strength_and_intelligence: 8  # 力智+8%
@@ -114,7 +119,7 @@
     - "雪兔蒂娅"
     - "火狐艾芙"
   entries:
-      # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
+    # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
     - creature_increase_owner_attack_power: 10  # 宠物技能+10%攻击力，持续10s，冷却30s
     - extra_percent_attack_speed: 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
     - strength_and_intelligence: 100  # 四维(力智)+100
@@ -122,7 +127,7 @@
     - extra_percent_attack_speed: 5  # 三速+5%
     - extra_all_element_strength: 20  # 所有属强+20
     - extra_percent_magic_physical_crit_rate: 10  # 暴击率+10%
-    - extra_all_job_all_level_1_50_skill: 1 # 所有职业Lv1~50全部技能Lv+1（特性技能除外）
+    - extra_all_job_all_skill_lv_1_50: 1 # 所有职业Lv1~50全部技能Lv+1（特性技能除外）
     - extra_percent_addtional_damage: 10  # 攻击时，附加10%的伤害
     - cool_correction: 5*0.35  # 冷却矫正系数（仅输出职业），技能冷却每减1%，冷却矫正系数增加0.35，若修改了自定义配置中的基准冷却矫正系数，这里自行修正，若修改了自定义配置中的冷却矫正系数，这里自行修正
     - reduce_percent_cool: 5 # 冷却减少时间-X%（仅奶系职业）
@@ -130,7 +135,7 @@
     - "冰雪魔法师蒂娅"
     - "炽焰咒术师艾芙"
   entries:
-      # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
+    # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
     - creature_increase_owner_attack_power: 10  # 宠物技能+10%攻击力，持续10s，冷却30s
     - extra_percent_attack_speed: 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
     - strength_and_intelligence: 110  # 四维(力智)+110
@@ -138,7 +143,7 @@
     - extra_percent_attack_speed: 5  # 三速+5%
     - extra_all_element_strength: 22  # 所有属强+22
     - extra_percent_magic_physical_crit_rate: 10  # 暴击率+10%
-    - extra_all_job_all_level_1_50_skill: 1 # 所有职业Lv1~50全部技能Lv+1（特性技能除外）
+    - extra_all_job_all_skill_lv_1_50: 1 # 所有职业Lv1~50全部技能Lv+1（特性技能除外）
     - extra_percent_addtional_damage: 12  # 攻击时，附加12%的伤害
     - cool_correction: 5*0.35  # 冷却矫正系数（仅输出职业），技能冷却每减1%，冷却矫正系数增加0.35，若修改了自定义配置中的基准冷却矫正系数，这里自行修正，若修改了自定义配置中的冷却矫正系数，这里自行修正
     - reduce_percent_cool: 5 # 冷却减少时间-X%（仅奶系职业）
@@ -146,13 +151,13 @@
     - "艾莉丝"
     - "克里斯"
   entries:
-      # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
+    # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
     - creature_increase_owner_attack_power: 10  # 宠物技能+10%攻击力，持续10s，冷却30s
     - physical_magical_independent_attack_power: 35  # 三攻+35
     - extra_percent_attack_speed: 4  # 三速+4%
     - extra_all_element_strength: 15  # 所有属强+15
     - extra_percent_magic_physical_crit_rate: 10  # 暴击率+10%
-    - extra_all_job_all_level_1_50_skill: 1 # 所有职业Lv1~50全部技能Lv+1（特性技能除外）
+    - extra_all_job_all_skill_lv_1_50: 1 # 所有职业Lv1~50全部技能Lv+1（特性技能除外）
 - names:
     - "牛小哞"
     - "羊小咩"
@@ -163,7 +168,7 @@
     - extra_percent_attack_speed: 3  # 三速+3%
     - extra_all_element_strength: 15  # 所有属强+15
     - extra_percent_magic_physical_crit_rate: 10  # 暴击率+10%
-    - extra_all_job_all_level_1_50_skill: 1 # 所有职业Lv1~50全部技能Lv+1（特性技能除外）
+    - extra_all_job_all_skill_lv_1_50: 1 # 所有职业Lv1~50全部技能Lv+1（特性技能除外）
 - names:
     - "甜小鱼"
   entries:
@@ -172,7 +177,7 @@
     - extra_percent_attack_speed: 5  # 三速+5%
     - extra_all_element_strength: 20  # 所有属强+20
     - extra_percent_magic_physical_crit_rate: 10  # 暴击率+10%
-    - extra_all_job_all_level_1_50_skill: 1 # 所有职业Lv1~50全部技能Lv+1（特性技能除外）
+    - extra_all_job_all_skill_lv_1_50: 1 # 所有职业Lv1~50全部技能Lv+1（特性技能除外）
 - names:
     - "其他（直接比较）"
   entries:
