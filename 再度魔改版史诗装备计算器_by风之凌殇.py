@@ -653,7 +653,23 @@ entry_name_to_indexes = {
         "buf": [
             index_buf_bless_extra_percent_strength_and_intelligence,
         ]
-    }
+    },
+    # 输出职业转职被动技能Lv+X
+    "extra_deal_passive_transfer_skill": {
+        "deal": [
+            index_deal_extra_passive_transfer_skill,
+        ],
+    },
+    # 二觉被动技能Lv+X
+    "extra_deal_passive_second_awaken_skill": {
+        "deal": [
+            index_deal_extra_passive_second_awaken_skill,
+        ],
+    },
+    # 其他额外最终加成,采用与技能攻击力一样的算法
+    "other_rate_like_extra_percent_skill_attack_power": {
+        "deal": [index_deal_extra_percent_skill_attack_power],
+    },
 }
 
 entry_name_to_name = {
@@ -677,6 +693,9 @@ entry_name_to_name = {
     "extra_bless_skill": "勇气祝福(奶系) +X",
     "extra_taiyang_skill": "太阳(奶系) +X",
     "extra_percent_bless_strength_and_intelligence": "[荣誉祝福]、[勇气祝福]、[禁忌诅咒]力量、智力增加量 +X%",
+    "extra_deal_passive_transfer_skill": "输出职业转职被动技能Lv+X",
+    "extra_deal_passive_second_awaken_skill": "二觉被动技能Lv+X",
+    "other_rate_like_extra_percent_skill_attack_power": "其他额外最终加成,采用与技能攻击力一样的算法",
 }
 
 
