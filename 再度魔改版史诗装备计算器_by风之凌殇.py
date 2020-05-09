@@ -1591,13 +1591,14 @@ def calc():
                     )
                     # 祝福概览
                     bless_overview = ("{increase_lizhi_with_sing_song}({increase_lizhi})/ {increase_ap_with_sing_song}({increase_ap})\n"
-                                      "                  [{intelligence}({level}级)]").format(
+                                      "图内={intelligence}({level}级) 站街面板={street_intelligence}").format(
                         increase_lizhi_with_sing_song=bless_final_increase_strength_and_intelligence,
                         increase_lizhi=int(bless_final_increase_strength_and_intelligence / sing_song_increase_rate),
                         increase_ap_with_sing_song=bless_final_increase_attack_power_average,
                         increase_ap=int(bless_final_increase_attack_power_average / sing_song_increase_rate),
                         intelligence=int(intelligence_bless),
                         level=int(base_array[index_buf_bless_lv30]),
+                        street_intelligence=int(intelligence_bless) - 501,
                     )
                     # 太阳适用的面板数值（奶爸为体精、奶妈奶萝为智力）
                     physical_and_mental_strength_or_intelligence_taiyang = intelligence_taiyang
