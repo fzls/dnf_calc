@@ -2351,6 +2351,14 @@ def load_buf_custom_data():
     load_presetr.close()
 
 
+score_to_damage_rate = 1 / 1272.38 * 3320  # 本人召唤在分数为127238%时，修炼场20s的伤害为3320e，先以这个为准给一版供参考的伤害值
+
+def format_damage(score):
+    return "{}% {}亿".format(int(100 * score), int(score * score_to_damage_rate))
+
+def extract_score_from_score_damage(score_damage):
+    return score_damage.split(" ")[0]
+
 def show_result(rank_list, job_type, ele_skill):
     global g_rank_equips, g_current_rank, g_current_job, g_current_buff_type
     g_current_rank = 0
@@ -2392,7 +2400,7 @@ def show_result(rank_list, job_type, ele_skill):
             # rank => [score, [calc_wep, base_array, baibianguai, not_owned_equips]]
             rank_baibiaoguai[0] = rank_list[0][1][2]
             rank_not_owned_equips[0] = rank_list[0][1][3]
-            rank_dam[0] = "{}%".format(int(100 * rank_list[0][0]))
+            rank_dam[0] = format_damage(rank_list[0][0])
             rank_setting[0] = rank_list[0][1][0]  ##0号是排名
             rss[0] = rank_list[0][1][1]
             for i in [11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33]:
@@ -2408,7 +2416,7 @@ def show_result(rank_list, job_type, ele_skill):
 
             rank_baibiaoguai[1] = rank_list[1][1][2]
             rank_not_owned_equips[1] = rank_list[1][1][3]
-            rank_dam[1] = "{}%".format(int(100 * rank_list[1][0]))
+            rank_dam[1] = format_damage(rank_list[1][0])
             rank_setting[1] = rank_list[1][1][0]
             rss[1] = rank_list[1][1][1]
             for i in [11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33]:
@@ -2424,7 +2432,7 @@ def show_result(rank_list, job_type, ele_skill):
 
             rank_baibiaoguai[2] = rank_list[2][1][2]
             rank_not_owned_equips[2] = rank_list[2][1][3]
-            rank_dam[2] = "{}%".format(int(100 * rank_list[2][0]))
+            rank_dam[2] = format_damage(rank_list[2][0])
             rank_setting[2] = rank_list[2][1][0]
             rss[2] = rank_list[2][1][1]
             for i in [11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33]:
@@ -2440,7 +2448,7 @@ def show_result(rank_list, job_type, ele_skill):
 
             rank_baibiaoguai[3] = rank_list[3][1][2]
             rank_not_owned_equips[3] = rank_list[3][1][3]
-            rank_dam[3] = "{}%".format(int(100 * rank_list[3][0]))
+            rank_dam[3] = format_damage(rank_list[3][0])
             rank_setting[3] = rank_list[3][1][0]
             rss[3] = rank_list[3][1][1]
             for i in [11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33]:
@@ -2456,7 +2464,7 @@ def show_result(rank_list, job_type, ele_skill):
 
             rank_baibiaoguai[4] = rank_list[4][1][2]
             rank_not_owned_equips[4] = rank_list[4][1][3]
-            rank_dam[4] = "{}%".format(int(100 * rank_list[4][0]))
+            rank_dam[4] = format_damage(rank_list[4][0])
             rank_setting[4] = rank_list[4][1][0]
             rss[4] = rank_list[4][1][1]
             for i in [11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33]:
@@ -2546,7 +2554,7 @@ def show_result(rank_list, job_type, ele_skill):
         if int(ele_skill) != 0:
             canvas_res.create_text(122, 170, font=guide_font, fill='white',
                                    text="技能属强补正={} / 逆校正%={}%".format(int(ele_skill), round(100 * (1.05 / (1.05 + int(ele_skill) * 0.0045) - 1), 1)))
-        res_dam = canvas_res.create_text(122, 125, text=rank_dam[0], font=mid_font, fill='white')
+        res_dam = canvas_res.create_text(122, 125, text=extract_score_from_score_damage(rank_dam[0]), font=mid_font, fill='white')
         res_stat = canvas_res.create_text(65, 293, text=rank_stat[0], fill='white')
         res_stat2 = canvas_res.create_text(185, 293, text=rank_stat2[0], fill='white')
 
@@ -2573,10 +2581,10 @@ def show_result(rank_list, job_type, ele_skill):
                     canvas_res.create_image(268 + cn1 * 29, 67 + 78 * j, image=result_image_on[j][str(i)])
                     cn1 = cn1 + 1
                 if 'bbg' in result_image_on[j]:
-                    res_txtbbgs[j] = canvas_res.create_text(268 + 5 * 29 + 14, 38 + 78 * j, text="百变怪=>", font=guide_font, fill='white')
+                    # res_txtbbgs[j] = canvas_res.create_text(268 + 5 * 29 + 14, 38 + 78 * j, text="百变怪=>", font=guide_font, fill='white')
                     res_imgbbgs[j] = canvas_res.create_image(268 + 7 * 29, 37 + 78 * j, image=result_image_on[j]['bbg'])
                 cn1 = 0
-                canvas_res.create_text(346, 34 + 78 * j, text=rank_dam[j], font=mid_font, fill='white')
+                canvas_res.create_text(366, 34 + 78 * j, text=rank_dam[j], font=mid_font, fill='white')
             except KeyError as error:
                 c = 1
 
@@ -3025,7 +3033,7 @@ def change_rank(now, job_type):
             else:
                 res_txtbbgs[5] = None
                 res_imgbbgs[5] = None
-            canvas_res.itemconfig(res_dam, text=rank_dam[now])
+            canvas_res.itemconfig(res_dam, text=extract_score_from_score_damage(rank_dam[now]))
             canvas_res.itemconfig(res_stat, text=rank_stat[now])
             canvas_res.itemconfig(res_stat2, text=rank_stat2[now])
 
