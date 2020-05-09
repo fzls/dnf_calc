@@ -2351,10 +2351,10 @@ def load_buf_custom_data():
     load_presetr.close()
 
 
-score_to_damage_rate = 1 / 1272.38 * 3320  # 本人召唤在分数为127238%时，修炼场20s的伤害为3320e，先以这个为准给一版供参考的伤害值
+score_to_damage_rate = eval(g_config["20s_damage"]["score_to_damage_rate"])
 
 def format_damage(score):
-    if g_config["show_20s_damage"]:
+    if g_config["20s_damage"]["enable"]:
         return "{}% {}亿".format(int(100 * score), int(score * score_to_damage_rate))
     else:
         return "{}%".format(int(100 * score))

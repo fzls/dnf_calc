@@ -6,8 +6,6 @@ check_update_on_start = true
 # 是否允许主界面缩放（界面实际布局是固定大小的）
 main_window_resizable = false
 
-# 是否显示预估的20s打桩数据
-show_20s_damage = true
 
 # 是否需要额外将输出结果导出为excel文件
 [export_result_as_excel]
@@ -22,3 +20,10 @@ export_rank_count = 1000
 [data_fixup]
 # 由于词条[所有职业Lv1~30全部主动技能Lv+X（特性技能除外）]不能直接对应输出职业的1-45主动技能,需要打个折,可以自行配置折扣率
 extra_all_job_all_active_skill_lv_1_30_deal_1_45_rate = 0.8
+
+# 20s打桩数据
+[20s_damage]
+# 是否显示预估的20s打桩数据
+enable = true
+# 分数与打桩的比例关系
+score_to_damage_rate = "1 / 1272.38 * 3320" # 本人召唤在分数为127238%时，修炼场20s的伤害为3320e，先以这个为准给一版供参考的伤害值
