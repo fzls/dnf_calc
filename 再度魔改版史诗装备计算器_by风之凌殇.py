@@ -806,9 +806,9 @@ def calc():
             continue
 
         buf_name = row_value[0]
-        row_value_cut = row_value[2:]
+        row_value_cut = row_value[1:]
 
-        opt_buflvl[buf_name] = row_value_cut
+        opt_buflvl[buf_name] = [0] + row_value_cut # 首位0用来占位，这样后面就可以直接用等级索引对应等级的数值
 
     # 读取奶系自定义数据数据
     load_buf_custom_data()
