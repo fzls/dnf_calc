@@ -670,6 +670,34 @@ entry_name_to_indexes = {
     "other_rate_like_extra_percent_skill_attack_power": {
         "deal": [index_deal_extra_percent_skill_attack_power],
     },
+    # 所有职业Lv15~20全部技能Lv+X（特性技能除外）
+    "extra_all_job_all_skill_lv_15_20": {
+        "deal": [
+            index_deal_extra_passive_transfer_skill,
+        ],
+        "buf": [
+            index_buf_job_passive_lv15,
+        ]
+    },
+    # 所有职业Lv20~25全部技能Lv+X（特性技能除外）
+    "extra_all_job_all_skill_lv_20_25": {
+        "buf": [
+            index_buf_naiba_protect_badge_lv25,
+        ]
+    },
+    # 所有职业Lv25~30全部技能Lv+X（特性技能除外）
+    "extra_all_job_all_skill_lv_25_30": {
+        "buf": [
+            index_buf_bless_lv30,
+            index_buf_naiba_protect_badge_lv25,
+        ]
+    },
+    # 所有职业Lv30~35全部技能Lv+X（特性技能除外）
+    "extra_all_job_all_skill_lv_30_35": {
+        "buf": [
+            index_buf_bless_lv30,
+        ]
+    },
 }
 
 entry_name_to_name = {
@@ -696,6 +724,10 @@ entry_name_to_name = {
     "extra_deal_passive_transfer_skill": "输出职业转职被动技能Lv+X",
     "extra_deal_passive_second_awaken_skill": "二觉被动技能Lv+X",
     "other_rate_like_extra_percent_skill_attack_power": "其他额外最终加成,采用与技能攻击力一样的算法",
+    "extra_all_job_all_skill_lv_15_20": "所有职业Lv15~20全部技能Lv+X（特性技能除外）",
+    "extra_all_job_all_skill_lv_20_25": "所有职业Lv20~25全部技能Lv+X（特性技能除外）",
+    "extra_all_job_all_skill_lv_25_30": "所有职业Lv25~30全部技能Lv+X（特性技能除外）",
+    "extra_all_job_all_skill_lv_30_35": "所有职业Lv30~35全部技能Lv+X（特性技能除外）",
 }
 
 
@@ -758,16 +790,6 @@ def add_bonus_attributes_to_base_array(job_type, base_array):
                                 print("\t词条：{} => {}".format(entry_name_to_name[name], entry_value))
                                 entry_writen = True
                             print("\t\t{} => {}".format(buf_entry_index_to_name[entry_index], entry_value))
-
-    # re: 最终国服特色改为最终版时，移除下面的东西
-    if job_type == "deal":
-        # from 韩械，原先他在Data.xlsx中所有武器的1-45和50级的被动技能中各增加了2级，其中1级为宠物的技能等级，另一极暂时不确定是哪里来的，可能是其他国服特色
-        # 为了保持一致，根据他的建议，把data中所有武器的1-45和50级的主动技能减少两级，然后另外一个技能补正加在这个位置
-        base_array[index_deal_extra_active_skill_lv_1_45] += 1  # 1-45级主动+1， 1-50lv+1
-        base_array[index_deal_extra_active_skill_lv_50] += 1  # 50级主动+1， 1-50lv+1
-
-        # 经韩械反馈，属强多出来了80点，应该是之前他在data.xlsx中补正的数值我这边重新计算了一遍- -，暂时先在这里减去吧
-        base_array[index_deal_extra_all_element_strength] -= 44
 
 
 g_speed_first = True
@@ -1359,11 +1381,11 @@ def calc():
         # 基础体力、精神
         base_stat_physical_and_mental = 4308 - 45 - 83 + custom_buf_data["taiyang_data"]
         # 基础智力
-        base_stat_intelligence = 4166 + 74 - 126 + custom_buf_data["taiyang_data"]
+        base_stat_intelligence = 1745 + 74 - 126  + custom_buf_data["taiyang_data"]
         # 祝福等级
-        base_bless_level = 10 + custom_buf_data["bless_level"] + 1
+        base_bless_level = 10 + custom_buf_data["bless_level"]
         # 太阳等级
-        base_taiyang_level = 12 + custom_buf_data["taiyang_level"] + 1
+        base_taiyang_level = 12 + custom_buf_data["taiyang_level"]
         # 15级转职被动等级
         base_job_passive_lv15 = 0
         # 基础奶爸25级守护徽章等级

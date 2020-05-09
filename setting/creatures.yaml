@@ -31,6 +31,10 @@
 # extra_deal_passive_transfer_skill:                输出职业转职被动技能Lv+X
 # extra_deal_passive_second_awaken_skill:           二觉被动技能Lv+X
 # other_rate_like_extra_percent_skill_attack_power: 其他额外最终加成,采用与技能攻击力一样的算法
+# extra_all_job_all_skill_lv_15_20:                 所有职业Lv15~20全部技能Lv+X（特性技能除外）
+# extra_all_job_all_skill_lv_20_25:                 所有职业Lv20~25全部技能Lv+X（特性技能除外）
+# extra_all_job_all_skill_lv_25_30:                 所有职业Lv25~30全部技能Lv+X（特性技能除外）
+# extra_all_job_all_skill_lv_30_35:                 所有职业Lv30~35全部技能Lv+X（特性技能除外）
 
 - names:
     - "弓手维多利亚"
