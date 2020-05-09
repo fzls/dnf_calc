@@ -1006,12 +1006,12 @@ None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,
 None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,0,None,None,None
 ------------------------------workbook: preset.XLSX------------------------------
 ------------------------------sheet: custom------------------------------
-ele_type,火,None,None,存档1,None,up_stat,500,None,None,2.0.3
-cool_conv,35,%,None,存档2,None,bless_style,3,None,None,None
-set_select_bel,8,%,None,存档3,None,crux_style,2,None,None,None
-set_select_shoe,17,%,None,存档4,None,bless_plt,2,None,None,None
-set_wave_up,0,%,None,存档5,None,bless_cri,1,None,None,None
-set_wave_down,0,%,None,存档6,None,up_stat_b,500,None,None,None
+ele_type,火,None,None,存档1,None,up_stat,0,None,None,2.0.3
+cool_conv,35,%,None,存档2,None,bless_style,0,None,None,None
+set_select_bel,8,%,None,存档3,None,crux_style,0,None,None,None
+set_select_shoe,17,%,None,存档4,None,bless_plt,0,None,None,None
+set_wave_up,0,%,None,存档5,None,bless_cri,0,None,None,None
+set_wave_down,0,%,None,存档6,None,up_stat_b,0,None,None,None
 set_wave_shol,0,%,None,存档7,None,None,None,None,None,None
 set_wave_bel,0,%,None,存档8,None,None,None,None,None,None
 set_wave_shoe,0,%,None,存档9,None,None,None,None,None,None
@@ -1020,8 +1020,8 @@ set_wave_3,0,%,None,None,None,None,None,None,None,None
 set_bet_lvl,英雄↑,None,None,None,None,None,None,None,None,None
 set_sun_rein,11,강,None,None,None,None,None,None,None,None
 ele_inchant,245,None,None,None,None,None,None,None,None,None
-ele_ora,20,None,None,None,None,None,None,None,None,None
-ele_gem,7,None,None,None,None,None,None,None,None,None
+ele_ora,0,None,None,None,None,None,None,None,None,None
+ele_gem,0,None,None,None,None,None,None,None,None,None
 ele_skill,0,None,None,None,None,None,None,None,None,None
 ele_mob_resist,50,None,None,None,None,None,None,None,None,None
 ele_buf_anti,60,None,None,None,None,None,None,None,None,None
