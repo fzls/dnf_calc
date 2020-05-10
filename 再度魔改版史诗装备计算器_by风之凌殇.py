@@ -46,7 +46,7 @@ logger.addHandler(fileHandler)
 
 consoleHandler = logging.StreamHandler()
 consoleHandler.setFormatter(logFormatter)
-consoleHandler.setLevel(logging.DEBUG)
+consoleHandler.setLevel(logging.INFO)
 logger.addHandler(consoleHandler)
 
 ###########################################################
@@ -373,11 +373,16 @@ class Combopicker(tkinter.ttk.Entry, Picker):
 ###########################################################
 #                        读取自定义配置                    #
 ###########################################################
-# 读取程序config
-g_config = toml.load('config.toml')
-
-# 读取配置表
+g_config = {}
 g_setting = {}
+
+# 读取程序config
+def load_config():
+    global g_config
+    g_config = toml.load('config.toml')
+    logger.info("config loaded")
+    logger.debug("config={}".format(g_config))
+
 
 settings = [
     {"name": "styles", "path": "setting/styles.yaml"},  # 称号的配置表
@@ -385,9 +390,21 @@ settings = [
     {"name": "account_other_bonus_attributes", "path": "setting/account_other_bonus_attributes.yaml"},  # 其余特色的配置表
 ]
 
-for setting in settings:
-    with open(setting["path"], "r", encoding="utf-8") as setting_file:
-        g_setting[setting["name"]] = yaml.load(setting_file)
+# 读取配置表
+def load_setting():
+    global g_setting
+    g_setting = {}
+    for setting in settings:
+        with open(setting["path"], "r", encoding="utf-8") as setting_file:
+            g_setting[setting["name"]] = yaml.load(setting_file)
+
+    logger.info("setting loaded")
+    logger.debug("setting={}".format(g_setting))
+
+
+# 启动时先读取config和setting
+load_config()
+load_setting()
 
 
 # 获取配置表setting_name中名称为item_name的条目
@@ -2400,11 +2417,10 @@ def load_buf_custom_data():
     load_presetr.close()
 
 
-score_to_damage_rate = eval(g_config["20s_damage"]["score_to_damage_rate"])
-
 
 def format_damage(score):
     if g_config["20s_damage"]["enable"]:
+        score_to_damage_rate = eval(g_config["20s_damage"]["score_to_damage_rate"])
         return "{}% {}亿".format(int(100 * score), int(score * score_to_damage_rate))
     else:
         return "{}%".format(int(100 * score))
@@ -4618,13 +4634,15 @@ tkinter.Button(self, image=stop_img, borderwidth=0, activebackground=dark_main, 
     x=390 - 35, y=62)
 
 
-def show_more_tese():
-    tkinter.messagebox.showinfo("操作方法", "如需设置更多国服特色，请前往setting/account_other_bonus_attributes.yaml，阅读配置示例后自行配置")
-
+def reload_config_and_setting():
+    load_config()
+    load_setting()
+    logger.info("reload_config_and_setting")
+    tkinter.messagebox.showinfo("提示", "配置已重载，可继续使用")
 
 # 更多国服特色
-more_tese_img = PhotoImage(file="ext_img/more_tese.png")
-select_all = tkinter.Button(self, image=more_tese_img, borderwidth=0, activebackground=dark_main, command=show_more_tese, bg=dark_main)
+reload_config_and_setting_img = PhotoImage(file="ext_img/reload_config_and_setting.png")
+select_all = tkinter.Button(self, image=reload_config_and_setting_img, borderwidth=0, activebackground=dark_main, command=reload_config_and_setting, bg=dark_main)
 select_all.place(x=275, y=10)
 
 # timeline_img = PhotoImage(file="ext_img/timeline.png")
