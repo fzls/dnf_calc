@@ -31,7 +31,7 @@ from openpyxl import load_workbook, Workbook
 ###########################################################
 #                         logging                        #
 ###########################################################
-logFormatter = logging.Formatter("%(asctime)s %(levelname)-5.5s [%(name)s] %(filename)s:%(lineno)d(%(funcName)s): %(message)s")
+logFormatter = logging.Formatter("%(asctime)s %(levelname)-5.5s [%(name)s] %(funcName)s:%(lineno)d: %(message)s")
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
 logger.name = "calc"
@@ -1014,7 +1014,12 @@ def calc():
 
     showsta(text='开始计算')
     count_start_time = time.time()  # 开始计时
-    logger.debug("items={}, not_select_items={}, work_uniforms_items={}, transfer_slots_equips={}, transfer_max_count={}".format(
+    logger.debug(("\n"
+                  "items={}\n"
+                  "not_select_items={}\n"
+                  "work_uniforms_items={}\n"
+                  "transfer_slots_equips={}\n"
+                  "transfer_max_count={}").format(
         items, not_select_items, work_uniforms_items, transfer_slots_equips, transfer_max_count
     ))
 
@@ -1030,12 +1035,14 @@ def calc():
     dont_prefer_god = not prefer_god()
 
     logger.info(("all_list_num={} (original_count={} bbg_count={} work_uniforms_count={})\n"
-                 "transfer_max_count={} transfer_slots_equips={} has_baibainguai={}, can_upgrade_work_unifrom_nums={}, has_uniforms={}\n"
-                 "dont_pruning={}, dont_prefer_god={}\n"
-                 "job_name={} weapon_names={}\n".format(
+                 "transfer_max_count={} has_baibainguai={}, can_upgrade_work_unifrom_nums={} dont_pruning={}, dont_prefer_god={}\n"
+                 "transfer_slots_equips={}\n"
+                 "has_uniforms={}\n"
+                 "job_name={} weapon_names={}".format(
         all_list_num, original_count, bbg_count, work_uniforms_count,
-        transfer_max_count, transfer_slots_equips, has_baibainguai, can_upgrade_work_unifrom_nums, has_uniforms,
-        dont_pruning, dont_prefer_god,
+        transfer_max_count, has_baibainguai, can_upgrade_work_unifrom_nums, dont_pruning, dont_prefer_god,
+        transfer_slots_equips,
+        has_uniforms,
         job_name, weapon_names,
     )))
 
@@ -2412,7 +2419,7 @@ def show_result(rank_list, job_type, ele_skill):
     g_current_rank = 0
     g_current_job = job_type
 
-    logger.debug("show_result: job_type={}, ele_skill={}, rank_list={}".format(job_type, ele_skill, rank_list))
+    logger.debug("show_result: job_type={}, ele_skill={}\nrank_list={}".format(job_type, ele_skill, rank_list))
 
     global result_window
     result_window = tkinter.Toplevel(self)
