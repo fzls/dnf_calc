@@ -31,9 +31,10 @@ from openpyxl import load_workbook, Workbook
 ###########################################################
 #                         logging                        #
 ###########################################################
-logFormatter = logging.Formatter("%(asctime)s [%(threadName)-12.12s] [%(levelname)-5.5s]  %(message)s")
+logFormatter = logging.Formatter("%(asctime)s %(levelname)-5.5s [%(name)s] %(filename)s:%(lineno)d(%(funcName)s): %(message)s")
 logger = logging.getLogger()
-logger.setLevel(logging.NOTSET)
+logger.setLevel(logging.DEBUG)
+logger.name = "calc"
 
 log_directory = "logs"
 pathlib.Path(log_directory).mkdir(parents=True, exist_ok=True)
@@ -45,7 +46,7 @@ logger.addHandler(fileHandler)
 
 consoleHandler = logging.StreamHandler()
 consoleHandler.setFormatter(logFormatter)
-consoleHandler.setLevel(logging.INFO)
+consoleHandler.setLevel(logging.DEBUG)
 logger.addHandler(consoleHandler)
 
 ###########################################################
@@ -870,6 +871,8 @@ def calc():
     showsta(text="正在准备组合算法驱动...")
     logger.info("开始计算")
     start_time = time.time()
+
+    logger.debug("loading data.xlsx")
     load_excel = load_workbook("DATA.xlsx", read_only=True, data_only=True)
 
     db_one = load_excel["one"]
@@ -928,6 +931,7 @@ def calc():
     # 读取奶系自定义数据数据
     load_buf_custom_data()
 
+    logger.debug("loading preset.xlsx")
     load_presetc = load_workbook("preset.xlsx", data_only=True)
     db_preset = load_presetc["custom"]
     job_name = jobup_select.get()
@@ -935,6 +939,7 @@ def calc():
         ele_skill = int(opt_job_ele[job_name][1])
     except KeyError as error:
         tkinter.messagebox.showerror('部分参数有误', "未选择职业或职业非法", parent=self)
+        logger.error("job_name=%s invalid", job_name)
         return
     ele_in = (int(db_preset["B14"].value) + int(db_preset["B15"].value) + int(db_preset["B16"].value) +
               int(ele_skill) - int(db_preset["B18"].value) + int(db_preset["B19"].value) + 13)
@@ -974,8 +979,9 @@ def calc():
 
     valid_weapon = True
     weapon_indexs = []
+    weapon_names = wep_combopicker.get_selected_entrys()
     try:
-        for weapon_name in wep_combopicker.get_selected_entrys():
+        for weapon_name in weapon_names:
             weapon_indexs.append(wep_name_to_index[weapon_name])
     except:
         valid_weapon = False
@@ -984,6 +990,7 @@ def calc():
 
     if not valid_weapon:
         tkinter.messagebox.showerror('部分参数有误', "未选择武器或武器非法", parent=self)
+        logger.error("weapon_names=%s invalid", weapon_names)
         return
 
     # 获取当前装备、百变怪可选装备、工作服列表
@@ -997,19 +1004,19 @@ def calc():
     modify_slots_order(items, not_select_items, work_uniforms_items, transfer_slots_equips)
 
     # 已选装备的搭配数
-    all_list_num = calc_ori_counts(items)
+    original_count = calc_ori_counts(items)
     # 百变怪增加的搭配数
-    all_list_num += calc_bbg_add_counts(items, not_select_items)
+    bbg_count = calc_bbg_add_counts(items, not_select_items)
     # 额外升级的工作服增加的搭配数
-    all_list_num += calc_upgrade_work_uniforms_add_counts(items, not_select_items, work_uniforms_items)
+    work_uniforms_count = calc_upgrade_work_uniforms_add_counts(items, not_select_items, work_uniforms_items)
 
-    try:
-        showsta(text='开始计算')
-        count_start_time = time.time()  # 开始计时
-    except MemoryError as error:
-        tkinter.messagebox.showerror('内存误差', "已超过可用内存.", parent=self)
-        showsta(text='已中止')
-        return
+    all_list_num = original_count + bbg_count + work_uniforms_count
+
+    showsta(text='开始计算')
+    count_start_time = time.time()  # 开始计时
+    logger.debug("items={}, not_select_items={}, work_uniforms_items={}, transfer_slots_equips={}, transfer_max_count={}".format(
+        items, not_select_items, work_uniforms_items, transfer_slots_equips, transfer_max_count
+    ))
 
     global exit_calc
     # 开始计算
@@ -1021,6 +1028,16 @@ def calc():
     # 超慢速时不进行任何剪枝操作，装备搭配对比的标准是最终计算出的伤害与奶量倍率
     dont_pruning = select_speed.get() == speed_super_slow
     dont_prefer_god = not prefer_god()
+
+    logger.info(("all_list_num={} (original_count={} bbg_count={} work_uniforms_count={})\n"
+                 "transfer_max_count={} transfer_slots_equips={} has_baibainguai={}, can_upgrade_work_unifrom_nums={}, has_uniforms={}\n"
+                 "dont_pruning={}, dont_prefer_god={}\n"
+                 "job_name={} weapon_names={}\n".format(
+        all_list_num, original_count, bbg_count, work_uniforms_count,
+        transfer_max_count, transfer_slots_equips, has_baibainguai, can_upgrade_work_unifrom_nums, has_uniforms,
+        dont_pruning, dont_prefer_god,
+        job_name, weapon_names,
+    )))
 
     # 看了看，主要性能瓶颈在于直接使用了itertools.product遍历所有的笛卡尔积组合，导致无法提前剪枝，只能在每个组合计算前通过条件判断是否要跳过
     # 背景，假设当前处理到下标n（0-10）的装备，前面装备已选择的组合为selected_combination(of size n)，未处理装备为后面11-n-1个，其对应组合数为rcp=len(Cartesian Product(后面11-n-1个装备部位))
@@ -1708,6 +1725,7 @@ def calc_thread():
 def stop_calc():
     global exit_calc
     exit_calc = 1
+    logger.info("手动停止计算")
 
 
 # 输出职业的表格输出列名
@@ -2393,6 +2411,8 @@ def show_result(rank_list, job_type, ele_skill):
     global g_rank_equips, g_current_rank, g_current_job, g_current_buff_type
     g_current_rank = 0
     g_current_job = job_type
+
+    logger.debug("show_result: job_type={}, ele_skill={}, rank_list={}".format(job_type, ele_skill, rank_list))
 
     global result_window
     result_window = tkinter.Toplevel(self)
@@ -3512,6 +3532,10 @@ def save_custom(ele_type, cool_con, cus1, cus2, cus3, cus4, cus6, cus7, cus8, cu
         load_excel3.close()
         custom_window.destroy()
         tkinter.messagebox.showinfo("通知", "保存完成", parent=self)
+        logger.info("save_custom({}) success".format(", ".join(str(arg) for arg in [
+            ele_type, cool_con, cus1, cus2, cus3, cus4, cus6, cus7, cus8, cus9, cus10, cus11, cus12, c_stat, b_stat,
+            b_style_lvl, c_style_lvl, b_plt, b_cri, ele1, ele2, ele3, ele4, ele5, ele6
+        ])))
     except PermissionError as error:
         tkinter.messagebox.showerror("错误", "{}\n请关闭文件后重试".format(error), parent=self)
 
@@ -3624,6 +3648,7 @@ def load_checklist_noconfirm(account_index):
 
         # 读档成功时更新上次存读档的存档名
         g_save_name_index_on_last_load_or_save = account_index
+        logger.info("load_checklist({}) success".format(save_name_list[account_index]))
     except PermissionError as error:
         tkinter.messagebox.showerror("错误", "请关闭preset.xlsx之后重试", parent=self)
 
@@ -3778,6 +3803,7 @@ def save_checklist():
 
             # 存档成功时更新上次存读档的存档名
             g_save_name_index_on_last_load_or_save = current_save_name_index
+            logger.info("save_checklist({}) success".format(save_name_list[current_save_name_index]))
     except PermissionError as error:
         tkinter.messagebox.showerror("错误", "请关闭preset.xlsx之后重试", parent=self)
 
@@ -3788,8 +3814,9 @@ def change_save_name():
     try:
         current_index = current_save_name_index
         new_save_name = save_select.get()
+        old_save_name = save_name_list[current_index]
 
-        if save_name_list[current_index] == new_save_name:
+        if old_save_name == new_save_name:
             tkinter.messagebox.showinfo("提示", "存档名并未改变，无需操作")
             return
 
@@ -3814,6 +3841,7 @@ def change_save_name():
         save_select.set(new_save_name)
         save_select['values'] = save_name_list
         tkinter.messagebox.showinfo("通知", "保存完成", parent=self)
+        logger.info("change save name {} => {}".format(old_save_name, new_save_name))
     except PermissionError as error:
         tkinter.messagebox.showerror("错误", "请关闭preset.xlsx之后重试", parent=self)
 
@@ -3882,6 +3910,7 @@ def display_realtime_counting_info():
 # 启动时自动读取第一个配置
 def load_checklist_on_start():
     load_checklist_noconfirm(0)
+    logger.info("启动时自动读取首个配置完成")
 
 
 # 3.2.2 => [3, 2, 2]
@@ -3919,6 +3948,7 @@ def check_update_on_start():
 
         latest_version = get_latest_version()
         if need_update(now_version, latest_version):
+            logger.info("当前版本为{}，已有最新版本{}".format(now_version, latest_version))
             ask_update = tkinter.messagebox.askquestion('更新', "当前版本为{}，已有最新版本{}. 你需要更新吗?".format(now_version, latest_version))
             if ask_update == 'yes':
                 webbrowser.open('https://pan.baidu.com/s/1-I8pMK6_yPH5qU4SWNMVog')
@@ -3962,6 +3992,7 @@ def reset():
     wep_combopicker.set("")
     transfer_equip_combopicker.set("")
     can_transfer_nums_select.set(txt_can_transfer_nums[0])
+    logger.info("reset")
 
 
 ###########################################################
@@ -5528,6 +5559,8 @@ version.place(x=630, y=650)
 
 if __name__ == "__main__":
     update_thread()
+
+logger.info("计算器已成功启动，欢迎使用")
 
 self.mainloop()
 self.quit()
