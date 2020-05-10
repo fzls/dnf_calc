@@ -39,7 +39,7 @@ logger.name = "calc"
 log_directory = "logs"
 pathlib.Path(log_directory).mkdir(parents=True, exist_ok=True)
 
-fileHandler = logging.FileHandler("{0}/{1}.log".format(log_directory, datetime.now().strftime('calc_%Y_%m_%d_%H_%M_%S')))
+fileHandler = logging.FileHandler("{0}/{1}.log".format(log_directory, datetime.now().strftime('calc_%Y_%m_%d_%H_%M_%S')), encoding="utf-8")
 fileHandler.setFormatter(logFormatter)
 fileHandler.setLevel(logging.DEBUG)
 logger.addHandler(fileHandler)
