@@ -1445,9 +1445,9 @@ def calc():
         show_number = 1
 
         # 基础体力、精神
-        base_stat_physical_and_mental = 4308 - 45 - 83 + custom_buf_data["taiyang_data"]
+        base_stat_physical_and_mental = eval(g_config["initital_data"]["physical_and_mental"]) +  + custom_buf_data["taiyang_data"]
         # 基础智力
-        base_stat_intelligence = 2400 - 33 + custom_buf_data["taiyang_data"]
+        base_stat_intelligence = eval(g_config["initital_data"]["intelligence"]) + custom_buf_data["taiyang_data"]
         # 祝福等级
         base_bless_level = 10 + custom_buf_data["bless_level"]
         # 太阳等级
