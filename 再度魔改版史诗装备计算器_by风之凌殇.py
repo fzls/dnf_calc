@@ -7,7 +7,9 @@ ver_time = '2020-05-10'
 
 import collections
 import itertools
+import logging
 import os
+import pathlib
 import threading
 import time
 import tkinter.font
@@ -15,6 +17,7 @@ import tkinter.messagebox
 import tkinter.ttk
 import webbrowser
 from collections import Counter
+from datetime import datetime
 from heapq import heapify, heappush, heappushpop
 from math import floor
 from tkinter import *
@@ -24,6 +27,26 @@ import requests
 import toml
 import yaml
 from openpyxl import load_workbook, Workbook
+
+###########################################################
+#                         logging                        #
+###########################################################
+logFormatter = logging.Formatter("%(asctime)s [%(threadName)-12.12s] [%(levelname)-5.5s]  %(message)s")
+logger = logging.getLogger()
+logger.setLevel(logging.NOTSET)
+
+log_directory = "logs"
+pathlib.Path(log_directory).mkdir(parents=True, exist_ok=True)
+
+fileHandler = logging.FileHandler("{0}/{1}.log".format(log_directory, datetime.now().strftime('calc_%Y_%m_%d_%H_%M_%S')))
+fileHandler.setFormatter(logFormatter)
+fileHandler.setLevel(logging.DEBUG)
+logger.addHandler(fileHandler)
+
+consoleHandler = logging.StreamHandler()
+consoleHandler.setFormatter(logFormatter)
+consoleHandler.setLevel(logging.INFO)
+logger.addHandler(consoleHandler)
 
 ###########################################################
 #                         调试函数                        #
@@ -57,7 +80,7 @@ def _debug_print_debug_timing_info(message):
 
     _debug_stats.append(stat)
 
-    print("line {:4}: timeline={} step_used={} message={}"
+    logger.debug("line {:4}: timeline={} step_used={} message={}"
         .format(
         stat["lineno"],
         format_time(stat["timeline"]),
@@ -73,7 +96,7 @@ def _debug_print_stats():
         return
 
     total_used_time = _debug_stats[-1]["timeline"]
-    print("-----------------total={}-----------top 10 step----------------------------".format(
+    logger.debug("-----------------total={}-----------top 10 step----------------------------".format(
         format_time(total_used_time)))
 
     _debug_stats = sorted(_debug_stats, key=lambda k: k['step_used'], reverse=True)
@@ -85,7 +108,7 @@ def _debug_print_stats():
         step_used = stat["step_used"]
         step_percent = step_used / total_used_time * 100
 
-        print("line {:4}: step_used={} percent={:.2f}% message={}"
+        logger.debug("line {:4}: step_used={} percent={:.2f}% message={}"
             .format(
             stat["lineno"],
             format_time(stat["step_used"]),
@@ -629,7 +652,7 @@ entry_name_to_indexes = {
     # 所有职业Lv1~30全部主动技能Lv+X（特性技能除外）
     "extra_all_job_all_active_skill_lv_1_30": {
         "deal": [
-            index_deal_extra_active_skill_lv_1_45, # 由于原版中输出职业没有1-30这样的词条,这个好像不太好处理?暂时先打个折?
+            index_deal_extra_active_skill_lv_1_45,  # 由于原版中输出职业没有1-30这样的词条,这个好像不太好处理?暂时先打个折?
         ],
         "buf": [
             index_buf_bless_lv30,
@@ -753,7 +776,7 @@ def add_bonus_attributes_to_base_array(job_type, base_array):
         setting = get_setting(tese["setting_name"], tese["selected"])
         if setting is not None and setting["entries"] is not None:
             # 增加当前选择的特色的各个词条对应的该类型职业的属性
-            print("应用国服特色：{}({})".format(tese["selected"], tese["name"]))
+            logger.info("应用国服特色：{}({})".format(tese["selected"], tese["name"]))
             for entry in setting["entries"]:
                 for name, value in entry.items():
                     entry_indexes = entry_name_to_indexes[name]
@@ -776,9 +799,9 @@ def add_bonus_attributes_to_base_array(job_type, base_array):
                                     # 正常情况
                                     base_array[entry_index] += entry_value
                             if not entry_writen:
-                                print("\t词条：{} {}".format(entry_name_to_name[name], entry_value))
+                                logger.info("\t词条：{} {}".format(entry_name_to_name[name], entry_value))
                                 entry_writen = True
-                            print("\t\t{} => {}".format(deal_entry_index_to_name[entry_index], entry_value))
+                            logger.info("\t\t{} => {}".format(deal_entry_index_to_name[entry_index], entry_value))
                     else:
                         # 处理奶系职业的对应属性
                         if "buf" not in entry_indexes:
@@ -787,9 +810,9 @@ def add_bonus_attributes_to_base_array(job_type, base_array):
                             # 全部加算
                             base_array[entry_index] += entry_value
                             if not entry_writen:
-                                print("\t词条：{} => {}".format(entry_name_to_name[name], entry_value))
+                                logger.info("\t词条：{} => {}".format(entry_name_to_name[name], entry_value))
                                 entry_writen = True
-                            print("\t\t{} => {}".format(buf_entry_index_to_name[entry_index], entry_value))
+                            logger.info("\t\t{} => {}".format(buf_entry_index_to_name[entry_index], entry_value))
 
 
 g_speed_first = True
@@ -845,6 +868,7 @@ def calc():
     else:
         set_perfect = 0
     showsta(text="正在准备组合算法驱动...")
+    logger.info("开始计算")
     start_time = time.time()
     load_excel = load_workbook("DATA.xlsx", read_only=True, data_only=True)
 
@@ -1381,7 +1405,7 @@ def calc():
         # 基础体力、精神
         base_stat_physical_and_mental = 4308 - 45 - 83 + custom_buf_data["taiyang_data"]
         # 基础智力
-        base_stat_intelligence = 2400 - 33  + custom_buf_data["taiyang_data"]
+        base_stat_intelligence = 2400 - 33 + custom_buf_data["taiyang_data"]
         # 祝福等级
         base_bless_level = 10 + custom_buf_data["bless_level"]
         # 太阳等级
@@ -1674,7 +1698,7 @@ def calc():
     showsta(text='输出完成' + "时间 = " + format_time(time.time() - start_time))
     # 结束计算
     exit_calc = 1
-    # print("时间 = " + str(time.time() - start_time) + "秒")
+    logger.info("计算耗时时间 = " + str(time.time() - start_time) + "秒")
 
 
 def calc_thread():
@@ -2160,7 +2184,7 @@ def get_transfer_slots_equips(items, sheet):
         try:
             account_index = save_name_list.index(account_name)
         except Exception as err:
-            print("get_transfer_slots_equips 无法找到存档{}, err={}".format(account_name, err))
+            logger.error("get_transfer_slots_equips 无法找到存档{}, err={}".format(account_name, err))
             continue
 
         # 读取各个装备的点亮情况
@@ -2353,14 +2377,17 @@ def load_buf_custom_data():
 
 score_to_damage_rate = eval(g_config["20s_damage"]["score_to_damage_rate"])
 
+
 def format_damage(score):
     if g_config["20s_damage"]["enable"]:
         return "{}% {}亿".format(int(100 * score), int(score * score_to_damage_rate))
     else:
         return "{}%".format(int(100 * score))
 
+
 def extract_score_from_score_damage(score_damage):
     return score_damage.split(" ")[0]
+
 
 def show_result(rank_list, job_type, ele_skill):
     global g_rank_equips, g_current_rank, g_current_job, g_current_buff_type
@@ -3824,7 +3851,7 @@ def update_count():
             ))
             time.sleep(0.1)
         except Exception as e:
-            print("update_count except: {}".format(e))
+            logger.error("update_count except: {}".format(e))
 
 
 def display_realtime_counting_info():
@@ -3849,7 +3876,7 @@ def display_realtime_counting_info():
             showcon2(text=show_txt)
             time.sleep(1)
         except Exception as e:
-            print("display_realtime_counting_info except: {}".format(e))
+            logger.error("display_realtime_counting_info except: {}".format(e))
 
 
 # 启动时自动读取第一个配置
@@ -3887,7 +3914,7 @@ def need_update(current_version, latest_version):
 def check_update_on_start():
     try:
         if not g_config["check_update_on_start"]:
-            print("启动时检查更新被禁用，若需启用请在config.toml中设置")
+            logger.warning("启动时检查更新被禁用，若需启用请在config.toml中设置")
             return
 
         latest_version = get_latest_version()
@@ -3899,9 +3926,9 @@ def check_update_on_start():
             else:
                 tkinter.messagebox.showinfo("取消启动时自动检查更新方法", "如果想停留在当前版本，不想每次启动都弹出前面这个提醒更新的框框，可以前往config.toml，将check_update_on_start的值设为false即可")
         else:
-            print("当前版本{}已是最新版本，无需更新".format(now_version))
+            logger.info("当前版本{}已是最新版本，无需更新".format(now_version))
     except Exception as err:
-        print("更新版本失败, 错误为{}".format(err))
+        logger.error("更新版本失败, 错误为{}".format(err))
 
 
 def update_thread():
@@ -4007,10 +4034,10 @@ if need_check_preset_file:
     ########## 버전 최초 구동 프리셋 업데이트 ###########
     try:
         db_save = load_preset0["one"]
-        print("DATABASE 버전= " + str(db_custom['K1'].value))
-        print("클라이언트 버전= " + now_version)
+        logger.info("DATABASE 버전= " + str(db_custom['K1'].value))
+        logger.info("클라이언트 버전= " + now_version)
         if str(db_custom['K1'].value) != now_version:
-            # print("DB 업데이트")
+            # logger.info("DB 업데이트")
             db_custom['K1'] = now_version
         if db_custom['H1'].value == None:
             db_custom['G1'] = "up_stat"
