@@ -37,6 +37,27 @@
 # extra_all_job_all_skill_lv_30_35:                 所有职业Lv30~35全部技能Lv+X（特性技能除外）
 
 ## 简单示例如下
+
+###########################################################
+#             所有账号共用的特色，如冒险团、公会等            #
+###########################################################
+
+- names:
+    - "所有账号共用"
+  entries:
+    ## 冒险团
+    - strength_and_intelligence: 275  # 四维(力智)+275
+    - physical_and_mental_strength: 275 # 四维(体精)+275
+
+    ## 永久公会属性
+    - strength_and_intelligence: 120  # 四维(力智)+120
+    - physical_and_mental_strength: 120 # 四维(体精)+120
+
+
+###########################################################
+#                     各账号的特色                         #
+###########################################################
+
 - names:
     - "召唤"
     - "全点亮召唤"
@@ -268,14 +289,6 @@
     # 婚房装饰
     - extra_all_element_strength: 8 # 所有属性强化 +8
     - physical_magical_independent_attack_power: 10 # 魔法攻击力+10
-
-    ## 冒险团
-    - strength_and_intelligence: 275  # 四维(力智)+275
-    - physical_and_mental_strength: 275 # 四维(体精)+275
-
-    ## 永久公会属性
-    - strength_and_intelligence: 120  # 四维(力智)+120
-    - physical_and_mental_strength: 120 # 四维(体精)+120
 
 
 - names:
@@ -514,12 +527,4 @@
     # 婚房装饰
     - extra_all_element_strength: 8 # 所有属性强化 +8
     - physical_magical_independent_attack_power: 20 # 独立攻击力+20
-
-    ## 冒险团
-    - strength_and_intelligence: 275  # 四维(力智)+275
-    - physical_and_mental_strength: 275 # 四维(体精)+275
-
-    ## 永久公会属性
-    - strength_and_intelligence: 120  # 四维(力智)+120
-    - physical_and_mental_strength: 120 # 四维(体精)+120
 

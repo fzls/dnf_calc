@@ -1,7 +1,7 @@
 ﻿#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-now_version = "3.4"
-ver_time = '2020-05-10'
+now_version = "3.4.1"
+ver_time = '2020-05-11'
 
 ## 코드를 무단으로 복제하여 개조 및 배포하지 말 것##
 
@@ -29,7 +29,7 @@ import yaml
 from openpyxl import load_workbook, Workbook
 
 ###########################################################
-#                         logging                        #
+#                         logging                         #
 ###########################################################
 logFormatter = logging.Formatter("%(asctime)s %(levelname)-5.5s [%(name)s] %(funcName)s:%(lineno)d: %(message)s")
 logger = logging.getLogger()
@@ -786,6 +786,7 @@ def add_bonus_attributes_to_base_array(job_type, base_array):
     guofu_teses = [
         {"name": "称号", "setting_name": "styles", "selected": style_select.get()},
         {"name": "宠物", "setting_name": "creatures", "selected": creature_select.get()},
+        {"name": "其余特色", "setting_name": "account_other_bonus_attributes", "selected": "所有账号共用"},
         {"name": "其余特色", "setting_name": "account_other_bonus_attributes", "selected": save_name_list[current_save_name_index]},
     ]
 
