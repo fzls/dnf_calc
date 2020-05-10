@@ -23,6 +23,18 @@ https://drive.google.com/file/d/1p8ZdzW_NzGKHHOtfPTuZSr1YgSEVtYCj/view
 ## 第三批功能说明
 ![第三批功能说明](change_log_images/功能说明3.png)
 
+# v3.4.1 2020.5.11
+## 易用性改动
+1. 配置文件和配置表支持动态加载
+
+## 数据配置
+1. 其他特色可以配置公共的特色，如冒险团和公会属性，这样就不用每个角色都重复配置一遍了
+2. 奶系职业的初始体精和智力改用config.toml进行配置
+
+## 其他改动
+1. 使用logging模块来进行日志输出，方便排查错误
+2. <_<增加恰饭图片哈哈哈哈哈哈
+
 # v3.4 2020.5.10
 ## 前言
 本版本的数据改动较大，如果要使用，建议按照下面的操作将自定义属性中相关数值清空，并在setting/account_other_bonus_attributes.yaml中
