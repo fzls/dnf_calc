@@ -23,6 +23,9 @@ https://drive.google.com/file/d/1p8ZdzW_NzGKHHOtfPTuZSr1YgSEVtYCj/view
 ## 第三批功能说明
 ![第三批功能说明](change_log_images/功能说明3.png)
 
+# v3.4.2 2020.5.11
+1. 解决因特色加成的额外技攻没有在计算时赋值到skiper中而导致该特色未生效的问题
+
 # v3.4.1 2020.5.11
 ## 易用性改动
 1. 配置文件和配置表支持动态加载
