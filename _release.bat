@@ -1,3 +1,10 @@
+set /P version="请输入版本号："
+echo 发布版本v%version%
+
+:: 增加版本标签
+git tag -d v%version%
+git tag -a v%version% -m "release v%version%"
+
 :: 发布前将代码推送到github
 call _git_push_remote.bat
 
@@ -5,7 +12,7 @@ call _git_push_remote.bat
 call _build.bat
 
 :: 设置目标目录
-set target_dir=.\..\..\..\downloads\(发布魔改计算器\再度魔改版史诗装备计算器_v填写实际的小版本号_by风之凌殇
+set target_dir=.\..\..\..\downloads\(发布魔改计算器\再度魔改版史诗装备计算器_v%version%_by风之凌殇
 
 :: 删除目标目录并重建
 RMDIR /S /Q "%target_dir%"
