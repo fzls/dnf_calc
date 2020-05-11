@@ -35,6 +35,8 @@
 # extra_all_job_all_skill_lv_20_25:                 所有职业Lv20~25全部技能Lv+X（特性技能除外）
 # extra_all_job_all_skill_lv_25_30:                 所有职业Lv25~30全部技能Lv+X（特性技能除外）
 # extra_all_job_all_skill_lv_30_35:                 所有职业Lv30~35全部技能Lv+X（特性技能除外）
+# extra_all_job_all_skill_lv_25_30_in_buff_dress_up:(在buff换装中，且与当前身上穿的不一样)所有职业Lv25~30全部技能Lv+X（特性技能除外）
+# extra_all_job_all_skill_lv_30_35_in_buff_dress_up:(在buff换装中，且与当前身上穿的不一样)所有职业Lv30~35全部技能Lv+X（特性技能除外）
 
 ## 简单示例如下
 
@@ -422,7 +424,7 @@
     ## 换装
     # buff称号
     - extra_bless_skill: 1  # 勇气祝福+1
-    - extra_all_job_all_skill_lv_25_30: 1 # 所有职业Lv25~30全部技能Lv+1（特性技能除外）
+    - extra_all_job_all_skill_lv_25_30_in_buff_dress_up: 1 # (在buff换装中，且与当前身上穿的不一样)所有职业Lv25~30全部技能Lv+X（特性技能除外）
     # 上衣装扮
     - extra_bless_skill: 1  # 勇气祝福+1
 

@@ -740,6 +740,18 @@ entry_name_to_indexes = {
             index_buf_bless_lv30,
         ]
     },
+    # (在buff换装中，且与当前身上穿的不一样)所有职业Lv25~30全部技能Lv+X（特性技能除外）
+    "extra_all_job_all_skill_lv_25_30_in_buff_dress_up": {
+        "buf": [
+            index_buf_bless_lv30,
+        ]
+    },
+    # (在buff换装中，且与当前身上穿的不一样)所有职业Lv30~35全部技能Lv+X（特性技能除外）
+    "extra_all_job_all_skill_lv_30_35_in_buff_dress_up": {
+        "buf": [
+            index_buf_bless_lv30,
+        ]
+    },
 }
 
 entry_name_to_name = {
@@ -770,6 +782,8 @@ entry_name_to_name = {
     "extra_all_job_all_skill_lv_20_25": "所有职业Lv20~25全部技能Lv+X（特性技能除外）",
     "extra_all_job_all_skill_lv_25_30": "所有职业Lv25~30全部技能Lv+X（特性技能除外）",
     "extra_all_job_all_skill_lv_30_35": "所有职业Lv30~35全部技能Lv+X（特性技能除外）",
+    "extra_all_job_all_skill_lv_25_30_in_buff_dress_up": "(在buff换装中，且与当前身上穿的不一样)所有职业Lv25~30全部技能Lv+X（特性技能除外）",
+    "extra_all_job_all_skill_lv_30_35_in_buff_dress_up": "(在buff换装中，且与当前身上穿的不一样)所有职业Lv30~35全部技能Lv+X（特性技能除外）",
 }
 
 
