@@ -1592,21 +1592,24 @@ def calc():
                     physical_and_mental_strength_taiyang = base_array[index_buf_physical_and_mental_strength] + passive_lv15_lv25_increase_physical_and_mental_strength_taiyang \
                                                            + first_awaken_passive_increase_physical_and_mental_strength + second_awaken_increase_physical_and_mental_strength \
                                                            + third_awaken_passive_increase_physical_and_mental_strength + 19 * base_array[index_buf_amplification]
+
+                    physical_and_mental_divisor = g_config["const"]["naiba_physical_and_mental_divisor"]
+
                     # 祝福最终增加的力智
                     bless_final_increase_strength_and_intelligence = int(
-                        int(lvlget('hol_b_stat')[int(base_array[index_buf_bless_lv30])] * (bless_extra_percent_strength_and_intelligence / 100 + 1)) * (physical_and_mental_strength_bless / 630 + 1)
+                        int(lvlget('hol_b_stat')[int(base_array[index_buf_bless_lv30])] * (bless_extra_percent_strength_and_intelligence / 100 + 1)) * (physical_and_mental_strength_bless / physical_and_mental_divisor + 1)
                     )
                     # 祝福最终增加的物理攻击力
                     bless_final_increase_physical_attack_power = int(
-                        int(bless_increase_attack_power * (bless_extra_percent_physical_attack_power / 100 + 1)) * (physical_and_mental_strength_bless / 630 + 1)
+                        int(bless_increase_attack_power * (bless_extra_percent_physical_attack_power / 100 + 1)) * (physical_and_mental_strength_bless / physical_and_mental_divisor + 1)
                     )
                     # 祝福最终增加的魔法攻击力
                     bless_final_increase_magical_attack_power = int(
-                        int(bless_increase_attack_power * (bless_extra_percent_magical_attack_power / 100 + 1)) * (physical_and_mental_strength_bless / 630 + 1)
+                        int(bless_increase_attack_power * (bless_extra_percent_magical_attack_power / 100 + 1)) * (physical_and_mental_strength_bless / physical_and_mental_divisor + 1)
                     )
                     # 祝福最终增加的独立攻击力
                     bless_final_increase_independent_attack_power = int(
-                        int(bless_increase_attack_power * (bless_extra_percent_independent_attack_power / 100 + 1)) * (physical_and_mental_strength_bless / 630 + 1)
+                        int(bless_increase_attack_power * (bless_extra_percent_independent_attack_power / 100 + 1)) * (physical_and_mental_strength_bless / physical_and_mental_divisor + 1)
                     )
                     # 祝福最终增加的三攻（平均值）
                     bless_final_increase_attack_power_average = int(
@@ -1640,12 +1643,14 @@ def calc():
                 else:
                     intelligence_divisor = 675
                     sing_song_increase_rate = 1.25
+                    const = g_config["const"]
                     if job_name == "(奶系)炽天使":
-                        intelligence_divisor = 675  # 多少智力折合一级祝福
-                        sing_song_increase_rate = 1.25 + 0.05 * base_array[index_buf_amplification]  # 唱歌时的倍率
+                        intelligence_divisor = const["naima_intelligence_divisor"]  # 多少智力折合一级祝福
+                        sing_song_increase_rate = const["naima_sing_song_increase_rate_base"] + const["naima_sing_song_increase_rate_amplification_coef"] * base_array[index_buf_amplification]  # 唱歌时的倍率
                     if job_name == "(奶系)冥月女神":
-                        intelligence_divisor = 665  # 多少智力折合一级祝福
-                        sing_song_increase_rate = (1.20 + 0.05 * base_array[index_buf_amplification]) * 1.20  # 唱歌时的倍率
+                        intelligence_divisor = const["nailuo_intelligence_divisor"]  # 多少智力折合一级祝福
+                        sing_song_increase_rate = (const["nailuo_sing_song_increase_rate_base"] + const["nailuo_sing_song_increase_rate_amplification_coef"] * base_array[index_buf_amplification]) \
+                                                  * const["nailuo_sing_song_increase_rate_final_coef"]  # 唱歌时的倍率
 
                     # 祝福增加的三攻
                     bless_increase_attack_power = lvlget('se_b_atta')[int(base_array[index_buf_bless_lv30])]

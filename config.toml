@@ -34,3 +34,24 @@ score_to_damage_rate = "1 / 1077.97 * 3320" # 本人召唤在分数为107797%时
 physical_and_mental = "2674"
 # 啥也不穿的满级奶妈和奶萝的智力
 intelligence = "2400 - 33"
+
+# 一些常量
+[const]
+## 奶爸
+# 多少体精折合一级祝福
+naiba_physical_and_mental_divisor = 630
+
+## 奶妈
+# 多少智力折合一级祝福
+naima_intelligence_divisor = 675
+# 唱歌倍率的一些系数：sing_song_increase_rate = naima_sing_song_increase_rate_base + naima_sing_song_increase_rate_amplification_coef * base_array[index_buf_amplification]
+naima_sing_song_increase_rate_base = 1.25
+naima_sing_song_increase_rate_amplification_coef = 0.05
+
+## 奶萝
+# 多少智力折合一级祝福
+nailuo_intelligence_divisor = 665
+# # 唱歌倍率的一些系数：sing_song_increase_rate = (nailuo_sing_song_increase_rate_base + nailuo_sing_song_increase_rate_amplification_coef * base_array[index_buf_amplification]) * nailuo_sing_song_increase_rate_final_coef
+nailuo_sing_song_increase_rate_base = 1.20
+nailuo_sing_song_increase_rate_amplification_coef = 0.05
+nailuo_sing_song_increase_rate_final_coef = 1.20
