@@ -1295,7 +1295,7 @@ def calc():
                 # 加上输出职业的国服特色数值后的基础数据
                 base_array = base_array_with_deal_bonus_attributes.copy()
 
-                skiper = 0
+                skiper = base_array[index_deal_extra_percent_skill_attack_power]
                 for_calc = tuple(set_on) + calc_wep
                 oneone = len(for_calc)
                 oneonelist = []
