@@ -31,6 +31,6 @@ score_to_damage_rate = "1 / 1077.97 * 3320" # 本人召唤在分数为107797%时
 # 一些初始值
 [initital_data]
 # 啥也不穿的满级奶爸的体力与精神
-physical_and_mental = "4308 - 45 - 83"
+physical_and_mental = "2674"
 # 啥也不穿的满级奶妈和奶萝的智力
 intelligence = "2400 - 33"
