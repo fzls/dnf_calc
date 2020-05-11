@@ -26,7 +26,7 @@ extra_all_job_all_active_skill_lv_1_30_deal_1_45_rate = 0.8
 # 是否显示预估的20s打桩数据
 enable = true
 # 分数与打桩的比例关系
-score_to_damage_rate = "1 / 1040.47 * 3320" # 本人召唤在分数为104047%时，修炼场20s的伤害为3320e，先以这个为准给一版供参考的伤害值
+score_to_damage_rate = "1 / 1077.97 * 3320" # 本人召唤在分数为107797%时，修炼场20s的伤害为3320e，先以这个为准给一版供参考的伤害值
 
 # 一些初始值
 [initital_data]

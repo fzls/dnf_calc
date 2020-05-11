@@ -262,9 +262,9 @@
 
     ### 护石栏
     ## 护石(上)
-    - other_rate_like_extra_percent_skill_attack_power: 0.135 * (0.17 + 0.06) # 牛头王的觉醒,dps占比13.5%
+    - other_rate_like_extra_percent_skill_attack_power: 0.135 * (17 + 6) # 牛头王的觉醒,dps占比13.5%，技能提升大概23%
     ## 护石(下)
-    - other_rate_like_extra_percent_skill_attack_power: 0.103 * 0.81 # 愤怒之焰,dps占比10.3%
+    - other_rate_like_extra_percent_skill_attack_power: 0.103 * 12.4 # 愤怒之焰,dps占比10.3%，技能提升大概12.4%
 
 
     ### 勋章栏
