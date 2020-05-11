@@ -15,6 +15,7 @@ import time
 import tkinter.font
 import tkinter.messagebox
 import tkinter.ttk
+import traceback
 import webbrowser
 from collections import Counter
 from datetime import datetime
@@ -874,6 +875,13 @@ def get_slot_names(equip_indexes):
 
     return [equip_index_to_realname[index] for index in ordered_equip_indexes]
 
+
+def calc_with_try_except():
+    try:
+        calc()
+    except Exception as error:
+        logger.error("calc unhandled exception\n{}".format(traceback.format_exc()))
+        tkinter.messagebox.showerror("出错啦", "计算过程中出现了未处理的异常\n{}".format(traceback.format_exc()))
 
 ## 计算函数##
 def calc():
@@ -1744,7 +1752,7 @@ def calc():
 
 
 def calc_thread():
-    threading.Thread(target=calc, daemon=True).start()
+    threading.Thread(target=calc_with_try_except, daemon=True).start()
 
 
 def stop_calc():
