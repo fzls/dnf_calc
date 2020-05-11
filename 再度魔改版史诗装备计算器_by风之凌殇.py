@@ -1547,6 +1547,27 @@ def calc():
                     taiyang_extra_percent_strength_and_intelligence = multiply_entry(taiyang_extra_percent_strength_and_intelligence, no_cut[index_buf_taiyang_extra_percent_strength_and_intelligence])
                     oneonelist.append(no_cut)
 
+                # 保证各个技能的等级不超过上限
+                def limit_skill_level(skill_name, buff_index, base_level=0):
+                    # 获取该等级的额外附加上限，第一位是0，填充补位的，后面可能有多余的None列，excel自动补齐的
+                    max_level = sum(1 for val in lvlget(skill_name) if val is not None) - 1
+                    # 保证等级不超过该上限
+                    base_array[buff_index] = min(max_level-base_level, base_array[buff_index])
+
+                limit_skill_level('hol_b_atta', index_buf_bless_lv30)
+                limit_skill_level('pas0', index_buf_job_passive_lv15, base_job_passive_lv15_bless)
+                limit_skill_level('hol_pas0_1', index_buf_naiba_protect_badge_lv25)
+                limit_skill_level('hol_pas1', index_buf_first_awaken_passive_lv48)
+                limit_skill_level('hol_act2', index_buf_second_awaken_lv85)
+                limit_skill_level('pas3', index_buf_third_awaken_passive_lv95)
+                limit_skill_level('hol_b_stat', index_buf_bless_lv30)
+                limit_skill_level('c_stat', index_buf_taiyang_lv50)
+                limit_skill_level('hol_pas1_out', index_buf_first_awaken_passive_lv48)
+                limit_skill_level('se_b_atta', index_buf_bless_lv30)
+                limit_skill_level('se_pas1', index_buf_first_awaken_passive_lv48)
+                limit_skill_level('se_pas2', index_buf_second_awaken_passive_lv75)
+                limit_skill_level('se_b_stat', index_buf_bless_lv30)
+
                 if job_name == "(奶系)神思者":
                     # 祝福增加的三攻
                     bless_increase_attack_power = lvlget('hol_b_atta')[int(base_array[index_buf_bless_lv30])]
