@@ -20,6 +20,7 @@ import webbrowser
 from collections import Counter
 from datetime import datetime
 from heapq import heapify, heappush, heappushpop
+from inspect import getframeinfo, stack
 from math import floor
 from tkinter import *
 
@@ -61,7 +62,6 @@ _debug_stats = []
 
 
 def _debug_print_debug_timing_info(message):
-    from inspect import getframeinfo, stack
     global _debug_last_step_time, _debug_stats
     timeline = time.time() - _debug_start_time
     used_time_since_last_step = time.time() - _debug_last_step_time

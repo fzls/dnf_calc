@@ -1,3 +1,4 @@
+@ECHO OFF
 set /P version="请输入版本号："
 echo 发布版本v%version%
 

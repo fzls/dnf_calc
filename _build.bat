@@ -1,3 +1,4 @@
+@ECHO OFF
 python _export_excel_to_txt.py
 
 :: 使用pyinstaller打包
