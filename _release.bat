@@ -1,6 +1,15 @@
 @ECHO OFF
+
+:: 修改console默认encoding为utf8，避免中文乱码
+CHCP 65001
+CLS
+
 set /P version="请输入版本号："
-echo 发布版本v%version%
+
+echo.
+echo [提示]: 开始发布版本v%version%
+echo.
+
 
 :: 增加版本标签
 git tag -d v%version%
@@ -11,6 +20,10 @@ call _git_push_remote.bat
 
 :: 调用构建脚本，打包
 call _build.bat
+
+echo.
+echo [提示]: 构建完成，将结果复制到发布目录
+echo.
 
 :: 设置目标目录
 set target_dir=.\..\..\..\downloads\(发布魔改计算器\再度魔改版史诗装备计算器_v%version%_by风之凌殇
