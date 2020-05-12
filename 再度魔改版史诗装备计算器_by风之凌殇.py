@@ -1,6 +1,6 @@
 ﻿#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-now_version = "3.4.3"
+now_version = "3.4.4"
 ver_time = '2020-05-11'
 
 ## 코드를 무단으로 복제하여 개조 및 배포하지 말 것##

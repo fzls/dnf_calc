@@ -22,6 +22,11 @@ https://drive.google.com/file/d/1p8ZdzW_NzGKHHOtfPTuZSr1YgSEVtYCj/view
 ## 第三批功能说明
 ![第三批功能说明](change_log_images/功能说明3.png)
 
+# v3.4.4 2020.5.12
+## 网盘更新
+1. 网盘链接炸了，修改readme中的网盘地址链接
+2. 调整自动更新时的网盘链接地址获取方式，改为从github主页实时获取，避免日后网盘链接再次炸掉
+
 # v3.4.3 2020.5.11
 ## 增加词条
 1. 增加两个换装用的词条，只增加祝福等级，不加其他的
