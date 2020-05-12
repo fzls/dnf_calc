@@ -2,7 +2,6 @@
 
 :: 修改console默认encoding为utf8，避免中文乱码
 CHCP 65001
-CLS
 
 :: 设置变量
 SET PYTHON_DOWNLOAD_URL=https://www.python.org/ftp/python/3.8.2/python-3.8.2.exe

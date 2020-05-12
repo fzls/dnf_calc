@@ -2,7 +2,6 @@
 
 :: 修改console默认encoding为utf8，避免中文乱码
 CHCP 65001
-CLS
 
 echo.
 echo [提示]: 导出excel为txt，方便版本对比

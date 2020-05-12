@@ -2,7 +2,6 @@
 
 :: 修改console默认encoding为utf8，避免中文乱码
 CHCP 65001
-CLS
 
 set /P version="请输入版本号："
 
