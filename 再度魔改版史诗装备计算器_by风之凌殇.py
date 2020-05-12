@@ -377,6 +377,7 @@ class Combopicker(tkinter.ttk.Entry, Picker):
 g_config = {}
 g_setting = {}
 
+
 # 读取程序config
 def load_config():
     global g_config
@@ -390,6 +391,7 @@ settings = [
     {"name": "creatures", "path": "setting/creatures.yaml"},  # 宠物的配置表
     {"name": "account_other_bonus_attributes", "path": "setting/account_other_bonus_attributes.yaml"},  # 其余特色的配置表
 ]
+
 
 # 读取配置表
 def load_setting():
@@ -897,8 +899,10 @@ def calc_with_try_except():
         logger.error("calc unhandled exception\n{}".format(traceback.format_exc()))
         tkinter.messagebox.showerror("出错啦", "计算过程中出现了未处理的异常\n{}".format(traceback.format_exc()))
 
+
 # 缓存的buff等级最大等级
 max_skill_level_map = {}
+
 
 ## 计算函数##
 def calc():
@@ -1470,7 +1474,7 @@ def calc():
         show_number = 1
 
         # 基础体力、精神
-        base_stat_physical_and_mental = eval(g_config["initital_data"]["physical_and_mental"]) +  + custom_buf_data["taiyang_data"]
+        base_stat_physical_and_mental = eval(g_config["initital_data"]["physical_and_mental"]) + + custom_buf_data["taiyang_data"]
         # 基础智力
         base_stat_intelligence = eval(g_config["initital_data"]["intelligence"]) + custom_buf_data["taiyang_data"]
         # 祝福等级
@@ -2458,7 +2462,6 @@ def load_buf_custom_data():
     }
 
     load_presetr.close()
-
 
 
 def format_damage(score):
@@ -4000,7 +4003,7 @@ def get_latest_version_and_netdisk_link_passcode():
 
     # 从readme中提取最新网盘信息
     netdisk_address_match = re.search('<p>链接: <a[\s\S]+rel="nofollow">(?P<link>.+)<\/a> 提取码: (?P<passcode>.+)<\/p>', readme_html_text, re.MULTILINE)
-    netdisk_link= netdisk_address_match.group('link')
+    netdisk_link = netdisk_address_match.group('link')
     netdisk_passcode = netdisk_address_match.group('passcode')
 
     return latest_version, netdisk_link, netdisk_passcode
@@ -4009,6 +4012,32 @@ def get_latest_version_and_netdisk_link_passcode():
 # 是否需要更新
 def need_update(current_version, latest_version):
     return version_to_version_int_list(current_version) < version_to_version_int_list(latest_version)
+
+
+G_BLOCKED_STR = "此链接分享内容可能因为涉及侵权、色情、反动、低俗等信息，无法访问！"
+
+
+# 访问网盘地址，确认分享是否被系统干掉了- -
+def is_shared_content_blocked(share_netdisk_addr: str) -> bool:
+    res = requests.get(share_netdisk_addr, headers={
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+        "Accept-Encoding": "gzip, deflate, br",
+        "Accept-Language": "zh-CN",
+        "Cache-Control": "max-age=0",
+        "Connection": "keep-alive",
+        "DNT": "1",
+        "Host": "pan.baidu.com",
+        "Sec-Fetch-Dest": "document",
+        "Sec-Fetch-Mode": "navigate",
+        "Sec-Fetch-Site": "none",
+        "Sec-Fetch-User": "?1",
+        "Upgrade-Insecure-Requests": "1",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36",
+    })
+    # 使用utf-8来解析请求的网页
+    res.encoding = "utf-8"
+
+    return G_BLOCKED_STR in res.text
 
 
 # 启动时检查是否有更新
@@ -4023,8 +4052,17 @@ def check_update_on_start():
             logger.info("当前版本为{}，已有最新版本{}".format(now_version, latest_version))
             ask_update = tkinter.messagebox.askquestion('更新', "当前版本为{}，已有最新版本{}. 你需要更新吗?".format(now_version, latest_version))
             if ask_update == 'yes':
-                webbrowser.open(netdisk_link)
-                tkinter.messagebox.showinfo("百度网盘验证码", "百度网盘提取码为： {}".format(netdisk_passcode))
+                if not is_shared_content_blocked(netdisk_link):
+                    webbrowser.open(netdisk_link)
+                    tkinter.messagebox.showinfo("百度网盘验证码", "百度网盘提取码为： {}".format(netdisk_passcode))
+                else:
+                    # 如果分享的网盘链接被系统屏蔽了，写日志并弹窗提示
+                    logger.error("网盘链接={}又被系统干掉了=-=".format(netdisk_link))
+                    tkinter.messagebox.showerror("不好啦", (
+                        "分享的网盘地址好像又被度娘给抽掉了呢=。=\n"
+                        "请稍作等待~ 风之凌殇看到这个报错后会尽快更新网盘链接的呢\n"
+                        "届时再启动程序将自动获取到最新的网盘地址呢~"
+                    ))
             else:
                 tkinter.messagebox.showinfo("取消启动时自动检查更新方法", "如果想停留在当前版本，不想每次启动都弹出前面这个提醒更新的框框，可以前往config.toml，将check_update_on_start的值设为false即可")
         else:
@@ -4688,6 +4726,7 @@ def reload_config_and_setting():
     load_setting()
     logger.info("reload_config_and_setting")
     tkinter.messagebox.showinfo("提示", "配置已重载，可继续使用")
+
 
 # 更多国服特色
 reload_config_and_setting_img = PhotoImage(file="ext_img/reload_config_and_setting.png")
