@@ -897,6 +897,9 @@ def calc_with_try_except():
         logger.error("calc unhandled exception\n{}".format(traceback.format_exc()))
         tkinter.messagebox.showerror("出错啦", "计算过程中出现了未处理的异常\n{}".format(traceback.format_exc()))
 
+# 缓存的buff等级最大等级
+max_skill_level_map = {}
+
 ## 计算函数##
 def calc():
     global result_window
@@ -1548,41 +1551,32 @@ def calc():
                     oneonelist.append(no_cut)
 
                 # 保证各个技能的等级不超过上限
-                def limit_skill_level(skill_name, buff_index, base_level=0):
+                def get_skill_level_data(skill_name, buff_index, base_level=0):
                     # 获取该等级的额外附加上限，第一位是0，填充补位的，后面可能有多余的None列，excel自动补齐的
-                    max_level = sum(1 for val in lvlget(skill_name) if val is not None) - 1
-                    # 保证等级不超过该上限
-                    base_array[buff_index] = min(max_level-base_level, base_array[buff_index])
+                    global max_skill_level_map
+                    if skill_name not in max_skill_level_map:
+                        max_skill_level_map[skill_name] = sum(1 for val in lvlget(skill_name) if val is not None) - 1
+                    max_level = max_skill_level_map[skill_name]
 
-                limit_skill_level('hol_b_atta', index_buf_bless_lv30)
-                limit_skill_level('pas0', index_buf_job_passive_lv15, base_job_passive_lv15_bless)
-                limit_skill_level('hol_pas0_1', index_buf_naiba_protect_badge_lv25)
-                limit_skill_level('hol_pas1', index_buf_first_awaken_passive_lv48)
-                limit_skill_level('hol_act2', index_buf_second_awaken_lv85)
-                limit_skill_level('pas3', index_buf_third_awaken_passive_lv95)
-                limit_skill_level('hol_b_stat', index_buf_bless_lv30)
-                limit_skill_level('c_stat', index_buf_taiyang_lv50)
-                limit_skill_level('hol_pas1_out', index_buf_first_awaken_passive_lv48)
-                limit_skill_level('se_b_atta', index_buf_bless_lv30)
-                limit_skill_level('se_pas1', index_buf_first_awaken_passive_lv48)
-                limit_skill_level('se_pas2', index_buf_second_awaken_passive_lv75)
-                limit_skill_level('se_b_stat', index_buf_bless_lv30)
+                    # 保证等级不超过该上限
+                    level = int(min(max_level, base_array[buff_index] + base_level))
+                    return lvlget(skill_name)[level]
 
                 if job_name == "(奶系)神思者":
                     # 祝福增加的三攻
-                    bless_increase_attack_power = lvlget('hol_b_atta')[int(base_array[index_buf_bless_lv30])]
+                    bless_increase_attack_power = get_skill_level_data('hol_b_atta', index_buf_bless_lv30)
                     # 守护恩赐（15级）和守护徽章（25级）增加的体力、精神数值（祝福）
-                    passive_lv15_lv25_increase_physical_and_mental_strength_bless = lvlget('pas0')[int(base_array[index_buf_job_passive_lv15]) + base_job_passive_lv15_bless] \
-                                                                                    + lvlget('hol_pas0_1')[int(base_array[index_buf_naiba_protect_badge_lv25])]
+                    passive_lv15_lv25_increase_physical_and_mental_strength_bless = get_skill_level_data('pas0', index_buf_job_passive_lv15, base_job_passive_lv15_bless) \
+                                                                                    + get_skill_level_data('hol_pas0_1', index_buf_naiba_protect_badge_lv25)
                     # 守护恩赐（15级）和守护徽章（25级）增加的体力、精神数值（太阳）
-                    passive_lv15_lv25_increase_physical_and_mental_strength_taiyang = lvlget('pas0')[int(base_array[index_buf_job_passive_lv15]) + base_job_passive_lv15_taiyang] \
-                                                                                      + lvlget('hol_pas0_1')[int(base_array[index_buf_naiba_protect_badge_lv25])]
+                    passive_lv15_lv25_increase_physical_and_mental_strength_taiyang = get_skill_level_data('pas0', index_buf_job_passive_lv15, base_job_passive_lv15_taiyang) \
+                                                                                      + get_skill_level_data('hol_pas0_1', index_buf_naiba_protect_badge_lv25)
                     # 一觉被动（信念光环）增加的体力、精神数值
-                    first_awaken_passive_increase_physical_and_mental_strength = lvlget('hol_pas1')[int(base_array[index_buf_first_awaken_passive_lv48])]
+                    first_awaken_passive_increase_physical_and_mental_strength = get_skill_level_data('hol_pas1', index_buf_first_awaken_passive_lv48)
                     # 二觉增加的体力、精神数值
-                    second_awaken_increase_physical_and_mental_strength = lvlget('hol_act2')[int(base_array[index_buf_second_awaken_lv85])]
+                    second_awaken_increase_physical_and_mental_strength = get_skill_level_data('hol_act2', index_buf_second_awaken_lv85)
                     # 三觉被动增加的体力、精神数值
-                    third_awaken_passive_increase_physical_and_mental_strength = lvlget('pas3')[int(base_array[index_buf_third_awaken_passive_lv95])]
+                    third_awaken_passive_increase_physical_and_mental_strength = get_skill_level_data('pas3', index_buf_third_awaken_passive_lv95)
                     # 祝福适用的体力、精神数值
                     physical_and_mental_strength_bless = base_array[index_buf_physical_and_mental_strength] + passive_lv15_lv25_increase_physical_and_mental_strength_bless \
                                                          + first_awaken_passive_increase_physical_and_mental_strength + second_awaken_increase_physical_and_mental_strength \
@@ -1597,7 +1591,7 @@ def calc():
 
                     # 祝福最终增加的力智
                     bless_final_increase_strength_and_intelligence = int(
-                        int(lvlget('hol_b_stat')[int(base_array[index_buf_bless_lv30])] * (bless_extra_percent_strength_and_intelligence / 100 + 1)) * (physical_and_mental_strength_bless / physical_and_mental_divisor + 1)
+                        int(get_skill_level_data('hol_b_stat', index_buf_bless_lv30) * (bless_extra_percent_strength_and_intelligence / 100 + 1)) * (physical_and_mental_strength_bless / physical_and_mental_divisor + 1)
                     )
                     # 祝福最终增加的物理攻击力
                     bless_final_increase_physical_attack_power = int(
@@ -1618,14 +1612,14 @@ def calc():
                     # 太阳最终增加的力智
                     taiyang_final_increase_strength_and_intelligence = int(
                         int(
-                            (lvlget('c_stat')[int(base_array[index_buf_taiyang_lv50])] + base_array[index_buf_taiyang_extra_strength_and_intelligence]) * (taiyang_extra_percent_strength_and_intelligence / 100 + 1)
+                            (get_skill_level_data('c_stat', index_buf_taiyang_lv50) + base_array[index_buf_taiyang_extra_strength_and_intelligence]) * (taiyang_extra_percent_strength_and_intelligence / 100 + 1)
                         ) * (physical_and_mental_strength_taiyang / 750 + 1)
                     )
                     # 信念光环增加的体力、精神数值
-                    belief_halo_increase_physical_and_mental_strength = int(lvlget('hol_pas1_out')[int(base_array[index_buf_first_awaken_passive_lv48])] + 213 + base_array[index_buf_belief_halo])
+                    belief_halo_increase_physical_and_mental_strength = int(get_skill_level_data('hol_pas1_out', index_buf_first_awaken_passive_lv48) + 213 + base_array[index_buf_belief_halo])
                     # 一觉被动概览
                     first_awaken_passive_overview = "{increase_intelligence_and_strength}  ({level}级)".format(
-                        increase_intelligence_and_strength=int(lvlget('hol_pas1_out')[int(base_array[index_buf_first_awaken_passive_lv48])] + 213 + base_array[index_buf_belief_halo]),
+                        increase_intelligence_and_strength=int(get_skill_level_data('hol_pas1_out', index_buf_first_awaken_passive_lv48) + 213 + base_array[index_buf_belief_halo]),
                         level=int(20 + base_array[index_buf_first_awaken_passive_lv48])
                     )
                     # 祝福概览
@@ -1653,17 +1647,17 @@ def calc():
                                                   * const["nailuo_sing_song_increase_rate_final_coef"]  # 唱歌时的倍率
 
                     # 祝福增加的三攻
-                    bless_increase_attack_power = lvlget('se_b_atta')[int(base_array[index_buf_bless_lv30])]
+                    bless_increase_attack_power = get_skill_level_data('se_b_atta', index_buf_bless_lv30)
                     # [启示：圣歌]、[人偶操纵者] 增加的智力数值（祝福）
-                    passive_lv15_increase_intelligence_bless = lvlget('pas0')[int(base_array[index_buf_job_passive_lv15]) + int(base_job_passive_lv15_bless)]
+                    passive_lv15_increase_intelligence_bless = get_skill_level_data('pas0', index_buf_job_passive_lv15, base_job_passive_lv15_bless)
                     # [启示：圣歌]、[人偶操纵者] 增加的智力数值（太阳）
-                    passive_lv15_increase_intelligence_taiyang = lvlget('pas0')[int(base_array[index_buf_job_passive_lv15]) + int(base_job_passive_lv15_taiyang)]
+                    passive_lv15_increase_intelligence_taiyang = get_skill_level_data('pas0', index_buf_job_passive_lv15, base_job_passive_lv15_taiyang)
                     # 一觉被动（[虞诚信念]、[少女的爱]）增加的智力数值
-                    first_awaken_passive_increase_intelligence = lvlget('se_pas1')[int(base_array[index_buf_first_awaken_passive_lv48])] + base_array[index_buf_piety_halo_or_girs_love]
+                    first_awaken_passive_increase_intelligence = get_skill_level_data('se_pas1', index_buf_first_awaken_passive_lv48) + base_array[index_buf_piety_halo_or_girs_love]
                     # 二觉被动增加的智力数值
-                    second_awaken_increase_intelligence = lvlget('se_pas2')[int(base_array[index_buf_second_awaken_passive_lv75])]
+                    second_awaken_increase_intelligence = get_skill_level_data('se_pas2', index_buf_second_awaken_passive_lv75)
                     # 三觉被动增加的智力数值
-                    third_awaken_passive_increase_intelligence = lvlget('pas3')[int(base_array[index_buf_third_awaken_passive_lv95])]
+                    third_awaken_passive_increase_intelligence = get_skill_level_data('pas3', index_buf_third_awaken_passive_lv95)
                     # 祝福适用的智力数值
                     intelligence_bless = base_array[index_buf_intelligence] + passive_lv15_increase_intelligence_bless \
                                          + first_awaken_passive_increase_intelligence + second_awaken_increase_intelligence \
@@ -1674,7 +1668,7 @@ def calc():
                                            + third_awaken_passive_increase_intelligence
                     # 祝福最终增加的力智
                     bless_final_increase_strength_and_intelligence = int(
-                        int(lvlget('se_b_stat')[int(base_array[index_buf_bless_lv30])] * (bless_extra_percent_strength_and_intelligence / 100 + 1)) * (intelligence_bless / intelligence_divisor + 1) * sing_song_increase_rate
+                        int(get_skill_level_data('se_b_stat', index_buf_bless_lv30) * (bless_extra_percent_strength_and_intelligence / 100 + 1)) * (intelligence_bless / intelligence_divisor + 1) * sing_song_increase_rate
                     )
                     # 祝福最终增加的物理攻击力
                     bless_final_increase_physical_attack_power = int(
@@ -1694,7 +1688,7 @@ def calc():
                     )
                     # 太阳最终增加的力智
                     taiyang_final_increase_strength_and_intelligence = int(
-                        int((lvlget('c_stat')[int(base_array[index_buf_taiyang_lv50])] + base_array[index_buf_taiyang_extra_strength_and_intelligence]) * (taiyang_extra_percent_strength_and_intelligence / 100 + 1)) * (
+                        int((get_skill_level_data('c_stat', index_buf_taiyang_lv50) + base_array[index_buf_taiyang_extra_strength_and_intelligence]) * (taiyang_extra_percent_strength_and_intelligence / 100 + 1)) * (
                                 intelligence_taiyang / 750 + 1))
                     # 虔诚信念或少女的爱增加的智力数值
                     piety_halo_or_girs_love_increase_intelligence = int(first_awaken_passive_increase_intelligence + 442)
