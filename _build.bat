@@ -1,30 +1,30 @@
 @ECHO OFF
 
-:: �޸�consoleĬ��encodingΪutf8��������������
+:: 修改console默认encoding为utf8，避免中文乱码
 CHCP 65001
 CLS
 
 echo.
-echo [��ʾ]: ����excelΪtxt������汾�Ա�
+echo [提示]: 导出excel为txt，方便版本对比
 echo.
 
 python _export_excel_to_txt.py
 
 
 echo.
-echo [��ʾ]: ��ʼ���
+echo [提示]: 开始打包
 echo.
 
 
-:: ʹ��pyinstaller���
-pyinstaller.exe --hidden-import pkg_resources.py2_warn  --noconsole -F "�ٶ�ħ�İ�ʷʫװ��������_by��֮����.py"
+:: 使用pyinstaller打包
+pyinstaller.exe --hidden-import pkg_resources.py2_warn  --noconsole -F "再度魔改版史诗装备计算器_by风之凌殇.py"
 
-:: �������ɵĽ����ɾ����ʱ�ļ�
-COPY /Y "dist\�ٶ�ħ�İ�ʷʫװ��������_by��֮����.exe" "�ٶ�ħ�İ�ʷʫװ��������_by��֮����.exe"
+:: 复制生成的结果后删除临时文件
+COPY /Y "dist\再度魔改版史诗装备计算器_by风之凌殇.exe" "再度魔改版史诗装备计算器_by风之凌殇.exe"
 RMDIR /S /Q "build" "dist" "__pycache__"
-DEL /Q "�ٶ�ħ�İ�ʷʫװ��������_by��֮����.spec"
+DEL /Q "再度魔改版史诗装备计算器_by风之凌殇.spec"
 
 
 echo.
-echo [��ʾ]: �������
+echo [提示]: 打包结束
 echo.

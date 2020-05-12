@@ -1,46 +1,46 @@
 @ECHO OFF
 
-:: ĞŞ¸ÄconsoleÄ¬ÈÏencodingÎªutf8£¬±ÜÃâÖĞÎÄÂÒÂë
+:: ä¿®æ”¹consoleé»˜è®¤encodingä¸ºutf8ï¼Œé¿å…ä¸­æ–‡ä¹±ç 
 CHCP 65001
 CLS
 
-set /P version="ÇëÊäÈë°æ±¾ºÅ£º"
+set /P version="è¯·è¾“å…¥ç‰ˆæœ¬å·ï¼š"
 
 echo.
-echo [ÌáÊ¾]: ¿ªÊ¼·¢²¼°æ±¾v%version%
+echo [æç¤º]: å¼€å§‹å‘å¸ƒç‰ˆæœ¬v%version%
 echo.
 
 
-:: Ôö¼Ó°æ±¾±êÇ©
+:: å¢åŠ ç‰ˆæœ¬æ ‡ç­¾
 git tag -d v%version%
 git tag -a v%version% -m "release v%version%"
 
-:: ·¢²¼Ç°½«´úÂëÍÆËÍµ½github
+:: å‘å¸ƒå‰å°†ä»£ç æ¨é€åˆ°github
 call _git_push_remote.bat
 
-:: µ÷ÓÃ¹¹½¨½Å±¾£¬´ò°ü
+:: è°ƒç”¨æ„å»ºè„šæœ¬ï¼Œæ‰“åŒ…
 call _build.bat
 
 echo.
-echo [ÌáÊ¾]: ¹¹½¨Íê³É£¬½«½á¹û¸´ÖÆµ½·¢²¼Ä¿Â¼
+echo [æç¤º]: æ„å»ºå®Œæˆï¼Œå°†ç»“æœå¤åˆ¶åˆ°å‘å¸ƒç›®å½•
 echo.
 
-:: ÉèÖÃÄ¿±êÄ¿Â¼
-set target_dir=.\..\..\..\downloads\(·¢²¼Ä§¸Ä¼ÆËãÆ÷\ÔÙ¶ÈÄ§¸Ä°æÊ·Ê«×°±¸¼ÆËãÆ÷_v%version%_by·çÖ®Áèéä
+:: è®¾ç½®ç›®æ ‡ç›®å½•
+set target_dir=.\..\..\..\downloads\(å‘å¸ƒé­”æ”¹è®¡ç®—å™¨\å†åº¦é­”æ”¹ç‰ˆå²è¯—è£…å¤‡è®¡ç®—å™¨_v%version%_byé£ä¹‹å‡Œæ®‡
 
-:: É¾³ıÄ¿±êÄ¿Â¼²¢ÖØ½¨
+:: åˆ é™¤ç›®æ ‡ç›®å½•å¹¶é‡å»º
 RMDIR /S /Q "%target_dir%"
 MKDIR %target_dir%
 
-:: ½«ËùÓĞÎÄ¼ş¸´ÖÆµ½Ä¿±êÄ¿Â¼
+:: å°†æ‰€æœ‰æ–‡ä»¶å¤åˆ¶åˆ°ç›®æ ‡ç›®å½•
 XCOPY ".\*.*" "%target_dir%" /S /E /Y
 
-:: Ìø×ªµ½Ä¿±êÄ¿Â¼
+:: è·³è½¬åˆ°ç›®æ ‡ç›®å½•
 cd "%target_dir%"
 
-:: ÒÆ³ıÒ»Ğ©ÎŞĞè·¢²¼µÄÎÄ¼ş£¬ÒÔ¼°³õÊ¼»¯Ïà¹Ø´æµµ
+:: ç§»é™¤ä¸€äº›æ— éœ€å‘å¸ƒçš„æ–‡ä»¶ï¼Œä»¥åŠåˆå§‹åŒ–ç›¸å…³å­˜æ¡£
 xcopy preset_clear.XLSX preset.XLSX /Y/B
 RMDIR /S /Q ".git" ".idea" "logs"
-DEL /Q "preset_clear.XLSX" "test.py" ¡°ÅÅĞĞ½á¹û.xlsx¡±
-ren "Ä§¸Äºó.py__" "Ä§¸Äºó.py"
+DEL /Q "preset_clear.XLSX" "test.py" â€œæ’è¡Œç»“æœ.xlsxâ€
+ren "é­”æ”¹å.py__" "é­”æ”¹å.py"
 ren "calc.py__" "calc.py"
