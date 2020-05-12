@@ -1,6 +1,6 @@
 ﻿#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-now_version = "3.4.7"
+now_version = "3.4.8"
 ver_time = '2020-05-13'
 
 ## 코드를 무단으로 복제하여 개조 및 배포하지 말 것##
@@ -1730,20 +1730,25 @@ def calc():
                 for equip in transfered_equips:
                     not_owned_equips.append(equip)
 
-                # 统计数据
-                save_data = [calc_wep, [bless_overview, taiyang_overview, first_awaken_passive_overview], baibianguai, tuple(not_owned_equips)]
-
-                # 1 祝福
+                # 1 祝福得分
                 bless_score = ((15000 + bless_final_increase_strength_and_intelligence) / 250 + 1) * (2650 + bless_final_increase_attack_power_average)
-                minheap_bless.add((bless_score, unique_index, save_data))
-
-                # 2 太阳
+                # 2 太阳得分
                 taiyang_score = ((15000 + taiyang_final_increase_strength_and_intelligence) / 250 + 1) * 2650
-                minheap_taiyang.add((taiyang_score, unique_index, save_data))
-
-                # 3 综合
+                # 3 综合得分
                 total_score = ((15000 + first_awaken_increase_physical_and_mental_strength_or_intelligence + taiyang_final_increase_strength_and_intelligence + bless_final_increase_strength_and_intelligence) / 250 + 1) \
                               * (2650 + bless_final_increase_attack_power_average)
+
+                # 统计数据
+                all_score_str = "{}/{}/{}".format(
+                    int(bless_score / 10),
+                    int(taiyang_score / 10),
+                    int(total_score / 10),
+                )
+                save_data = [calc_wep, [bless_overview, taiyang_overview, first_awaken_passive_overview, all_score_str], baibianguai, tuple(not_owned_equips)]
+
+                # 加入排序
+                minheap_bless.add((bless_score, unique_index, save_data))
+                minheap_taiyang.add((taiyang_score, unique_index, save_data))
                 minheap_total.add((total_score, unique_index, save_data))
 
                 global count_valid
@@ -1891,6 +1896,7 @@ def extract_deal_rank_cols(ele_skill, rank, ranking_detail):
 buf_col_names = (
     "排行",
     "得分",
+    "祝福得分/一觉得分/综合得分",
     "职业",
     "搭配概览",
     "武器",
@@ -1918,7 +1924,7 @@ buf_col_names = (
 
 
 def extract_buf_rank_cols(ele_skill, rank, ranking_detail):
-    # (score, unique_index, [calc_wep, [save1, save2, pas1_out], baibianguai, tuple(not_owned_equips)])
+    # (score, unique_index, [calc_wep, [bless_overview, taiyang_overview, first_awaken_passive_overview, all_score_str], baibianguai, tuple(not_owned_equips)])
     score = ranking_detail[0]
     weapon_index = ranking_detail[2][0][0]
     equip_indexes = ranking_detail[2][0][1:]
@@ -1927,6 +1933,7 @@ def extract_buf_rank_cols(ele_skill, rank, ranking_detail):
     bless = ranking_detail[2][1][0]  # 祝福数据
     taiyang = ranking_detail[2][1][1]  # 太阳数据
     taiyang_passive = ranking_detail[2][1][2]  # 太阳被动
+    all_score = ranking_detail[2][1][3]  # 三个标准下的得分
 
     baibianguai = ranking_detail[2][2]
     not_owned_equips = ranking_detail[2][3]
@@ -1934,6 +1941,7 @@ def extract_buf_rank_cols(ele_skill, rank, ranking_detail):
     cols = []
     cols.append(rank)  # 排行
     cols.append(score)  # 得分
+    cols.append(all_score)  # 祝福得分/一觉得分/综合得分
     cols.append(jobup_select.get())  # 职业
     cols.append(" | ".join(get_readable_names(weapon_index, equip_indexes)))  # 搭配概览
     cols.append(equip_index_to_realname[weapon_index])  # 武器
@@ -2746,7 +2754,7 @@ def show_result(rank_list, job_type, ele_skill):
         ## c: b에서 1 선택시, 0=스펙, 1=증가량
         try:
             # ranking = [ranking1, ranking2, ranking3]
-            # ranking1 = rank => [score, [calc_wep, [save1, save2, pas1_out], baibianguai, not_owned_equips]]
+            # ranking1 = rank => [score, [calc_wep, [bless_overview, taiyang_overview, first_awaken_passive_overview, all_score_str], baibianguai, tuple(not_owned_equips)]]
             rank_baibiaoguai3[0] = rank_list[2][0][1][2]
             rank_baibiaoguai2[0] = rank_list[1][0][1][2]
             rank_baibiaoguai1[0] = rank_list[0][0][1][2]
