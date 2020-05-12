@@ -22,6 +22,10 @@ https://drive.google.com/file/d/1p8ZdzW_NzGKHHOtfPTuZSr1YgSEVtYCj/view
 ## 第三批功能说明
 ![第三批功能说明](change_log_images/功能说明3.png)
 
+# v3.4.7 2020.5.13
+## 易用性改动
+1. 增加检查是否最新的网盘链接失效了，若是则弹窗提醒等待俺去更新网盘链接<_<，避免一脸懵逼-。-
+
 # v3.4.6 2020.5.13
 ## bugfix
 1. 之前版本的限制buff等级上限的实现有bug，若有多个不同的基础等级时，预先处理的等级会有问题，改为在实际计算时截断
