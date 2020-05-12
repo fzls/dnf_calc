@@ -9,9 +9,11 @@ https://blog.naver.com/PostView.nhn?blogId=dawnclass16&logNo=221931875095#
 ## 二进制发布
 https://drive.google.com/file/d/1p8ZdzW_NzGKHHOtfPTuZSr1YgSEVtYCj/view
 
-# 网盘链接（更新于2020/4/28)
+# 网盘链接（更新于2020/5/12)
+__start_of_netdisk__
 链接:https://pan.baidu.com/s/1-I8pMK6_yPH5qU4SWNMVog
 提取码:238m
+__end_of_netdisk__
 
 # 使用简介
 ## 第一批功能说明
