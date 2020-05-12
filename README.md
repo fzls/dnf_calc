@@ -22,6 +22,10 @@ https://drive.google.com/file/d/1p8ZdzW_NzGKHHOtfPTuZSr1YgSEVtYCj/view
 ## 第三批功能说明
 ![第三批功能说明](change_log_images/功能说明3.png)
 
+# v3.4.6 2020.5.13
+## bugfix
+1. 之前版本的限制buff等级上限的实现有bug，若有多个不同的基础等级时，预先处理的等级会有问题，改为在实际计算时截断
+
 # v3.4.5 2020.5.13
 ## 数据修正
 1. 原先奶系职业的普雷特殊和首饰实际为100传说装备的属性，统一调为普雷（太阳）
