@@ -3995,15 +3995,21 @@ def version_int_list_to_version(version_int_list):
     return '.'.join([str(subv) for subv in version_int_list])
 
 
-# 获取最新版本号
-def get_latest_version():
+# 获取最新版本号与下载网盘地址
+def get_latest_version_and_netdisk_link_passcode():
     # 获取github本项目的readme页面内容
     readme_html_text = requests.get("https://github.com/fzls/dnf_calc/blob/master/README.md").text
     # 从更新日志中提取所有版本信息
     versions = re.findall("(?<=[vV])[0-9.]+(?=\s+\d+\.\d+\.\d+)", readme_html_text)
     # 找出其中最新的那个版本号
     latest_version = version_int_list_to_version(max(version_to_version_int_list(ver) for ver in versions))
-    return latest_version
+
+    # 从readme中提取最新网盘信息
+    netdisk_address_match = re.search('<p>链接: <a[\s\S]+rel="nofollow">(?P<link>.+)<\/a> 提取码: (?P<passcode>.+)<\/p>', readme_html_text, re.MULTILINE)
+    netdisk_link= netdisk_address_match.group('link')
+    netdisk_passcode = netdisk_address_match.group('passcode')
+
+    return latest_version, netdisk_link, netdisk_passcode
 
 
 # 是否需要更新
@@ -4018,13 +4024,13 @@ def check_update_on_start():
             logger.warning("启动时检查更新被禁用，若需启用请在config.toml中设置")
             return
 
-        latest_version = get_latest_version()
+        latest_version, netdisk_link, netdisk_passcode = get_latest_version_and_netdisk_link_passcode()
         if need_update(now_version, latest_version):
             logger.info("当前版本为{}，已有最新版本{}".format(now_version, latest_version))
             ask_update = tkinter.messagebox.askquestion('更新', "当前版本为{}，已有最新版本{}. 你需要更新吗?".format(now_version, latest_version))
             if ask_update == 'yes':
-                webbrowser.open('https://pan.baidu.com/s/1-I8pMK6_yPH5qU4SWNMVog')
-                tkinter.messagebox.showinfo("百度网盘验证码", "百度网盘提取码为： 238m")
+                webbrowser.open(netdisk_link)
+                tkinter.messagebox.showinfo("百度网盘验证码", "百度网盘提取码为： {}".format(netdisk_passcode))
             else:
                 tkinter.messagebox.showinfo("取消启动时自动检查更新方法", "如果想停留在当前版本，不想每次启动都弹出前面这个提醒更新的框框，可以前往config.toml，将check_update_on_start的值设为false即可")
         else:
