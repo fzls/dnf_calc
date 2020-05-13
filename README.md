@@ -26,6 +26,10 @@ https://drive.google.com/file/d/1p8ZdzW_NzGKHHOtfPTuZSr1YgSEVtYCj/view
 ## 第三批功能说明
 ![第三批功能说明](change_log_images/功能说明3.png)
 
+# v3.4.10 2020.5.13
+## 易用性改动
+1. 增加一个fallback处理，当所有网盘链接都失效的时候，引导用户前往github发布页面下载新版本
+
 # v3.4.9 2020.5.13
 ## 易用性改动
 1. 检查更新时，从动态获取的多个网盘分享链接中随机挑选一个未被屏蔽的（若有）作为最终更新链接，增加可靠性<_<
