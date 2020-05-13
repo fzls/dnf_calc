@@ -2,6 +2,6 @@ numpy==1.18.0
 requests==2.22.0
 toml==0.10.0
 pyaml==17.12.1
-PyYAML==3.12
+pyyaml>=4.2b1
 openpyxl==2.6.4
 pyinstaller==3.6
