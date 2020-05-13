@@ -4078,8 +4078,9 @@ def check_update_on_start():
                 else:
                     # 如果分享的网盘链接被系统屏蔽了，写日志并弹窗提示
                     logger.error("网盘链接={}又被系统干掉了=-=".format(netdisk_link))
+                    webbrowser.open("https://github.com/fzls/dnf_calc/releases")
                     tkinter.messagebox.showerror("不好啦", (
-                        "分享的网盘地址好像又被度娘给抽掉了呢=。=\n"
+                        "分享的网盘地址好像又被度娘给抽掉了呢=。=先暂时使用github的release页面下载吧0-0\n"
                         "请稍作等待~ 风之凌殇看到这个报错后会尽快更新网盘链接的呢\n"
                         "届时再启动程序将自动获取到最新的网盘地址呢~"
                     ))
