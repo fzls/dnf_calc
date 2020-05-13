@@ -1,6 +1,6 @@
 ﻿#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-now_version = "3.4.10"
+now_version = "3.4.11"
 ver_time = '2020-05-13'
 
 ## 코드를 무단으로 복제하여 개조 및 배포하지 말 것##
@@ -4034,30 +4034,10 @@ def need_update(current_version, latest_version):
     return version_to_version_int_list(current_version) < version_to_version_int_list(latest_version)
 
 
-G_BLOCKED_STR = "此链接分享内容可能因为涉及侵权、色情、反动、低俗等信息，无法访问！"
-
-
 # 访问网盘地址，确认分享是否被系统干掉了- -
 def is_shared_content_blocked(share_netdisk_addr: str) -> bool:
-    res = requests.get(share_netdisk_addr, headers={
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
-        "Accept-Encoding": "gzip, deflate, br",
-        "Accept-Language": "zh-CN",
-        "Cache-Control": "max-age=0",
-        "Connection": "keep-alive",
-        "DNT": "1",
-        "Host": "pan.baidu.com",
-        "Sec-Fetch-Dest": "document",
-        "Sec-Fetch-Mode": "navigate",
-        "Sec-Fetch-Site": "none",
-        "Sec-Fetch-User": "?1",
-        "Upgrade-Insecure-Requests": "1",
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36",
-    })
-    # 使用utf-8来解析请求的网页
-    res.encoding = "utf-8"
-
-    return G_BLOCKED_STR in res.text
+    # 切换蓝奏云，暂时应该不会被屏蔽了- -
+    return False
 
 
 # 启动时检查是否有更新
@@ -4074,13 +4054,13 @@ def check_update_on_start():
             if ask_update == 'yes':
                 if not is_shared_content_blocked(netdisk_link):
                     webbrowser.open(netdisk_link)
-                    tkinter.messagebox.showinfo("百度网盘验证码", "百度网盘提取码为： {}".format(netdisk_passcode))
+                    tkinter.messagebox.showinfo("蓝奏云网盘提取码", "蓝奏云网盘提取码为： {}".format(netdisk_passcode))
                 else:
                     # 如果分享的网盘链接被系统屏蔽了，写日志并弹窗提示
                     logger.error("网盘链接={}又被系统干掉了=-=".format(netdisk_link))
                     webbrowser.open("https://github.com/fzls/dnf_calc/releases")
                     tkinter.messagebox.showerror("不好啦", (
-                        "分享的网盘地址好像又被度娘给抽掉了呢=。=先暂时使用github的release页面下载吧0-0\n"
+                        "分享的网盘地址好像又被系统给抽掉了呢=。=先暂时使用github的release页面下载吧0-0\n"
                         "请稍作等待~ 风之凌殇看到这个报错后会尽快更新网盘链接的呢\n"
                         "届时再启动程序将自动获取到最新的网盘地址呢~"
                     ))
