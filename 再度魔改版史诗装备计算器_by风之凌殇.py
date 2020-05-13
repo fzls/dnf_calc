@@ -4146,7 +4146,10 @@ for row in db_one.rows:
     name_one[index] = row_value
     equip_index_to_realname[index] = realname
     if len(row) != 0:
-        equip_index_to_row_index[index] = row[0].row
+        try:
+            equip_index_to_row_index[index] = row[0].row
+        except Exception as err:
+            logger.error("load row index failed, err={}".format(err))
 
 db_job = load_excel1["lvl"]
 opt_job = {}
