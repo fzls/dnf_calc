@@ -11,6 +11,10 @@ https://drive.google.com/file/d/1p8ZdzW_NzGKHHOtfPTuZSr1YgSEVtYCj/view
 
 # 网盘链接（更新于2020/5/13)
 链接: https://pan.baidu.com/s/11ZlysSa_AEb_rxs91TMTwg 提取码: 2k29
+链接: https://pan.baidu.com/s/1xNx_436KtY48mZUlJonDEQ 提取码: b8qq
+链接: https://pan.baidu.com/s/1v4kprOuXQEGjjYYtjyrM_w 提取码: ym8g
+链接: https://pan.baidu.com/s/1ByoWg8NieHxLxBee94xIcg 提取码: 33eb
+链接: https://pan.baidu.com/s/1tAFFWGW6jrtNLpVWf4sHMQ 提取码: fw6j
 
 # 使用简介
 ## 第一批功能说明
