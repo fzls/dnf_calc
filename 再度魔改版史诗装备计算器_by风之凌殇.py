@@ -10,6 +10,7 @@ import itertools
 import logging
 import os
 import pathlib
+import random
 import threading
 import time
 import tkinter.font
@@ -4010,9 +4011,20 @@ def get_latest_version_and_netdisk_link_passcode():
     latest_version = version_int_list_to_version(max(version_to_version_int_list(ver) for ver in versions))
 
     # 从readme中提取最新网盘信息
-    netdisk_address_match = re.search('<p>链接: <a[\s\S]+rel="nofollow">(?P<link>.+)<\/a> 提取码: (?P<passcode>.+)<\/p>', readme_html_text, re.MULTILINE)
-    netdisk_link = netdisk_address_match.group('link')
-    netdisk_passcode = netdisk_address_match.group('passcode')
+    netdisk_address_matches = re.findall('链接: <a[\s\S]+?rel="nofollow">(?P<link>.+?)<\/a> 提取码: (?P<passcode>[a-zA-Z0-9]+)', readme_html_text, re.MULTILINE)
+    # 先选取首个网盘链接作为默认值
+    netdisk_link = netdisk_address_matches[0][0]
+    netdisk_passcode = netdisk_address_matches[0][1]
+    # 然后随机从仍有效的网盘链接中随机一个作为最终结果
+    random.seed(datetime.now())
+    random.shuffle(netdisk_address_matches)
+    for match in netdisk_address_matches:
+        if not is_shared_content_blocked(match[0]):
+            netdisk_link = match[0]
+            netdisk_passcode = match[1]
+            break
+
+    logger.info("netdisk_address_matches={}, selected=({}, {})".format(netdisk_address_matches, netdisk_link, netdisk_passcode))
 
     return latest_version, netdisk_link, netdisk_passcode
 
