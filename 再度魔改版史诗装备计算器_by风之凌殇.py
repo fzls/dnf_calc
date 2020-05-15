@@ -400,7 +400,7 @@ def load_setting():
     g_setting = {}
     for setting in settings:
         with open(setting["path"], "r", encoding="utf-8") as setting_file:
-            g_setting[setting["name"]] = yaml.load(setting_file)
+            g_setting[setting["name"]] = yaml.load(setting_file, Loader=yaml.FullLoader)
 
     logger.info("setting loaded")
     logger.debug("setting={}".format(g_setting))
