@@ -853,7 +853,16 @@ def add_bonus_attributes_to_base_array(job_type, base_array):
                     continue
                 for name, value in entry.items():
                     entry_indexes = entry_name_to_indexes[name]
-                    entry_value = eval(str(value))
+                    try:
+                        entry_value = eval(str(value))
+                    except SyntaxError as error:
+                        notify_error(
+                            (
+                                "词条的值有问题，将跳过该词条\n"
+                                "出错的词条与其值为：{}: {}\n"
+                                "注意只能是四则表达式或数字，请仔细检查配置表，确认是否将注释也加到双引号中了\n"
+                            ).format(name, value)
+                        )
                     entry_writen = False
                     if job_type == "deal":
                         # 处理输出职业的对应属性
