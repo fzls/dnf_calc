@@ -1119,8 +1119,12 @@ def calc():
         tkinter.messagebox.showerror('部分参数有误', "未选择职业或职业非法", parent=self)
         logger.warning("job_name=%s invalid", job_name)
         return
-    ele_in = (int(db_preset["B14"].value) + int(db_preset["B15"].value) + int(db_preset["B16"].value) +
-              int(ele_skill) - int(db_preset["B18"].value) + int(db_preset["B19"].value) + 13)
+    try:
+        ele_in = (int(db_preset["B14"].value) + int(db_preset["B15"].value) + int(db_preset["B16"].value) +
+                  int(ele_skill) - int(db_preset["B18"].value) + int(db_preset["B19"].value) + 13)
+    except Exception as error:
+        notify_error("preset.xlsx的B14、B15、B16、B18、B19均应为整数，请仔细检查，是否填空值了")
+        return
 
     global count_valid, count_invalid, show_number, all_list_num, max_setopt, count_start_time, unique_index
     count_valid = 0
@@ -2606,7 +2610,7 @@ def load_buf_custom_data():
             "taiyang_data": int(r_preset['H1'].value),
         }
     except Exception as error:
-        notify_error("preset.xlsx中custom表单中奶妈相关参数需要为整数，指H1->H6，请仔细检查")
+        notify_error("preset.xlsx中custom表单中奶妈相关参数需要为整数，指H1->H6，请仔细检查，是否填空值了")
         exit(0)
 
     load_presetr.close()
