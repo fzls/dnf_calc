@@ -24,12 +24,13 @@ from heapq import heapify, heappush, heappushpop
 from inspect import getframeinfo, stack
 from math import floor
 from tkinter import *
-import win32api, win32con
 
 import bugsnag
 import numpy as np
 import requests
 import toml
+import win32api
+import win32con
 import yaml
 from openpyxl import load_workbook, Workbook
 
@@ -40,6 +41,7 @@ def notify_error(message):
     if "logger" in globals():
         logger.error(message)
     win32api.MessageBox(0, message, "出错啦", win32con.MB_ICONWARNING)
+
 
 ###########################################################
 #                         bugsnag                         #
@@ -840,6 +842,15 @@ def add_bonus_attributes_to_base_array(job_type, base_array):
             # 增加当前选择的特色的各个词条对应的该类型职业的属性
             logger.info("应用国服特色：{}({})".format(tese["selected"], tese["name"]))
             for entry in setting["entries"]:
+                if type(entry) is not dict:
+                    notify_error(
+                        (
+                            "特色词条应该是一个字典，不应该是字符串，将跳过该词条\n"
+                            "有问题的词条为：{}\n"
+                            "注意：词条名与值之间要有空格空开，如A:B不合法，A: B和A:   B都是可以的"
+                        ).format(entry)
+                    )
+                    continue
                 for name, value in entry.items():
                     entry_indexes = entry_name_to_indexes[name]
                     entry_value = eval(str(value))
@@ -958,6 +969,7 @@ def check_weapons(job_name, weapon_indexs):
 
 # 缓存的buff等级最大等级
 max_skill_level_map = {}
+
 
 def calc_with_try_except():
     try:
