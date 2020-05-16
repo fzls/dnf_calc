@@ -25,11 +25,22 @@ from inspect import getframeinfo, stack
 from math import floor
 from tkinter import *
 
+import bugsnag
 import numpy as np
 import requests
 import toml
 import yaml
 from openpyxl import load_workbook, Workbook
+
+###########################################################
+#                         bugsnag                         #
+###########################################################
+# 增加bugsnag上报一些不在预期内的错误
+bugsnag.configure(
+    api_key="723026d09a7442c9e02ebc5d4a08e8d0",
+    app_version=now_version,
+    auto_capture_sessions=True,
+)
 
 ###########################################################
 #                         logging                         #
@@ -897,8 +908,40 @@ def calc_with_try_except():
     try:
         calc()
     except Exception as error:
-        logger.error("calc unhandled exception\n{}".format(traceback.format_exc()))
-        tkinter.messagebox.showerror("出错啦", "计算过程中出现了未处理的异常\n{}".format(traceback.format_exc()))
+        traceback_info = traceback.format_exc()
+        logger.error("calc unhandled exception\n{}".format(traceback_info))
+
+        # 获取当前装备、百变怪可选装备、工作服列表
+        items, not_select_items, work_uniforms_items = get_equips()
+
+        bugsnag.notify(
+            exception=error,
+            context="calc",
+            meta_data={
+                "_traceback_info": traceback_info,
+                "speed": select_speed.get(),
+                "weapons": wep_combopicker.get_selected_entrys(),
+                "job_name": jobup_select.get(),
+                "shuchu_time": time_select.get(),
+                "style": style_select.get(),
+                "creature": creature_select.get(),
+                "cooldown": req_cool.get(),
+                "baibianguai": baibianguai_select.get(),
+                "work_uniform": can_upgrade_work_unifrom_nums_select.get(),
+                "transfer": transfer_equip_combopicker.get_selected_entrys(),
+                "max_transfer_count": can_transfer_nums_select.get(),
+                "use_pulei": use_pulei_legend_by_default_select.get(),
+                "save_name": save_name_list[current_save_name_index],
+                "g_equips": {
+                    "items": items,
+                    "not_select_items": not_select_items,
+                    "work_uniforms_items": work_uniforms_items,
+                },
+                "g_config": g_config,
+                "g_setting": g_setting,
+            }
+        )
+        tkinter.messagebox.showerror("出错啦", "计算过程中出现了未处理的异常\n{}".format(traceback_info))
 
 
 # 缓存的buff等级最大等级
@@ -987,7 +1030,7 @@ def calc():
         ele_skill = int(opt_job_ele[job_name][1])
     except KeyError as error:
         tkinter.messagebox.showerror('部分参数有误', "未选择职业或职业非法", parent=self)
-        logger.error("job_name=%s invalid", job_name)
+        logger.warning("job_name=%s invalid", job_name)
         return
     ele_in = (int(db_preset["B14"].value) + int(db_preset["B15"].value) + int(db_preset["B16"].value) +
               int(ele_skill) - int(db_preset["B18"].value) + int(db_preset["B19"].value) + 13)
@@ -1038,7 +1081,7 @@ def calc():
 
     if not valid_weapon:
         tkinter.messagebox.showerror('部分参数有误', "未选择武器或武器非法", parent=self)
-        logger.error("weapon_names=%s invalid", weapon_names)
+        logger.warning("weapon_names=%s invalid", weapon_names)
         return
 
     # 获取当前装备、百变怪可选装备、工作服列表
@@ -2282,7 +2325,7 @@ def get_transfer_slots_equips(items, sheet):
         try:
             account_index = save_name_list.index(account_name)
         except Exception as err:
-            logger.error("get_transfer_slots_equips 无法找到存档{}, err={}".format(account_name, err))
+            logger.warning("get_transfer_slots_equips 无法找到存档{}, err={}".format(account_name, err))
             continue
 
         # 读取各个装备的点亮情况
@@ -3957,7 +4000,7 @@ def update_count():
             ))
             time.sleep(0.1)
         except Exception as e:
-            logger.error("update_count except: {}".format(e))
+            logger.warning("update_count except: {}".format(e))
 
 
 def display_realtime_counting_info():
@@ -3982,7 +4025,7 @@ def display_realtime_counting_info():
             showcon2(text=show_txt)
             time.sleep(1)
         except Exception as e:
-            logger.error("display_realtime_counting_info except: {}".format(e))
+            logger.warning("display_realtime_counting_info except: {}".format(e))
 
 
 # 启动时自动读取第一个配置
@@ -4057,7 +4100,7 @@ def check_update_on_start():
                     tkinter.messagebox.showinfo("蓝奏云网盘提取码", "蓝奏云网盘提取码为： {}".format(netdisk_passcode))
                 else:
                     # 如果分享的网盘链接被系统屏蔽了，写日志并弹窗提示
-                    logger.error("网盘链接={}又被系统干掉了=-=".format(netdisk_link))
+                    logger.warning("网盘链接={}又被系统干掉了=-=".format(netdisk_link))
                     webbrowser.open("https://github.com/fzls/dnf_calc/releases")
                     tkinter.messagebox.showerror("不好啦", (
                         "分享的网盘地址好像又被系统给抽掉了呢=。=先暂时使用github的release页面下载吧0-0\n"
@@ -4142,7 +4185,7 @@ for row in db_one.rows:
         try:
             equip_index_to_row_index[index] = row[0].row
         except Exception as err:
-            logger.error("load row index failed, err={}".format(err))
+            logger.warning("load row index failed, err={}".format(err))
 
 db_job = load_excel1["lvl"]
 opt_job = {}
@@ -4675,8 +4718,10 @@ select_speed = tkinter.ttk.Combobox(self, values=speeds, width=15)
 select_speed.place(x=145, y=11)
 select_speed.set(speed_middle)
 
+
 def show_usage():
     webbrowser.open(os.path.realpath("./使用说明"))
+
 
 show_usage_img = PhotoImage(file="ext_img/show_usage.png")
 tkinter.Button(self, command=show_usage, image=show_usage_img, borderwidth=0, activebackground=dark_main,
