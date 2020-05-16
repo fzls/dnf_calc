@@ -35,12 +35,12 @@ from openpyxl import load_workbook, Workbook
 ###########################################################
 #                         bugsnag                         #
 ###########################################################
-# 增加bugsnag上报一些不在预期内的错误
-bugsnag.configure(
-    api_key="723026d09a7442c9e02ebc5d4a08e8d0",
-    app_version=now_version,
-    auto_capture_sessions=True,
-)
+# # 增加bugsnag上报一些不在预期内的错误
+# bugsnag.configure(
+#     api_key="723026d09a7442c9e02ebc5d4a08e8d0",
+#     app_version=now_version,
+#     auto_capture_sessions=True,
+# )
 
 ###########################################################
 #                         logging                         #
@@ -57,7 +57,8 @@ except PermissionError as err:
     logger.error("创建日志失败, err={}".format(err))
     # 因为此时tkinter还未初始化，使用win32的窗口
     import win32api, win32con
-    win32api.MessageBox(0, "创建日志目录logs失败，请确认是否限制了基础的运行权限", "出错啦",win32con.MB_ICONWARNING)
+
+    win32api.MessageBox(0, "创建日志目录logs失败，请确认是否限制了基础的运行权限", "出错啦", win32con.MB_ICONWARNING)
 
 fileHandler = logging.FileHandler("{0}/{1}.log".format(log_directory, datetime.now().strftime('calc_%Y_%m_%d_%H_%M_%S')), encoding="utf-8")
 fileHandler.setFormatter(logFormatter)
@@ -950,6 +951,42 @@ def calc_with_try_except():
         tkinter.messagebox.showerror("出错啦", "计算过程中出现了未处理的异常\n{}".format(traceback_info))
 
 
+weapon_rules = [
+    {
+        "job_names": [
+            "(奶系)神思者",
+            "(奶系)炽天使",
+        ],
+        "valid_weapons": [
+            "111001",  # 夜语黑瞳
+            "111043",  # 十字架-圣者的慈悲
+            "111044",  # 十字架-闪耀的神威
+        ],
+    },
+
+    {
+        "job_names": [
+            "(奶系)冥月女神",
+        ],
+        "valid_weapons": [
+            "111001",  # 夜语黑瞳
+            "111041",  # 扫把-世界树之精灵
+            "111042",  # 扫把-纯白的祈祷
+        ],
+    },
+    # 其他职业的暂时没空加，有兴趣的可以自行添加
+]
+
+
+# is_shuchu_job = job_name not in ["(奶系)神思者", "(奶系)炽天使", "(奶系)冥月女神"]
+def check_weapons(job_name, weapon_indexs):
+    for rule in weapon_rules:
+        if job_name in rule["job_names"]:
+            for weapon in weapon_indexs:
+                if weapon not in rule["valid_weapons"]:
+                    return False
+
+
 # 缓存的buff等级最大等级
 max_skill_level_map = {}
 
@@ -1080,6 +1117,8 @@ def calc():
     try:
         for weapon_name in weapon_names:
             weapon_indexs.append(wep_name_to_index[weapon_name])
+        if not check_weapons(job_name, weapon_indexs):
+            valid_weapon = False
     except:
         valid_weapon = False
     if len(weapon_indexs) == 0:
