@@ -4155,7 +4155,7 @@ for row in db_job.rows:
         continue
 
     job = row_value[0]
-    if job in ["empty", "직업명"]:
+    if job in ["20/60s", "下标", "职业系数下标（除属强外）", "职业"]:
         continue
 
     opt_job[job] = row_value[3:]
