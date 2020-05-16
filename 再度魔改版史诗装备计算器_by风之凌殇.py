@@ -914,46 +914,6 @@ def get_slot_names(equip_indexes):
     return [equip_index_to_realname[index] for index in ordered_equip_indexes]
 
 
-def calc_with_try_except():
-    try:
-        calc()
-    except Exception as error:
-        traceback_info = traceback.format_exc()
-        logger.error("calc unhandled exception\n{}".format(traceback_info))
-
-        # 获取当前装备、百变怪可选装备、工作服列表
-        items, not_select_items, work_uniforms_items = get_equips()
-
-        bugsnag.notify(
-            exception=error,
-            context="calc",
-            meta_data={
-                "_traceback_info": traceback_info,
-                "speed": select_speed.get(),
-                "weapons": wep_combopicker.get_selected_entrys(),
-                "job_name": jobup_select.get(),
-                "shuchu_time": time_select.get(),
-                "style": style_select.get(),
-                "creature": creature_select.get(),
-                "cooldown": req_cool.get(),
-                "baibianguai": baibianguai_select.get(),
-                "work_uniform": can_upgrade_work_unifrom_nums_select.get(),
-                "transfer": transfer_equip_combopicker.get_selected_entrys(),
-                "max_transfer_count": can_transfer_nums_select.get(),
-                "use_pulei": use_pulei_legend_by_default_select.get(),
-                "save_name": save_name_list[current_save_name_index],
-                "g_equips": {
-                    "items": items,
-                    "not_select_items": not_select_items,
-                    "work_uniforms_items": work_uniforms_items,
-                },
-                "g_config": g_config,
-                "g_setting": g_setting,
-            }
-        )
-        tkinter.messagebox.showerror("出错啦", "计算过程中出现了未处理的异常\n{}".format(traceback_info))
-
-
 weapon_rules = [
     {
         "job_names": [
@@ -989,9 +949,58 @@ def check_weapons(job_name, weapon_indexs):
                 if weapon not in rule["valid_weapons"]:
                     return False
 
+    return True
+
 
 # 缓存的buff等级最大等级
 max_skill_level_map = {}
+
+
+def notify_error(message):
+    tkinter.messagebox.showerror('出错啦', message, parent=self)
+    logger.error(message)
+
+def calc_with_try_except():
+    try:
+        calc()
+    except Exception as error:
+        global exit_calc
+        traceback_info = traceback.format_exc()
+        logger.error("calc unhandled exception\n{}".format(traceback_info))
+
+        # 获取当前装备、百变怪可选装备、工作服列表
+        items, not_select_items, work_uniforms_items = get_equips()
+
+        bugsnag.notify(
+            exception=error,
+            context="calc",
+            meta_data={
+                "_traceback_info": traceback_info,
+                "speed": select_speed.get(),
+                "weapons": wep_combopicker.get_selected_entrys(),
+                "job_name": jobup_select.get(),
+                "shuchu_time": time_select.get(),
+                "style": style_select.get(),
+                "creature": creature_select.get(),
+                "cooldown": req_cool.get(),
+                "baibianguai": baibianguai_select.get(),
+                "work_uniform": can_upgrade_work_unifrom_nums_select.get(),
+                "transfer": transfer_equip_combopicker.get_selected_entrys(),
+                "max_transfer_count": can_transfer_nums_select.get(),
+                "use_pulei": use_pulei_legend_by_default_select.get(),
+                "save_name": save_name_list[current_save_name_index],
+                "g_equips": {
+                    "items": items,
+                    "not_select_items": not_select_items,
+                    "work_uniforms_items": work_uniforms_items,
+                },
+                "g_config": g_config,
+                "g_setting": g_setting,
+            }
+        )
+        tkinter.messagebox.showerror("出错啦", "计算过程中出现了未处理的异常\n{}".format(traceback_info))
+
+        exit_calc = 1
 
 
 ## 计算函数##
@@ -1381,7 +1390,10 @@ def calc():
         base_array_with_deal_bonus_attributes[index_deal_extra_all_element_strength] += ele_in
 
         # 加入输出职业的特色加成
-        add_bonus_attributes_to_base_array("deal", base_array_with_deal_bonus_attributes)
+        try:
+            add_bonus_attributes_to_base_array("deal", base_array_with_deal_bonus_attributes)
+        except KeyError as error:
+            notify_error("配置表填写有误：词条名不存在，请仔细对照配置表表头所有词条，确认在其中，err={}".format(error))
 
         def process(calc_now, baibianguai, upgrade_work_uniforms, transfered_equips):
             set_list = ["1" + str(get_set_name(calc_now[x])) for x in range(0, 11)]
