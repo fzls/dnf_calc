@@ -32,6 +32,7 @@ import toml
 import win32api
 import win32con
 import yaml
+import yaml.parser
 from openpyxl import load_workbook, Workbook
 
 from debug import DEBUG
@@ -431,7 +432,11 @@ def load_setting():
     g_setting = {}
     for setting in settings:
         with open(setting["path"], "r", encoding="utf-8") as setting_file:
-            g_setting[setting["name"]] = yaml.load(setting_file, Loader=yaml.FullLoader)
+            try:
+                g_setting[setting["name"]] = yaml.load(setting_file, Loader=yaml.FullLoader)
+            except yaml.parser.ParserError as error:
+                notify_error("配置表={}的格式有问题，具体问题请看下面的报错中的line $行数$ column $列数$来定位\n错误信息：{}\n".format("name", "error"))
+                exit(0)
 
     logger.info("setting loaded")
     logger.debug("setting={}".format(g_setting))
