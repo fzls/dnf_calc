@@ -2598,12 +2598,16 @@ def load_buf_custom_data():
     load_presetr = load_workbook("preset.xlsx", data_only=True)
     r_preset = load_presetr["custom"]
 
-    custom_buf_data = {
-        "bless_level": int(r_preset['H2'].value) + int(r_preset['H4'].value) + int(r_preset['H5'].value),
-        "taiyang_level": int(r_preset['H3'].value),
-        "bless_data": int(r_preset['H6'].value),
-        "taiyang_data": int(r_preset['H1'].value),
-    }
+    try:
+        custom_buf_data = {
+            "bless_level": int(r_preset['H2'].value) + int(r_preset['H4'].value) + int(r_preset['H5'].value),
+            "taiyang_level": int(r_preset['H3'].value),
+            "bless_data": int(r_preset['H6'].value),
+            "taiyang_data": int(r_preset['H1'].value),
+        }
+    except Exception as error:
+        notify_error("preset.xlsx中custom表单中奶妈相关参数需要为整数，指H1->H6，请仔细检查")
+        exit(0)
 
     load_presetr.close()
 
