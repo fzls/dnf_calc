@@ -24,6 +24,7 @@ from heapq import heapify, heappush, heappushpop
 from inspect import getframeinfo, stack
 from math import floor
 from tkinter import *
+import win32api, win32con
 
 import bugsnag
 import numpy as np
@@ -33,6 +34,12 @@ import yaml
 from openpyxl import load_workbook, Workbook
 
 from debug import DEBUG
+
+
+def notify_error(message):
+    if "logger" in globals():
+        logger.error(message)
+    win32api.MessageBox(0, message, "出错啦", win32con.MB_ICONWARNING)
 
 ###########################################################
 #                         bugsnag                         #
@@ -57,11 +64,8 @@ log_directory = "logs"
 try:
     pathlib.Path(log_directory).mkdir(parents=True, exist_ok=True)
 except PermissionError as err:
-    logger.error("创建日志失败, err={}".format(err))
-    # 因为此时tkinter还未初始化，使用win32的窗口
-    import win32api, win32con
-
-    win32api.MessageBox(0, "创建日志目录logs失败，请确认是否限制了基础的运行权限", "出错啦", win32con.MB_ICONWARNING)
+    notify_error("创建日志目录logs失败，请确认是否限制了基础的运行权限")
+    exit(-1)
 
 fileHandler = logging.FileHandler("{0}/{1}.log".format(log_directory, datetime.now().strftime('calc_%Y_%m_%d_%H_%M_%S')), encoding="utf-8")
 fileHandler.setFormatter(logFormatter)
@@ -955,11 +959,6 @@ def check_weapons(job_name, weapon_indexs):
 # 缓存的buff等级最大等级
 max_skill_level_map = {}
 
-
-def notify_error(message):
-    tkinter.messagebox.showerror('出错啦', message, parent=self)
-    logger.error(message)
-
 def calc_with_try_except():
     try:
         calc()
@@ -1019,7 +1018,10 @@ def calc():
     start_time = time.time()
 
     logger.debug("loading data.xlsx")
-    load_excel = load_workbook("DATA.xlsx", read_only=True, data_only=True)
+    try:
+        load_excel = load_workbook("DATA.xlsx", read_only=True, data_only=True)
+    except FileNotFoundError as error:
+        notify_error("data.xlsx文件不见啦，可能是未解压，请解压后再使用,err={}".format(error))
 
     db_one = load_excel["one"]
     opt_one = {}
@@ -4226,7 +4228,11 @@ g_rank_equips = {}
 count_start_time = time.time()  # 开始计算的时间点
 
 # 由于这里不需要对data.xlsx写入，设置read_only为True可以大幅度加快读取速度，在我的电脑上改动前读取耗时0.67s，占启动时间32%，改动之后用时0.1s，占启动时间4%
-load_excel1 = load_workbook("DATA.xlsx", read_only=True, data_only=True)
+try:
+    load_excel1 = load_workbook("DATA.xlsx", read_only=True, data_only=True)
+except FileNotFoundError as error:
+    notify_error("data.xlsx文件不见啦，可能是未解压，请解压后再使用,err={}".format(error))
+    exit(-1)
 db_one = load_excel1["one"]
 name_one = {}
 equip_index_to_realname = {}
