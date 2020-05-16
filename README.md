@@ -23,6 +23,10 @@ https://drive.google.com/file/d/1p8ZdzW_NzGKHHOtfPTuZSr1YgSEVtYCj/view
 ## 第三批功能说明
 ![第三批功能说明](change_log_images/功能说明3.png)
 
+# v3.4.14 2020.5.16
+## 使用说明
+1. 根据bugsnag上报的一些异常，增加相应更加友好的提示，让用户可以知道该怎么改为正确的
+
 # v3.4.13 2020.5.16
 ## 使用说明
 1. 增加bugsnag上报一些不在预期内的错误，方便即时排查问题
