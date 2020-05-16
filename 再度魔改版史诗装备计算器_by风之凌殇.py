@@ -51,7 +51,13 @@ logger.setLevel(logging.DEBUG)
 logger.name = "calc"
 
 log_directory = "logs"
-pathlib.Path(log_directory).mkdir(parents=True, exist_ok=True)
+try:
+    pathlib.Path(log_directory).mkdir(parents=True, exist_ok=True)
+except PermissionError as err:
+    logger.error("创建日志失败, err={}".format(err))
+    # 因为此时tkinter还未初始化，使用win32的窗口
+    import win32api, win32con
+    win32api.MessageBox(0, "创建日志目录logs失败，请确认是否限制了基础的运行权限", "出错啦",win32con.MB_ICONWARNING)
 
 fileHandler = logging.FileHandler("{0}/{1}.log".format(log_directory, datetime.now().strftime('calc_%Y_%m_%d_%H_%M_%S')), encoding="utf-8")
 fileHandler.setFormatter(logFormatter)
