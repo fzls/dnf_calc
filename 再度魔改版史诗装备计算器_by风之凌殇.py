@@ -1,6 +1,6 @@
 ﻿#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-now_version = "3.4.11"
+now_version = "3.4.12"
 ver_time = '2020-05-13'
 
 ## 코드를 무단으로 복제하여 개조 및 배포하지 말 것##
@@ -4674,9 +4674,14 @@ bg_wall.place(x=0, y=0)
 select_speed = tkinter.ttk.Combobox(self, values=speeds, width=15)
 select_speed.place(x=145, y=11)
 select_speed.set(speed_middle)
-select_speed_img = PhotoImage(file="ext_img/select_speed.png")
-tkinter.Button(self, command=guide_speed, image=select_speed_img, borderwidth=0, activebackground=dark_main,
+
+def show_usage():
+    webbrowser.open(os.path.realpath("./使用说明"))
+
+show_usage_img = PhotoImage(file="ext_img/show_usage.png")
+tkinter.Button(self, command=show_usage, image=show_usage_img, borderwidth=0, activebackground=dark_main,
                bg=dark_main).place(x=29, y=7)
+
 reset_img = PhotoImage(file="ext_img/reset.png")
 tkinter.Button(self, command=reset, image=reset_img, borderwidth=0, activebackground=dark_main, bg=dark_main).place(
     x=302, y=476)
