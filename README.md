@@ -23,6 +23,10 @@ https://drive.google.com/file/d/1p8ZdzW_NzGKHHOtfPTuZSr1YgSEVtYCj/view
 ## 第三批功能说明
 ![第三批功能说明](change_log_images/功能说明3.png)
 
+# v3.4.13 2020.5.16
+## 使用说明
+1. 增加bugsnag上报一些不在预期内的错误，方便即时排查问题
+
 # v3.4.12 2020.5.16
 ## 使用说明
 1. 增加各个功能和配置方式的使用说明，并在主界面增加使用说明按钮（替换原有的选择速度提示按钮）
