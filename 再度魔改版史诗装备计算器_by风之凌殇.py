@@ -409,7 +409,11 @@ g_setting = {}
 # 读取程序config
 def load_config():
     global g_config
-    g_config = toml.load('config.toml')
+    try:
+        g_config = toml.load('config.toml')
+    except FileNotFoundError as error:
+        notify_error("未找到config.toml文件，是否直接在压缩包中打开了？")
+        exit(0)
     logger.info("config loaded")
     logger.debug("config={}".format(g_config))
 
