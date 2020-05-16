@@ -35,12 +35,12 @@ from openpyxl import load_workbook, Workbook
 ###########################################################
 #                         bugsnag                         #
 ###########################################################
-# # 增加bugsnag上报一些不在预期内的错误
-# bugsnag.configure(
-#     api_key="723026d09a7442c9e02ebc5d4a08e8d0",
-#     app_version=now_version,
-#     auto_capture_sessions=True,
-# )
+# 增加bugsnag上报一些不在预期内的错误
+bugsnag.configure(
+    api_key="723026d09a7442c9e02ebc5d4a08e8d0",
+    app_version=now_version,
+    auto_capture_sessions=True,
+)
 
 ###########################################################
 #                         logging                         #
