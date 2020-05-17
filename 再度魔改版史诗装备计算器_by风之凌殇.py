@@ -2658,18 +2658,20 @@ def show_result(rank_list, job_type, ele_skill):
     global res_img11, res_img12, res_img13, res_img14, res_img15, res_img21, res_img22, res_img23, res_img31, res_img32, res_img33, res_txtbbgs, res_imgbbgs, wep_combopicker, jobup_select, res_txt_weapon
 
     wep_index = ""
+    length = 0
 
     if job_type == 'deal':  ###########################
 
         global result_image_on, rank_dam, rank_stat, rank_stat2, req_cool, res_dam, res_stat, res_stat2
-        rank_baibiaoguai = [0, 0, 0, 0, 0]
-        rank_not_owned_equips = [0, 0, 0, 0, 0]
-        rank_dam = [0, 0, 0, 0, 0]
-        rank_setting = [0, 0, 0, 0, 0]
-        rss = [0, 0, 0, 0, 0]
-        result_image_on = [{}, {}, {}, {}, {}]
+        total_count = len(rank_list)
+        rank_baibiaoguai = [0 for x in range(total_count)]
+        rank_not_owned_equips = [0 for x in range(total_count)]
+        rank_dam = [0 for x in range(total_count)]
+        rank_setting = [0 for x in range(total_count)]
+        rss = [0 for x in range(total_count)]
+        result_image_on = [{} for x in range(total_count)]
         # rank => [score, [calc_wep, base_array, baibianguai, not_owned_equips]]
-        for rank in range(len(rank_list)):
+        for rank in range(total_count):
             rank_baibiaoguai[rank] = rank_list[rank][1][2]
             rank_not_owned_equips[rank] = rank_list[rank][1][3]
             rank_dam[rank] = format_damage(rank_list[rank][0])
@@ -2691,7 +2693,8 @@ def show_result(rank_list, job_type, ele_skill):
         # 13공속 14크확 / 15 특수액티브 / 16~19 패시브 /20 쿨감보정/21 二觉캐특수액티브 /22~27 액티브레벨링
         rank_stat = [0, 0, 0, 0, 0]
         rank_stat2 = [0, 0, 0, 0, 0]
-        for i in range(len(rank_list)):
+        # re: 这里需要把i改为rank
+        for i in range(total_count):
             rank_stat[i] = (
                 "增伤={zengsu}%\n"
                 "爆伤={baoshang}%\n"
@@ -2778,7 +2781,7 @@ def show_result(rank_list, job_type, ele_skill):
             res_txtbbgs[5] = canvas_res.create_text(178, 147, text="百变怪=>", font=guide_font, fill='white')
             res_imgbbgs[5] = canvas_res.create_image(219, 147, image=result_image_on[0]['bbg'])  # 百变怪
         cn1 = 0
-        for j in range(len(rank_list)):
+        for j in range(total_count):
             for equip_slot_index in [11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33]:
                 canvas_res.create_image(268 + cn1 * 29, 67 + 78 * j, image=result_image_on[j][str(equip_slot_index)])
                 cn1 = cn1 + 1
@@ -2795,10 +2798,10 @@ def show_result(rank_list, job_type, ele_skill):
         wep_index = weapon
 
         g_rank_equips = {}
-        for rank in range(len(rank_list)):
+        for rank in range(total_count):
             g_rank_equips[rank] = rank_setting[rank]
 
-        length = len(rank_list)
+        length = total_count
 
     elif job_type == 'buf':  ##########################
         global result_image_ons, rank_bufs, rank_type_buf, res_buf, res_img_list, res_buf_list, res_buf_exs, rank_buf_exs, res_buf_type_what
