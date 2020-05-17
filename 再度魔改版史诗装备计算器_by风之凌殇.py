@@ -2835,7 +2835,7 @@ def show_result(rank_list, job_type, ele_skill):
                     for j in rank_settings[rank_type_index][rank]:
                         if len(j) != 6:
                             if j[0:2] == str(equip_slot_index):
-                                result_image_ons[rank_type_index][rank][str(rankequip_slot_index)] = image_list[j]
+                                result_image_ons[rank_type_index][rank][str(equip_slot_index)] = image_list[j]
                                 # 如果该装备在额外升级的工作服或跨界装备列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
                                 if j in rank_not_owned_equipss[rank_type_index][rank]:
                                     result_image_ons[rank_type_index][rank][str(equip_slot_index)] = image_list2[j]
