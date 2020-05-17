@@ -4066,9 +4066,8 @@ need_check_preset_file = False
 load_preset0 = load_workbook("preset.xlsx", read_only=not need_check_preset_file, data_only=True)
 db_custom = load_preset0["custom"]
 
-g_MAX_SAVE_COUNT = 100
 save_name_list = []
-for save_index in range(0, g_MAX_SAVE_COUNT):
+for save_index in range(0, g_config["max_save_count"]):
     save_name = db_custom.cell(save_index + 1, 5).value
     save_name_list.append(save_name or "存档{}".format(save_index+1))
 
