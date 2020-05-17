@@ -3177,8 +3177,8 @@ def change_rank_type(in_type):
 
     cn2 = 0
     for rank in range(len(rank_changed)):
-        for i in [11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33]:
-            canvas_res.itemconfig(res_img_list[str(rank) + str(i)], image=image_changed_all[rank][str(i)])
+        for equip_slot_index in [11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33]:
+            canvas_res.itemconfig(res_img_list[str(rank) + str(equip_slot_index)], image=image_changed_all[rank][str(equip_slot_index)])
             cn2 = cn2 + 2
 
         if res_txtbbgs[rank] is not None:
@@ -3974,20 +3974,20 @@ def update_thread():
 
 def reset():
     know_list2 = ['13390150', '22390240', '23390450', '33390750', '21400340', '31400540', '32410650']
-    for i in range(1101, 3336):
+    for equip_index_excep_last_digit in range(1101, 3336):
         try:
-            select_item['tg{}0'.format(i)] = 0
+            select_item['tg{}0'.format(equip_index_excep_last_digit)] = 0
         except KeyError as error:
             passss = 1
         try:
-            select_item['tg{}1'.format(i)] = 0
+            select_item['tg{}1'.format(equip_index_excep_last_digit)] = 0
         except KeyError as error:
             passss = 1
-    for i in know_list2:
-        select_item['tg{}'.format(i)] = 0
+    for the_product_of_wisdom_equip_index in know_list2:
+        select_item['tg{}'.format(the_product_of_wisdom_equip_index)] = 0
     check_equipment()
-    for i in range(101, 136):
-        check_set(i)
+    for set_code in range(101, 136):
+        check_set(set_code)
 
     # 处理百变怪与工作服升级数目
     baibianguai_select.set(txt_no_baibianguai)
