@@ -2635,7 +2635,10 @@ def format_damage(score):
 
 
 def extract_score_from_score_damage(score_damage):
-    return score_damage.split(" ")[0]
+    if g_config["20s_damage"]["enable"]:
+        return score_damage.split(" ")[0]
+    else:
+        return score_damage
 
 
 def show_result(rank_list, job_type, ele_skill):
