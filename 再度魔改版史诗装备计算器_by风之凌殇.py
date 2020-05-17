@@ -2131,103 +2131,103 @@ def get_equips():
     listns32 = [];
     listns33 = []
 
-    for i in range(1010, 1999):
+    for equip_index_except_first_digit in range(1010, 1999):
         try:
-            if eval('select_item["tg1{}"]'.format(i)) == 1:
-                list11.append('1' + str(i))
-                list_setnum.append(str(i)[1:])
-            elif eval('select_item["tg1{}"]'.format(i)) == 0 and can_convert_from_baibianguai('1' + str(i)):
-                listns11.append('1' + str(i))
+            if eval('select_item["tg1{}"]'.format(equip_index_except_first_digit)) == 1:
+                list11.append('1' + str(equip_index_except_first_digit))
+                list_setnum.append(str(equip_index_except_first_digit)[1:])
+            elif eval('select_item["tg1{}"]'.format(equip_index_except_first_digit)) == 0 and can_convert_from_baibianguai('1' + str(equip_index_except_first_digit)):
+                listns11.append('1' + str(equip_index_except_first_digit))
         except KeyError as error:
             c = 1
-    for i in range(2010, 2999):
+    for equip_index_except_first_digit in range(2010, 2999):
         try:
-            if eval('select_item["tg1{}"]'.format(i)) == 1:
-                list12.append('1' + str(i))
-                list_setnum.append(str(i)[1:])
-            elif eval('select_item["tg1{}"]'.format(i)) == 0 and can_convert_from_baibianguai('1' + str(i)):
-                listns12.append('1' + str(i))
+            if eval('select_item["tg1{}"]'.format(equip_index_except_first_digit)) == 1:
+                list12.append('1' + str(equip_index_except_first_digit))
+                list_setnum.append(str(equip_index_except_first_digit)[1:])
+            elif eval('select_item["tg1{}"]'.format(equip_index_except_first_digit)) == 0 and can_convert_from_baibianguai('1' + str(equip_index_except_first_digit)):
+                listns12.append('1' + str(equip_index_except_first_digit))
         except KeyError as error:
             c = 1
-    for i in range(3010, 3999):
+    for equip_index_except_first_digit in range(3010, 3999):
         try:
-            if eval('select_item["tg1{}"]'.format(i)) == 1:
-                list13.append('1' + str(i))
-                list_setnum.append(str(i)[1:])
-            elif eval('select_item["tg1{}"]'.format(i)) == 0 and can_convert_from_baibianguai('1' + str(i)):
-                listns13.append('1' + str(i))
+            if eval('select_item["tg1{}"]'.format(equip_index_except_first_digit)) == 1:
+                list13.append('1' + str(equip_index_except_first_digit))
+                list_setnum.append(str(equip_index_except_first_digit)[1:])
+            elif eval('select_item["tg1{}"]'.format(equip_index_except_first_digit)) == 0 and can_convert_from_baibianguai('1' + str(equip_index_except_first_digit)):
+                listns13.append('1' + str(equip_index_except_first_digit))
         except KeyError as error:
             c = 1
-    for i in range(4010, 4999):
+    for equip_index_except_first_digit in range(4010, 4999):
         try:
-            if eval('select_item["tg1{}"]'.format(i)) == 1:
-                list14.append('1' + str(i))
-                list_setnum.append(str(i)[1:])
-            elif eval('select_item["tg1{}"]'.format(i)) == 0 and can_convert_from_baibianguai('1' + str(i)):
-                listns14.append('1' + str(i))
+            if eval('select_item["tg1{}"]'.format(equip_index_except_first_digit)) == 1:
+                list14.append('1' + str(equip_index_except_first_digit))
+                list_setnum.append(str(equip_index_except_first_digit)[1:])
+            elif eval('select_item["tg1{}"]'.format(equip_index_except_first_digit)) == 0 and can_convert_from_baibianguai('1' + str(equip_index_except_first_digit)):
+                listns14.append('1' + str(equip_index_except_first_digit))
         except KeyError as error:
             c = 1
-    for i in range(5010, 5999):
+    for equip_index_except_first_digit in range(5010, 5999):
         try:
-            if eval('select_item["tg1{}"]'.format(i)) == 1:
-                list15.append('1' + str(i))
-                list_setnum.append(str(i)[1:])
-            elif eval('select_item["tg1{}"]'.format(i)) == 0 and can_convert_from_baibianguai('1' + str(i)):
-                listns15.append('1' + str(i))
+            if eval('select_item["tg1{}"]'.format(equip_index_except_first_digit)) == 1:
+                list15.append('1' + str(equip_index_except_first_digit))
+                list_setnum.append(str(equip_index_except_first_digit)[1:])
+            elif eval('select_item["tg1{}"]'.format(equip_index_except_first_digit)) == 0 and can_convert_from_baibianguai('1' + str(equip_index_except_first_digit)):
+                listns15.append('1' + str(equip_index_except_first_digit))
         except KeyError as error:
             c = 1
-    for i in range(1010, 1999):
+    for equip_index_except_first_digit in range(1010, 1999):
         try:
-            if eval('select_item["tg2{}"]'.format(i)) == 1:
-                list21.append('2' + str(i))
-                list_setnum.append(str(i)[1:])
-            elif eval('select_item["tg2{}"]'.format(i)) == 0 and can_convert_from_baibianguai('2' + str(i)):
-                listns21.append('2' + str(i))
+            if eval('select_item["tg2{}"]'.format(equip_index_except_first_digit)) == 1:
+                list21.append('2' + str(equip_index_except_first_digit))
+                list_setnum.append(str(equip_index_except_first_digit)[1:])
+            elif eval('select_item["tg2{}"]'.format(equip_index_except_first_digit)) == 0 and can_convert_from_baibianguai('2' + str(equip_index_except_first_digit)):
+                listns21.append('2' + str(equip_index_except_first_digit))
         except KeyError as error:
             c = 1
-    for i in range(2010, 2999):
+    for equip_index_except_first_digit in range(2010, 2999):
         try:
-            if eval('select_item["tg2{}"]'.format(i)) == 1:
-                list22.append('2' + str(i))
-                list_setnum.append(str(i)[1:])
-            elif eval('select_item["tg2{}"]'.format(i)) == 0 and can_convert_from_baibianguai('2' + str(i)):
-                listns22.append('2' + str(i))
+            if eval('select_item["tg2{}"]'.format(equip_index_except_first_digit)) == 1:
+                list22.append('2' + str(equip_index_except_first_digit))
+                list_setnum.append(str(equip_index_except_first_digit)[1:])
+            elif eval('select_item["tg2{}"]'.format(equip_index_except_first_digit)) == 0 and can_convert_from_baibianguai('2' + str(equip_index_except_first_digit)):
+                listns22.append('2' + str(equip_index_except_first_digit))
         except KeyError as error:
             c = 1
-    for i in range(3010, 3999):
+    for equip_index_except_first_digit in range(3010, 3999):
         try:
-            if eval('select_item["tg2{}"]'.format(i)) == 1:
-                list23.append('2' + str(i))
-                list_setnum.append(str(i)[1:])
-            elif eval('select_item["tg2{}"]'.format(i)) == 0 and can_convert_from_baibianguai('2' + str(i)):
-                listns23.append('2' + str(i))
+            if eval('select_item["tg2{}"]'.format(equip_index_except_first_digit)) == 1:
+                list23.append('2' + str(equip_index_except_first_digit))
+                list_setnum.append(str(equip_index_except_first_digit)[1:])
+            elif eval('select_item["tg2{}"]'.format(equip_index_except_first_digit)) == 0 and can_convert_from_baibianguai('2' + str(equip_index_except_first_digit)):
+                listns23.append('2' + str(equip_index_except_first_digit))
         except KeyError as error:
             c = 1
-    for i in range(1010, 1999):
+    for equip_index_except_first_digit in range(1010, 1999):
         try:
-            if eval('select_item["tg3{}"]'.format(i)) == 1:
-                list31.append('3' + str(i))
-                list_setnum.append(str(i)[1:])
-            elif eval('select_item["tg3{}"]'.format(i)) == 0 and can_convert_from_baibianguai('3' + str(i)):
-                listns31.append('3' + str(i))
+            if eval('select_item["tg3{}"]'.format(equip_index_except_first_digit)) == 1:
+                list31.append('3' + str(equip_index_except_first_digit))
+                list_setnum.append(str(equip_index_except_first_digit)[1:])
+            elif eval('select_item["tg3{}"]'.format(equip_index_except_first_digit)) == 0 and can_convert_from_baibianguai('3' + str(equip_index_except_first_digit)):
+                listns31.append('3' + str(equip_index_except_first_digit))
         except KeyError as error:
             c = 1
-    for i in range(2010, 2999):
+    for equip_index_except_first_digit in range(2010, 2999):
         try:
-            if eval('select_item["tg3{}"]'.format(i)) == 1:
-                list32.append('3' + str(i))
-                list_setnum.append(str(i)[1:])
-            elif eval('select_item["tg3{}"]'.format(i)) == 0 and can_convert_from_baibianguai('3' + str(i)):
-                listns32.append('3' + str(i))
+            if eval('select_item["tg3{}"]'.format(equip_index_except_first_digit)) == 1:
+                list32.append('3' + str(equip_index_except_first_digit))
+                list_setnum.append(str(equip_index_except_first_digit)[1:])
+            elif eval('select_item["tg3{}"]'.format(equip_index_except_first_digit)) == 0 and can_convert_from_baibianguai('3' + str(equip_index_except_first_digit)):
+                listns32.append('3' + str(equip_index_except_first_digit))
         except KeyError as error:
             c = 1
-    for i in range(3010, 3999):
+    for equip_index_except_first_digit in range(3010, 3999):
         try:
-            if eval('select_item["tg3{}"]'.format(i)) == 1:
-                list33.append('3' + str(i))
-                list_setnum.append(str(i)[1:])
-            elif eval('select_item["tg3{}"]'.format(i)) == 0 and can_convert_from_baibianguai('3' + str(i)):
-                listns33.append('3' + str(i))
+            if eval('select_item["tg3{}"]'.format(equip_index_except_first_digit)) == 1:
+                list33.append('3' + str(equip_index_except_first_digit))
+                list_setnum.append(str(equip_index_except_first_digit)[1:])
+            elif eval('select_item["tg3{}"]'.format(equip_index_except_first_digit)) == 0 and can_convert_from_baibianguai('3' + str(equip_index_except_first_digit)):
+                listns33.append('3' + str(equip_index_except_first_digit))
         except KeyError as error:
             c = 1
     algo_list = ['11', '12', '13', '14', '15', '21', '22', '23', '31', '32', '33']
