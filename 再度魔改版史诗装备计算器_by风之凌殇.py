@@ -4068,9 +4068,9 @@ db_custom = load_preset0["custom"]
 
 g_MAX_SAVE_COUNT = 100
 save_name_list = []
-for i in range(0, g_MAX_SAVE_COUNT):
-    save_name = db_custom.cell(i + 1, 5).value
-    save_name_list.append(save_name or "存档{}".format(i))
+for save_index in range(0, g_MAX_SAVE_COUNT):
+    save_name = db_custom.cell(save_index + 1, 5).value
+    save_name_list.append(save_name or "存档{}".format(save_index+1))
 
 if need_check_preset_file:
     ########## 버전 최초 구동 프리셋 업데이트 ###########
@@ -4348,20 +4348,20 @@ def click_equipment(code):
 
 def check_equipment():
     know_list2 = ['13390150', '22390240', '23390450', '33390750', '21400340', '31400540', '32410650']
-    for i in range(11010, 33352):
+    for equip_index in range(11010, 33352):
         try:
-            if eval("select_item['tg{}']".format(i)) == 0:
-                eval('select_{}'.format(i))['image'] = image_list2[str(i)]
-            elif eval("select_item['tg{}']".format(i)) == 1:
-                eval('select_{}'.format(i))['image'] = image_list[str(i)]
+            if eval("select_item['tg{}']".format(equip_index)) == 0:
+                eval('select_{}'.format(equip_index))['image'] = image_list2[str(equip_index)]
+            elif eval("select_item['tg{}']".format(equip_index)) == 1:
+                eval('select_{}'.format(equip_index))['image'] = image_list[str(equip_index)]
         except KeyError as error:
             c = 1
-    for i in know_list2:
+    for the_product_of_wisdom_equip_index in know_list2:
         try:
-            if eval("select_item['tg{}']".format(i)) == 0:
-                eval('select_{}'.format(i))['image'] = image_list2[str(i)]
-            elif eval("select_item['tg{}']".format(i)) == 1:
-                eval('select_{}'.format(i))['image'] = image_list[str(i)]
+            if eval("select_item['tg{}']".format(the_product_of_wisdom_equip_index)) == 0:
+                eval('select_{}'.format(the_product_of_wisdom_equip_index))['image'] = image_list2[str(the_product_of_wisdom_equip_index)]
+            elif eval("select_item['tg{}']".format(the_product_of_wisdom_equip_index)) == 1:
+                eval('select_{}'.format(the_product_of_wisdom_equip_index))['image'] = image_list[str(the_product_of_wisdom_equip_index)]
         except KeyError as error:
             c = 1
 
@@ -4560,9 +4560,9 @@ for filename in os.listdir(image_directory):
         image_list2[index] = newImage
 
 # 读取套装图片
-for i in range(1, 36):
-    image_list_set[str(100 + i)] = eval('PhotoImage(file="set_name/{}.png")'.format(i + 100))
-    image_list_set2[str(100 + i)] = eval('PhotoImage(file="set_name/{}f.png")'.format(i + 100))
+for set_code in range(1, 36):
+    image_list_set[str(100 + set_code)] = eval('PhotoImage(file="set_name/{}.png")'.format(set_code + 100))
+    image_list_set2[str(100 + set_code)] = eval('PhotoImage(file="set_name/{}f.png")'.format(set_code + 100))
 
 bg_img = PhotoImage(file="ext_img/bg_img.png")
 bg_wall = tkinter.Label(self, image=bg_img)
