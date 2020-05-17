@@ -2780,15 +2780,15 @@ def show_result(rank_list, job_type, ele_skill):
             res_txtbbgs[5] = canvas_res.create_text(178, 147, text="百变怪=>", font=guide_font, fill='white')
             res_imgbbgs[5] = canvas_res.create_image(219, 147, image=result_image_on[0]['bbg'])  # 百变怪
         cn1 = 0
-        for j in range(total_count):
+        for rank in range(total_count):
             for equip_slot_index in [11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33]:
-                canvas_res.create_image(268 + cn1 * 29, 67 + 78 * j, image=result_image_on[j][str(equip_slot_index)])
+                canvas_res.create_image(268 + cn1 * 29, 67 + 78 * rank, image=result_image_on[rank][str(equip_slot_index)])
                 cn1 = cn1 + 1
-            if 'bbg' in result_image_on[j]:
+            if 'bbg' in result_image_on[rank]:
                 # res_txtbbgs[j] = canvas_res.create_text(268 + 5 * 29 + 14, 38 + 78 * j, text="百变怪=>", font=guide_font, fill='white')
-                res_imgbbgs[j] = canvas_res.create_image(268 + 7 * 29, 37 + 78 * j, image=result_image_on[j]['bbg'])
+                res_imgbbgs[rank] = canvas_res.create_image(268 + 7 * 29, 37 + 78 * rank, image=result_image_on[rank]['bbg'])
             cn1 = 0
-            canvas_res.create_text(366, 34 + 78 * j, text=rank_dam[j], font=mid_font, fill='white')
+            canvas_res.create_text(366, 34 + 78 * rank, text=rank_dam[rank], font=mid_font, fill='white')
 
         weapon = rank_setting[0][0]
         equips = rank_setting[0][1:]
@@ -2878,17 +2878,17 @@ def show_result(rank_list, job_type, ele_skill):
         cn1 = 0
         res_img_list = {}
         res_buf_list = {}
-        for j in range(len(rank_list[2])):
+        for rank in range(len(rank_list[2])):
             for equip_slot_index in [11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33]:
-                temp_res = canvas_res.create_image(268 + cn1 * 29, 67 + 78 * j, image=result_image_ons[2][j][str(equip_slot_index)])
-                res_img_list[str(j) + str(equip_slot_index)] = temp_res
+                temp_res = canvas_res.create_image(268 + cn1 * 29, 67 + 78 * rank, image=result_image_ons[2][rank][str(equip_slot_index)])
+                res_img_list[str(rank) + str(equip_slot_index)] = temp_res
                 cn1 = cn1 + 1
-            if 'bbg' in result_image_ons[2][j]:
-                res_txtbbgs[j] = canvas_res.create_text(268 + 5 * 29 + 14, 38 + 78 * j, text="百变怪=>", font=guide_font, fill='white')
-                res_imgbbgs[j] = canvas_res.create_image(268 + 7 * 29, 37 + 78 * j, image=result_image_ons[2][j]['bbg'])
+            if 'bbg' in result_image_ons[2][rank]:
+                res_txtbbgs[rank] = canvas_res.create_text(268 + 5 * 29 + 14, 38 + 78 * rank, text="百变怪=>", font=guide_font, fill='white')
+                res_imgbbgs[rank] = canvas_res.create_image(268 + 7 * 29, 37 + 78 * rank, image=result_image_ons[2][rank]['bbg'])
             cn1 = 0
-            temp_buf = canvas_res.create_text(346, 34 + 78 * j, text=rank_bufs[2][j], font=mid_font, fill='white')
-            res_buf_list[j] = temp_buf
+            temp_buf = canvas_res.create_text(346, 34 + 78 * rank, text=rank_bufs[2][rank], font=mid_font, fill='white')
+            res_buf_list[rank] = temp_buf
         length = len(rank_list[2])
         type1_img = tkinter.PhotoImage(file='ext_img/type_bless.png')
         type2_img = tkinter.PhotoImage(file='ext_img/type_crux.png')
