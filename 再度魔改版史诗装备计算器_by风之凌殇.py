@@ -2669,22 +2669,22 @@ def show_result(rank_list, job_type, ele_skill):
         rss = [0, 0, 0, 0, 0]
         result_image_on = [{}, {}, {}, {}, {}]
         # rank => [score, [calc_wep, base_array, baibianguai, not_owned_equips]]
-        for idx in range(len(rank_list)):
-            rank_baibiaoguai[idx] = rank_list[idx][1][2]
-            rank_not_owned_equips[idx] = rank_list[idx][1][3]
-            rank_dam[idx] = format_damage(rank_list[idx][0])
-            rank_setting[idx] = rank_list[idx][1][0]  ##0号是排名
-            rss[idx] = rank_list[idx][1][1]
+        for rank in range(len(rank_list)):
+            rank_baibiaoguai[rank] = rank_list[rank][1][2]
+            rank_not_owned_equips[rank] = rank_list[rank][1][3]
+            rank_dam[rank] = format_damage(rank_list[rank][0])
+            rank_setting[rank] = rank_list[rank][1][0]  ##0号是排名
+            rss[rank] = rank_list[rank][1][1]
             for equip_slot_index in [11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33]:
-                for j in rank_setting[idx]:
+                for j in rank_setting[rank]:
                     if len(j) != 6:
                         if j[0:2] == str(equip_slot_index):
-                            result_image_on[idx][str(equip_slot_index)] = image_list[j]
+                            result_image_on[rank][str(equip_slot_index)] = image_list[j]
                             # 如果该装备在额外升级的工作服或跨界装备列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
-                            if j in rank_not_owned_equips[idx]:
-                                result_image_on[idx][str(equip_slot_index)] = image_list2[j]
-            if rank_baibiaoguai[idx] is not None:
-                result_image_on[idx]["bbg"] = image_list[rank_baibiaoguai[idx]]
+                            if j in rank_not_owned_equips[rank]:
+                                result_image_on[rank][str(equip_slot_index)] = image_list2[j]
+            if rank_baibiaoguai[rank] is not None:
+                result_image_on[rank]["bbg"] = image_list[rank_baibiaoguai[rank]]
 
         # 0추스탯 1추공 2증 3크 4추
         # 6모 7공 8스탯 9속강 10지속 11스증 12특수
@@ -2823,22 +2823,22 @@ def show_result(rank_list, job_type, ele_skill):
             result_image_ons[rank_type_index] = [{} for x in range(total_count)]
             rank_bufs[rank_type_index] = [0 for x in range(total_count)]
             rank_buf_exs[rank_type_index] = [0 for x in range(total_count)]
-            for idx in range(total_count):
-                rank_baibiaoguais[rank_type_index][idx] = rank_list[rank_type_index][idx][1][2]
-                rank_not_owned_equipss[rank_type_index][idx] = rank_list[rank_type_index][idx][1][3]
-                rank_settings[rank_type_index][idx] = rank_list[rank_type_index][idx][1][0]
-                rank_bufs[rank_type_index][idx] = int(rank_list[rank_type_index][idx][0] / 10)
-                rank_buf_exs[rank_type_index][idx] = rank_list[rank_type_index][idx][1][1]
+            for rank in range(total_count):
+                rank_baibiaoguais[rank_type_index][rank] = rank_list[rank_type_index][rank][1][2]
+                rank_not_owned_equipss[rank_type_index][rank] = rank_list[rank_type_index][rank][1][3]
+                rank_settings[rank_type_index][rank] = rank_list[rank_type_index][rank][1][0]
+                rank_bufs[rank_type_index][rank] = int(rank_list[rank_type_index][rank][0] / 10)
+                rank_buf_exs[rank_type_index][rank] = rank_list[rank_type_index][rank][1][1]
                 for i in [11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33]:
-                    for j in rank_settings[rank_type_index][idx]:
+                    for j in rank_settings[rank_type_index][rank]:
                         if len(j) != 6:
                             if j[0:2] == str(i):
-                                result_image_ons[rank_type_index][idx][str(i)] = image_list[j]
+                                result_image_ons[rank_type_index][rank][str(i)] = image_list[j]
                                 # 如果该装备在额外升级的工作服或跨界装备列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
-                                if j in rank_not_owned_equipss[rank_type_index][idx]:
-                                    result_image_ons[rank_type_index][idx][str(i)] = image_list2[j]
-                if rank_baibiaoguais[rank_type_index][idx] is not None:
-                    result_image_ons[rank_type_index][idx]["bbg"] = image_list[rank_baibiaoguais[rank_type_index][idx]]
+                                if j in rank_not_owned_equipss[rank_type_index][rank]:
+                                    result_image_ons[rank_type_index][rank][str(i)] = image_list2[j]
+                if rank_baibiaoguais[rank_type_index][rank] is not None:
+                    result_image_ons[rank_type_index][rank]["bbg"] = image_list[rank_baibiaoguais[rank_type_index][rank]]
 
         canvas_res.create_text(122, 193, font=guide_font, fill='white', text=(
             "自定义 祝福+{}级 / 自定义 一觉+{}级\n"
