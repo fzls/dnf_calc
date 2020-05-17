@@ -2116,8 +2116,8 @@ def get_equips():
     list31 = [];
     list32 = [];
     list33 = []
-    list_setnum = [];
-    list_godnum = []
+    list_setcode = []
+    set_has_god = {}
     # 未选中的装备
     listns11 = [];
     listns12 = [];
@@ -2131,11 +2131,18 @@ def get_equips():
     listns32 = [];
     listns33 = []
 
+    def get_set_code(equip_index_except_first_digit):
+        return str(equip_index_except_first_digit)[1:3]
+
+    # re: 日后重构的时候要把这个给干掉，改为用循环，而且根据装备表中实际配置的套装上限来填写上限，不需要每个部位都重复写一次
     for equip_index_except_first_digit in range(1010, 1999):
         try:
             if eval('select_item["tg1{}"]'.format(equip_index_except_first_digit)) == 1:
                 list11.append('1' + str(equip_index_except_first_digit))
-                list_setnum.append(str(equip_index_except_first_digit)[1:])
+                set_code = get_set_code(equip_index_except_first_digit)
+                list_setcode.append(set_code)
+                if equip_index_except_first_digit % 10 == 1:
+                    set_has_god[set_code] = True
             elif eval('select_item["tg1{}"]'.format(equip_index_except_first_digit)) == 0 and can_convert_from_baibianguai('1' + str(equip_index_except_first_digit)):
                 listns11.append('1' + str(equip_index_except_first_digit))
         except KeyError as error:
@@ -2144,7 +2151,10 @@ def get_equips():
         try:
             if eval('select_item["tg1{}"]'.format(equip_index_except_first_digit)) == 1:
                 list12.append('1' + str(equip_index_except_first_digit))
-                list_setnum.append(str(equip_index_except_first_digit)[1:])
+                set_code = get_set_code(equip_index_except_first_digit)
+                list_setcode.append(set_code)
+                if equip_index_except_first_digit % 10 == 1:
+                    set_has_god[set_code] = True
             elif eval('select_item["tg1{}"]'.format(equip_index_except_first_digit)) == 0 and can_convert_from_baibianguai('1' + str(equip_index_except_first_digit)):
                 listns12.append('1' + str(equip_index_except_first_digit))
         except KeyError as error:
@@ -2153,7 +2163,10 @@ def get_equips():
         try:
             if eval('select_item["tg1{}"]'.format(equip_index_except_first_digit)) == 1:
                 list13.append('1' + str(equip_index_except_first_digit))
-                list_setnum.append(str(equip_index_except_first_digit)[1:])
+                set_code = get_set_code(equip_index_except_first_digit)
+                list_setcode.append(set_code)
+                if equip_index_except_first_digit % 10 == 1:
+                    set_has_god[set_code] = True
             elif eval('select_item["tg1{}"]'.format(equip_index_except_first_digit)) == 0 and can_convert_from_baibianguai('1' + str(equip_index_except_first_digit)):
                 listns13.append('1' + str(equip_index_except_first_digit))
         except KeyError as error:
@@ -2162,7 +2175,10 @@ def get_equips():
         try:
             if eval('select_item["tg1{}"]'.format(equip_index_except_first_digit)) == 1:
                 list14.append('1' + str(equip_index_except_first_digit))
-                list_setnum.append(str(equip_index_except_first_digit)[1:])
+                set_code = get_set_code(equip_index_except_first_digit)
+                list_setcode.append(set_code)
+                if equip_index_except_first_digit % 10 == 1:
+                    set_has_god[set_code] = True
             elif eval('select_item["tg1{}"]'.format(equip_index_except_first_digit)) == 0 and can_convert_from_baibianguai('1' + str(equip_index_except_first_digit)):
                 listns14.append('1' + str(equip_index_except_first_digit))
         except KeyError as error:
@@ -2171,7 +2187,10 @@ def get_equips():
         try:
             if eval('select_item["tg1{}"]'.format(equip_index_except_first_digit)) == 1:
                 list15.append('1' + str(equip_index_except_first_digit))
-                list_setnum.append(str(equip_index_except_first_digit)[1:])
+                set_code = get_set_code(equip_index_except_first_digit)
+                list_setcode.append(set_code)
+                if equip_index_except_first_digit % 10 == 1:
+                    set_has_god[set_code] = True
             elif eval('select_item["tg1{}"]'.format(equip_index_except_first_digit)) == 0 and can_convert_from_baibianguai('1' + str(equip_index_except_first_digit)):
                 listns15.append('1' + str(equip_index_except_first_digit))
         except KeyError as error:
@@ -2180,7 +2199,10 @@ def get_equips():
         try:
             if eval('select_item["tg2{}"]'.format(equip_index_except_first_digit)) == 1:
                 list21.append('2' + str(equip_index_except_first_digit))
-                list_setnum.append(str(equip_index_except_first_digit)[1:])
+                set_code = get_set_code(equip_index_except_first_digit)
+                list_setcode.append(set_code)
+                if equip_index_except_first_digit % 10 == 1:
+                    set_has_god[set_code] = True
             elif eval('select_item["tg2{}"]'.format(equip_index_except_first_digit)) == 0 and can_convert_from_baibianguai('2' + str(equip_index_except_first_digit)):
                 listns21.append('2' + str(equip_index_except_first_digit))
         except KeyError as error:
@@ -2189,7 +2211,10 @@ def get_equips():
         try:
             if eval('select_item["tg2{}"]'.format(equip_index_except_first_digit)) == 1:
                 list22.append('2' + str(equip_index_except_first_digit))
-                list_setnum.append(str(equip_index_except_first_digit)[1:])
+                set_code = get_set_code(equip_index_except_first_digit)
+                list_setcode.append(set_code)
+                if equip_index_except_first_digit % 10 == 1:
+                    set_has_god[set_code] = True
             elif eval('select_item["tg2{}"]'.format(equip_index_except_first_digit)) == 0 and can_convert_from_baibianguai('2' + str(equip_index_except_first_digit)):
                 listns22.append('2' + str(equip_index_except_first_digit))
         except KeyError as error:
@@ -2198,7 +2223,10 @@ def get_equips():
         try:
             if eval('select_item["tg2{}"]'.format(equip_index_except_first_digit)) == 1:
                 list23.append('2' + str(equip_index_except_first_digit))
-                list_setnum.append(str(equip_index_except_first_digit)[1:])
+                set_code = get_set_code(equip_index_except_first_digit)
+                list_setcode.append(set_code)
+                if equip_index_except_first_digit % 10 == 1:
+                    set_has_god[set_code] = True
             elif eval('select_item["tg2{}"]'.format(equip_index_except_first_digit)) == 0 and can_convert_from_baibianguai('2' + str(equip_index_except_first_digit)):
                 listns23.append('2' + str(equip_index_except_first_digit))
         except KeyError as error:
@@ -2207,7 +2235,10 @@ def get_equips():
         try:
             if eval('select_item["tg3{}"]'.format(equip_index_except_first_digit)) == 1:
                 list31.append('3' + str(equip_index_except_first_digit))
-                list_setnum.append(str(equip_index_except_first_digit)[1:])
+                set_code = get_set_code(equip_index_except_first_digit)
+                list_setcode.append(set_code)
+                if equip_index_except_first_digit % 10 == 1:
+                    set_has_god[set_code] = True
             elif eval('select_item["tg3{}"]'.format(equip_index_except_first_digit)) == 0 and can_convert_from_baibianguai('3' + str(equip_index_except_first_digit)):
                 listns31.append('3' + str(equip_index_except_first_digit))
         except KeyError as error:
@@ -2216,7 +2247,10 @@ def get_equips():
         try:
             if eval('select_item["tg3{}"]'.format(equip_index_except_first_digit)) == 1:
                 list32.append('3' + str(equip_index_except_first_digit))
-                list_setnum.append(str(equip_index_except_first_digit)[1:])
+                set_code = get_set_code(equip_index_except_first_digit)
+                list_setcode.append(set_code)
+                if equip_index_except_first_digit % 10 == 1:
+                    set_has_god[set_code] = True
             elif eval('select_item["tg3{}"]'.format(equip_index_except_first_digit)) == 0 and can_convert_from_baibianguai('3' + str(equip_index_except_first_digit)):
                 listns32.append('3' + str(equip_index_except_first_digit))
         except KeyError as error:
@@ -2225,21 +2259,28 @@ def get_equips():
         try:
             if eval('select_item["tg3{}"]'.format(equip_index_except_first_digit)) == 1:
                 list33.append('3' + str(equip_index_except_first_digit))
-                list_setnum.append(str(equip_index_except_first_digit)[1:])
+                set_code = get_set_code(equip_index_except_first_digit)
+                list_setcode.append(set_code)
+                if equip_index_except_first_digit % 10 == 1:
+                    set_has_god[set_code] = True
             elif eval('select_item["tg3{}"]'.format(equip_index_except_first_digit)) == 0 and can_convert_from_baibianguai('3' + str(equip_index_except_first_digit)):
                 listns33.append('3' + str(equip_index_except_first_digit))
         except KeyError as error:
             c = 1
-    algo_list = ['11', '12', '13', '14', '15', '21', '22', '23', '31', '32', '33']
+    equip_slot_indexes = ['11', '12', '13', '14', '15', '21', '22', '23', '31', '32', '33']
     if select_speed.get() == speed_quick:
-        for i in list_setnum:
-            if list_setnum.count(i) == 1:
-                if i[-1] != '1':
-                    for ca in algo_list:
-                        try:
-                            eval("list{}.remove('{}{}')".format(ca, ca, i))
-                        except ValueError as error:
-                            c = 1
+        for set_code, count in collections.Counter(list_setcode).items():
+            if count > 1:
+                # 非散件，略过
+                continue
+            if set_code in set_has_god:
+                # 只有一件神话散件，略过
+                continue
+            for equip_slot_index in equip_slot_indexes:
+                try:
+                    eval("list{}.remove('{}{}0')".format(equip_slot_index, equip_slot_index, set_code))
+                except ValueError as error:
+                    c = 1
 
     for know_one in know_list:
         if eval('select_item["tg{}"]'.format(know_one)) == 1:
