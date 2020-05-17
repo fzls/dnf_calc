@@ -1908,32 +1908,20 @@ def calc():
         show_number = 0
         showsta(text='结果统计中')
 
-        all_ranking1 = minheap_bless.getTop()
-        all_ranking2 = minheap_taiyang.getTop()
-        all_ranking3 = minheap_total.getTop()
-        ranking1 = []
-        ranking2 = []
-        ranking3 = []
-        for index, data in enumerate(all_ranking1[:ui_top_n]):
-            damage = data[0]
-            value = data[2]
-            ranking1.append((damage, value))
-        for index, data in enumerate(all_ranking2[:ui_top_n]):
-            damage = data[0]
-            value = data[2]
-            ranking2.append((damage, value))
-        for index, data in enumerate(all_ranking3[:ui_top_n]):
-            damage = data[0]
-            value = data[2]
-            ranking3.append((damage, value))
+        all_rankings = [minheap_bless.getTop(), minheap_taiyang.getTop(), minheap_total.getTop()]
+        rankings = [[] for x in range(3)]
+        for rank_type_index in range(3):
+            for index, data in enumerate(all_rankings[rank_type_index][:ui_top_n]):
+                damage = data[0]
+                value = data[2]
+                rankings[rank_type_index].append((damage, value))
 
-        ranking = [ranking1, ranking2, ranking3]
-        show_result(ranking, 'buf', ele_skill)
+        show_result(rankings, 'buf', ele_skill)
 
         export_result(ele_skill, buf_col_names, extract_buf_rank_cols, [
-            ("祝福排行", all_ranking1),
-            ("太阳排行", all_ranking2),
-            ("综合排行", all_ranking3),
+            ("祝福排行", all_rankings[0]),
+            ("太阳排行", all_rankings[1]),
+            ("综合排行", all_rankings[2]),
         ])
 
     load_presetc.close()
@@ -2680,153 +2668,84 @@ def show_result(rank_list, job_type, ele_skill):
         rank_setting = [0, 0, 0, 0, 0]
         rss = [0, 0, 0, 0, 0]
         result_image_on = [{}, {}, {}, {}, {}]
-        try:
-            # rank => [score, [calc_wep, base_array, baibianguai, not_owned_equips]]
-            rank_baibiaoguai[0] = rank_list[0][1][2]
-            rank_not_owned_equips[0] = rank_list[0][1][3]
-            rank_dam[0] = format_damage(rank_list[0][0])
-            rank_setting[0] = rank_list[0][1][0]  ##0号是排名
-            rss[0] = rank_list[0][1][1]
-            for i in [11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33]:
-                for j in rank_setting[0]:
+        # rank => [score, [calc_wep, base_array, baibianguai, not_owned_equips]]
+        for idx in range(len(rank_list)):
+            rank_baibiaoguai[idx] = rank_list[idx][1][2]
+            rank_not_owned_equips[idx] = rank_list[idx][1][3]
+            rank_dam[idx] = format_damage(rank_list[idx][0])
+            rank_setting[idx] = rank_list[idx][1][0]  ##0号是排名
+            rss[idx] = rank_list[idx][1][1]
+            for equip_slot_index in [11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33]:
+                for j in rank_setting[idx]:
                     if len(j) != 6:
-                        if j[0:2] == str(i):
-                            result_image_on[0][str(i)] = image_list[j]
+                        if j[0:2] == str(equip_slot_index):
+                            result_image_on[idx][str(equip_slot_index)] = image_list[j]
                             # 如果该装备在额外升级的工作服或跨界装备列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
-                            if j in rank_not_owned_equips[0]:
-                                result_image_on[0][str(i)] = image_list2[j]
-            if rank_baibiaoguai[0] is not None:
-                result_image_on[0]["bbg"] = image_list[rank_baibiaoguai[0]]
-
-            rank_baibiaoguai[1] = rank_list[1][1][2]
-            rank_not_owned_equips[1] = rank_list[1][1][3]
-            rank_dam[1] = format_damage(rank_list[1][0])
-            rank_setting[1] = rank_list[1][1][0]
-            rss[1] = rank_list[1][1][1]
-            for i in [11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33]:
-                for j in rank_setting[1]:
-                    if len(j) != 6:
-                        if j[0:2] == str(i):
-                            result_image_on[1][str(i)] = image_list[j]
-                            # 如果该装备在额外升级的工作服或跨界装备列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
-                            if j in rank_not_owned_equips[1]:
-                                result_image_on[1][str(i)] = image_list2[j]
-            if rank_baibiaoguai[1] is not None:
-                result_image_on[1]["bbg"] = image_list[rank_baibiaoguai[1]]
-
-            rank_baibiaoguai[2] = rank_list[2][1][2]
-            rank_not_owned_equips[2] = rank_list[2][1][3]
-            rank_dam[2] = format_damage(rank_list[2][0])
-            rank_setting[2] = rank_list[2][1][0]
-            rss[2] = rank_list[2][1][1]
-            for i in [11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33]:
-                for j in rank_setting[2]:
-                    if len(j) != 6:
-                        if j[0:2] == str(i):
-                            result_image_on[2][str(i)] = image_list[j]
-                            # 如果该装备在额外升级的工作服或跨界装备列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
-                            if j in rank_not_owned_equips[2]:
-                                result_image_on[2][str(i)] = image_list2[j]
-            if rank_baibiaoguai[2] is not None:
-                result_image_on[2]["bbg"] = image_list[rank_baibiaoguai[2]]
-
-            rank_baibiaoguai[3] = rank_list[3][1][2]
-            rank_not_owned_equips[3] = rank_list[3][1][3]
-            rank_dam[3] = format_damage(rank_list[3][0])
-            rank_setting[3] = rank_list[3][1][0]
-            rss[3] = rank_list[3][1][1]
-            for i in [11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33]:
-                for j in rank_setting[3]:
-                    if len(j) != 6:
-                        if j[0:2] == str(i):
-                            result_image_on[3][str(i)] = image_list[j]
-                            # 如果该装备在额外升级的工作服或跨界装备列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
-                            if j in rank_not_owned_equips[3]:
-                                result_image_on[3][str(i)] = image_list2[j]
-            if rank_baibiaoguai[3] is not None:
-                result_image_on[3]["bbg"] = image_list[rank_baibiaoguai[3]]
-
-            rank_baibiaoguai[4] = rank_list[4][1][2]
-            rank_not_owned_equips[4] = rank_list[4][1][3]
-            rank_dam[4] = format_damage(rank_list[4][0])
-            rank_setting[4] = rank_list[4][1][0]
-            rss[4] = rank_list[4][1][1]
-            for i in [11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33]:
-                for j in rank_setting[4]:
-                    if len(j) != 6:
-                        if j[0:2] == str(i):
-                            result_image_on[4][str(i)] = image_list[j]
-                            # 如果该装备在额外升级的工作服或跨界装备列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
-                            if j in rank_not_owned_equips[4]:
-                                result_image_on[4][str(i)] = image_list2[j]
-            if rank_baibiaoguai[4] is not None:
-                result_image_on[4]["bbg"] = image_list[rank_baibiaoguai[4]]
-        except IndexError as error:
-            c = 1
+                            if j in rank_not_owned_equips[idx]:
+                                result_image_on[idx][str(equip_slot_index)] = image_list2[j]
+            if rank_baibiaoguai[idx] is not None:
+                result_image_on[idx]["bbg"] = image_list[rank_baibiaoguai[idx]]
 
         # 0추스탯 1추공 2증 3크 4추
         # 6모 7공 8스탯 9속강 10지속 11스증 12특수
         # 13공속 14크확 / 15 특수액티브 / 16~19 패시브 /20 쿨감보정/21 二觉캐특수액티브 /22~27 액티브레벨링
         rank_stat = [0, 0, 0, 0, 0]
         rank_stat2 = [0, 0, 0, 0, 0]
-        for i in range(0, 5):
-            try:
-                rank_stat[i] = (
-                    "增伤={zengsu}%\n"
-                    "爆伤={baoshang}%\n"
-                    "白字={baizi}%\n"
-                    "所攻={suogong}%\n"
-                    "三攻={sangong}%\n"
-                    "力智={lizhi}%\n"
-                    "属强={shuqiang}\n"
-                    "持续={chixu}%\n"
-                    "技攻={jigong}%\n"
-                    "特殊={teshu}%\n"
-                    "\n"
-                    "攻速={gongsu}%\n"
-                    "暴击率={baojilv}%"
-                ).format(
-                    zengsu=int(rss[i][index_deal_extra_percent_attack_damage]),
-                    baoshang=int(rss[i][index_deal_extra_percent_crit_damage]),
-                    baizi=int(rss[i][index_deal_extra_percent_addtional_damage]),
-                    suogong=int(rss[i][index_deal_extra_percent_final_damage]),
-                    sangong=int(rss[i][index_deal_extra_percent_physical_magical_independent_attack_power]),
-                    lizhi=int(rss[i][index_deal_extra_percent_strength_and_intelligence]),
-                    shuqiang=int(rss[i][index_deal_extra_all_element_strength]),
-                    chixu=int(rss[i][index_deal_extra_percent_continued_damage]),
-                    jigong=int(rss[i][index_deal_extra_percent_skill_attack_power]),
-                    teshu=int(rss[i][index_deal_extra_percent_special_effect]),
-                    gongsu=int(rss[i][index_deal_extra_percent_attack_speed]),
-                    baojilv=int(rss[i][index_deal_extra_percent_magic_physical_crit_rate])
-                )
-                rank_stat2[i] = (
-                    "   <主动>\n"
-                    "  1~45技能= {lv_1_45}级\n"
-                    "    50技能= {lv_50}级\n"
-                    " 60~80技能= {lv_60_80}级\n"
-                    "    85技能= {lv_85}级\n"
-                    "    95技能= {lv_95}级\n"
-                    "   100技能= {lv_100}级\n"
-                    "\n"
-                    "   <被动>\n"
-                    "  转职被动= {passive_lv_15}级\n"
-                    "  一觉被动= {passive_lv_48}级\n"
-                    "  二觉被动= {passive_lv_85}级\n"
-                    "  三觉被动= {passive_lv_95}级"
-                ).format(
-                    lv_1_45=round(rss[i][index_deal_extra_active_skill_lv_1_45], 1),
-                    lv_50=int(rss[i][index_deal_extra_active_skill_lv_50]),
-                    lv_60_80=round(rss[i][index_deal_extra_active_skill_lv_60_80], 1),
-                    lv_85=int(rss[i][index_deal_extra_active_skill_lv_85]),
-                    lv_95=int(rss[i][index_deal_extra_active_skill_lv_95]),
-                    lv_100=int(rss[i][index_deal_extra_active_skill_lv_100]),
-                    passive_lv_15=round(rss[i][index_deal_extra_passive_transfer_skill], 1),
-                    passive_lv_48=int(rss[i][index_deal_extra_passive_first_awaken_skill]),
-                    passive_lv_85=int(rss[i][index_deal_extra_passive_second_awaken_skill]),
-                    passive_lv_95=int(rss[i][index_deal_extra_passive_third_awaken_skill]),
-                )
-            except TypeError as error:
-                c = 1
+        for i in range(len(rank_list)):
+            rank_stat[i] = (
+                "增伤={zengsu}%\n"
+                "爆伤={baoshang}%\n"
+                "白字={baizi}%\n"
+                "所攻={suogong}%\n"
+                "三攻={sangong}%\n"
+                "力智={lizhi}%\n"
+                "属强={shuqiang}\n"
+                "持续={chixu}%\n"
+                "技攻={jigong}%\n"
+                "特殊={teshu}%\n"
+                "\n"
+                "攻速={gongsu}%\n"
+                "暴击率={baojilv}%"
+            ).format(
+                zengsu=int(rss[i][index_deal_extra_percent_attack_damage]),
+                baoshang=int(rss[i][index_deal_extra_percent_crit_damage]),
+                baizi=int(rss[i][index_deal_extra_percent_addtional_damage]),
+                suogong=int(rss[i][index_deal_extra_percent_final_damage]),
+                sangong=int(rss[i][index_deal_extra_percent_physical_magical_independent_attack_power]),
+                lizhi=int(rss[i][index_deal_extra_percent_strength_and_intelligence]),
+                shuqiang=int(rss[i][index_deal_extra_all_element_strength]),
+                chixu=int(rss[i][index_deal_extra_percent_continued_damage]),
+                jigong=int(rss[i][index_deal_extra_percent_skill_attack_power]),
+                teshu=int(rss[i][index_deal_extra_percent_special_effect]),
+                gongsu=int(rss[i][index_deal_extra_percent_attack_speed]),
+                baojilv=int(rss[i][index_deal_extra_percent_magic_physical_crit_rate])
+            )
+            rank_stat2[i] = (
+                "   <主动>\n"
+                "  1~45技能= {lv_1_45}级\n"
+                "    50技能= {lv_50}级\n"
+                " 60~80技能= {lv_60_80}级\n"
+                "    85技能= {lv_85}级\n"
+                "    95技能= {lv_95}级\n"
+                "   100技能= {lv_100}级\n"
+                "\n"
+                "   <被动>\n"
+                "  转职被动= {passive_lv_15}级\n"
+                "  一觉被动= {passive_lv_48}级\n"
+                "  二觉被动= {passive_lv_85}级\n"
+                "  三觉被动= {passive_lv_95}级"
+            ).format(
+                lv_1_45=round(rss[i][index_deal_extra_active_skill_lv_1_45], 1),
+                lv_50=int(rss[i][index_deal_extra_active_skill_lv_50]),
+                lv_60_80=round(rss[i][index_deal_extra_active_skill_lv_60_80], 1),
+                lv_85=int(rss[i][index_deal_extra_active_skill_lv_85]),
+                lv_95=int(rss[i][index_deal_extra_active_skill_lv_95]),
+                lv_100=int(rss[i][index_deal_extra_active_skill_lv_100]),
+                passive_lv_15=round(rss[i][index_deal_extra_passive_transfer_skill], 1),
+                passive_lv_48=int(rss[i][index_deal_extra_passive_first_awaken_skill]),
+                passive_lv_85=int(rss[i][index_deal_extra_passive_second_awaken_skill]),
+                passive_lv_95=int(rss[i][index_deal_extra_passive_third_awaken_skill]),
+            )
 
         cool_check = req_cool.get()
         cool_txt = ""
@@ -2859,18 +2778,15 @@ def show_result(rank_list, job_type, ele_skill):
             res_txtbbgs[5] = canvas_res.create_text(178, 147, text="百变怪=>", font=guide_font, fill='white')
             res_imgbbgs[5] = canvas_res.create_image(219, 147, image=result_image_on[0]['bbg'])  # 百变怪
         cn1 = 0
-        for j in range(0, 5):
-            try:
-                for i in [11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33]:
-                    canvas_res.create_image(268 + cn1 * 29, 67 + 78 * j, image=result_image_on[j][str(i)])
-                    cn1 = cn1 + 1
-                if 'bbg' in result_image_on[j]:
-                    # res_txtbbgs[j] = canvas_res.create_text(268 + 5 * 29 + 14, 38 + 78 * j, text="百变怪=>", font=guide_font, fill='white')
-                    res_imgbbgs[j] = canvas_res.create_image(268 + 7 * 29, 37 + 78 * j, image=result_image_on[j]['bbg'])
-                cn1 = 0
-                canvas_res.create_text(366, 34 + 78 * j, text=rank_dam[j], font=mid_font, fill='white')
-            except KeyError as error:
-                c = 1
+        for j in range(len(rank_list)):
+            for equip_slot_index in [11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33]:
+                canvas_res.create_image(268 + cn1 * 29, 67 + 78 * j, image=result_image_on[j][str(equip_slot_index)])
+                cn1 = cn1 + 1
+            if 'bbg' in result_image_on[j]:
+                # res_txtbbgs[j] = canvas_res.create_text(268 + 5 * 29 + 14, 38 + 78 * j, text="百变怪=>", font=guide_font, fill='white')
+                res_imgbbgs[j] = canvas_res.create_image(268 + 7 * 29, 37 + 78 * j, image=result_image_on[j]['bbg'])
+            cn1 = 0
+            canvas_res.create_text(366, 34 + 78 * j, text=rank_dam[j], font=mid_font, fill='white')
 
         weapon = rank_setting[0][0]
         equips = rank_setting[0][1:]
@@ -2879,260 +2795,50 @@ def show_result(rank_list, job_type, ele_skill):
         wep_index = weapon
 
         g_rank_equips = {}
-        for rank in range(0, 5):
+        for rank in range(len(rank_list)):
             g_rank_equips[rank] = rank_setting[rank]
 
         length = len(rank_list)
 
     elif job_type == 'buf':  ##########################
-        global result_image_on1, result_image_on2, result_image_on3, rank_buf1, rank_buf2, rank_buf3, rank_type_buf, res_buf, res_img_list, res_buf_list, res_buf_ex1, res_buf_ex2, res_buf_ex3, rank_buf_ex1, rank_buf_ex2, rank_buf_ex3, res_buf_type_what
+        global result_image_ons, rank_bufs, rank_type_buf, res_buf, res_img_list, res_buf_list, res_buf_exs, rank_buf_exs, res_buf_type_what
         rank_type_buf = 3
-        rank_baibiaoguai1 = [0, 0, 0, 0, 0]
-        rank_baibiaoguai2 = [0, 0, 0, 0, 0]
-        rank_baibiaoguai3 = [0, 0, 0, 0, 0]
-        rank_not_owned_equips1 = [0, 0, 0, 0, 0]
-        rank_not_owned_equips2 = [0, 0, 0, 0, 0]
-        rank_not_owned_equips3 = [0, 0, 0, 0, 0]
-        rank_setting1 = [0, 0, 0, 0, 0]
-        rank_setting2 = [0, 0, 0, 0, 0]
-        rank_setting3 = [0, 0, 0, 0, 0]
-        result_image_on1 = [{}, {}, {}, {}, {}]
-        result_image_on2 = [{}, {}, {}, {}, {}]
-        result_image_on3 = [{}, {}, {}, {}, {}]
-        rank_buf1 = [0, 0, 0, 0, 0]
-        rank_buf2 = [0, 0, 0, 0, 0]
-        rank_buf3 = [0, 0, 0, 0, 0]
-        rank_buf_ex1 = [0, 0, 0, 0, 0]
-        rank_buf_ex2 = [0, 0, 0, 0, 0]
-        rank_buf_ex3 = [0, 0, 0, 0, 0]
         ## rank_setting[rank]=rank_list[a][rank][b][c]
         ## a: 0=祝福,1=크오,2=합계
         ## b: 0=계수,1=스펙or증가량
         ## c: b에서 1 선택시, 0=스펙, 1=증가량
-        try:
-            # ranking = [ranking1, ranking2, ranking3]
-            # ranking1 = rank => [score, [calc_wep, [bless_overview, taiyang_overview, first_awaken_passive_overview, all_score_str], baibianguai, tuple(not_owned_equips)]]
-            rank_baibiaoguai3[0] = rank_list[2][0][1][2]
-            rank_baibiaoguai2[0] = rank_list[1][0][1][2]
-            rank_baibiaoguai1[0] = rank_list[0][0][1][2]
-            rank_not_owned_equips3[0] = rank_list[2][0][1][3]
-            rank_not_owned_equips2[0] = rank_list[1][0][1][3]
-            rank_not_owned_equips1[0] = rank_list[0][0][1][3]
-            rank_setting3[0] = rank_list[2][0][1][0]  ##2번째 숫자가 랭킹임
-            rank_setting2[0] = rank_list[1][0][1][0]
-            rank_setting1[0] = rank_list[0][0][1][0]
-            rank_buf3[0] = int(rank_list[2][0][0] / 10)
-            rank_buf2[0] = int(rank_list[1][0][0] / 10)
-            rank_buf1[0] = int(rank_list[0][0][0] / 10)
-            rank_buf_ex3[0] = rank_list[2][0][1][1]
-            rank_buf_ex2[0] = rank_list[1][0][1][1]
-            rank_buf_ex1[0] = rank_list[0][0][1][1]
-            for i in [11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33]:
-                for j in rank_setting3[0]:
-                    if len(j) != 6:
-                        if j[0:2] == str(i):
-                            result_image_on3[0][str(i)] = image_list[j]
-                            # 如果该装备在额外升级的工作服或跨界装备列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
-                            if j in rank_not_owned_equips3[0]:
-                                result_image_on3[0][str(i)] = image_list2[j]
-                for j in rank_setting2[0]:
-                    if len(j) != 6:
-                        if j[0:2] == str(i):
-                            result_image_on2[0][str(i)] = image_list[j]
-                            # 如果该装备在额外升级的工作服或跨界装备列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
-                            if j in rank_not_owned_equips2[0]:
-                                result_image_on2[0][str(i)] = image_list2[j]
-                for j in rank_setting1[0]:
-                    if len(j) != 6:
-                        if j[0:2] == str(i):
-                            result_image_on1[0][str(i)] = image_list[j]  ##
-                            # 如果该装备在额外升级的工作服或跨界装备列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
-                            if j in rank_not_owned_equips1[0]:
-                                result_image_on1[0][str(i)] = image_list2[j]
-            if rank_baibiaoguai3[0] is not None:
-                result_image_on3[0]["bbg"] = image_list[rank_baibiaoguai3[0]]
-            if rank_baibiaoguai2[0] is not None:
-                result_image_on2[0]["bbg"] = image_list[rank_baibiaoguai2[0]]
-            if rank_baibiaoguai1[0] is not None:
-                result_image_on1[0]["bbg"] = image_list[rank_baibiaoguai1[0]]
-
-            rank_baibiaoguai3[1] = rank_list[2][1][1][2]
-            rank_baibiaoguai2[1] = rank_list[1][1][1][2]
-            rank_baibiaoguai1[1] = rank_list[0][1][1][2]
-            rank_not_owned_equips3[1] = rank_list[2][1][1][3]
-            rank_not_owned_equips2[1] = rank_list[1][1][1][3]
-            rank_not_owned_equips1[1] = rank_list[0][1][1][3]
-            rank_setting3[1] = rank_list[2][1][1][0]
-            rank_setting2[1] = rank_list[1][1][1][0]
-            rank_setting1[1] = rank_list[0][1][1][0]
-            rank_buf3[1] = int(rank_list[2][1][0] / 10)
-            rank_buf2[1] = int(rank_list[1][1][0] / 10)
-            rank_buf1[1] = int(rank_list[0][1][0] / 10)
-            rank_buf_ex3[1] = rank_list[2][1][1][1]
-            rank_buf_ex2[1] = rank_list[1][1][1][1]
-            rank_buf_ex1[1] = rank_list[0][1][1][1]
-            for i in [11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33]:
-                for j in rank_setting3[1]:
-                    if len(j) != 6:
-                        if j[0:2] == str(i):
-                            result_image_on3[1][str(i)] = image_list[j]
-                            # 如果该装备在额外升级的工作服或跨界装备列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
-                            if j in rank_not_owned_equips3[1]:
-                                result_image_on3[1][str(i)] = image_list2[j]
-                for j in rank_setting2[1]:
-                    if len(j) != 6:
-                        if j[0:2] == str(i):
-                            result_image_on2[1][str(i)] = image_list[j]
-                            # 如果该装备在额外升级的工作服或跨界装备列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
-                            if j in rank_not_owned_equips2[1]:
-                                result_image_on2[1][str(i)] = image_list2[j]
-                for j in rank_setting1[1]:
-                    if len(j) != 6:
-                        if j[0:2] == str(i):
-                            result_image_on1[1][str(i)] = image_list[j]  ##
-                            # 如果该装备在额外升级的工作服或跨界装备列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
-                            if j in rank_not_owned_equips1[1]:
-                                result_image_on1[1][str(i)] = image_list2[j]
-            if rank_baibiaoguai3[1] is not None:
-                result_image_on3[1]["bbg"] = image_list[rank_baibiaoguai3[1]]
-            if rank_baibiaoguai2[1] is not None:
-                result_image_on2[1]["bbg"] = image_list[rank_baibiaoguai2[1]]
-            if rank_baibiaoguai1[1] is not None:
-                result_image_on1[1]["bbg"] = image_list[rank_baibiaoguai1[1]]
-
-            rank_baibiaoguai3[2] = rank_list[2][2][1][2]
-            rank_baibiaoguai2[2] = rank_list[1][2][1][2]
-            rank_baibiaoguai1[2] = rank_list[0][2][1][2]
-            rank_not_owned_equips3[2] = rank_list[2][2][1][3]
-            rank_not_owned_equips2[2] = rank_list[1][2][1][3]
-            rank_not_owned_equips1[2] = rank_list[0][2][1][3]
-            rank_setting3[2] = rank_list[2][2][1][0]
-            rank_setting2[2] = rank_list[1][2][1][0]
-            rank_setting1[2] = rank_list[0][2][1][0]
-            rank_buf3[2] = int(rank_list[2][2][0] / 10)
-            rank_buf2[2] = int(rank_list[1][2][0] / 10)
-            rank_buf1[2] = int(rank_list[0][2][0] / 10)
-            rank_buf_ex3[2] = rank_list[2][2][1][1]
-            rank_buf_ex2[2] = rank_list[1][2][1][1]
-            rank_buf_ex1[2] = rank_list[0][2][1][1]
-            for i in [11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33]:
-                for j in rank_setting3[2]:
-                    if len(j) != 6:
-                        if j[0:2] == str(i):
-                            result_image_on3[2][str(i)] = image_list[j]
-                            # 如果该装备在额外升级的工作服或跨界装备列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
-                            if j in rank_not_owned_equips3[2]:
-                                result_image_on3[2][str(i)] = image_list2[j]
-                for j in rank_setting2[2]:
-                    if len(j) != 6:
-                        if j[0:2] == str(i):
-                            result_image_on2[2][str(i)] = image_list[j]
-                            # 如果该装备在额外升级的工作服或跨界装备列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
-                            if j in rank_not_owned_equips2[2]:
-                                result_image_on2[2][str(i)] = image_list2[j]
-                for j in rank_setting1[2]:
-                    if len(j) != 6:
-                        if j[0:2] == str(i):
-                            result_image_on1[2][str(i)] = image_list[j]  ##
-                            # 如果该装备在额外升级的工作服或跨界装备列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
-                            if j in rank_not_owned_equips1[1]:
-                                result_image_on1[1][str(i)] = image_list2[j]
-            if rank_baibiaoguai3[2] is not None:
-                result_image_on3[2]["bbg"] = image_list[rank_baibiaoguai3[2]]
-            if rank_baibiaoguai2[2] is not None:
-                result_image_on2[2]["bbg"] = image_list[rank_baibiaoguai2[2]]
-            if rank_baibiaoguai1[2] is not None:
-                result_image_on1[2]["bbg"] = image_list[rank_baibiaoguai1[2]]
-
-            rank_baibiaoguai3[3] = rank_list[2][3][1][2]
-            rank_baibiaoguai2[3] = rank_list[1][3][1][2]
-            rank_baibiaoguai1[3] = rank_list[0][3][1][2]
-            rank_not_owned_equips3[3] = rank_list[2][3][1][3]
-            rank_not_owned_equips2[3] = rank_list[1][3][1][3]
-            rank_not_owned_equips1[3] = rank_list[0][3][1][3]
-            rank_setting3[3] = rank_list[2][3][1][0]
-            rank_setting2[3] = rank_list[1][3][1][0]
-            rank_setting1[3] = rank_list[0][3][1][0]
-            rank_buf3[3] = int(rank_list[2][3][0] / 10)
-            rank_buf2[3] = int(rank_list[1][3][0] / 10)
-            rank_buf1[3] = int(rank_list[0][3][0] / 10)
-            rank_buf_ex3[3] = rank_list[2][3][1][1]
-            rank_buf_ex2[3] = rank_list[1][3][1][1]
-            rank_buf_ex1[3] = rank_list[0][3][1][1]
-            for i in [11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33]:
-                for j in rank_setting3[3]:
-                    if len(j) != 6:
-                        if j[0:2] == str(i):
-                            result_image_on3[3][str(i)] = image_list[j]
-                            # 如果该装备在额外升级的工作服或跨界装备列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
-                            if j in rank_not_owned_equips3[3]:
-                                result_image_on3[3][str(i)] = image_list2[j]
-                for j in rank_setting2[3]:
-                    if len(j) != 6:
-                        if j[0:2] == str(i):
-                            result_image_on2[3][str(i)] = image_list[j]
-                            # 如果该装备在额外升级的工作服或跨界装备列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
-                            if j in rank_not_owned_equips2[3]:
-                                result_image_on2[3][str(i)] = image_list2[j]
-                for j in rank_setting1[3]:
-                    if len(j) != 6:
-                        if j[0:2] == str(i):
-                            result_image_on1[3][str(i)] = image_list[j]  ##
-                            # 如果该装备在额外升级的工作服或跨界装备列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
-                            if j in rank_not_owned_equips1[3]:
-                                result_image_on1[3][str(i)] = image_list2[j]
-            if rank_baibiaoguai3[3] is not None:
-                result_image_on3[3]["bbg"] = image_list[rank_baibiaoguai3[3]]
-            if rank_baibiaoguai2[3] is not None:
-                result_image_on2[3]["bbg"] = image_list[rank_baibiaoguai2[3]]
-            if rank_baibiaoguai1[3] is not None:
-                result_image_on1[3]["bbg"] = image_list[rank_baibiaoguai1[3]]
-
-            rank_baibiaoguai3[4] = rank_list[2][4][1][2]
-            rank_baibiaoguai2[4] = rank_list[1][4][1][2]
-            rank_baibiaoguai1[4] = rank_list[0][4][1][2]
-            rank_not_owned_equips3[4] = rank_list[2][4][1][3]
-            rank_not_owned_equips2[4] = rank_list[1][4][1][3]
-            rank_not_owned_equips1[4] = rank_list[0][4][1][3]
-            rank_setting3[4] = rank_list[2][4][1][0]
-            rank_setting2[4] = rank_list[1][4][1][0]
-            rank_setting1[4] = rank_list[0][4][1][0]
-            rank_buf3[4] = int(rank_list[2][4][0] / 10)
-            rank_buf2[4] = int(rank_list[1][4][0] / 10)
-            rank_buf1[4] = int(rank_list[0][4][0] / 10)
-            rank_buf_ex3[4] = rank_list[2][4][1][1]
-            rank_buf_ex2[4] = rank_list[1][4][1][1]
-            rank_buf_ex1[4] = rank_list[0][4][1][1]
-            for i in [11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33]:
-                for j in rank_setting3[4]:
-                    if len(j) != 6:
-                        if j[0:2] == str(i):
-                            result_image_on3[4][str(i)] = image_list[j]
-                            # 如果该装备在额外升级的工作服或跨界装备列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
-                            if j in rank_not_owned_equips3[4]:
-                                result_image_on3[4][str(i)] = image_list2[j]
-                for j in rank_setting2[4]:
-                    if len(j) != 6:
-                        if j[0:2] == str(i):
-                            result_image_on2[4][str(i)] = image_list[j]
-                            # 如果该装备在额外升级的工作服或跨界装备列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
-                            if j in rank_not_owned_equips2[4]:
-                                result_image_on2[4][str(i)] = image_list2[j]
-                for j in rank_setting1[4]:
-                    if len(j) != 6:
-                        if j[0:2] == str(i):
-                            result_image_on1[4][str(i)] = image_list[j]  ##
-                            # 如果该装备在额外升级的工作服或跨界装备列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
-                            if j in rank_not_owned_equips1[4]:
-                                result_image_on1[4][str(i)] = image_list2[j]
-            if rank_baibiaoguai3[4] is not None:
-                result_image_on3[4]["bbg"] = image_list[rank_baibiaoguai3[4]]
-            if rank_baibiaoguai2[4] is not None:
-                result_image_on2[4]["bbg"] = image_list[rank_baibiaoguai2[4]]
-            if rank_baibiaoguai1[4] is not None:
-                result_image_on1[4]["bbg"] = image_list[rank_baibiaoguai1[4]]
-        except IndexError as error:
-            c = 1
+        # ranking = [ranking1, ranking2, ranking3]
+        # ranking1 = rank => [score, [calc_wep, [bless_overview, taiyang_overview, first_awaken_passive_overview, all_score_str], baibianguai, tuple(not_owned_equips)]]
+        rank_baibiaoguais = [0,0,0]
+        rank_not_owned_equipss = [0,0,0]
+        rank_settings = [0,0,0]
+        result_image_ons = [0,0,0]
+        rank_bufs = [0,0,0]
+        rank_buf_exs= [0,0,0]
+        for rank_type_index in range(3):
+            total_count = len(rank_list[rank_type_index])
+            rank_baibiaoguais[rank_type_index] = [0 for x in range(total_count)]
+            rank_not_owned_equipss[rank_type_index] = [0 for x in range(total_count)]
+            rank_settings[rank_type_index] = [0 for x in range(total_count)]
+            result_image_ons[rank_type_index] = [{} for x in range(total_count)]
+            rank_bufs[rank_type_index] = [0 for x in range(total_count)]
+            rank_buf_exs[rank_type_index] = [0 for x in range(total_count)]
+            for idx in range(total_count):
+                rank_baibiaoguais[rank_type_index][idx] = rank_list[rank_type_index][idx][1][2]
+                rank_not_owned_equipss[rank_type_index][idx] = rank_list[rank_type_index][idx][1][3]
+                rank_settings[rank_type_index][idx] = rank_list[rank_type_index][idx][1][0]
+                rank_bufs[rank_type_index][idx] = int(rank_list[rank_type_index][idx][0] / 10)
+                rank_buf_exs[rank_type_index][idx] = rank_list[rank_type_index][idx][1][1]
+                for i in [11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33]:
+                    for j in rank_settings[rank_type_index][idx]:
+                        if len(j) != 6:
+                            if j[0:2] == str(i):
+                                result_image_ons[rank_type_index][idx][str(i)] = image_list[j]
+                                # 如果该装备在额外升级的工作服或跨界装备列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
+                                if j in rank_not_owned_equipss[rank_type_index][idx]:
+                                    result_image_ons[rank_type_index][idx][str(i)] = image_list2[j]
+                if rank_baibiaoguais[rank_type_index][idx] is not None:
+                    result_image_ons[rank_type_index][idx]["bbg"] = image_list[rank_baibiaoguais[rank_type_index][idx]]
 
         canvas_res.create_text(122, 193, font=guide_font, fill='white', text=(
             "自定义 祝福+{}级 / 自定义 一觉+{}级\n"
@@ -3142,48 +2848,46 @@ def show_result(rank_list, job_type, ele_skill):
             custom_buf_data["bless_data"], custom_buf_data["taiyang_data"],
         ))
 
-        res_buf = canvas_res.create_text(122, 125, text=rank_buf3[0], font=mid_font, fill='white')
+        res_buf = canvas_res.create_text(122, 125, text=rank_bufs[2][0], font=mid_font, fill='white')
         res_buf_type_what = canvas_res.create_text(122, 145, text="综合标准", font=guide_font, fill='white')
-        res_buf_ex1 = canvas_res.create_text(123, 247, text="祝福={}".format(rank_buf_ex3[0][0]), font=guide_font, fill='white')
-        res_buf_ex2 = canvas_res.create_text(123 - 17, 282, text="一觉={}".format(rank_buf_ex3[0][1]), font=guide_font,
+        res_buf_exs = [0,0,0]
+        res_buf_exs[0] = canvas_res.create_text(123, 247, text="祝福={}".format(rank_buf_exs[2][0][0]), font=guide_font, fill='white')
+        res_buf_exs[1] = canvas_res.create_text(123 - 17, 282, text="一觉={}".format(rank_buf_exs[2][0][1]), font=guide_font,
                                              fill='white')
-        res_buf_ex3 = canvas_res.create_text(123 - 44, 312, text="一觉被动={}".format(rank_buf_ex3[0][2]), font=guide_font,
+        res_buf_exs[2] = canvas_res.create_text(123 - 44, 312, text="一觉被动={}".format(rank_buf_exs[2][0][2]), font=guide_font,
                                              fill='white')
 
-        res_img11 = canvas_res.create_image(57, 57, image=result_image_on3[0]['11'])
-        res_img12 = canvas_res.create_image(27, 87, image=result_image_on3[0]['12'])
-        res_img13 = canvas_res.create_image(27, 57, image=result_image_on3[0]['13'])
-        res_img14 = canvas_res.create_image(57, 87, image=result_image_on3[0]['14'])
-        res_img15 = canvas_res.create_image(27, 117, image=result_image_on3[0]['15'])
-        res_img21 = canvas_res.create_image(189, 57, image=result_image_on3[0]['21'])
-        res_img22 = canvas_res.create_image(219, 57, image=result_image_on3[0]['22'])
-        res_img23 = canvas_res.create_image(219, 87, image=result_image_on3[0]['23'])
-        res_img31 = canvas_res.create_image(189, 87, image=result_image_on3[0]['31'])
-        res_img32 = canvas_res.create_image(219, 117, image=result_image_on3[0]['32'])
-        res_img33 = canvas_res.create_image(189, 117, image=result_image_on3[0]['33'])
+        res_img11 = canvas_res.create_image(57, 57, image=result_image_ons[2][0]['11'])
+        res_img12 = canvas_res.create_image(27, 87, image=result_image_ons[2][0]['12'])
+        res_img13 = canvas_res.create_image(27, 57, image=result_image_ons[2][0]['13'])
+        res_img14 = canvas_res.create_image(57, 87, image=result_image_ons[2][0]['14'])
+        res_img15 = canvas_res.create_image(27, 117, image=result_image_ons[2][0]['15'])
+        res_img21 = canvas_res.create_image(189, 57, image=result_image_ons[2][0]['21'])
+        res_img22 = canvas_res.create_image(219, 57, image=result_image_ons[2][0]['22'])
+        res_img23 = canvas_res.create_image(219, 87, image=result_image_ons[2][0]['23'])
+        res_img31 = canvas_res.create_image(189, 87, image=result_image_ons[2][0]['31'])
+        res_img32 = canvas_res.create_image(219, 117, image=result_image_ons[2][0]['32'])
+        res_img33 = canvas_res.create_image(189, 117, image=result_image_ons[2][0]['33'])
         res_txtbbgs = [None, None, None, None, None, None]  # 0-4 => 右边的展示区间， 5 => 左边的那个百变怪
         res_imgbbgs = [None, None, None, None, None, None]  # 0-4 => 右边的展示区间， 5 => 左边的那个百变怪
-        if 'bbg' in result_image_on3[0]:
+        if 'bbg' in result_image_ons[2][0]:
             res_txtbbgs[5] = canvas_res.create_text(178, 147, text="百变怪=>", font=guide_font, fill='white')
-            res_imgbbgs[5] = canvas_res.create_image(219, 147, image=result_image_on3[0]['bbg'])  # 百变怪
+            res_imgbbgs[5] = canvas_res.create_image(219, 147, image=result_image_ons[2][0]['bbg'])  # 百变怪
         cn1 = 0
         res_img_list = {}
         res_buf_list = {}
-        for j in range(0, 5):
-            try:
-                for i in [11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33]:
-                    temp_res = canvas_res.create_image(268 + cn1 * 29, 67 + 78 * j, image=result_image_on3[j][str(i)])
-                    res_img_list[str(j) + str(i)] = temp_res
-                    cn1 = cn1 + 1
-                if 'bbg' in result_image_on3[j]:
-                    res_txtbbgs[j] = canvas_res.create_text(268 + 5 * 29 + 14, 38 + 78 * j, text="百变怪=>", font=guide_font, fill='white')
-                    res_imgbbgs[j] = canvas_res.create_image(268 + 7 * 29, 37 + 78 * j, image=result_image_on3[j]['bbg'])
-                cn1 = 0
-                temp_buf = canvas_res.create_text(346, 34 + 78 * j, text=rank_buf3[j], font=mid_font, fill='white')
-                res_buf_list[j] = temp_buf
-            except KeyError as error:
-                c = 1
-        length = len(rank_list[0])
+        for j in range(len(rank_list[2])):
+            for equip_slot_index in [11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33]:
+                temp_res = canvas_res.create_image(268 + cn1 * 29, 67 + 78 * j, image=result_image_ons[2][j][str(equip_slot_index)])
+                res_img_list[str(j) + str(equip_slot_index)] = temp_res
+                cn1 = cn1 + 1
+            if 'bbg' in result_image_ons[2][j]:
+                res_txtbbgs[j] = canvas_res.create_text(268 + 5 * 29 + 14, 38 + 78 * j, text="百变怪=>", font=guide_font, fill='white')
+                res_imgbbgs[j] = canvas_res.create_image(268 + 7 * 29, 37 + 78 * j, image=result_image_ons[2][j]['bbg'])
+            cn1 = 0
+            temp_buf = canvas_res.create_text(346, 34 + 78 * j, text=rank_bufs[2][j], font=mid_font, fill='white')
+            res_buf_list[j] = temp_buf
+        length = len(rank_list[2])
         type1_img = tkinter.PhotoImage(file='ext_img/type_bless.png')
         type2_img = tkinter.PhotoImage(file='ext_img/type_crux.png')
         type3_img = tkinter.PhotoImage(file='ext_img/type_all.png')
@@ -3200,17 +2904,17 @@ def show_result(rank_list, job_type, ele_skill):
         rank_type_but2.image = type2_img
         rank_type_but3.image = type3_img
 
-        weapon = rank_setting3[0][0]
-        equips = rank_setting3[0][1:]
+        weapon = rank_settings[2][0][0]
+        equips = rank_settings[2][0][1:]
         change_readable_result_area(weapon, equips, True)
 
         wep_index = weapon
 
         g_rank_equips = {}
         g_current_buff_type = "综合"
-        for buf_type, rank_setting in [("祝福", rank_setting1), ("一觉", rank_setting2), ("综合", rank_setting3)]:
+        for buf_type, rank_setting in [("祝福", rank_settings[0]), ("一觉", rank_settings[1]), ("综合", rank_settings[2])]:
             ranks = {}
-            for rank in range(0, 5):
+            for rank in range(len(rank_setting)):
                 ranks[rank] = rank_setting[rank]
             g_rank_equips[buf_type] = ranks
 
@@ -3294,88 +2998,81 @@ def change_rank(now, job_type):
     global image_list, canvas_res, res_img11, res_img12, res_img13, res_img14, res_img15, res_img21, res_img22, res_img23, res_img31, res_img32, res_img33, res_txtbbgs, res_imgbbgs
     if job_type == 'deal':
         global res_dam, res_stat, res_stat2, rank_stat, rank_stat2, result_image_on
-        try:
-            image_changed = result_image_on[now]
-            canvas_res.itemconfig(res_img11, image=image_changed['11'])
-            canvas_res.itemconfig(res_img12, image=image_changed['12'])
-            canvas_res.itemconfig(res_img13, image=image_changed['13'])
-            canvas_res.itemconfig(res_img14, image=image_changed['14'])
-            canvas_res.itemconfig(res_img15, image=image_changed['15'])
-            canvas_res.itemconfig(res_img21, image=image_changed['21'])
-            canvas_res.itemconfig(res_img22, image=image_changed['22'])
-            canvas_res.itemconfig(res_img23, image=image_changed['23'])
-            canvas_res.itemconfig(res_img31, image=image_changed['31'])
-            canvas_res.itemconfig(res_img32, image=image_changed['32'])
-            canvas_res.itemconfig(res_img33, image=image_changed['33'])
-            if res_txtbbgs[5] is not None:
-                canvas_res.delete(res_txtbbgs[5])
-            if res_imgbbgs[5] is not None:
-                canvas_res.delete(res_imgbbgs[5])
-            if 'bbg' in image_changed:
-                res_txtbbgs[5] = canvas_res.create_text(178, 147, text="百变怪=>", fill='white')
-                res_imgbbgs[5] = canvas_res.create_image(219, 147, image=image_changed['bbg'])  # 百变怪
-            else:
-                res_txtbbgs[5] = None
-                res_imgbbgs[5] = None
-            canvas_res.itemconfig(res_dam, text=extract_score_from_score_damage(rank_dam[now]))
-            canvas_res.itemconfig(res_stat, text=rank_stat[now])
-            canvas_res.itemconfig(res_stat2, text=rank_stat2[now])
+        image_changed = result_image_on[now]
+        canvas_res.itemconfig(res_img11, image=image_changed['11'])
+        canvas_res.itemconfig(res_img12, image=image_changed['12'])
+        canvas_res.itemconfig(res_img13, image=image_changed['13'])
+        canvas_res.itemconfig(res_img14, image=image_changed['14'])
+        canvas_res.itemconfig(res_img15, image=image_changed['15'])
+        canvas_res.itemconfig(res_img21, image=image_changed['21'])
+        canvas_res.itemconfig(res_img22, image=image_changed['22'])
+        canvas_res.itemconfig(res_img23, image=image_changed['23'])
+        canvas_res.itemconfig(res_img31, image=image_changed['31'])
+        canvas_res.itemconfig(res_img32, image=image_changed['32'])
+        canvas_res.itemconfig(res_img33, image=image_changed['33'])
+        if res_txtbbgs[5] is not None:
+            canvas_res.delete(res_txtbbgs[5])
+        if res_imgbbgs[5] is not None:
+            canvas_res.delete(res_imgbbgs[5])
+        if 'bbg' in image_changed:
+            res_txtbbgs[5] = canvas_res.create_text(178, 147, text="百变怪=>", fill='white')
+            res_imgbbgs[5] = canvas_res.create_image(219, 147, image=image_changed['bbg'])  # 百变怪
+        else:
+            res_txtbbgs[5] = None
+            res_imgbbgs[5] = None
+        canvas_res.itemconfig(res_dam, text=extract_score_from_score_damage(rank_dam[now]))
+        canvas_res.itemconfig(res_stat, text=rank_stat[now])
+        canvas_res.itemconfig(res_stat2, text=rank_stat2[now])
 
-            current_weapon = g_rank_equips[now][0]
-            current_equips = g_rank_equips[now][1:]
-            canvas_res.itemconfig(res_txt_weapon, text=equip_index_to_realname[current_weapon])
-            change_readable_result_area(current_weapon, current_equips, False)
-        except KeyError as error:
-            c = 1
+        current_weapon = g_rank_equips[now][0]
+        current_equips = g_rank_equips[now][1:]
+        canvas_res.itemconfig(res_txt_weapon, text=equip_index_to_realname[current_weapon])
+        change_readable_result_area(current_weapon, current_equips, False)
 
     elif job_type == 'buf':
-        global result_image_on1, result_image_on2, result_image_on3, rank_buf1, rank_buf2, rank_buf3, rank_type_buf, res_buf, res_buf_ex1, res_buf_ex2, res_buf_ex3, rank_buf_ex1, rank_buf_ex2, rank_buf_ex3
-        try:
-            if rank_type_buf == 1:
-                image_changed = result_image_on1[now]
-                rank_changed = rank_buf1[now]
-                rank_buf_ex_changed = rank_buf_ex1
-            elif rank_type_buf == 2:
-                image_changed = result_image_on2[now]
-                rank_changed = rank_buf2[now]
-                rank_buf_ex_changed = rank_buf_ex2
-            elif rank_type_buf == 3:
-                image_changed = result_image_on3[now]
-                rank_changed = rank_buf3[now]
-                rank_buf_ex_changed = rank_buf_ex3
-            canvas_res.itemconfig(res_buf, text=rank_changed)
-            canvas_res.itemconfig(res_buf_ex1, text="祝福=" + rank_buf_ex_changed[now][0])
-            canvas_res.itemconfig(res_buf_ex2, text="一觉=" + rank_buf_ex_changed[now][1])
-            canvas_res.itemconfig(res_buf_ex3, text="一觉被动=" + rank_buf_ex_changed[now][2])
-            canvas_res.itemconfig(res_img11, image=image_changed['11'])
-            canvas_res.itemconfig(res_img12, image=image_changed['12'])
-            canvas_res.itemconfig(res_img13, image=image_changed['13'])
-            canvas_res.itemconfig(res_img14, image=image_changed['14'])
-            canvas_res.itemconfig(res_img15, image=image_changed['15'])
-            canvas_res.itemconfig(res_img21, image=image_changed['21'])
-            canvas_res.itemconfig(res_img22, image=image_changed['22'])
-            canvas_res.itemconfig(res_img23, image=image_changed['23'])
-            canvas_res.itemconfig(res_img31, image=image_changed['31'])
-            canvas_res.itemconfig(res_img32, image=image_changed['32'])
-            canvas_res.itemconfig(res_img33, image=image_changed['33'])
-            if res_txtbbgs[5] is not None:
-                canvas_res.delete(res_txtbbgs[5])
-            if res_imgbbgs[5] is not None:
-                canvas_res.delete(res_imgbbgs[5])
-            if 'bbg' in image_changed:
-                res_txtbbgs[5] = canvas_res.create_text(178, 147, text="百变怪=>", fill='white')
-                res_imgbbgs[5] = canvas_res.create_image(219, 147, image=image_changed['bbg'])  # 百变怪
-            else:
-                res_txtbbgs[5] = None
-                res_imgbbgs[5] = None
+        global result_image_ons, rank_bufs, rank_type_buf, res_buf, res_buf_exs, rank_buf_exs
+        if rank_type_buf == 1:
+            image_changed = result_image_ons[0][now]
+            rank_changed = rank_bufs[0][now]
+            rank_buf_ex_changed = rank_buf_exs[0]
+        elif rank_type_buf == 2:
+            image_changed = result_image_ons[1][now]
+            rank_changed = rank_bufs[1][now]
+            rank_buf_ex_changed = rank_buf_exs[1]
+        elif rank_type_buf == 3:
+            image_changed = result_image_ons[2][now]
+            rank_changed = rank_bufs[2][now]
+            rank_buf_ex_changed = rank_buf_exs[2]
+        canvas_res.itemconfig(res_buf, text=rank_changed)
+        canvas_res.itemconfig(res_buf_exs[0], text="祝福=" + rank_buf_ex_changed[now][0])
+        canvas_res.itemconfig(res_buf_exs[1], text="一觉=" + rank_buf_ex_changed[now][1])
+        canvas_res.itemconfig(res_buf_exs[2], text="一觉被动=" + rank_buf_ex_changed[now][2])
+        canvas_res.itemconfig(res_img11, image=image_changed['11'])
+        canvas_res.itemconfig(res_img12, image=image_changed['12'])
+        canvas_res.itemconfig(res_img13, image=image_changed['13'])
+        canvas_res.itemconfig(res_img14, image=image_changed['14'])
+        canvas_res.itemconfig(res_img15, image=image_changed['15'])
+        canvas_res.itemconfig(res_img21, image=image_changed['21'])
+        canvas_res.itemconfig(res_img22, image=image_changed['22'])
+        canvas_res.itemconfig(res_img23, image=image_changed['23'])
+        canvas_res.itemconfig(res_img31, image=image_changed['31'])
+        canvas_res.itemconfig(res_img32, image=image_changed['32'])
+        canvas_res.itemconfig(res_img33, image=image_changed['33'])
+        if res_txtbbgs[5] is not None:
+            canvas_res.delete(res_txtbbgs[5])
+        if res_imgbbgs[5] is not None:
+            canvas_res.delete(res_imgbbgs[5])
+        if 'bbg' in image_changed:
+            res_txtbbgs[5] = canvas_res.create_text(178, 147, text="百变怪=>", fill='white')
+            res_imgbbgs[5] = canvas_res.create_image(219, 147, image=image_changed['bbg'])  # 百变怪
+        else:
+            res_txtbbgs[5] = None
+            res_imgbbgs[5] = None
 
-            current_weapon = g_rank_equips[g_current_buff_type][now][0]
-            current_equips = g_rank_equips[g_current_buff_type][now][1:]
-            canvas_res.itemconfig(res_txt_weapon, text=equip_index_to_realname[current_weapon])
-            change_readable_result_area(current_weapon, current_equips, False)
-
-        except KeyError as error:
-            c = 1
+        current_weapon = g_rank_equips[g_current_buff_type][now][0]
+        current_equips = g_rank_equips[g_current_buff_type][now][1:]
+        canvas_res.itemconfig(res_txt_weapon, text=equip_index_to_realname[current_weapon])
+        change_readable_result_area(current_weapon, current_equips, False)
 
 
 def change_rank_type(in_type):
@@ -3383,35 +3080,35 @@ def change_rank_type(in_type):
     g_current_rank = 0
     global g_current_buff_type
     global image_list, canvas_res, res_img11, res_img12, res_img13, res_img14, res_img15, res_img21, res_img22, res_img23, res_img31, res_img32, res_img33, res_txtbbgs, res_imgbbgs
-    global result_image_on1, result_image_on2, result_image_on3, rank_buf1, rank_buf2, rank_buf3, rank_type_buf, res_img_list, res_buf_list, res_buf_ex1, res_buf_ex2, res_buf_ex3, rank_buf_ex1, rank_buf_ex2, rank_buf_ex3, res_buf_type_what
+    global result_image_ons, rank_bufs, rank_type_buf, res_img_list, res_buf_list, res_buf_exs, rank_buf_exs, res_buf_type_what
     if in_type == 1:
         rank_type_buf = 1
-        image_changed = result_image_on1[0]
-        image_changed_all = result_image_on1
-        rank_changed = rank_buf1
-        rank_buf_ex_changed = rank_buf_ex1
+        image_changed = result_image_ons[0][0]
+        image_changed_all = result_image_ons[0]
+        rank_changed = rank_bufs[0]
+        rank_buf_ex_changed = rank_buf_exs[0]
         type_changed = "祝福标准"
         g_current_buff_type = "祝福"
     elif in_type == 2:
         rank_type_buf = 2
-        image_changed = result_image_on2[0]
-        image_changed_all = result_image_on2
-        rank_changed = rank_buf2
-        rank_buf_ex_changed = rank_buf_ex2
+        image_changed = result_image_ons[1][0]
+        image_changed_all = result_image_ons[1]
+        rank_changed = rank_bufs[1]
+        rank_buf_ex_changed = rank_buf_exs[1]
         type_changed = "一觉标准"
         g_current_buff_type = "一觉"
     elif in_type == 3:
         rank_type_buf = 3
-        image_changed = result_image_on3[0]
-        image_changed_all = result_image_on3
-        rank_changed = rank_buf3
-        rank_buf_ex_changed = rank_buf_ex3
+        image_changed = result_image_ons[2][0]
+        image_changed_all = result_image_ons[2]
+        rank_changed = rank_bufs[2]
+        rank_buf_ex_changed = rank_buf_exs[2]
         type_changed = "综合标准"
         g_current_buff_type = "综合"
     canvas_res.itemconfig(res_buf_type_what, text=type_changed)
-    canvas_res.itemconfig(res_buf_ex1, text="祝福=" + rank_buf_ex_changed[0][0])
-    canvas_res.itemconfig(res_buf_ex2, text="一觉=" + rank_buf_ex_changed[0][1])
-    canvas_res.itemconfig(res_buf_ex3, text="一觉被动=" + rank_buf_ex_changed[0][2])
+    canvas_res.itemconfig(res_buf_exs[0], text="祝福=" + rank_buf_ex_changed[0][0])
+    canvas_res.itemconfig(res_buf_exs[1], text="一觉=" + rank_buf_ex_changed[0][1])
+    canvas_res.itemconfig(res_buf_exs[2], text="一觉被动=" + rank_buf_ex_changed[0][2])
     canvas_res.itemconfig(res_buf, text=rank_changed[0])
     canvas_res.itemconfig(res_img11, image=image_changed['11'])
     canvas_res.itemconfig(res_img12, image=image_changed['12'])
@@ -3436,27 +3133,24 @@ def change_rank_type(in_type):
         res_imgbbgs[5] = None
 
     cn2 = 0
-    for j in range(0, 5):
-        try:
-            for i in [11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33]:
-                canvas_res.itemconfig(res_img_list[str(j) + str(i)], image=image_changed_all[j][str(i)])
-                cn2 = cn2 + 2
+    for j in range(len(rank_changed)):
+        for i in [11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33]:
+            canvas_res.itemconfig(res_img_list[str(j) + str(i)], image=image_changed_all[j][str(i)])
+            cn2 = cn2 + 2
 
-            if res_txtbbgs[j] is not None:
-                canvas_res.delete(res_txtbbgs[j])
-            if res_imgbbgs[j] is not None:
-                canvas_res.delete(res_imgbbgs[j])
-            if 'bbg' in image_changed_all[j]:
-                res_txtbbgs[j] = canvas_res.create_text(268 + 5 * 29 + 14, 38 + 78 * j, text="百变怪=>", font=guide_font, fill='white')
-                res_imgbbgs[j] = canvas_res.create_image(268 + 7 * 29, 37 + 78 * j, image=image_changed_all[j]['bbg'])
-            else:
-                res_txtbbgs[j] = None
-                res_imgbbgs[j] = None
+        if res_txtbbgs[j] is not None:
+            canvas_res.delete(res_txtbbgs[j])
+        if res_imgbbgs[j] is not None:
+            canvas_res.delete(res_imgbbgs[j])
+        if 'bbg' in image_changed_all[j]:
+            res_txtbbgs[j] = canvas_res.create_text(268 + 5 * 29 + 14, 38 + 78 * j, text="百变怪=>", font=guide_font, fill='white')
+            res_imgbbgs[j] = canvas_res.create_image(268 + 7 * 29, 37 + 78 * j, image=image_changed_all[j]['bbg'])
+        else:
+            res_txtbbgs[j] = None
+            res_imgbbgs[j] = None
 
-            cn2 = 0
-            canvas_res.itemconfig(res_buf_list[j], text=rank_changed[j], font=mid_font, fill='white')
-        except KeyError as error:
-            c = 1
+        cn2 = 0
+        canvas_res.itemconfig(res_buf_list[j], text=rank_changed[j], font=mid_font, fill='white')
 
     current_weapon = g_rank_equips[g_current_buff_type][0][0]
     current_equips = g_rank_equips[g_current_buff_type][0][1:]
