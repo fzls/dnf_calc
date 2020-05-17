@@ -1244,8 +1244,8 @@ def calc():
     def cartesianProduct(current_index, has_god, baibianguai, upgrade_work_uniforms, transfered_equips, selected_combination,
                          process_func):
         invalid_cnt = 1
-        for i in range(current_index + 1, len(items)):
-            invalid_cnt *= len(items[i])
+        for idx in range(current_index + 1, len(items)):
+            invalid_cnt *= len(items[idx])
 
         def try_equip(equip):
             global max_setopt
@@ -1253,8 +1253,8 @@ def calc():
             # 增加处理后续未计算的百变怪
             bbg_invalid_cnt = 0
             if has_baibainguai and baibianguai is None:
-                for i in range(current_index + 1, len(items)):
-                    bbg_invalid_cnt += invalid_cnt / len(items[i]) * len(not_select_items[i])
+                for idx in range(current_index + 1, len(items)):
+                    bbg_invalid_cnt += invalid_cnt / len(items[idx]) * len(not_select_items[idx])
 
             # 剪枝条件1：若当前组合序列已经有神话装备（god），且当前这个部位遍历到的仍是一个神话装备，则可以直接跳过rcp个组合，当前部位之前处理下一个备选装备
             if has_god and is_god(equip):
@@ -1448,20 +1448,20 @@ def calc():
             setcount = set_list.count
             set_oncount = set_on.count
             onecount = calc_now.count
-            for i in range(101, 136):
-                if setcount(str(i)) == 2:
-                    setapp(str(i) + "1")
-                if 4 >= setcount(str(i)) >= 3:
-                    setapp(str(i) + "2")
-                if setcount(str(i)) == 5:
-                    setapp(str(i) + "3")
-            for i in range(136, 139):
-                if setcount(str(i)) == 2:
-                    setapp(str(i) + "0")
-                if 4 >= setcount(str(i)) >= 3:
-                    setapp(str(i) + "1")
-                if setcount(str(i)) == 5:
-                    setapp(str(i) + "2")
+            for set_code in range(101, 136):
+                if setcount(str(set_code)) == 2:
+                    setapp(str(set_code) + "1")
+                if 4 >= setcount(str(set_code)) >= 3:
+                    setapp(str(set_code) + "2")
+                if setcount(str(set_code)) == 5:
+                    setapp(str(set_code) + "3")
+            for set_code in range(136, 139):
+                if setcount(str(set_code)) == 2:
+                    setapp(str(set_code) + "0")
+                if 4 >= setcount(str(set_code)) >= 3:
+                    setapp(str(set_code) + "1")
+                if setcount(str(set_code)) == 5:
+                    setapp(str(set_code) + "2")
             if onecount('32410650') == 1:
                 if onecount('21400340') == 1:
                     setapp('1401')
@@ -1478,8 +1478,8 @@ def calc():
                 for_calc = tuple(set_on) + calc_wep
                 oneone = len(for_calc)
                 oneonelist = []
-                for i in range(oneone):
-                    no_cut = getone(for_calc[i])  ## 11번 스증
+                for idx in range(oneone):
+                    no_cut = getone(for_calc[idx])  ## 11번 스증
                     if no_cut is None:
                         # hack：目前select是默认初始化时将tg{1101-3336}[0,1]范围的key对应的值都设为0，而百变怪会根据select的值为0来筛选出未选择的集合
                         #  因此在这里如果为None，就是这种情况，直接返回就可以了
@@ -1489,8 +1489,8 @@ def calc():
                     cut = np.array(no_cut[0:20] + no_cut[22:23] + no_cut[34:35] + no_cut[38:44])
                     skiper = multiply_entry(skiper, cut[index_deal_extra_percent_skill_attack_power])
                     oneonelist.append(cut)
-                for i in range(oneone):
-                    base_array = base_array + oneonelist[i]
+                for idx in range(oneone):
+                    base_array = base_array + oneonelist[idx]
 
                 # 军神二件套且拥有军神-魔法石-军神的庇护宝石，说明遗书和古怪耳环（心之所念）不同时存在，减去5%的爆伤
                 if set_oncount('1201') == 1 and onecount('32200') == 1:
@@ -1655,20 +1655,20 @@ def calc():
             set_on = [];
             setapp = set_on.append
             setcount = set_list.count
-            for i in range(101, 136):
-                if setcount(str(i)) == 2:
-                    setapp(str(i) + "1")
-                if 4 >= setcount(str(i)) >= 3:
-                    setapp(str(i) + "2")
-                if setcount(str(i)) == 5:
-                    setapp(str(i) + "3")
-            for i in range(136, 139):
-                if setcount(str(i)) == 2:
-                    setapp(str(i) + "0")
-                if 4 >= setcount(str(i)) >= 3:
-                    setapp(str(i) + "1")
-                if setcount(str(i)) == 5:
-                    setapp(str(i) + "2")
+            for set_code in range(101, 136):
+                if setcount(str(set_code)) == 2:
+                    setapp(str(set_code) + "1")
+                if 4 >= setcount(str(set_code)) >= 3:
+                    setapp(str(set_code) + "2")
+                if setcount(str(set_code)) == 5:
+                    setapp(str(set_code) + "3")
+            for set_code in range(136, 139):
+                if setcount(str(set_code)) == 2:
+                    setapp(str(set_code) + "0")
+                if 4 >= setcount(str(set_code)) >= 3:
+                    setapp(str(set_code) + "1")
+                if setcount(str(set_code)) == 5:
+                    setapp(str(set_code) + "2")
 
             for wep_num in weapon_indexs:
                 calc_wep = (wep_num,) + tuple(calc_now)
@@ -1685,9 +1685,9 @@ def calc():
                 for_calc = tuple(set_on) + calc_wep
                 oneone = len(for_calc)
                 oneonelist = []
-                for i in range(oneone):
+                for idx in range(oneone):
                     # 获取该装备的buff属性
-                    cut = setget(for_calc[i])
+                    cut = setget(for_calc[idx])
                     if cut is None:
                         # hack：目前select是默认初始化时将tg{1101-3336}[0,1]范围的key对应的值都设为0，而百变怪会根据select的值为0来筛选出未选择的集合
                         #  因此在这里如果为None，就是这种情况，直接返回就可以了
@@ -2018,8 +2018,8 @@ def extract_deal_rank_cols(ele_skill, rank, ranking_detail):
         bbg = equip_index_to_realname[baibianguai]
     cols.append(bbg)
     cols.append(",".join(equip_index_to_realname[equip_index] for equip_index in not_owned_equips))  # 跨界或升级工作服得来的装备
-    for i in range(28):
-        cols.append(base_array[i])
+    for index_deal in range(28):
+        cols.append(base_array[index_deal])
     cols.append(req_cool.get())  # 冷却补正
     cols.append(ele_skill)  # 技能属强补正
     cols.append("{}%".format(round(100 * (1.05 / (1.05 + int(ele_skill) * 0.0045) - 1), 1)))  # 逆补正
