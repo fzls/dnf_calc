@@ -2693,9 +2693,8 @@ def show_result(rank_list, job_type, ele_skill):
         # 13공속 14크확 / 15 특수액티브 / 16~19 패시브 /20 쿨감보정/21 二觉캐특수액티브 /22~27 액티브레벨링
         rank_stat = [0, 0, 0, 0, 0]
         rank_stat2 = [0, 0, 0, 0, 0]
-        # re: 这里需要把i改为rank
-        for i in range(total_count):
-            rank_stat[i] = (
+        for rank in range(total_count):
+            rank_stat[rank] = (
                 "增伤={zengsu}%\n"
                 "爆伤={baoshang}%\n"
                 "白字={baizi}%\n"
@@ -2710,20 +2709,20 @@ def show_result(rank_list, job_type, ele_skill):
                 "攻速={gongsu}%\n"
                 "暴击率={baojilv}%"
             ).format(
-                zengsu=int(rss[i][index_deal_extra_percent_attack_damage]),
-                baoshang=int(rss[i][index_deal_extra_percent_crit_damage]),
-                baizi=int(rss[i][index_deal_extra_percent_addtional_damage]),
-                suogong=int(rss[i][index_deal_extra_percent_final_damage]),
-                sangong=int(rss[i][index_deal_extra_percent_physical_magical_independent_attack_power]),
-                lizhi=int(rss[i][index_deal_extra_percent_strength_and_intelligence]),
-                shuqiang=int(rss[i][index_deal_extra_all_element_strength]),
-                chixu=int(rss[i][index_deal_extra_percent_continued_damage]),
-                jigong=int(rss[i][index_deal_extra_percent_skill_attack_power]),
-                teshu=int(rss[i][index_deal_extra_percent_special_effect]),
-                gongsu=int(rss[i][index_deal_extra_percent_attack_speed]),
-                baojilv=int(rss[i][index_deal_extra_percent_magic_physical_crit_rate])
+                zengsu=int(rss[rank][index_deal_extra_percent_attack_damage]),
+                baoshang=int(rss[rank][index_deal_extra_percent_crit_damage]),
+                baizi=int(rss[rank][index_deal_extra_percent_addtional_damage]),
+                suogong=int(rss[rank][index_deal_extra_percent_final_damage]),
+                sangong=int(rss[rank][index_deal_extra_percent_physical_magical_independent_attack_power]),
+                lizhi=int(rss[rank][index_deal_extra_percent_strength_and_intelligence]),
+                shuqiang=int(rss[rank][index_deal_extra_all_element_strength]),
+                chixu=int(rss[rank][index_deal_extra_percent_continued_damage]),
+                jigong=int(rss[rank][index_deal_extra_percent_skill_attack_power]),
+                teshu=int(rss[rank][index_deal_extra_percent_special_effect]),
+                gongsu=int(rss[rank][index_deal_extra_percent_attack_speed]),
+                baojilv=int(rss[rank][index_deal_extra_percent_magic_physical_crit_rate])
             )
-            rank_stat2[i] = (
+            rank_stat2[rank] = (
                 "   <主动>\n"
                 "  1~45技能= {lv_1_45}级\n"
                 "    50技能= {lv_50}级\n"
@@ -2738,16 +2737,16 @@ def show_result(rank_list, job_type, ele_skill):
                 "  二觉被动= {passive_lv_85}级\n"
                 "  三觉被动= {passive_lv_95}级"
             ).format(
-                lv_1_45=round(rss[i][index_deal_extra_active_skill_lv_1_45], 1),
-                lv_50=int(rss[i][index_deal_extra_active_skill_lv_50]),
-                lv_60_80=round(rss[i][index_deal_extra_active_skill_lv_60_80], 1),
-                lv_85=int(rss[i][index_deal_extra_active_skill_lv_85]),
-                lv_95=int(rss[i][index_deal_extra_active_skill_lv_95]),
-                lv_100=int(rss[i][index_deal_extra_active_skill_lv_100]),
-                passive_lv_15=round(rss[i][index_deal_extra_passive_transfer_skill], 1),
-                passive_lv_48=int(rss[i][index_deal_extra_passive_first_awaken_skill]),
-                passive_lv_85=int(rss[i][index_deal_extra_passive_second_awaken_skill]),
-                passive_lv_95=int(rss[i][index_deal_extra_passive_third_awaken_skill]),
+                lv_1_45=round(rss[rank][index_deal_extra_active_skill_lv_1_45], 1),
+                lv_50=int(rss[rank][index_deal_extra_active_skill_lv_50]),
+                lv_60_80=round(rss[rank][index_deal_extra_active_skill_lv_60_80], 1),
+                lv_85=int(rss[rank][index_deal_extra_active_skill_lv_85]),
+                lv_95=int(rss[rank][index_deal_extra_active_skill_lv_95]),
+                lv_100=int(rss[rank][index_deal_extra_active_skill_lv_100]),
+                passive_lv_15=round(rss[rank][index_deal_extra_passive_transfer_skill], 1),
+                passive_lv_48=int(rss[rank][index_deal_extra_passive_first_awaken_skill]),
+                passive_lv_85=int(rss[rank][index_deal_extra_passive_second_awaken_skill]),
+                passive_lv_95=int(rss[rank][index_deal_extra_passive_third_awaken_skill]),
             )
 
         cool_check = req_cool.get()
@@ -2832,14 +2831,14 @@ def show_result(rank_list, job_type, ele_skill):
                 rank_settings[rank_type_index][rank] = rank_list[rank_type_index][rank][1][0]
                 rank_bufs[rank_type_index][rank] = int(rank_list[rank_type_index][rank][0] / 10)
                 rank_buf_exs[rank_type_index][rank] = rank_list[rank_type_index][rank][1][1]
-                for i in [11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33]:
+                for equip_slot_index in [11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33]:
                     for j in rank_settings[rank_type_index][rank]:
                         if len(j) != 6:
-                            if j[0:2] == str(i):
-                                result_image_ons[rank_type_index][rank][str(i)] = image_list[j]
+                            if j[0:2] == str(equip_slot_index):
+                                result_image_ons[rank_type_index][rank][str(rankequip_slot_index)] = image_list[j]
                                 # 如果该装备在额外升级的工作服或跨界装备列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
                                 if j in rank_not_owned_equipss[rank_type_index][rank]:
-                                    result_image_ons[rank_type_index][rank][str(i)] = image_list2[j]
+                                    result_image_ons[rank_type_index][rank][str(equip_slot_index)] = image_list2[j]
                 if rank_baibiaoguais[rank_type_index][rank] is not None:
                     result_image_ons[rank_type_index][rank]["bbg"] = image_list[rank_baibiaoguais[rank_type_index][rank]]
 
