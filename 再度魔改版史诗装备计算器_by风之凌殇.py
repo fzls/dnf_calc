@@ -3135,24 +3135,24 @@ def change_rank_type(in_type):
         res_imgbbgs[5] = None
 
     cn2 = 0
-    for j in range(len(rank_changed)):
+    for rank in range(len(rank_changed)):
         for i in [11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33]:
-            canvas_res.itemconfig(res_img_list[str(j) + str(i)], image=image_changed_all[j][str(i)])
+            canvas_res.itemconfig(res_img_list[str(rank) + str(i)], image=image_changed_all[rank][str(i)])
             cn2 = cn2 + 2
 
-        if res_txtbbgs[j] is not None:
-            canvas_res.delete(res_txtbbgs[j])
-        if res_imgbbgs[j] is not None:
-            canvas_res.delete(res_imgbbgs[j])
-        if 'bbg' in image_changed_all[j]:
-            res_txtbbgs[j] = canvas_res.create_text(268 + 5 * 29 + 14, 38 + 78 * j, text="百变怪=>", font=guide_font, fill='white')
-            res_imgbbgs[j] = canvas_res.create_image(268 + 7 * 29, 37 + 78 * j, image=image_changed_all[j]['bbg'])
+        if res_txtbbgs[rank] is not None:
+            canvas_res.delete(res_txtbbgs[rank])
+        if res_imgbbgs[rank] is not None:
+            canvas_res.delete(res_imgbbgs[rank])
+        if 'bbg' in image_changed_all[rank]:
+            res_txtbbgs[rank] = canvas_res.create_text(268 + 5 * 29 + 14, 38 + 78 * rank, text="百变怪=>", font=guide_font, fill='white')
+            res_imgbbgs[rank] = canvas_res.create_image(268 + 7 * 29, 37 + 78 * rank, image=image_changed_all[rank]['bbg'])
         else:
-            res_txtbbgs[j] = None
-            res_imgbbgs[j] = None
+            res_txtbbgs[rank] = None
+            res_imgbbgs[rank] = None
 
         cn2 = 0
-        canvas_res.itemconfig(res_buf_list[j], text=rank_changed[j], font=mid_font, fill='white')
+        canvas_res.itemconfig(res_buf_list[rank], text=rank_changed[rank], font=mid_font, fill='white')
 
     current_weapon = g_rank_equips[g_current_buff_type][0][0]
     current_equips = g_rank_equips[g_current_buff_type][0][1:]
