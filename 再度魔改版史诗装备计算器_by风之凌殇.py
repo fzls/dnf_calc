@@ -1618,6 +1618,7 @@ def calc():
         minheap_bless = MinHeap(save_top_n)
         minheap_taiyang = MinHeap(save_top_n)
         minheap_total = MinHeap(save_top_n)
+        minheap_mianban = MinHeap(save_top_n)
         unique_index = 0
         setget = opt_buf.get
         max_setopt = 0
@@ -1787,6 +1788,8 @@ def calc():
                     physical_and_mental_strength_or_intelligence_taiyang = physical_and_mental_strength_taiyang
                     # 一觉被动增加的面板数值（奶爸为体精、奶妈奶萝为智力）
                     first_awaken_increase_physical_and_mental_strength_or_intelligence = belief_halo_increase_physical_and_mental_strength
+                    # 祝福适用的面板数值
+                    bless_mianban = physical_and_mental_strength_bless
 
                 else:
                     intelligence_divisor = 675
@@ -1866,6 +1869,8 @@ def calc():
                     physical_and_mental_strength_or_intelligence_taiyang = intelligence_taiyang
                     # 一觉被动增加的面板数值（奶爸为体精、奶妈奶萝为智力）
                     first_awaken_increase_physical_and_mental_strength_or_intelligence = piety_halo_or_girs_love_increase_intelligence
+                    # 祝福适用的面板数值
+                    bless_mianban = intelligence_bless
 
                 # 太阳概览
                 taiyang_overview = "{increase_intelligence_and_strength} [{physical_and_mental_strength_or_intelligence_taiyang}({level}级)]".format(
@@ -1900,6 +1905,7 @@ def calc():
                 minheap_bless.add((bless_score, unique_index, save_data))
                 minheap_taiyang.add((taiyang_score, unique_index, save_data))
                 minheap_total.add((total_score, unique_index, save_data))
+                minheap_mianban.add((bless_mianban, unique_index, save_data))
 
                 global count_valid
                 count_valid = count_valid + 1
@@ -1908,13 +1914,13 @@ def calc():
         show_number = 0
         showsta(text='结果统计中')
 
-        all_rankings = [minheap_bless.getTop(), minheap_taiyang.getTop(), minheap_total.getTop()]
-        rankings = [[] for x in range(3)]
-        for rank_type_index in range(3):
+        all_rankings = [minheap_bless.getTop(), minheap_taiyang.getTop(), minheap_total.getTop(), minheap_mianban.getTop()]
+        rankings = [[] for x in range(len(all_rankings))]
+        for rank_type_index in range(len(all_rankings)):
             for index, data in enumerate(all_rankings[rank_type_index][:ui_top_n]):
-                damage = data[0]
+                score = data[0]
                 value = data[2]
-                rankings[rank_type_index].append((damage, value))
+                rankings[rank_type_index].append((score, value))
 
         show_result(rankings, 'buf', ele_skill)
 
@@ -1922,6 +1928,7 @@ def calc():
             ("祝福排行", all_rankings[0]),
             ("太阳排行", all_rankings[1]),
             ("综合排行", all_rankings[2]),
+            ("祝福适用面板排行", all_rankings[3]),
         ])
 
     load_presetc.close()
@@ -1996,7 +2003,7 @@ deal_col_names = (
 )
 
 
-def extract_deal_rank_cols(ele_skill, rank, ranking_detail):
+def extract_deal_rank_cols(ele_skill, ranking_name, rank, ranking_detail):
     # (damage, unique_index, [calc_wep, base_array, baibianguai, tuple(not_owned_equips)])
     damage = "{}%".format(int(100 * ranking_detail[0]))
     weapon_index = ranking_detail[2][0][0]
@@ -2061,13 +2068,16 @@ buf_col_names = (
 )
 
 
-def extract_buf_rank_cols(ele_skill, rank, ranking_detail):
+def extract_buf_rank_cols(ele_skill, ranking_name, rank, ranking_detail):
     # (score, unique_index, [calc_wep, [bless_overview, taiyang_overview, first_awaken_passive_overview, all_score_str], baibianguai, tuple(not_owned_equips)])
     score = ranking_detail[0]
     weapon_index = ranking_detail[2][0][0]
     equip_indexes = ranking_detail[2][0][1:]
 
-    score = ranking_detail[0] // 10  # xx标准
+    score = ranking_detail[0] # xx标准
+    if ranking_name != "祝福适用面板排行":
+        # 除面板得分外，其余的都要除10
+        score = score // 10
     bless = ranking_detail[2][1][0]  # 祝福数据
     taiyang = ranking_detail[2][1][1]  # 太阳数据
     taiyang_passive = ranking_detail[2][1][2]  # 太阳被动
@@ -2852,13 +2862,14 @@ def show_result(rank_list, job_type, ele_skill):
         ## c: b에서 1 선택시, 0=스펙, 1=증가량
         # ranking = [ranking1, ranking2, ranking3]
         # ranking1 = rank => [score, [calc_wep, [bless_overview, taiyang_overview, first_awaken_passive_overview, all_score_str], baibianguai, tuple(not_owned_equips)]]
-        rank_baibiaoguais = [0,0,0]
-        rank_not_owned_equipss = [0,0,0]
-        rank_settings = [0,0,0]
-        result_image_ons = [0,0,0]
-        rank_bufs = [0,0,0]
-        rank_buf_exs= [0,0,0]
-        for rank_type_index in range(3):
+        total_rank_type_count = len(rank_list)
+        rank_baibiaoguais = [0 for x in range(total_rank_type_count)]
+        rank_not_owned_equipss = [0 for x in range(total_rank_type_count)]
+        rank_settings = [0 for x in range(total_rank_type_count)]
+        result_image_ons = [0 for x in range(total_rank_type_count)]
+        rank_bufs = [0 for x in range(total_rank_type_count)]
+        rank_buf_exs= [0 for x in range(total_rank_type_count)]
+        for rank_type_index in range(total_rank_type_count):
             total_count = len(rank_list[rank_type_index])
             rank_baibiaoguais[rank_type_index] = [0 for x in range(total_count)]
             rank_not_owned_equipss[rank_type_index] = [0 for x in range(total_count)]
@@ -2870,7 +2881,12 @@ def show_result(rank_list, job_type, ele_skill):
                 rank_baibiaoguais[rank_type_index][rank] = rank_list[rank_type_index][rank][1][2]
                 rank_not_owned_equipss[rank_type_index][rank] = rank_list[rank_type_index][rank][1][3]
                 rank_settings[rank_type_index][rank] = rank_list[rank_type_index][rank][1][0]
-                rank_bufs[rank_type_index][rank] = int(rank_list[rank_type_index][rank][0] / 10)
+                score = rank_list[rank_type_index][rank][0]
+                # 0-祝福，1-一觉，2-综合，3-祝福适用面板
+                # 除面板得分外，其余的都要除10
+                if rank_type_index != 3:
+                    score = score / 10
+                rank_bufs[rank_type_index][rank] = int(score)
                 rank_buf_exs[rank_type_index][rank] = rank_list[rank_type_index][rank][1][1]
                 for equip_slot_index in [11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33]:
                     for equip_index in rank_settings[rank_type_index][rank]:
@@ -2934,18 +2950,19 @@ def show_result(rank_list, job_type, ele_skill):
         type1_img = tkinter.PhotoImage(file='ext_img/type_bless.png')
         type2_img = tkinter.PhotoImage(file='ext_img/type_crux.png')
         type3_img = tkinter.PhotoImage(file='ext_img/type_all.png')
-        rank_type_but1 = tkinter.Button(result_window, command=lambda: change_rank_type(1), image=type1_img,
-                                        bg=dark_main, borderwidth=0, activebackground=dark_main);
+        type4_img = tkinter.PhotoImage(file='ext_img/type_mianban.png')
+        rank_type_but1 = tkinter.Button(result_window, command=lambda: change_rank_type(1), image=type1_img, bg=dark_main, borderwidth=0, activebackground=dark_main)
         rank_type_but1.place(x=8, y=337)
-        rank_type_but2 = tkinter.Button(result_window, command=lambda: change_rank_type(2), image=type2_img,
-                                        bg=dark_main, borderwidth=0, activebackground=dark_main);
-        rank_type_but2.place(x=84, y=337)
-        rank_type_but3 = tkinter.Button(result_window, command=lambda: change_rank_type(3), image=type3_img,
-                                        bg=dark_main, borderwidth=0, activebackground=dark_main);
-        rank_type_but3.place(x=160, y=337)
+        rank_type_but2 = tkinter.Button(result_window, command=lambda: change_rank_type(2), image=type2_img, bg=dark_main, borderwidth=0, activebackground=dark_main)
+        rank_type_but2.place(x=8 + 1*57, y=337)
+        rank_type_but3 = tkinter.Button(result_window, command=lambda: change_rank_type(3), image=type3_img, bg=dark_main, borderwidth=0, activebackground=dark_main)
+        rank_type_but3.place(x=8 + 2*57, y=337)
+        rank_type_but4 = tkinter.Button(result_window, command=lambda: change_rank_type(4), image=type4_img, bg=dark_main, borderwidth=0, activebackground=dark_main)
+        rank_type_but4.place(x=8 + 3*57, y=337)
         rank_type_but1.image = type1_img
         rank_type_but2.image = type2_img
         rank_type_but3.image = type3_img
+        rank_type_but4.image = type4_img
 
         weapon = rank_settings[2][0][0]
         equips = rank_settings[2][0][1:]
@@ -2955,7 +2972,7 @@ def show_result(rank_list, job_type, ele_skill):
 
         g_rank_equips = {}
         g_current_buff_type = "综合"
-        for buf_type, rank_setting in [("祝福", rank_settings[0]), ("一觉", rank_settings[1]), ("综合", rank_settings[2])]:
+        for buf_type, rank_setting in [("祝福", rank_settings[0]), ("一觉", rank_settings[1]), ("综合", rank_settings[2]), ("适用面板", rank_settings[3])]:
             ranks = {}
             for rank in range(len(rank_setting)):
                 ranks[rank] = rank_setting[rank]
@@ -3009,8 +3026,10 @@ def export_result(ele_skill, col_names, extract_rank_cols_func, rankings):
         book = Workbook()
         book.remove_sheet(book.active)
         for sheet_index, rt in enumerate(rankings):
+            ranking_name = rt[0]
+
             # 为该排行榜创建sheet
-            sheet = book.create_sheet(rt[0], sheet_index)
+            sheet = book.create_sheet(ranking_name, sheet_index)
 
             row = 1
             # 首行为列名
@@ -3020,7 +3039,7 @@ def export_result(ele_skill, col_names, extract_rank_cols_func, rankings):
             # 其余行为各个排行条目
             for index, ranking in enumerate(rt[1]):
                 rank = index + 1
-                col_values = extract_rank_cols_func(ele_skill, rank, ranking)
+                col_values = extract_rank_cols_func(ele_skill, ranking_name, rank, ranking)
 
                 row += 1
                 for col_index, col_value in enumerate(col_values):
@@ -3074,18 +3093,13 @@ def change_rank(now, job_type):
 
     elif job_type == 'buf':
         global result_image_ons, rank_bufs, rank_type_buf, res_buf, res_buf_exs, rank_buf_exs
-        if rank_type_buf == 1:
-            image_changed = result_image_ons[0][now]
-            rank_changed = rank_bufs[0][now]
-            rank_buf_ex_changed = rank_buf_exs[0]
-        elif rank_type_buf == 2:
-            image_changed = result_image_ons[1][now]
-            rank_changed = rank_bufs[1][now]
-            rank_buf_ex_changed = rank_buf_exs[1]
-        elif rank_type_buf == 3:
-            image_changed = result_image_ons[2][now]
-            rank_changed = rank_bufs[2][now]
-            rank_buf_ex_changed = rank_buf_exs[2]
+
+        rank_type_index = rank_type_buf - 1
+
+        image_changed = result_image_ons[rank_type_index][now]
+        rank_changed = rank_bufs[rank_type_index][now]
+        rank_buf_ex_changed = rank_buf_exs[rank_type_index]
+
         canvas_res.itemconfig(res_buf, text=rank_changed)
         canvas_res.itemconfig(res_buf_exs[0], text="祝福=" + rank_buf_ex_changed[now][0])
         canvas_res.itemconfig(res_buf_exs[1], text="一觉=" + rank_buf_ex_changed[now][1])
@@ -3124,30 +3138,27 @@ def change_rank_type(in_type):
     global g_current_buff_type
     global image_list, canvas_res, res_img11, res_img12, res_img13, res_img14, res_img15, res_img21, res_img22, res_img23, res_img31, res_img32, res_img33, res_txtbbgs, res_imgbbgs
     global result_image_ons, rank_bufs, rank_type_buf, res_img_list, res_buf_list, res_buf_exs, rank_buf_exs, res_buf_type_what
+
+    rank_type_index = in_type - 1
+
+    rank_type_buf = in_type
+    image_changed = result_image_ons[rank_type_index][0]
+    image_changed_all = result_image_ons[rank_type_index]
+    rank_changed = rank_bufs[rank_type_index]
+    rank_buf_ex_changed = rank_buf_exs[rank_type_index]
+
     if in_type == 1:
-        rank_type_buf = 1
-        image_changed = result_image_ons[0][0]
-        image_changed_all = result_image_ons[0]
-        rank_changed = rank_bufs[0]
-        rank_buf_ex_changed = rank_buf_exs[0]
         type_changed = "祝福标准"
         g_current_buff_type = "祝福"
     elif in_type == 2:
-        rank_type_buf = 2
-        image_changed = result_image_ons[1][0]
-        image_changed_all = result_image_ons[1]
-        rank_changed = rank_bufs[1]
-        rank_buf_ex_changed = rank_buf_exs[1]
         type_changed = "一觉标准"
         g_current_buff_type = "一觉"
     elif in_type == 3:
-        rank_type_buf = 3
-        image_changed = result_image_ons[2][0]
-        image_changed_all = result_image_ons[2]
-        rank_changed = rank_bufs[2]
-        rank_buf_ex_changed = rank_buf_exs[2]
         type_changed = "综合标准"
         g_current_buff_type = "综合"
+    elif in_type == 4:
+        type_changed = "面板标准"
+        g_current_buff_type = "适用面板"
     canvas_res.itemconfig(res_buf_type_what, text=type_changed)
     canvas_res.itemconfig(res_buf_exs[0], text="祝福=" + rank_buf_ex_changed[0][0])
     canvas_res.itemconfig(res_buf_exs[1], text="一觉=" + rank_buf_ex_changed[0][1])
@@ -3516,6 +3527,9 @@ g_save_name_index_on_last_load_or_save = 0
 
 
 def load_checklist():
+    if g_config["destroy_result_windows_when_click_load_checklist_button"]:
+        hide_result_window_if_exists()
+
     ask_msg1 = tkinter.messagebox.askquestion('确认', "确认读取存档吗？", parent=self)
     if ask_msg1 == 'yes':
         load_checklist_noconfirm(current_save_name_index)

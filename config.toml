@@ -12,6 +12,9 @@ max_save_count = 1000
 ####################以上所有配置修改后需要重新启动才能生效########################
 ####################以下所有配置修改后将立即生效########################
 
+# 是否在点击读取存档按钮时关闭结果窗口（若存在）
+destroy_result_windows_when_click_load_checklist_button = true
+
 # 是否需要额外将输出结果导出为excel文件
 [export_result_as_excel]
 # 启用导出excel功能
