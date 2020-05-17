@@ -2678,13 +2678,13 @@ def show_result(rank_list, job_type, ele_skill):
             rank_setting[rank] = rank_list[rank][1][0]  ##0号是排名
             rss[rank] = rank_list[rank][1][1]
             for equip_slot_index in [11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33]:
-                for j in rank_setting[rank]:
-                    if len(j) != 6:
-                        if j[0:2] == str(equip_slot_index):
-                            result_image_on[rank][str(equip_slot_index)] = image_list[j]
+                for equip_index in rank_setting[rank]:
+                    if len(equip_index) != 6:
+                        if equip_index[0:2] == str(equip_slot_index):
+                            result_image_on[rank][str(equip_slot_index)] = image_list[equip_index]
                             # 如果该装备在额外升级的工作服或跨界装备列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
-                            if j in rank_not_owned_equips[rank]:
-                                result_image_on[rank][str(equip_slot_index)] = image_list2[j]
+                            if equip_index in rank_not_owned_equips[rank]:
+                                result_image_on[rank][str(equip_slot_index)] = image_list2[equip_index]
             if rank_baibiaoguai[rank] is not None:
                 result_image_on[rank]["bbg"] = image_list[rank_baibiaoguai[rank]]
 
@@ -2832,13 +2832,13 @@ def show_result(rank_list, job_type, ele_skill):
                 rank_bufs[rank_type_index][rank] = int(rank_list[rank_type_index][rank][0] / 10)
                 rank_buf_exs[rank_type_index][rank] = rank_list[rank_type_index][rank][1][1]
                 for equip_slot_index in [11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33]:
-                    for j in rank_settings[rank_type_index][rank]:
-                        if len(j) != 6:
-                            if j[0:2] == str(equip_slot_index):
-                                result_image_ons[rank_type_index][rank][str(equip_slot_index)] = image_list[j]
+                    for equip_index in rank_settings[rank_type_index][rank]:
+                        if len(equip_index) != 6:
+                            if equip_index[0:2] == str(equip_slot_index):
+                                result_image_ons[rank_type_index][rank][str(equip_slot_index)] = image_list[equip_index]
                                 # 如果该装备在额外升级的工作服或跨界装备列表中，则将其图片设为未点亮的图片，这样可以很快分辨出来
-                                if j in rank_not_owned_equipss[rank_type_index][rank]:
-                                    result_image_ons[rank_type_index][rank][str(equip_slot_index)] = image_list2[j]
+                                if equip_index in rank_not_owned_equipss[rank_type_index][rank]:
+                                    result_image_ons[rank_type_index][rank][str(equip_slot_index)] = image_list2[equip_index]
                 if rank_baibiaoguais[rank_type_index][rank] is not None:
                     result_image_ons[rank_type_index][rank]["bbg"] = image_list[rank_baibiaoguais[rank_type_index][rank]]
 
