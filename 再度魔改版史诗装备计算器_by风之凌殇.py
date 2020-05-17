@@ -5596,15 +5596,24 @@ donate_bt = tkinter.Button(self, image=donate_image, command=donate, borderwidth
                            activebackground=dark_main)
 donate_bt.place(x=625, y=550 - 28)
 
+
+def open_github_page():
+    webbrowser.open('https://github.com/fzls/dnf_calc')
+
+open_github_page_image = PhotoImage(file='ext_img/open_github_page.png')
+open_github_page_url = tkinter.Button(self, image=open_github_page_image, command=open_github_page, borderwidth=0, bg=dark_main,
+                              activebackground=dark_main)
+open_github_page_url.place(x=500, y=400)
+
 dunfaoff_image = PhotoImage(file='ext_img/dunfaoff.png')
 dunfaoff_url = tkinter.Button(self, image=dunfaoff_image, command=dunfaoff, borderwidth=0, bg=dark_main,
                               activebackground=dark_main)
-dunfaoff_url.place(x=535, y=410)
+dunfaoff_url.place(x=500 + 65, y=406)
 
 blog_image = PhotoImage(file='ext_img/blog.png')
 blog_url = tkinter.Button(self, image=blog_image, command=blog, borderwidth=0, bg=dark_main,
                           activebackground=dark_main)
-blog_url.place(x=615, y=410)
+blog_url.place(x=500 + 135, y=408)
 
 maker_image = PhotoImage(file='ext_img/maker.png')
 maker = tkinter.Button(self, image=maker_image, command=hamjung, borderwidth=0, bg=dark_main,
