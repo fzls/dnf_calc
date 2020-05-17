@@ -616,6 +616,19 @@ buf_entry_index_to_name = {
     index_buf_wisteria_whip_cool: "20-W-藤鞭冷却减少X% (re: 目前好像没实装)",
 }
 
+job_to_base_array_index_range_and_index_to_name_dict = {
+    "deal": {
+        "index_begin": index_deal_strength_and_intelligence,
+        "index_end": index_deal_extra_active_skill_lv_100,
+        "index_to_name_dict": deal_entry_index_to_name,
+    },
+    "buf": {
+        "index_begin": index_buf_physical_and_mental_strength,
+        "index_end": index_buf_wisteria_whip_cool,
+        "index_to_name_dict": buf_entry_index_to_name,
+    },
+}
+
 # 国服特色词条（宠物、称号、徽章、皮肤、宝珠、武器装扮等等）
 entry_name_to_indexes = {
     # 物理/魔法/独立攻击力 +X
@@ -837,6 +850,8 @@ def multiply_entry(old_inc_percent, add_inc_percent):
 
 # 获取国服特殊加成属性, job_type = "buf" or "deal"
 def add_bonus_attributes_to_base_array(job_type, base_array):
+    original_base_array = base_array.copy()
+
     guofu_teses = [
         {"name": "称号", "setting_name": "styles", "selected": style_select.get()},
         {"name": "宠物", "setting_name": "creatures", "selected": creature_select.get()},
@@ -904,6 +919,17 @@ def add_bonus_attributes_to_base_array(job_type, base_array):
                                 logger.info("\t词条：{} => {}".format(entry_name_to_name[name], entry_value))
                                 entry_writen = True
                             logger.info("\t\t{} => {}".format(buf_entry_index_to_name[entry_index], entry_value))
+
+    all_tese_strs = []
+
+    diff_base_array = base_array - original_base_array
+    index_info = job_to_base_array_index_range_and_index_to_name_dict[job_type]
+    index_to_name_dict = index_info["index_to_name_dict"]
+    for index in range(index_info["index_begin"], index_info["index_end"] + 1):
+        name = index_to_name_dict[index]
+        all_tese_strs.append("{} => {}".format(name, diff_base_array[index]))
+
+    logger.info("最终特色加成属性如下:\n{}".format("\n".join(all_tese_strs)))
 
 
 g_speed_first = True
@@ -984,6 +1010,7 @@ def check_weapons(job_name, weapon_indexs):
 
     return True
 
+
 def hide_result_window_if_exists():
     global result_window
     try:
@@ -1032,6 +1059,7 @@ def report_bugsnag_with_context(error):
         }
     )
     tkinter.messagebox.showerror("出错啦", "计算过程中出现了未处理的异常\n{}".format(traceback_info))
+
 
 # 缓存的buff等级最大等级
 max_skill_level_map = {}
@@ -2074,7 +2102,7 @@ def extract_buf_rank_cols(ele_skill, ranking_name, rank, ranking_detail):
     weapon_index = ranking_detail[2][0][0]
     equip_indexes = ranking_detail[2][0][1:]
 
-    score = ranking_detail[0] # xx标准
+    score = ranking_detail[0]  # xx标准
     if ranking_name != "祝福适用面板排行":
         # 除面板得分外，其余的都要除10
         score = score // 10
@@ -2868,7 +2896,7 @@ def show_result(rank_list, job_type, ele_skill):
         rank_settings = [0 for x in range(total_rank_type_count)]
         result_image_ons = [0 for x in range(total_rank_type_count)]
         rank_bufs = [0 for x in range(total_rank_type_count)]
-        rank_buf_exs= [0 for x in range(total_rank_type_count)]
+        rank_buf_exs = [0 for x in range(total_rank_type_count)]
         for rank_type_index in range(total_rank_type_count):
             total_count = len(rank_list[rank_type_index])
             rank_baibiaoguais[rank_type_index] = [0 for x in range(total_count)]
@@ -2909,12 +2937,12 @@ def show_result(rank_list, job_type, ele_skill):
 
         res_buf = canvas_res.create_text(122, 125, text=rank_bufs[2][0], font=mid_font, fill='white')
         res_buf_type_what = canvas_res.create_text(122, 145, text="综合标准", font=guide_font, fill='white')
-        res_buf_exs = [0,0,0]
+        res_buf_exs = [0, 0, 0]
         res_buf_exs[0] = canvas_res.create_text(123, 247, text="祝福={}".format(rank_buf_exs[2][0][0]), font=guide_font, fill='white')
         res_buf_exs[1] = canvas_res.create_text(123 - 17, 282, text="一觉={}".format(rank_buf_exs[2][0][1]), font=guide_font,
-                                             fill='white')
+                                                fill='white')
         res_buf_exs[2] = canvas_res.create_text(123 - 44, 312, text="一觉被动={}".format(rank_buf_exs[2][0][2]), font=guide_font,
-                                             fill='white')
+                                                fill='white')
 
         res_img11 = canvas_res.create_image(57, 57, image=result_image_ons[2][0]['11'])
         res_img12 = canvas_res.create_image(27, 87, image=result_image_ons[2][0]['12'])
@@ -2954,11 +2982,11 @@ def show_result(rank_list, job_type, ele_skill):
         rank_type_but1 = tkinter.Button(result_window, command=lambda: change_rank_type(1), image=type1_img, bg=dark_main, borderwidth=0, activebackground=dark_main)
         rank_type_but1.place(x=8, y=337)
         rank_type_but2 = tkinter.Button(result_window, command=lambda: change_rank_type(2), image=type2_img, bg=dark_main, borderwidth=0, activebackground=dark_main)
-        rank_type_but2.place(x=8 + 1*57, y=337)
+        rank_type_but2.place(x=8 + 1 * 57, y=337)
         rank_type_but3 = tkinter.Button(result_window, command=lambda: change_rank_type(3), image=type3_img, bg=dark_main, borderwidth=0, activebackground=dark_main)
-        rank_type_but3.place(x=8 + 2*57, y=337)
+        rank_type_but3.place(x=8 + 2 * 57, y=337)
         rank_type_but4 = tkinter.Button(result_window, command=lambda: change_rank_type(4), image=type4_img, bg=dark_main, borderwidth=0, activebackground=dark_main)
-        rank_type_but4.place(x=8 + 3*57, y=337)
+        rank_type_but4.place(x=8 + 3 * 57, y=337)
         rank_type_but1.image = type1_img
         rank_type_but2.image = type2_img
         rank_type_but3.image = type3_img
@@ -4083,7 +4111,7 @@ db_custom = load_preset0["custom"]
 save_name_list = []
 for save_index in range(0, g_config["max_save_count"]):
     save_name = db_custom.cell(save_index + 1, 5).value
-    save_name_list.append(save_name or "存档{}".format(save_index+1))
+    save_name_list.append(save_name or "存档{}".format(save_index + 1))
 
 if need_check_preset_file:
     ########## 버전 최초 구동 프리셋 업데이트 ###########
