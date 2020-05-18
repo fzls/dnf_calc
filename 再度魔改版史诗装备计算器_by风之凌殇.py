@@ -4573,9 +4573,9 @@ self.iconbitmap(r'ext_img/icon.ico')
 ###########################################################
 
 
-guide_font = tkinter.font.Font(family="맑은 고딕", size=10, weight='bold')
-mid_font = tkinter.font.Font(family="맑은 고딕", size=14, weight='bold')
-big_font = tkinter.font.Font(family="맑은 고딕", size=18, weight='bold')
+guide_font = tkinter.font.Font(family="Microsoft YaHei", size=10, weight='bold')
+mid_font = tkinter.font.Font(family="Microsoft YaHei", size=14, weight='bold')
+big_font = tkinter.font.Font(family="Microsoft YaHei", size=18, weight='bold')
 
 ## 내부 구조 ##
 know_list = ['13390150', '22390240', '23390450', '33390750', '21400340', '31400540', '32410650']
