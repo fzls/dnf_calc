@@ -2692,11 +2692,26 @@ def load_buf_custom_data():
 
     load_presetr.close()
 
+def get_score_to_damage_rate():
+    # 获取当前存档名
+    current_save_name = save_name_list[current_save_name_index]
+
+    damage_cfg = g_config["20s_damage"]
+
+    # 尝试使用默认的打桩系数配置
+    cfg = damage_cfg["score_to_damage_rate"]
+
+    for rate_cfg in damage_cfg["save_name_configs"]:
+        # 若配置了当前存档的打桩系数，则用这个
+        if rate_cfg["save_name"] == current_save_name:
+            cfg = rate_cfg["score_to_damage_rate"]
+            break
+
+    return eval(cfg)
 
 def format_damage(score):
     if g_config["20s_damage"]["enable"]:
-        score_to_damage_rate = eval(g_config["20s_damage"]["score_to_damage_rate"])
-        return "{}% {}亿".format(int(100 * score), int(score * score_to_damage_rate))
+        return "{}% {}亿".format(int(100 * score), int(score * get_score_to_damage_rate()))
     else:
         return "{}%".format(int(100 * score))
 
