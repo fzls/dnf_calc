@@ -343,7 +343,7 @@ c_stat,43,57,74,91,111,131,153,176,201,228,255,284,315,346,379,414,449,487,526,5
 pas3,13,25,38,50,63,75,88,100,113,125,138,150,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None
 hol_pas1_out,17,33,50,68,86,105,124,143,163,183,203,225,245,268,289,313,336,359,381,405,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None
 ------------------------------sheet: lvl------------------------------
-20/60s,None,None,None,None,None,None,None,None,None,None,None,None,None,20秒,None,None,None,None,None,60秒,None,None,None,None,None,None,60秒,2600,2200
+20/60s,None,None,实际计算的只有D-G/O-Z这些列，H-N只是备注,None,None,None,None,None,None,None,None,None,None,20秒,None,None,None,None,None,60秒,None,None,None,None,None,None,60秒,2600,2200
 下标,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,None,None,None,None
 职业系数下标（除属强外）,None,None,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,None,None,None,None
 职业,属强,属强成长,职业被动,1觉被动,2觉被动,3觉被动,真觉醒,二觉,1觉,20秒,60秒,20秒比重,60秒比重,1~45,50,60~80,85,95,100,1~45,50,60~80,85,95,100,None,1~45级,0.0213070556763084,None
