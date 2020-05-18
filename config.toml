@@ -15,6 +15,12 @@ max_save_count = 1000
 # 是否在点击读取存档按钮时关闭结果窗口（若存在）
 destroy_result_windows_when_click_load_checklist_button = true
 
+[multi_threading]
+# 设置最大工作线程数，当为0时默认为当前的逻辑线程数
+max_thread = 0
+# 设置dfs的前多少层采用多线程计算
+max_dfs_depth = 0
+
 # 是否需要额外将输出结果导出为excel文件
 [export_result_as_excel]
 # 启用导出excel功能

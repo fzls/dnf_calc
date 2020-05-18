@@ -8,8 +8,10 @@ ver_time = '2020-05-18'
 import collections
 import itertools
 import logging
+import multiprocessing
 import os
 import pathlib
+import queue
 import random
 import threading
 import time
@@ -185,16 +187,19 @@ class MinHeap():
     def __init__(self, top_n):
         self.h = []
         self.length = top_n
+        self.locker = threading.Lock()
         heapify(self.h)
 
     def add(self, element):
-        if len(self.h) < self.length:
-            heappush(self.h, element)
-        else:
-            heappushpop(self.h, element)
+        with self.locker:
+            if len(self.h) < self.length:
+                heappush(self.h, element)
+            else:
+                heappushpop(self.h, element)
 
     def getTop(self):
-        return sorted(self.h, reverse=True)
+        with self.locker:
+            return sorted(self.h, reverse=True)
 
 
 # copy from https://gist.github.com/bakineugene/76c8f9bcec5b390e45df
@@ -1267,6 +1272,8 @@ def calc():
         job_name, weapon_names,
     )))
 
+    max_dfs_depth = g_config["multi_threading"]["max_dfs_depth"]
+
     # 看了看，主要性能瓶颈在于直接使用了itertools.product遍历所有的笛卡尔积组合，导致无法提前剪枝，只能在每个组合计算前通过条件判断是否要跳过
     # 背景，假设当前处理到下标n（0-10）的装备，前面装备已选择的组合为selected_combination(of size n)，未处理装备为后面11-n-1个，其对应组合数为rcp=len(Cartesian Product(后面11-n-1个装备部位))
     def cartesianProduct(current_index, has_god, baibianguai, upgrade_work_uniforms, transfered_equips, selected_combination,
@@ -1300,12 +1307,15 @@ def calc():
                     return
 
             if current_index < len(items) - 1:
-                cartesianProduct(current_index + 1, has_god or is_god(equip), baibianguai, upgrade_work_uniforms, transfered_equips,
-                                 selected_combination, process_func)
+                func = cartesianProduct
+                if current_index < max_dfs_depth:
+                    func = producer
+                func(current_index + 1, has_god or is_god(equip), baibianguai, upgrade_work_uniforms.copy(), transfered_equips.copy(),
+                     selected_combination.copy(), process_func)
             else:  # 符合条件的装备搭配
                 if dont_pruning:
                     # 不进行任何剪枝操作，装备搭配对比的标准是最终计算出的伤害与奶量倍率
-                    process_func(selected_combination, baibianguai, upgrade_work_uniforms, transfered_equips)
+                    process_func(selected_combination.copy(), baibianguai, upgrade_work_uniforms.copy(), transfered_equips.copy())
                 else:
                     # 仅当当前搭配的价值评估函数值不低于历史最高值时才视为有效搭配
                     god = 0
@@ -1320,7 +1330,7 @@ def calc():
                     if setopt_num >= max_setopt - set_perfect:
                         if max_setopt <= setopt_num - god * set_perfect:
                             max_setopt = setopt_num - god * set_perfect
-                        process_func(selected_combination, baibianguai, upgrade_work_uniforms, transfered_equips)
+                        process_func(selected_combination.copy(), baibianguai, upgrade_work_uniforms.copy(), transfered_equips.copy())
                     else:
                         inc_invalid_cnt_func(1)
 
@@ -1448,6 +1458,43 @@ def calc():
     save_top_n = ui_top_n
     if g_config["export_result_as_excel"]["enable"]:
         save_top_n = max(save_top_n, g_config["export_result_as_excel"]["export_rank_count"])
+
+    # 准备工作队列和工作线程
+    work_queue = queue.Queue()
+    working = True
+
+    def producer(*args):
+        if exit_calc == 1:
+            return
+        work_queue.put(args)
+
+    def consumer(thread_index, work_func):
+        logger.info("work thread %d started, ready to work", thread_index)
+
+        processed_count = 0
+        while working:
+            try:
+                # 加一个超时，用于最终计算完成时，没有新的task，超时1s退出
+                args = work_queue.get(timeout=1)
+                if exit_calc == 0:
+                    work_func(*args)
+                work_queue.task_done()
+                processed_count += 1
+            except queue.Empty as error:
+                # 若超时，且此时不处于工作状态，则计算结束啦
+                if not working:
+                    break
+
+        logger.info("work thread %2d stopped, processed_count=%d", thread_index, processed_count)
+
+    def get_max_thread():
+        max_thread = g_config["multi_threading"]["max_thread"]
+        if max_thread == 0:
+            max_thread = multiprocessing.cpu_count()
+        return max_thread
+
+    for thread_index in range(get_max_thread()):
+        threading.Thread(target=consumer, args=(thread_index, cartesianProduct), daemon=True).start()
 
     is_shuchu_job = job_name not in ["(奶系)神思者", "(奶系)炽天使", "(奶系)冥月女神"]
     if is_shuchu_job:
@@ -1609,6 +1656,7 @@ def calc():
                 not_owned_equips = [uwu for uwu in upgrade_work_uniforms]
                 for equip in transfered_equips:
                     not_owned_equips.append(equip)
+
                 minheap.add((damage, unique_index,
                              [calc_wep, base_array, baibianguai, tuple(not_owned_equips)]))
 
@@ -1616,6 +1664,10 @@ def calc():
                 count_valid = count_valid + 1
 
         cartesianProduct(0, False, None, [], [], [], process)
+
+        # 等到所有工作处理完成
+        work_queue.join()
+        working = False
 
         show_number = 0
         showsta(text='结果统计中')
@@ -1939,6 +1991,11 @@ def calc():
                 count_valid = count_valid + 1
 
         cartesianProduct(0, False, None, [], [], [], process)
+
+        # 等到所有工作处理完成
+        work_queue.join()
+        working = False
+
         show_number = 0
         showsta(text='结果统计中')
 
@@ -2692,6 +2749,7 @@ def load_buf_custom_data():
 
     load_presetr.close()
 
+
 def get_score_to_damage_rate():
     # 获取当前存档名
     current_save_name = save_name_list[current_save_name_index]
@@ -2708,6 +2766,7 @@ def get_score_to_damage_rate():
             break
 
     return eval(cfg)
+
 
 def format_damage(score):
     if g_config["20s_damage"]["enable"]:
@@ -5615,9 +5674,10 @@ donate_bt.place(x=625, y=550 - 28)
 def open_github_page():
     webbrowser.open('https://github.com/fzls/dnf_calc')
 
+
 open_github_page_image = PhotoImage(file='ext_img/open_github_page.png')
 open_github_page_url = tkinter.Button(self, image=open_github_page_image, command=open_github_page, borderwidth=0, bg=dark_main,
-                              activebackground=dark_main)
+                                      activebackground=dark_main)
 open_github_page_url.place(x=500, y=400)
 
 dunfaoff_image = PhotoImage(file='ext_img/dunfaoff.png')
