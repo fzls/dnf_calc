@@ -1071,10 +1071,13 @@ max_skill_level_map = {}
 
 
 def calc_with_try_except():
-    try:
+    if not DEBUG:
+        try:
+            calc()
+        except Exception as error:
+            report_bugsnag_with_context(error)
+    else:
         calc()
-    except Exception as error:
-        report_bugsnag_with_context(error)
 
 
 ## 计算函数##
