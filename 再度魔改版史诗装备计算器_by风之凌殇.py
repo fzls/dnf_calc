@@ -1,16 +1,12 @@
 ﻿#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-now_version = "3.4.15"
-ver_time = '2020-05-18'
 
 ## 코드를 무단으로 복제하여 개조 및 배포하지 말 것##
 
 import collections
 import itertools
-import logging
 import multiprocessing
 import os
-import pathlib
 import queue
 import random
 import threading
@@ -21,66 +17,22 @@ import tkinter.ttk
 import traceback
 import webbrowser
 from collections import Counter
-from datetime import datetime
 from heapq import heapify, heappush, heappushpop
 from inspect import getframeinfo, stack
 from math import floor
 from tkinter import *
 
-import bugsnag
 import numpy as np
 import requests
 import toml
-import win32api
-import win32con
 import yaml
 import yaml.parser
 from openpyxl import load_workbook, Workbook
 
-from debug import DEBUG
+from dnf_calc import *
 
-
-def notify_error(message):
-    if "logger" in globals():
-        logger.error(message)
-    win32api.MessageBox(0, message, "出错啦", win32con.MB_ICONWARNING)
-
-
-###########################################################
-#                         bugsnag                         #
-###########################################################
-if not DEBUG:
-    # 增加bugsnag上报一些不在预期内的错误
-    bugsnag.configure(
-        api_key="723026d09a7442c9e02ebc5d4a08e8d0",
-        app_version=now_version,
-        auto_capture_sessions=True,
-    )
-
-###########################################################
-#                         logging                         #
-###########################################################
-logFormatter = logging.Formatter("%(asctime)s %(levelname)-5.5s [%(name)s] %(funcName)s:%(lineno)d: %(message)s")
-logger = logging.getLogger()
-logger.setLevel(logging.DEBUG)
-logger.name = "calc"
-
-log_directory = "logs"
-try:
-    pathlib.Path(log_directory).mkdir(parents=True, exist_ok=True)
-except PermissionError as err:
-    notify_error("创建日志目录logs失败，请确认是否限制了基础的运行权限")
-    exit(-1)
-
-fileHandler = logging.FileHandler("{0}/{1}.log".format(log_directory, datetime.now().strftime('calc_%Y_%m_%d_%H_%M_%S')), encoding="utf-8")
-fileHandler.setFormatter(logFormatter)
-fileHandler.setLevel(logging.DEBUG)
-logger.addHandler(fileHandler)
-
-consoleHandler = logging.StreamHandler()
-consoleHandler.setFormatter(logFormatter)
-consoleHandler.setLevel(logging.INFO)
-logger.addHandler(consoleHandler)
+if __name__ == '__main__':
+    configure_bugsnag()
 
 ###########################################################
 #                         调试函数                        #
@@ -418,7 +370,7 @@ def load_config():
     try:
         g_config = toml.load('config.toml')
     except FileNotFoundError as error:
-        notify_error("未找到config.toml文件，是否直接在压缩包中打开了？")
+        notify_error(logger, "未找到config.toml文件，是否直接在压缩包中打开了？")
         exit(0)
     logger.info("config loaded")
     logger.debug("config={}".format(g_config))
@@ -440,7 +392,7 @@ def load_setting():
             try:
                 g_setting[setting["name"]] = yaml.load(setting_file, Loader=yaml.FullLoader)
             except yaml.parser.ParserError as error:
-                notify_error("配置表={}的格式有问题，具体问题请看下面的报错中的line $行数$ column $列数$来定位\n错误信息：{}\n".format("name", "error"))
+                notify_error(logger, "配置表={}的格式有问题，具体问题请看下面的报错中的line $行数$ column $列数$来定位\n错误信息：{}\n".format("name", "error"))
                 exit(0)
 
     logger.info("setting loaded")
@@ -872,26 +824,26 @@ def add_bonus_attributes_to_base_array(job_type, base_array):
             logger.info("应用国服特色：{}({})".format(tese["selected"], tese["name"]))
             for entry in setting["entries"]:
                 if type(entry) is not dict:
-                    notify_error(
-                        (
-                            "特色词条应该是一个字典，不应该是字符串，将跳过该词条\n"
-                            "有问题的词条为：{}\n"
-                            "注意：词条名与值之间要有空格空开，如A:B不合法，A: B和A:   B都是可以的"
-                        ).format(entry)
-                    )
+                    notify_error(logger,
+                                 (
+                                     "特色词条应该是一个字典，不应该是字符串，将跳过该词条\n"
+                                     "有问题的词条为：{}\n"
+                                     "注意：词条名与值之间要有空格空开，如A:B不合法，A: B和A:   B都是可以的"
+                                 ).format(entry)
+                                 )
                     continue
                 for name, value in entry.items():
                     entry_indexes = entry_name_to_indexes[name]
                     try:
                         entry_value = eval(str(value))
                     except SyntaxError as error:
-                        notify_error(
-                            (
-                                "词条的值有问题，将跳过该词条\n"
-                                "出错的词条与其值为：{}: {}\n"
-                                "注意只能是四则表达式或数字，请仔细检查配置表，确认是否将注释也加到双引号中了\n"
-                            ).format(name, value)
-                        )
+                        notify_error(logger,
+                                     (
+                                         "词条的值有问题，将跳过该词条\n"
+                                         "出错的词条与其值为：{}: {}\n"
+                                         "注意只能是四则表达式或数字，请仔细检查配置表，确认是否将注释也加到双引号中了\n"
+                                     ).format(name, value)
+                                     )
                     entry_writen = False
                     if job_type == "deal":
                         # 处理输出职业的对应属性
@@ -1096,7 +1048,7 @@ def calc():
     try:
         load_excel = load_workbook("DATA.xlsx", read_only=True, data_only=True)
     except FileNotFoundError as error:
-        notify_error("data.xlsx文件不见啦，可能是未解压，请解压后再使用,err={}".format(error))
+        notify_error(logger, "data.xlsx文件不见啦，可能是未解压，请解压后再使用,err={}".format(error))
 
     db_one = load_excel["one"]
     opt_one = {}
@@ -1168,7 +1120,7 @@ def calc():
         ele_in = (int(db_preset["B14"].value) + int(db_preset["B15"].value) + int(db_preset["B16"].value) +
                   int(ele_skill) - int(db_preset["B18"].value) + int(db_preset["B19"].value) + 13)
     except Exception as error:
-        notify_error("preset.xlsx的B14、B15、B16、B18、B19均应为整数，请仔细检查，是否填空值了")
+        notify_error(logger, "preset.xlsx的B14、B15、B16、B18、B19均应为整数，请仔细检查，是否填空值了")
         return
 
     global count_valid, count_invalid, show_number, all_list_num, max_setopt, count_start_time, unique_index
@@ -1482,7 +1434,7 @@ def calc():
             return
         work_queue.put(args)
         global produced_count
-        produced_count+=1
+        produced_count += 1
         logger.info("producer put %3dth work into work queue", produced_count)
 
     def consumer(thread_index, work_func):
@@ -1501,7 +1453,7 @@ def calc():
                     work_func(*args)
                 work_queue.task_done()
                 with total_processed_count_lock:
-                    total_processed_count+=1
+                    total_processed_count += 1
             except queue.Empty as error:
                 # 若超时，且此时不处于工作状态，则计算结束啦
                 if not working:
@@ -1535,7 +1487,7 @@ def calc():
         try:
             add_bonus_attributes_to_base_array("deal", base_array_with_deal_bonus_attributes)
         except KeyError as error:
-            notify_error("配置表填写有误：词条名不存在，请仔细对照配置表表头所有词条，确认在其中，err={}".format(error))
+            notify_error(logger, "配置表填写有误：词条名不存在，请仔细对照配置表表头所有词条，确认在其中，err={}".format(error))
             return
 
         def process(calc_now, baibianguai, upgrade_work_uniforms, transfered_equips):
@@ -2765,7 +2717,7 @@ def load_buf_custom_data():
             "taiyang_data": int(r_preset['H1'].value),
         }
     except Exception as error:
-        notify_error("preset.xlsx中custom表单中奶妈相关参数需要为整数，指H1->H6，请仔细检查，是否填空值了")
+        notify_error(logger, "preset.xlsx中custom表单中奶妈相关参数需要为整数，指H1->H6，请仔细检查，是否填空值了")
         exit(0)
 
     load_presetr.close()
@@ -4156,7 +4108,7 @@ count_start_time = time.time()  # 开始计算的时间点
 try:
     load_excel1 = load_workbook("DATA.xlsx", read_only=True, data_only=True)
 except FileNotFoundError as error:
-    notify_error("data.xlsx文件不见啦，可能是未解压，请解压后再使用,err={}".format(error))
+    notify_error(logger, "data.xlsx文件不见啦，可能是未解压，请解压后再使用,err={}".format(error))
     exit(-1)
 db_one = load_excel1["one"]
 name_one = {}
@@ -5727,7 +5679,7 @@ version.place(x=630, y=650)
 if __name__ == "__main__":
     update_thread()
 
-logger.info("计算器已成功启动，欢迎使用")
+    logger.info("计算器已成功启动，欢迎使用")
 
-self.mainloop()
-self.quit()
+    self.mainloop()
+    self.quit()
