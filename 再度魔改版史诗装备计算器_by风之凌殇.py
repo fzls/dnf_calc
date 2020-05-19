@@ -9,14 +9,12 @@ import multiprocessing
 import os
 import queue
 import random
-import threading
 import tkinter.font
 import tkinter.messagebox
 import tkinter.ttk
 import traceback
 import webbrowser
 from collections import Counter
-from heapq import heapify, heappush, heappushpop
 from math import floor
 from tkinter import *
 
@@ -31,30 +29,6 @@ from dnf_calc import *
 
 if __name__ == '__main__':
     configure_bugsnag()
-
-
-###########################################################
-#                       辅助的数据结构                     #
-###########################################################
-
-# 用于实现排行的最小堆
-class MinHeap():
-    def __init__(self, top_n):
-        self.h = []
-        self.length = top_n
-        self.locker = threading.Lock()
-        heapify(self.h)
-
-    def add(self, element):
-        with self.locker:
-            if len(self.h) < self.length:
-                heappush(self.h, element)
-            else:
-                heappushpop(self.h, element)
-
-    def getTop(self):
-        with self.locker:
-            return sorted(self.h, reverse=True)
 
 
 # copy from https://gist.github.com/bakineugene/76c8f9bcec5b390e45df
@@ -4019,7 +3993,7 @@ equip_index_to_realname = {}
 equip_index_to_row_index = {}
 for row in db_one.rows:
     row_value = [cell.value for cell in row]
-    if len(row_value) == 0:
+    if len(row_value) == 0 or row_value[0] is None:
         continue
 
     index = row_value[0]

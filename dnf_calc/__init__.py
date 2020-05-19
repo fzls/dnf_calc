@@ -45,3 +45,5 @@ logger.addHandler(consoleHandler)
 
 from .enviroment import *
 from .profiling_tool import *
+
+from .data_struct import *
