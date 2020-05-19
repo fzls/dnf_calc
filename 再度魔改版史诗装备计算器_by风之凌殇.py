@@ -16,8 +16,6 @@ from math import floor
 
 import numpy as np
 import requests
-import yaml
-import yaml.parser
 from openpyxl import load_workbook, Workbook
 
 from dnf_calc import *
@@ -26,60 +24,8 @@ if __name__ == '__main__':
     configure_bugsnag()
 
     # 启动时先读取config和setting
-    load_config("config.toml")
-
-###########################################################
-#                        读取自定义配置                    #
-###########################################################
-
-g_setting = {}
-
-settings = [
-    {"name": "styles", "path": "setting/styles.yaml"},  # 称号的配置表
-    {"name": "creatures", "path": "setting/creatures.yaml"},  # 宠物的配置表
-    {"name": "account_other_bonus_attributes", "path": "setting/account_other_bonus_attributes.yaml"},  # 其余特色的配置表
-]
-
-
-# 读取配置表
-def load_setting():
-    global g_setting
-    g_setting = {}
-    for setting in settings:
-        with open(setting["path"], "r", encoding="utf-8") as setting_file:
-            try:
-                g_setting[setting["name"]] = yaml.load(setting_file, Loader=yaml.FullLoader)
-            except yaml.parser.ParserError as error:
-                notify_error(logger, "配置表={}的格式有问题，具体问题请看下面的报错中的line $行数$ column $列数$来定位\n错误信息：{}\n".format("name", "error"))
-                exit(0)
-
-    logger.info("setting loaded")
-    logger.debug("setting={}".format(g_setting))
-
-
-load_setting()
-
-
-# 获取配置表setting_name中名称为item_name的条目
-def get_setting(setting_name, item_name):
-    if g_setting[setting_name] is not None:
-        for setting in g_setting[setting_name]:
-            if item_name in setting["names"]:
-                return setting
-
-    return None
-
-
-def merge_arrays(arrays):
-    merged = []
-    for array in arrays:
-        merged.extend(array)
-    return merged
-
-
-# 国服特色
-styles = merge_arrays(style["names"] for style in g_setting["styles"])
-creatures = merge_arrays(creature["names"] for creature in g_setting["creatures"])
+    load_config()
+    load_settings()
 
 ###########################################################
 #                         逻辑相关常量                     #
@@ -670,7 +616,7 @@ def report_bugsnag_with_context(error):
                 "work_uniforms_items": work_uniforms_items,
             },
             "config": config(),
-            "g_setting": g_setting,
+            "all_settings": all_settings(),
         }
     )
     tkinter.messagebox.showerror("出错啦", "计算过程中出现了未处理的异常\n{}".format(traceback_info))
@@ -3326,15 +3272,15 @@ def load_checklist_noconfirm(account_index):
         # 称号
         style = load_cell(g_row_custom_save_start + g_row_custom_save_title, col_custom_save_value).value
         # 由于调整了国服特色的实现，若找不到之前版本存档的称号，则换为第一个称号
-        if style not in styles:
-            style = styles[0]
+        if style not in styles():
+            style = styles()[0]
         style_select.set(style)
 
         # 宠物
         creature = load_cell(g_row_custom_save_start + g_row_custom_save_pet, col_custom_save_value).value
         # 由于调整了国服特色的实现，若找不到之前版本存档的称号，则换为第一个称号
-        if creature not in creatures:
-            creature = creatures[0]
+        if creature not in creatures():
+            creature = creatures()[0]
         creature_select.set(creature)
 
         # 冷却补正
@@ -3398,14 +3344,14 @@ def transfer_old_custom_save(sheet_one):
         # 称号
         style = sheet_one.cell(g_old_row_custom_save_start + g_row_custom_save_title, col_old_custom_save_value).value
         # 由于调整了国服特色的实现，若找不到之前版本存档的称号，则换为第一个称号
-        if style not in styles:
-            style = styles[0]
+        if style not in styles():
+            style = styles()[0]
 
         # 宠物
         creature = sheet_one.cell(g_old_row_custom_save_start + g_row_custom_save_pet, col_old_custom_save_value).value
         # 由于调整了国服特色的实现，若找不到之前版本存档的称号，则换为第一个称号
-        if creature not in creatures:
-            creature = creatures[0]
+        if creature not in creatures():
+            creature = creatures()[0]
 
         # 冷却补正
         cool = sheet_one.cell(g_old_row_custom_save_start + g_row_custom_save_cd, col_old_custom_save_value).value or cool_list[0]
@@ -4355,13 +4301,13 @@ time_select.place(x=390 - 17, y=220 + 52)
 jobup_select = tkinter.ttk.Combobox(self, width=13, values=jobs)
 jobup_select.set('职业选择')
 jobup_select.place(x=390 - 17, y=190 + 52)
-style_list = styles
+style_list = styles()
 style_select = tkinter.ttk.Combobox(self, width=13, values=style_list)
-style_select.set(styles[0])
+style_select.set(styles()[0])
 style_select.place(x=390 - 17, y=250 + 52)
-creature_list = creatures
+creature_list = creatures()
 creature_select = tkinter.ttk.Combobox(self, width=13, values=creature_list)
-creature_select.set(creatures[0])
+creature_select.set(creatures()[0])
 creature_select.place(x=390 - 17, y=280 + 52)
 cool_list = ['X(纯伤害)', 'O(打开)']
 req_cool = tkinter.ttk.Combobox(self, width=13, values=cool_list)
@@ -4378,8 +4324,8 @@ tkinter.Button(self, image=stop_img, borderwidth=0, activebackground=dark_main, 
 
 
 def reload_config_and_setting():
-    load_config("config.toml")
-    load_setting()
+    load_config()
+    load_settings()
     logger.info("reload_config_and_setting")
     tkinter.messagebox.showinfo("提示", "配置已重载，可继续使用")
 

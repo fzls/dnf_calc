@@ -51,3 +51,4 @@ from .data_struct import *
 from .ui_components import *
 
 from .config import *
+from .setting import *
