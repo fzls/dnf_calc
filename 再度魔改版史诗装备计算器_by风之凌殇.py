@@ -16,7 +16,6 @@ from math import floor
 
 import numpy as np
 import requests
-import toml
 import yaml
 import yaml.parser
 from openpyxl import load_workbook, Workbook
@@ -26,24 +25,14 @@ from dnf_calc import *
 if __name__ == '__main__':
     configure_bugsnag()
 
+    # 启动时先读取config和setting
+    load_config("config.toml")
+
 ###########################################################
 #                        读取自定义配置                    #
 ###########################################################
-g_config = {}
+
 g_setting = {}
-
-
-# 读取程序config
-def load_config():
-    global g_config
-    try:
-        g_config = toml.load('config.toml')
-    except FileNotFoundError as error:
-        notify_error(logger, "未找到config.toml文件，是否直接在压缩包中打开了？")
-        exit(0)
-    logger.info("config loaded")
-    logger.debug("config={}".format(g_config))
-
 
 settings = [
     {"name": "styles", "path": "setting/styles.yaml"},  # 称号的配置表
@@ -68,8 +57,6 @@ def load_setting():
     logger.debug("setting={}".format(g_setting))
 
 
-# 启动时先读取config和setting
-load_config()
 load_setting()
 
 
@@ -476,6 +463,8 @@ def multiply_entry(old_inc_percent, add_inc_percent):
 
 # 获取国服特殊加成属性, job_type = "buf" or "deal"
 def add_bonus_attributes_to_base_array(job_type, base_array):
+    cfg = config()
+
     original_base_array = base_array.copy()
 
     guofu_teses = [
@@ -526,7 +515,7 @@ def add_bonus_attributes_to_base_array(job_type, base_array):
                                 # 其余加算
                                 if name == "extra_all_job_all_active_skill_lv_1_30" and entry_index == index_deal_extra_active_skill_lv_1_45:
                                     # 由于词条[所有职业Lv1~30全部主动技能Lv+X（特性技能除外）]不能直接对应输出职业的1-45主动技能,需要打个折,可以自行配置折扣率
-                                    base_array[entry_index] += entry_value * g_config["data_fixup"]["extra_all_job_all_active_skill_lv_1_30_deal_1_45_rate"]
+                                    base_array[entry_index] += entry_value * cfg["data_fixup"]["extra_all_job_all_active_skill_lv_1_30_deal_1_45_rate"]
                                 else:
                                     # 正常情况
                                     base_array[entry_index] += entry_value
@@ -680,7 +669,7 @@ def report_bugsnag_with_context(error):
                 "not_select_items": not_select_items,
                 "work_uniforms_items": work_uniforms_items,
             },
-            "g_config": g_config,
+            "config": config(),
             "g_setting": g_setting,
         }
     )
@@ -898,7 +887,7 @@ def calc():
     )))
 
     # 代码中深度从0开始计算，-1则表示不启用
-    start_parallel_computing_at_depth_n = g_config["multi_threading"]["start_parallel_computing_at_depth_n"] - 1
+    start_parallel_computing_at_depth_n = config()["multi_threading"]["start_parallel_computing_at_depth_n"] - 1
 
     prunt_counter = [0 for i in range(11)]
     prunt_counter_lock = threading.Lock()
@@ -1087,8 +1076,8 @@ def calc():
 
     ui_top_n = 5
     save_top_n = ui_top_n
-    if g_config["export_result_as_excel"]["enable"]:
-        save_top_n = max(save_top_n, g_config["export_result_as_excel"]["export_rank_count"])
+    if config()["export_result_as_excel"]["enable"]:
+        save_top_n = max(save_top_n, config()["export_result_as_excel"]["export_rank_count"])
 
     # 准备工作队列和工作线程
     work_queue = queue.Queue()
@@ -1132,7 +1121,7 @@ def calc():
             logger.info("work thread %2d stopped, processed_count=%3d, all thread total_processed_count=%3d", thread_index, processed_count, total_processed_count)
 
     def get_max_thread():
-        max_thread = g_config["multi_threading"]["max_thread"]
+        max_thread = config()["multi_threading"]["max_thread"]
         if max_thread == 0:
             max_thread = multiprocessing.cpu_count()
         return max_thread
@@ -1347,9 +1336,9 @@ def calc():
         show_number = 1
 
         # 基础体力、精神
-        base_stat_physical_and_mental = eval(g_config["initital_data"]["physical_and_mental"]) + + custom_buf_data["taiyang_data"]
+        base_stat_physical_and_mental = eval(config()["initital_data"]["physical_and_mental"]) + + custom_buf_data["taiyang_data"]
         # 基础智力
-        base_stat_intelligence = eval(g_config["initital_data"]["intelligence"]) + custom_buf_data["taiyang_data"]
+        base_stat_intelligence = eval(config()["initital_data"]["intelligence"]) + custom_buf_data["taiyang_data"]
         # 祝福等级
         base_bless_level = 10 + custom_buf_data["bless_level"]
         # 太阳等级
@@ -1370,6 +1359,8 @@ def calc():
 
         # 增加奶系的国服特色
         add_bonus_attributes_to_base_array("buf", base_array_with_buf_bonus_attributes)
+
+        cfg = config()
 
         def process(calc_now, baibianguai, upgrade_work_uniforms, transfered_equips):
             set_list = ["1" + str(get_set_name(calc_now[x])) for x in range(0, 11)]
@@ -1464,7 +1455,7 @@ def calc():
                                                            + first_awaken_passive_increase_physical_and_mental_strength + second_awaken_increase_physical_and_mental_strength \
                                                            + third_awaken_passive_increase_physical_and_mental_strength + 19 * base_array[index_buf_amplification]
 
-                    physical_and_mental_divisor = g_config["const"]["naiba_physical_and_mental_divisor"]
+                    physical_and_mental_divisor = config()["const"]["naiba_physical_and_mental_divisor"]
 
                     # 祝福最终增加的力智
                     bless_final_increase_strength_and_intelligence = int(
@@ -1516,7 +1507,7 @@ def calc():
                 else:
                     intelligence_divisor = 675
                     sing_song_increase_rate = 1.25
-                    const = g_config["const"]
+                    const = config()["const"]
                     if job_name == "(奶系)炽天使":
                         intelligence_divisor = const["naima_intelligence_divisor"]  # 多少智力折合一级祝福
                         sing_song_increase_rate = const["naima_sing_song_increase_rate_base"] + const["naima_sing_song_increase_rate_amplification_coef"] * base_array[index_buf_amplification]  # 唱歌时的倍率
@@ -2396,7 +2387,7 @@ def get_score_to_damage_rate():
     # 获取当前存档名
     current_save_name = save_name_list[current_save_name_index]
 
-    damage_cfg = g_config["20s_damage"]
+    damage_cfg = config()["20s_damage"]
 
     # 尝试使用默认的打桩系数配置
     cfg = damage_cfg["score_to_damage_rate"]
@@ -2411,14 +2402,14 @@ def get_score_to_damage_rate():
 
 
 def format_damage(score):
-    if g_config["20s_damage"]["enable"]:
+    if config()["20s_damage"]["enable"]:
         return "{}% {}亿".format(int(100 * score), int(score * get_score_to_damage_rate()))
     else:
         return "{}%".format(int(100 * score))
 
 
 def extract_score_from_score_damage(score_damage):
-    if g_config["20s_damage"]["enable"]:
+    if config()["20s_damage"]["enable"]:
         return score_damage.split(" ")[0]
     else:
         return score_damage
@@ -2437,7 +2428,7 @@ def show_result(rank_list, job_type, ele_skill):
     result_window.attributes("-topmost", True)
     result_window.focus_force()
     result_window.geometry("{}x{}+{}+{}".format(result_window_width, result_window_height, result_window_x_offset, result_window_y_offset))
-    result_window.resizable(False, False)
+    result_window.resizable(config()["main_window_resizable"], config()["main_window_resizable"])
     global canvas_res
     canvas_width = result_window_width + 2
     canvas_height = result_window_height + 2
@@ -2762,7 +2753,7 @@ def show_result(rank_list, job_type, ele_skill):
 
 # 导出结果到excel
 def export_result(ele_skill, col_names, extract_rank_cols_func, rankings):
-    export_config = g_config["export_result_as_excel"]
+    export_config = config()["export_result_as_excel"]
     if not export_config["enable"]:
         return
 
@@ -2967,7 +2958,7 @@ def costum():
     custom_window.attributes("-topmost", True)
     custom_window.focus_force()
     custom_window.geometry("{}x{}+{}+{}".format(custom_window_width, custom_window_height, custom_window_x_offset, custom_window_y_offset))
-    custom_window.resizable(False, False)
+    custom_window.resizable(config()["main_window_resizable"], config()["main_window_resizable"])
 
     load_preset = load_workbook("preset.xlsx", data_only=True)
     db_preset = load_preset["custom"]
@@ -3271,7 +3262,7 @@ g_save_name_index_on_last_load_or_save = 0
 
 
 def load_checklist():
-    if g_config["destroy_result_windows_when_click_load_checklist_button"]:
+    if config()["destroy_result_windows_when_click_load_checklist_button"]:
         hide_result_window_if_exists()
 
     ask_msg1 = tkinter.messagebox.askquestion('确认', "确认读取存档吗？", parent=self)
@@ -3694,7 +3685,7 @@ def is_shared_content_blocked(share_netdisk_addr: str) -> bool:
 # 启动时检查是否有更新
 def check_update_on_start():
     try:
-        if not g_config["check_update_on_start"]:
+        if not config()["check_update_on_start"]:
             logger.warning("启动时检查更新被禁用，若需启用请在config.toml中设置")
             return
 
@@ -3825,7 +3816,7 @@ load_preset0 = load_workbook("preset.xlsx", read_only=not need_check_preset_file
 db_custom = load_preset0["custom"]
 
 save_name_list = []
-for save_index in range(0, g_config["max_save_count"]):
+for save_index in range(0, config()["max_save_count"]):
     save_name = db_custom.cell(save_index + 1, 5).value
     save_name_list.append(save_name or "存档{}".format(save_index + 1))
 
@@ -4280,7 +4271,7 @@ def get_other_account_names():
 self = tkinter.Tk()
 self.title("一键史诗搭配计算器魔改版-ver" + now_version + " 魔改by风之凌殇 原创by黎明工作室（韩服）dawnclass16")
 self.geometry("{}x{}+{}+{}".format(main_window_width, main_window_height, main_window_x_offset, main_window_y_offset))
-self.resizable(g_config["main_window_resizable"], g_config["main_window_resizable"])
+self.resizable(config()["main_window_resizable"], config()["main_window_resizable"])
 self.configure(bg=dark_main)
 self.iconbitmap(r'ext_img/icon.ico')
 
@@ -4387,7 +4378,7 @@ tkinter.Button(self, image=stop_img, borderwidth=0, activebackground=dark_main, 
 
 
 def reload_config_and_setting():
-    load_config()
+    load_config("config.toml")
     load_setting()
     logger.info("reload_config_and_setting")
     tkinter.messagebox.showinfo("提示", "配置已重载，可继续使用")

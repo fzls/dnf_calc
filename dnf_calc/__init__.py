@@ -49,3 +49,5 @@ from .profiling_tool import *
 from .data_struct import *
 
 from .ui_components import *
+
+from .config import *
