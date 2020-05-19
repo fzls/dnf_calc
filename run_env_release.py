@@ -7,4 +7,4 @@
 # Email  : fzls.zju@gmail.com
 # -------------------------------
 
-DEBUG = True
+RUN_ENV = "release"

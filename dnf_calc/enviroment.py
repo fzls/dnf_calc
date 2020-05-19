@@ -9,8 +9,13 @@
 
 import bugsnag
 
-from .debug import DEBUG
+from .run_env import RUN_ENV
 from .version import now_version
+
+
+def is_debug_mode():
+    return RUN_ENV == "debug"
+
 
 ###########################################################
 #                         bugsnag                         #
@@ -18,7 +23,7 @@ from .version import now_version
 
 
 def configure_bugsnag():
-    if DEBUG:
+    if is_debug_mode():
         return
 
     # 增加bugsnag上报一些不在预期内的错误

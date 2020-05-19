@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # -------------------------------
-# File   : debug
-# Date   : 2020/5/17 0017
+# File   : env
+# Date   : 2020/5/19 0019
 # Author : Chen Ji
 # Email  : fzls.zju@gmail.com
 # -------------------------------
 
-DEBUG = False
+RUN_ENV = "debug"

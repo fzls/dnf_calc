@@ -10,7 +10,6 @@ import os
 import queue
 import random
 import threading
-import time
 import tkinter.font
 import tkinter.messagebox
 import tkinter.ttk
@@ -18,7 +17,6 @@ import traceback
 import webbrowser
 from collections import Counter
 from heapq import heapify, heappush, heappushpop
-from inspect import getframeinfo, stack
 from math import floor
 from tkinter import *
 
@@ -33,101 +31,6 @@ from dnf_calc import *
 
 if __name__ == '__main__':
     configure_bugsnag()
-
-###########################################################
-#                         调试函数                        #
-###########################################################
-
-_debug_start_time = time.time()
-_debug_last_step_time = time.time()
-
-_debug_stats = []
-
-
-def _debug_print_debug_timing_info(message):
-    global _debug_last_step_time, _debug_stats
-    timeline = time.time() - _debug_start_time
-    used_time_since_last_step = time.time() - _debug_last_step_time
-    _debug_last_step_time = time.time()
-
-    # if message in ["初始化tkinter"]:
-    #     return
-
-    # if message not in ["读取各种装备与套装的图片"]:
-    #     return
-
-    stat = {
-        "lineno": getframeinfo(stack()[1][0]).lineno,
-        "timeline": timeline,
-        "step_used": used_time_since_last_step,
-        "message": message,
-    }
-
-    _debug_stats.append(stat)
-
-    logger.debug("line {:4}: timeline={} step_used={} message={}"
-        .format(
-        stat["lineno"],
-        format_time(stat["timeline"]),
-        format_time(stat["step_used"]),
-        stat["message"]
-    )
-    )
-
-
-def _debug_print_stats():
-    global _debug_stats
-    if len(_debug_stats) == 0:
-        return
-
-    total_used_time = _debug_stats[-1]["timeline"]
-    logger.debug("-----------------total={}-----------top 10 step----------------------------".format(
-        format_time(total_used_time)))
-
-    _debug_stats = sorted(_debug_stats, key=lambda k: k['step_used'], reverse=True)
-    if len(_debug_stats) > 10:
-        _debug_stats = _debug_stats[:10]
-
-    for stat in _debug_stats:
-        lineno = stat["lineno"]
-        step_used = stat["step_used"]
-        step_percent = step_used / total_used_time * 100
-
-        logger.debug("line {:4}: step_used={} percent={:.2f}% message={}"
-            .format(
-            stat["lineno"],
-            format_time(stat["step_used"]),
-            step_percent,
-            stat["message"]
-        )
-        )
-
-
-###########################################################
-#                         工具函数                        #
-###########################################################
-
-# 格式化时间为比较美观的格式
-def format_time(ftime):
-    days, remainder = divmod(ftime, 86400)
-    hours, remainder = divmod(remainder, 3600)
-    minutes, seconds = divmod(remainder, 60)
-    remaining_time_str = ""
-    if days > 0:
-        remaining_time_str += "{}d".format(int(days))
-    if days > 0 or hours > 0:
-        remaining_time_str += "{:02}h".format(int(hours))
-    if hours > 0 or minutes > 0:
-        remaining_time_str += "{:02}m".format(int(minutes))
-    remaining_time_str += "{:02.2f}s".format(seconds)
-
-    return remaining_time_str
-
-
-def _from_rgb(rgb):
-    """translates an rgb tuple of int to a tkinter friendly color code
-    """
-    return "#%02x%02x%02x" % rgb
 
 
 ###########################################################
@@ -1023,7 +926,7 @@ max_skill_level_map = {}
 
 
 def calc_with_try_except():
-    if not DEBUG:
+    if not is_debug_mode():
         try:
             calc()
         except Exception as error:
@@ -4367,9 +4270,9 @@ def toggle_cha_swi():
 
 select_item = {}
 
-dark_main = _from_rgb((32, 34, 37))
-dark_sub = _from_rgb((46, 49, 52))
-dark_blue = _from_rgb((29, 30, 36))
+dark_main = from_rgb((32, 34, 37))
+dark_sub = from_rgb((46, 49, 52))
+dark_blue = from_rgb((29, 30, 36))
 
 # 目前可升级的工作服数目
 txt_can_upgrade_work_unifrom_nums = [
