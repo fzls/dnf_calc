@@ -1,8 +1,8 @@
-numpy==1.18.0
-requests==2.22.0
-toml==0.10.0
-pyaml==17.12.1
-pyyaml>=4.2b1
-openpyxl==2.6.4
-pyinstaller==3.6
-bugsnag
+numpy>=1.18.4
+requests>=2.23.0
+toml>=0.10.1
+pyaml>=20.4.0
+openpyxl>=3.0.3
+pyinstaller>=3.6
+bugsnag>=3.6.0
+pypiwin32>=223
