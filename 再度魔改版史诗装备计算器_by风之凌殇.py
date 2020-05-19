@@ -488,6 +488,9 @@ def add_bonus_attributes_to_base_array(job_type, base_array):
     index_to_name_dict = index_info["index_to_name_dict"]
     for index in range(index_info["index_begin"], index_info["index_end"] + 1):
         name = index_to_name_dict[index]
+        if diff_base_array[index] == 0:
+            # 跳过没有实际加成的特色词条
+            continue
         all_tese_strs.append("{} => {}".format(name, diff_base_array[index]))
 
     logger.info("最终特色加成属性如下:\n{}".format("\n".join(all_tese_strs)))
