@@ -16,10 +16,11 @@ max_save_count = 1000
 destroy_result_windows_when_click_load_checklist_button = true
 
 [multi_threading]
+# re: 这套方案测试不可行，性能太差，搜索一下dfs加速的相关资料，往这方面靠，暂时先别专门往多线程靠了，其实没弄过这方面的，还是得找找资料
 # 设置最大工作线程数，当为0时默认为当前的逻辑线程数
 max_thread = 0
-# 设置dfs的前多少层采用多线程计算
-max_dfs_depth = 0
+# 设置dfs的第多少层开始多线程并行计算（从1开始计数，0表示不启用多线程并行计算）
+start_parallel_computing_at_depth_n = 2
 
 # 是否需要额外将输出结果导出为excel文件
 [export_result_as_excel]

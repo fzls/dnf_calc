@@ -1172,6 +1172,7 @@ def calc():
     count_valid = 0
     count_invalid = 0
     show_number = 0
+    max_setopt = 0
 
     if job_name[-4:] == "(奶系)":
         active_eff_one = 15
@@ -1272,7 +1273,11 @@ def calc():
         job_name, weapon_names,
     )))
 
-    max_dfs_depth = g_config["multi_threading"]["max_dfs_depth"]
+    # 代码中深度从0开始计算，-1则表示不启用
+    start_parallel_computing_at_depth_n = g_config["multi_threading"]["start_parallel_computing_at_depth_n"] - 1
+
+    prunt_counter = [0 for i in range(11)]
+    prunt_counter_lock = threading.Lock()
 
     # 看了看，主要性能瓶颈在于直接使用了itertools.product遍历所有的笛卡尔积组合，导致无法提前剪枝，只能在每个组合计算前通过条件判断是否要跳过
     # 背景，假设当前处理到下标n（0-10）的装备，前面装备已选择的组合为selected_combination(of size n)，未处理装备为后面11-n-1个，其对应组合数为rcp=len(Cartesian Product(后面11-n-1个装备部位))
@@ -1304,18 +1309,20 @@ def calc():
                 if ub < max_setopt - set_perfect:
                     selected_combination.pop()
                     inc_invalid_cnt_func(invalid_cnt + bbg_invalid_cnt)
+                    # with prunt_counter_lock:
+                    #     prunt_counter[current_index]+=1
+                    #     logger.warning("prune at index=%d, prunt_counter=%s", current_index, str(prunt_counter))
                     return
 
             if current_index < len(items) - 1:
-                func = cartesianProduct
-                if current_index < max_dfs_depth:
-                    func = producer
-                func(current_index + 1, has_god or is_god(equip), baibianguai, upgrade_work_uniforms.copy(), transfered_equips.copy(),
-                     selected_combination.copy(), process_func)
+                if current_index != start_parallel_computing_at_depth_n:
+                    cartesianProduct(current_index + 1, has_god or is_god(equip), baibianguai, upgrade_work_uniforms, transfered_equips, selected_combination, process_func)
+                else:
+                    producer(current_index + 1, has_god or is_god(equip), baibianguai, upgrade_work_uniforms.copy(), transfered_equips.copy(), selected_combination.copy(), process_func)
             else:  # 符合条件的装备搭配
                 if dont_pruning:
                     # 不进行任何剪枝操作，装备搭配对比的标准是最终计算出的伤害与奶量倍率
-                    process_func(selected_combination.copy(), baibianguai, upgrade_work_uniforms.copy(), transfered_equips.copy())
+                    process_func(selected_combination, baibianguai, upgrade_work_uniforms, transfered_equips)
                 else:
                     # 仅当当前搭配的价值评估函数值不低于历史最高值时才视为有效搭配
                     god = 0
@@ -1330,7 +1337,7 @@ def calc():
                     if setopt_num >= max_setopt - set_perfect:
                         if max_setopt <= setopt_num - god * set_perfect:
                             max_setopt = setopt_num - god * set_perfect
-                        process_func(selected_combination.copy(), baibianguai, upgrade_work_uniforms.copy(), transfered_equips.copy())
+                        process_func(selected_combination, baibianguai, upgrade_work_uniforms, transfered_equips)
                     else:
                         inc_invalid_cnt_func(1)
 
@@ -1462,13 +1469,21 @@ def calc():
     # 准备工作队列和工作线程
     work_queue = queue.Queue()
     working = True
+    global produced_count, total_processed_count
+    produced_count = 0
+    total_processed_count = 0
+    total_processed_count_lock = threading.Lock()
 
     def producer(*args):
         if exit_calc == 1:
             return
         work_queue.put(args)
+        global produced_count
+        produced_count+=1
+        logger.info("producer put %3dth work into work queue", produced_count)
 
     def consumer(thread_index, work_func):
+        global total_processed_count
         logger.info("work thread %d started, ready to work", thread_index)
 
         processed_count = 0
@@ -1476,16 +1491,21 @@ def calc():
             try:
                 # 加一个超时，用于最终计算完成时，没有新的task，超时1s退出
                 args = work_queue.get(timeout=1)
+                processed_count += 1
+                with total_processed_count_lock:
+                    logger.info("work thread %2d processing %3dth work, all thread total_processed_count=%3d", thread_index, processed_count, total_processed_count)
                 if exit_calc == 0:
                     work_func(*args)
                 work_queue.task_done()
-                processed_count += 1
+                with total_processed_count_lock:
+                    total_processed_count+=1
             except queue.Empty as error:
                 # 若超时，且此时不处于工作状态，则计算结束啦
                 if not working:
                     break
 
-        logger.info("work thread %2d stopped, processed_count=%d", thread_index, processed_count)
+        with total_processed_count_lock:
+            logger.info("work thread %2d stopped, processed_count=%3d, all thread total_processed_count=%3d", thread_index, processed_count, total_processed_count)
 
     def get_max_thread():
         max_thread = g_config["multi_threading"]["max_thread"]
@@ -1501,7 +1521,6 @@ def calc():
         getone = opt_one.get
         minheap = MinHeap(save_top_n)
         unique_index = 0
-        max_setopt = 0
         show_number = 1
 
         base_array_with_deal_bonus_attributes = np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
@@ -1701,7 +1720,6 @@ def calc():
         minheap_mianban = MinHeap(save_top_n)
         unique_index = 0
         setget = opt_buf.get
-        max_setopt = 0
         show_number = 1
 
         # 基础体力、精神
