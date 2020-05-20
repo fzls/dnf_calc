@@ -223,7 +223,7 @@ def get_equip_slots_with_name(items):
     return res
 
 
-def report_bugsnag_with_context(error, extra_context=None):
+def report_bugsnag_with_context(error, extra_context=None, show_error_messagebox=True):
     global exit_calc
     exit_calc = 1
 
@@ -265,7 +265,8 @@ def report_bugsnag_with_context(error, extra_context=None):
         context="calc",
         meta_data=meta_data
     )
-    tkinter.messagebox.showerror("出错啦", "计算过程中出现了未处理的异常\n{}".format(traceback_info))
+    if show_error_messagebox:
+        tkinter.messagebox.showerror("出错啦", "计算过程中出现了未处理的异常\n{}".format(traceback_info))
 
 
 # 缓存的buff等级最大等级
@@ -2137,6 +2138,13 @@ def show_result(rank_list, job_type, ele_skill):
         if int(ele_skill) != 0:
             canvas_res.create_text(122, 170, font=guide_font, fill='white',
                                    text="技能属强补正={} / 逆校正%={}%".format(int(ele_skill), round(100 * (1.05 / (1.05 + int(ele_skill) * 0.0045) - 1), 1)))
+        # re: 一个特殊补丁，如果rank_dam为空，看看对应是为啥，修复完后，干掉这个
+        if len(rank_dam) == 0:
+            report_bugsnag_with_context(Exception("bug埋点"), show_error_messagebox=False, extra_context={
+                "rank_dam": rank_dam,
+                "total_count": total_count,
+                "rank_list": rank_list,
+            })
         res_dam = canvas_res.create_text(122, 125, text=extract_score_from_score_damage(rank_dam[0]), font=mid_font, fill='white')
         res_stat = canvas_res.create_text(65, 293, text=rank_stat[0], fill='white')
         res_stat2 = canvas_res.create_text(185, 293, text=rank_stat2[0], fill='white')
@@ -4935,4 +4943,3 @@ if __name__ == "__main__":
 
     self.mainloop()
     self.quit()
-
