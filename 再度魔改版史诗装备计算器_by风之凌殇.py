@@ -922,7 +922,7 @@ def calc():
                           ((54500 + 3.31 * base_array[index_deal_strength_and_intelligence]) / 54500) *  # 力智
                           ((4800 + base_array[index_deal_physical_magical_independent_attack_power]) / 4800) *  # 物理/魔法/独立攻击力
                           (1 + cool_on * base_array[index_deal_cool_correction] / 100) /  # 冷却矫正系数，每冷却1%，记0.35这个值
-                          (1.05 + 0.0045 * int(ele_skill)))  # 不太确定，可能是属性抗性？속강
+                          (1.05 + 0.0045 * int(ele_skill)))  # 最后除去逆校正初始属强的影响
 
                 base_array[index_deal_extra_percent_addtional_damage] = real_bon
                 global unique_index
