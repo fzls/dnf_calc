@@ -1151,12 +1151,12 @@ def calc():
                     sing_song_increase_rate = 1.25
                     const = cfg.const
                     if job_name == "(奶系)炽天使":
-                        intelligence_divisor = const["naima_intelligence_divisor"]  # 多少智力折合一级祝福
-                        sing_song_increase_rate = const["naima_sing_song_increase_rate_base"] + const["naima_sing_song_increase_rate_amplification_coef"] * base_array[index_buf_amplification]  # 唱歌时的倍率
+                        intelligence_divisor = const.naima_intelligence_divisor  # 多少智力折合一级祝福
+                        sing_song_increase_rate = const.naima_sing_song_increase_rate_base + const.naima_sing_song_increase_rate_amplification_coef * base_array[index_buf_amplification]  # 唱歌时的倍率
                     if job_name == "(奶系)冥月女神":
-                        intelligence_divisor = const["nailuo_intelligence_divisor"]  # 多少智力折合一级祝福
-                        sing_song_increase_rate = (const["nailuo_sing_song_increase_rate_base"] + const["nailuo_sing_song_increase_rate_amplification_coef"] * base_array[index_buf_amplification]) \
-                                                  * const["nailuo_sing_song_increase_rate_final_coef"]  # 唱歌时的倍率
+                        intelligence_divisor = const.nailuo_intelligence_divisor  # 多少智力折合一级祝福
+                        sing_song_increase_rate = (const.nailuo_sing_song_increase_rate_base + const.nailuo_sing_song_increase_rate_amplification_coef * base_array[index_buf_amplification]) \
+                                                  * const.nailuo_sing_song_increase_rate_final_coef  # 唱歌时的倍率
 
                     # 祝福增加的三攻
                     bless_increase_attack_power = get_skill_level_data('se_b_atta', index_buf_bless_lv30)

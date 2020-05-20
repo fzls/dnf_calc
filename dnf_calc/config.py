@@ -8,6 +8,7 @@
 # -------------------------------
 import logging
 import multiprocessing
+from abc import ABCMeta
 from typing import List
 
 import toml
@@ -15,27 +16,56 @@ import toml
 from dnf_calc import notify_error, logger, consoleHandler
 
 
-class BaseConfig(dict):
-    def __setitem__(self, key, value):
-        super().__setitem__(key, value)
-        setattr(self, key, value)
+# 如果配置的值是dict，可以用ConfigInterface自行实现对应结构，将会自动解析
+# 如果配置的值是list/set/tuple，则需要实现ConfigInterface，同时重写auto_update_config，在调用过基类的该函数后，再自行处理这三类结果
+class ConfigInterface(metaclass=ABCMeta):
+    def auto_update_config(self, raw_config: dict):
+        for key, val in raw_config.items():
+            if hasattr(self, key):
+                attr = getattr(self, key)
+                if isinstance(attr, ConfigInterface):
+                    config_field: ConfigInterface = attr
+                    config_field.auto_update_config(val)
+                else:
+                    setattr(self, key, val)
+
+    def get_str_for(self, v):
+        res = v
+        if isinstance(v, ConfigInterface):
+            res = v.__str__()
+        elif isinstance(v, list):
+            res = list(self.get_str_for(sv) for sk, sv in enumerate(v))
+        elif isinstance(v, tuple):
+            res = tuple(self.get_str_for(sv) for sk, sv in enumerate(v))
+        elif isinstance(v, set):
+            res = set(self.get_str_for(sv) for sk, sv in enumerate(v))
+        elif isinstance(v, dict):
+            res = {sk:self.get_str_for(sv) for sk, sv in v.items()}
+
+        return res
+
+    def __str__(self):
+        res = {}
+        for k, v in self.__dict__.items():
+            res[k] = self.get_str_for(v)
+        return str(res)
 
 
-class MultiThreadingConfig(BaseConfig):
+class MultiThreadingConfig(ConfigInterface):
     def __init__(self):
-        super().__init__()
         # 设置最大工作线程数，当为0时默认为当前的逻辑线程数
         self.max_thread = multiprocessing.cpu_count()
         # 设置dfs的第多少层开始多线程并行计算（从1开始计数，0表示不启用多线程并行计算）
         self.start_parallel_computing_at_depth_n = 2
 
-    def __str__(self):
-        return str(vars(self))
+    def auto_update_config(self, raw_config: dict):
+        super().auto_update_config(raw_config)
+        if self.max_thread == 0:
+            self.max_thread = multiprocessing.cpu_count()
 
 
-class ExportResultAsExcelConfig(BaseConfig):
+class ExportResultAsExcelConfig(ConfigInterface):
     def __init__(self):
-        super().__init__()
         # 启用导出excel功能
         self.enable = False
         # 导出的文件名
@@ -44,25 +74,22 @@ class ExportResultAsExcelConfig(BaseConfig):
         self.export_rank_count = 1000
 
 
-class DataFixupConfig(BaseConfig):
+class DataFixupConfig(ConfigInterface):
     def __init__(self):
-        super().__init__()
         # 由于词条[所有职业Lv1~30全部主动技能Lv+X（特性技能除外）]不能直接对应输出职业的1-45主动技能,需要打个折,可以自行配置折扣率
         self.extra_all_job_all_active_skill_lv_1_30_deal_1_45_rate = 0.8
 
 
-class SaveNameConfig(BaseConfig):
+class SaveNameConfig(ConfigInterface):
     def __init__(self):
-        super().__init__()
         # 对应存档名
         self.save_name = "召唤"
         # 该存档名的分数伤害转换系数
         self.score_to_damage_rate = "1 / 1077.97 * 3320"
 
 
-class TwentySecondsDamageConfig(BaseConfig):
+class TwentySecondsDamageConfig(ConfigInterface):
     def __init__(self):
-        super().__init__()
         # 是否显示预估的20s打桩数据
         self.enable = True
         # 默认的分数与打桩的比例关系
@@ -70,19 +97,26 @@ class TwentySecondsDamageConfig(BaseConfig):
         # 设定存档对应的分数与打桩的比例关系，若下列数组中配置了当前存档的打桩系数，则会使用该系数，否则使用默认的打桩系数
         self.save_name_configs: List[SaveNameConfig] = []
 
+    def auto_update_config(self, raw_config: dict):
+        super().auto_update_config(raw_config)
+        if "save_name_configs" in raw_config:
+            self.save_name_configs: List[SaveNameConfig] = []
+            for cfg in raw_config["save_name_configs"]:
+                save_name_config = SaveNameConfig()
+                save_name_config.auto_update_config(cfg)
+                self.save_name_configs.append(save_name_config)
 
-class InititalDataConfig(BaseConfig):
+
+class InititalDataConfig(ConfigInterface):
     def __init__(self):
-        super().__init__()
         # 啥也不穿的满级奶爸的体力与精神
         self.physical_and_mental = "2674"
         # 啥也不穿的满级奶妈和奶萝的智力
         self.intelligence = "2400 - 33"
 
 
-class ConstConfig(BaseConfig):
+class ConstConfig(ConfigInterface):
     def __init__(self):
-        super().__init__()
         ## 奶爸
         # 多少体精折合一级祝福
         self.naiba_physical_and_mental_divisor = 630
@@ -103,7 +137,7 @@ class ConstConfig(BaseConfig):
         self.nailuo_sing_song_increase_rate_final_coef = 1.20
 
 
-class Config(BaseConfig):
+class Config(ConfigInterface):
     log_level_map = {
         "debug": logging.DEBUG,
         "info": logging.INFO,
@@ -113,7 +147,6 @@ class Config(BaseConfig):
     }
 
     def __init__(self):
-        super().__init__()
         # 日志等级, 级别从低到高依次为 "debug", "info", "warning", "error", "critical"
         self.log_level = "info"
         # 是否检查更新
@@ -131,30 +164,29 @@ class Config(BaseConfig):
         # 一些需要特殊补正的数据
         self.data_fixup = DataFixupConfig()
         # 20s打桩数据
-        self.twenty_seconds_damage = TwentySecondsDamageConfig()
+        self.twenty_seconds_damage: TwentySecondsDamageConfig = TwentySecondsDamageConfig()
         # 一些初始值
         self.initital_data = InititalDataConfig()
         # 一些常量
         self.const = ConstConfig()
 
-    def on_config_loaded(self):
-        self.fix_data()
+    def auto_update_config(self, raw_config: dict):
+        super().auto_update_config(raw_config)
 
+        # 名字不同，需要特殊处理
+        if "20s_damage" in raw_config:
+            self.twenty_seconds_damage.auto_update_config(raw_config["20s_damage"])
+
+        self.on_config_update(raw_config)
+
+    def on_config_update(self, raw_config: dict):
         consoleHandler.setLevel(self.log_level_map[self.log_level])
 
         logger.info("config loaded")
         logging.info("log level change to %s", self.log_level)
         logging.info("max thread is set to %d", self.multi_threading.max_thread)
+        logger.debug("raw_config={}".format(raw_config))
         logger.debug("config={}".format(g_config))
-
-    def fix_data(self):
-        # ps: 之前使用toml配置文件的时候，配置名写成了以数字为开头，这使得不能直接通过.attr的方式访问属性，但又要保证配置兼容，所以只能在这里中转一下
-        if hasattr(self, "20s_damage"):
-            self.twenty_seconds_damage = getattr(self, "20s_damage")
-
-        # 设置最大工作线程数，当为0时默认为当前的逻辑线程数
-        if self.multi_threading.max_thread == 0:
-            self.multi_threading.max_thread = multiprocessing.cpu_count()
 
 
 g_config = Config()
@@ -164,8 +196,8 @@ g_config = Config()
 def load_config(config_path="config.toml"):
     global g_config
     try:
-        g_config = toml.load(config_path, Config)
-        g_config.on_config_loaded()
+        raw_config = toml.load(config_path)
+        g_config.auto_update_config(raw_config)
     except FileNotFoundError as error:
         notify_error(logger, "未找到{}文件，是否直接在压缩包中打开了？".format(config_path))
         exit(0)

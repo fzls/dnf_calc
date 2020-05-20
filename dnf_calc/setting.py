@@ -42,7 +42,7 @@ def load_settings(settings=None):
                 exit(0)
 
     logger.info("setting loaded")
-    logger.debug("setting={}".format(g_setting))
+    # logger.debug("setting={}".format(g_setting))
 
 
 def all_settings():
