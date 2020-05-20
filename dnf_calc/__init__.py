@@ -12,6 +12,7 @@ from datetime import datetime
 
 from .common import *
 from .const import *
+from .enviroment import *
 from .run_env import *
 from .version import *
 
@@ -44,7 +45,6 @@ logger.addHandler(consoleHandler)
 #                         imports                         #
 ###########################################################
 
-from .enviroment import *
 from .profiling_tool import *
 
 from .data_struct import *
