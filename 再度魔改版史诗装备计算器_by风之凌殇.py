@@ -5,7 +5,6 @@
 
 import collections
 import itertools
-import multiprocessing
 import os
 import platform
 import queue
@@ -95,7 +94,7 @@ def add_bonus_attributes_to_base_array(job_type, base_array):
                                 # 其余加算
                                 if name == "extra_all_job_all_active_skill_lv_1_30" and entry_index == index_deal_extra_active_skill_lv_1_45:
                                     # 由于词条[所有职业Lv1~30全部主动技能Lv+X（特性技能除外）]不能直接对应输出职业的1-45主动技能,需要打个折,可以自行配置折扣率
-                                    base_array[entry_index] += entry_value * cfg["data_fixup"]["extra_all_job_all_active_skill_lv_1_30_deal_1_45_rate"]
+                                    base_array[entry_index] += entry_value * cfg.data_fixup.extra_all_job_all_active_skill_lv_1_30_deal_1_45_rate
                                 else:
                                     # 正常情况
                                     base_array[entry_index] += entry_value
@@ -535,7 +534,7 @@ def calc():
     )))
 
     # 代码中深度从0开始计算，-1则表示不启用
-    start_parallel_computing_at_depth_n = config()["multi_threading"]["start_parallel_computing_at_depth_n"] - 1
+    start_parallel_computing_at_depth_n = config().multi_threading.start_parallel_computing_at_depth_n - 1
 
     prunt_counter = [0 for i in range(11)]
     prunt_counter_lock = threading.Lock()
@@ -724,8 +723,9 @@ def calc():
 
     ui_top_n = 5
     save_top_n = ui_top_n
-    if config()["export_result_as_excel"]["enable"]:
-        save_top_n = max(save_top_n, config()["export_result_as_excel"]["export_rank_count"])
+    cfg = config()
+    if cfg.export_result_as_excel.enable:
+        save_top_n = max(save_top_n, cfg.export_result_as_excel.export_rank_count)
 
     # 准备工作队列和工作线程
     work_queue = queue.Queue()
@@ -768,13 +768,7 @@ def calc():
         with total_processed_count_lock:
             logger.info("work thread %2d stopped, processed_count=%3d, all thread total_processed_count=%3d", thread_index, processed_count, total_processed_count)
 
-    def get_max_thread():
-        max_thread = config()["multi_threading"]["max_thread"]
-        if max_thread == 0:
-            max_thread = multiprocessing.cpu_count()
-        return max_thread
-
-    for thread_index in range(get_max_thread()):
+    for thread_index in range(config().multi_threading.max_thread):
         threading.Thread(target=consumer, args=(thread_index, cartesianProduct), daemon=True).start()
 
     is_shuchu_job = job_name not in ["(奶系)神思者", "(奶系)炽天使", "(奶系)冥月女神"]
@@ -983,10 +977,12 @@ def calc():
         setget = opt_buf.get
         show_number = 1
 
+        cfg = config()
+
         # 基础体力、精神
-        base_stat_physical_and_mental = eval(config()["initital_data"]["physical_and_mental"]) + + custom_buf_data["taiyang_data"]
+        base_stat_physical_and_mental = eval(cfg.initital_data.physical_and_mental) + custom_buf_data["taiyang_data"]
         # 基础智力
-        base_stat_intelligence = eval(config()["initital_data"]["intelligence"]) + custom_buf_data["taiyang_data"]
+        base_stat_intelligence = eval(cfg.initital_data.intelligence) + custom_buf_data["taiyang_data"]
         # 祝福等级
         base_bless_level = 10 + custom_buf_data["bless_level"]
         # 太阳等级
@@ -1007,8 +1003,6 @@ def calc():
 
         # 增加奶系的国服特色
         add_bonus_attributes_to_base_array("buf", base_array_with_buf_bonus_attributes)
-
-        cfg = config()
 
         def process(calc_now, baibianguai, upgrade_work_uniforms, transfered_equips):
             set_list = ["1" + str(get_set_name(calc_now[x])) for x in range(0, 11)]
@@ -1103,7 +1097,7 @@ def calc():
                                                            + first_awaken_passive_increase_physical_and_mental_strength + second_awaken_increase_physical_and_mental_strength \
                                                            + third_awaken_passive_increase_physical_and_mental_strength + 19 * base_array[index_buf_amplification]
 
-                    physical_and_mental_divisor = config()["const"]["naiba_physical_and_mental_divisor"]
+                    physical_and_mental_divisor = cfg.const.naiba_physical_and_mental_divisor
 
                     # 祝福最终增加的力智
                     bless_final_increase_strength_and_intelligence = int(
@@ -1155,7 +1149,7 @@ def calc():
                 else:
                     intelligence_divisor = 675
                     sing_song_increase_rate = 1.25
-                    const = config()["const"]
+                    const = cfg.const
                     if job_name == "(奶系)炽天使":
                         intelligence_divisor = const["naima_intelligence_divisor"]  # 多少智力折合一级祝福
                         sing_song_increase_rate = const["naima_sing_song_increase_rate_base"] + const["naima_sing_song_increase_rate_amplification_coef"] * base_array[index_buf_amplification]  # 唱歌时的倍率
@@ -2035,29 +2029,29 @@ def get_score_to_damage_rate():
     # 获取当前存档名
     current_save_name = save_name_list[current_save_name_index]
 
-    damage_cfg = config()["20s_damage"]
+    damage_cfg = config().twenty_seconds_damage
 
     # 尝试使用默认的打桩系数配置
-    cfg = damage_cfg["score_to_damage_rate"]
+    cfg = damage_cfg.score_to_damage_rate
 
-    for rate_cfg in damage_cfg["save_name_configs"]:
+    for rate_cfg in damage_cfg.save_name_configs:
         # 若配置了当前存档的打桩系数，则用这个
-        if rate_cfg["save_name"] == current_save_name:
-            cfg = rate_cfg["score_to_damage_rate"]
+        if rate_cfg.save_name == current_save_name:
+            cfg = rate_cfg.score_to_damage_rate
             break
 
     return eval(cfg)
 
 
 def format_damage(score):
-    if config()["20s_damage"]["enable"]:
+    if config().twenty_seconds_damage.enable:
         return "{}% {}亿".format(int(100 * score), int(score * get_score_to_damage_rate()))
     else:
         return "{}%".format(int(100 * score))
 
 
 def extract_score_from_score_damage(score_damage):
-    if config()["20s_damage"]["enable"]:
+    if config().twenty_seconds_damage.enable:
         return score_damage.split(" ")[0]
     else:
         return score_damage
@@ -2076,7 +2070,7 @@ def show_result(rank_list, job_type, ele_skill):
     result_window.attributes("-topmost", True)
     result_window.focus_force()
     result_window.geometry("{}x{}+{}+{}".format(result_window_width, result_window_height, result_window_x_offset, result_window_y_offset))
-    result_window.resizable(config()["main_window_resizable"], config()["main_window_resizable"])
+    result_window.resizable(config().main_window_resizable, config().main_window_resizable)
     global canvas_res
     canvas_width = result_window_width + 2
     canvas_height = result_window_height + 2
@@ -2408,8 +2402,8 @@ def show_result(rank_list, job_type, ele_skill):
 
 # 导出结果到excel
 def export_result(ele_skill, col_names, extract_rank_cols_func, rankings):
-    export_config = config()["export_result_as_excel"]
-    if not export_config["enable"]:
+    export_config = config().export_result_as_excel
+    if not export_config.enable:
         return
 
     def _export_reuslt():
@@ -2436,8 +2430,11 @@ def export_result(ele_skill, col_names, extract_rank_cols_func, rankings):
                     sheet.cell(row, col_index + 1).value = col_value
 
         # 保存文件
-        book.save(export_config["export_file_name"])
-        tkinter.messagebox.showinfo("排行结果已导出", "前{}排行数据已导出到当前目录下的{}，可打开进行查看".format(export_config["export_rank_count"], export_config["export_file_name"]))
+        book.save(export_config.export_file_name)
+        tkinter.messagebox.showinfo("排行结果已导出", "前{}排行数据已导出到当前目录下的{}，可打开进行查看".format(
+            export_config.export_rank_count,
+            export_config.export_file_name,
+        ))
 
     threading.Thread(target=_export_reuslt, daemon=True).start()
     return
@@ -2613,7 +2610,7 @@ def costum():
     custom_window.attributes("-topmost", True)
     custom_window.focus_force()
     custom_window.geometry("{}x{}+{}+{}".format(custom_window_width, custom_window_height, custom_window_x_offset, custom_window_y_offset))
-    custom_window.resizable(config()["main_window_resizable"], config()["main_window_resizable"])
+    custom_window.resizable(config().main_window_resizable, config().main_window_resizable)
 
     load_preset = load_workbook("preset.xlsx", data_only=True)
     db_preset = load_preset["custom"]
@@ -2917,7 +2914,7 @@ g_save_name_index_on_last_load_or_save = 0
 
 
 def load_checklist():
-    if config()["destroy_result_windows_when_click_load_checklist_button"]:
+    if config().destroy_result_windows_when_click_load_checklist_button:
         hide_result_window_if_exists()
 
     ask_msg1 = tkinter.messagebox.askquestion('确认', "确认读取存档吗？", parent=self)
@@ -3340,7 +3337,7 @@ def is_shared_content_blocked(share_netdisk_addr: str) -> bool:
 # 启动时检查是否有更新
 def check_update_on_start():
     try:
-        if not config()["check_update_on_start"]:
+        if not config().check_update_on_start:
             logger.warning("启动时检查更新被禁用，若需启用请在config.toml中设置")
             return
 
@@ -3471,7 +3468,7 @@ load_preset0 = load_workbook("preset.xlsx", read_only=not need_check_preset_file
 db_custom = load_preset0["custom"]
 
 save_name_list = []
-for save_index in range(0, config()["max_save_count"]):
+for save_index in range(0, config().max_save_count):
     save_name = db_custom.cell(save_index + 1, 5).value
     save_name_list.append(save_name or "存档{}".format(save_index + 1))
 
@@ -3926,7 +3923,7 @@ def get_other_account_names():
 self = tkinter.Tk()
 self.title("一键史诗搭配计算器魔改版-ver" + now_version + " 魔改by风之凌殇 原创by黎明工作室（韩服）dawnclass16")
 self.geometry("{}x{}+{}+{}".format(main_window_width, main_window_height, main_window_x_offset, main_window_y_offset))
-self.resizable(config()["main_window_resizable"], config()["main_window_resizable"])
+self.resizable(config().main_window_resizable, config().main_window_resizable)
 self.configure(bg=dark_main)
 self.iconbitmap(r'ext_img/icon.ico')
 
