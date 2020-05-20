@@ -23,7 +23,7 @@ https://drive.google.com/file/d/1p8ZdzW_NzGKHHOtfPTuZSr1YgSEVtYCj/view
 ## 第三批功能说明
 ![第三批功能说明](change_log_images/功能说明3.png)
 
-# v3.5.1 2020.5.21
+# v0.3.5.1 2020.5.21
 ## 易用性
 1. 改写config，改用类实现，从而可以设置默认值，这样在新增配置时，即使使用旧版本的配置文件，也能兼容
 
