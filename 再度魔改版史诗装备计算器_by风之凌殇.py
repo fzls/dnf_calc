@@ -213,7 +213,17 @@ def hide_result_window_if_exists():
         pass
 
 
-def report_bugsnag_with_context(error):
+# 根据各个槽位的装备编码列表获得各个槽位的装备编码与名称列表，方便查bug
+# ex: [["11111", "11110"]] => [[("11111", "铁匠神话上衣"), ("11110", "铁匠上衣")]]
+def get_equip_slots_with_name(items):
+    res = []
+    for slot_equip_indexs in items:
+        res.append(tuple((equip_index, equip_index_to_realname[equip_index]) for equip_index in slot_equip_indexs))
+
+    return res
+
+
+def report_bugsnag_with_context(error, extra_context=None):
     global exit_calc
     exit_calc = 1
 
@@ -225,32 +235,35 @@ def report_bugsnag_with_context(error):
     # 获取当前装备、百变怪可选装备、工作服列表
     items, not_select_items, work_uniforms_items = get_equips()
 
+    meta_data = {
+        "_traceback_info": traceback_info,
+        "speed": select_speed.get(),
+        "weapons": wep_combopicker.get_selected_entrys(),
+        "job_name": jobup_select.get(),
+        "shuchu_time": time_select.get(),
+        "style": style_select.get(),
+        "creature": creature_select.get(),
+        "cooldown": req_cool.get(),
+        "baibianguai": baibianguai_select.get(),
+        "work_uniform": can_upgrade_work_unifrom_nums_select.get(),
+        "transfer": transfer_equip_combopicker.get_selected_entrys(),
+        "max_transfer_count": can_transfer_nums_select.get(),
+        "use_pulei": use_pulei_legend_by_default_select.get(),
+        "save_name": save_name_list[current_save_name_index],
+        "g_equips": {
+            "items": get_equip_slots_with_name(items),
+            "not_select_items": not_select_items,
+            "work_uniforms_items": work_uniforms_items,
+        },
+        "config": config(),
+        "all_settings": all_settings(),
+    }
+    if extra_context is not None:
+        meta_data["extra_context"] = extra_context
     bugsnag.notify(
         exception=error,
         context="calc",
-        meta_data={
-            "_traceback_info": traceback_info,
-            "speed": select_speed.get(),
-            "weapons": wep_combopicker.get_selected_entrys(),
-            "job_name": jobup_select.get(),
-            "shuchu_time": time_select.get(),
-            "style": style_select.get(),
-            "creature": creature_select.get(),
-            "cooldown": req_cool.get(),
-            "baibianguai": baibianguai_select.get(),
-            "work_uniform": can_upgrade_work_unifrom_nums_select.get(),
-            "transfer": transfer_equip_combopicker.get_selected_entrys(),
-            "max_transfer_count": can_transfer_nums_select.get(),
-            "use_pulei": use_pulei_legend_by_default_select.get(),
-            "save_name": save_name_list[current_save_name_index],
-            "g_equips": {
-                "items": items,
-                "not_select_items": not_select_items,
-                "work_uniforms_items": work_uniforms_items,
-            },
-            "config": config(),
-            "all_settings": all_settings(),
-        }
+        meta_data=meta_data
     )
     tkinter.messagebox.showerror("出错啦", "计算过程中出现了未处理的异常\n{}".format(traceback_info))
 
@@ -4922,3 +4935,4 @@ if __name__ == "__main__":
 
     self.mainloop()
     self.quit()
+
