@@ -7,15 +7,19 @@ import collections
 import itertools
 import multiprocessing
 import os
+import platform
 import queue
 import random
 import traceback
+import uuid
 import webbrowser
 from collections import Counter
 from math import floor
 
 import numpy as np
+import pythoncom
 import requests
+import wmi
 from openpyxl import load_workbook, Workbook
 
 from dnf_calc import *
@@ -223,6 +227,28 @@ def get_equip_slots_with_name(items):
     return res
 
 
+def get_hardward_info() -> (str, int, str):
+    pythoncom.CoInitialize()
+    wmiInfo = wmi.WMI()
+
+    cpu_name = ""
+    physical_cpu_cores = 0
+    manufacturer = ""
+
+    for cpu in wmiInfo.Win32_Processor():
+        cpu_name = cpu.Name
+
+        try:
+            physical_cpu_cores = cpu.NumberOfCores
+        except:
+            physical_cpu_cores = 1
+
+    for board_id in wmiInfo.Win32_BaseBoard():
+        manufacturer = board_id.Manufacturer  # 主板生产品牌厂家
+
+    return cpu_name, physical_cpu_cores, manufacturer
+
+
 def report_bugsnag_with_context(error, extra_context=None, show_error_messagebox=True):
     global exit_calc
     exit_calc = 1
@@ -230,43 +256,72 @@ def report_bugsnag_with_context(error, extra_context=None, show_error_messagebox
     hide_result_window_if_exists()
 
     traceback_info = traceback.format_exc()
+
+    # 打印错误日志
     logger.error("calc unhandled exception\n{}".format(traceback_info))
 
-    # 获取当前装备、百变怪可选装备、工作服列表
-    items, not_select_items, work_uniforms_items = get_equips()
+    # 弹出错误框
+    if show_error_messagebox:
+        tkinter.messagebox.showerror("出错啦", "计算过程中出现了未处理的异常\n{}".format(traceback_info))
 
+    # 上报bugsnag
+    items, not_select_items, work_uniforms_items = get_equips()
+    cpu_name, physical_cpu_cores, manufacturer = get_hardward_info()
     meta_data = {
-        "_traceback_info": traceback_info,
-        "speed": select_speed.get(),
-        "weapons": wep_combopicker.get_selected_entrys(),
-        "job_name": jobup_select.get(),
-        "shuchu_time": time_select.get(),
-        "style": style_select.get(),
-        "creature": creature_select.get(),
-        "cooldown": req_cool.get(),
-        "baibianguai": baibianguai_select.get(),
-        "work_uniform": can_upgrade_work_unifrom_nums_select.get(),
-        "transfer": transfer_equip_combopicker.get_selected_entrys(),
-        "max_transfer_count": can_transfer_nums_select.get(),
-        "use_pulei": use_pulei_legend_by_default_select.get(),
-        "save_name": save_name_list[current_save_name_index],
-        "g_equips": {
+        "stacktrace_brief": {
+            "info": traceback_info,
+        },
+        "ui_options": {
+            "speed": select_speed.get(),
+            "weapons": wep_combopicker.get_selected_entrys(),
+            "job_name": jobup_select.get(),
+            "shuchu_time": time_select.get(),
+            "style": style_select.get(),
+            "creature": creature_select.get(),
+            "cooldown": req_cool.get(),
+            "baibianguai": baibianguai_select.get(),
+            "work_uniform": can_upgrade_work_unifrom_nums_select.get(),
+            "transfer": transfer_equip_combopicker.get_selected_entrys(),
+            "max_transfer_count": can_transfer_nums_select.get(),
+            "use_pulei": use_pulei_legend_by_default_select.get(),
+            "save_name": save_name_list[current_save_name_index],
+        },
+        "euqips": {
             "items": get_equip_slots_with_name(items),
             "not_select_items": not_select_items,
             "work_uniforms_items": work_uniforms_items,
         },
         "config": config(),
-        "all_settings": all_settings(),
+        "settings": all_settings(),
+        "app": {
+            "releaseStage": RUN_ENV,
+            "version": now_version,
+            "release_time": ver_time,
+        },
+        "device": {
+            "uuid": uuid.getnode(),
+            "node": platform.node(),
+            "osName": platform.system(),
+            "osVersion": platform.version(),
+            "release": platform.release(),
+            "architecture": platform.machine(),
+            "processor": platform.processor(),
+            "logical_cpu_num": multiprocessing.cpu_count(),
+            "physical_cpu_num": physical_cpu_cores,
+            "cpu_name": cpu_name,
+            "manufacturer": manufacturer,
+            "time": time.strftime("%Y-%m-%d %H:%M:%S"),
+            "timezone": time.strftime("%z", time.gmtime()),
+        },
     }
     if extra_context is not None:
         meta_data["extra_context"] = extra_context
     bugsnag.notify(
         exception=error,
         context="calc",
-        meta_data=meta_data
+        meta_data=meta_data,
+        user={"id": platform.node(), "uuid": uuid.getnode(), },
     )
-    if show_error_messagebox:
-        tkinter.messagebox.showerror("出错啦", "计算过程中出现了未处理的异常\n{}".format(traceback_info))
 
 
 # 缓存的buff等级最大等级
