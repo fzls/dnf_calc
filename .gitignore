@@ -144,3 +144,4 @@ cython_debug/
 /*.exe
 /排行结果.xlsx
 /logs
+test.py

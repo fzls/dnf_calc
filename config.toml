@@ -1,5 +1,8 @@
 # 额外配置选项，普通用户无需关注
 
+# 日志等级, 级别从低到高依次为 "debug", "info", "warning", "error", "critical"
+log_level = "info"
+
 # 是否检查更新
 check_update_on_start = true
 
