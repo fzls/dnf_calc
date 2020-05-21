@@ -31,68 +31,12 @@ if __name__ == '__main__':
     load_settings()
 
 
-# equip_indexes的顺序与上面的搜索顺序一致，这里需要调回来
-def get_slot_names(equip_indexes):
-    ordered_equip_indexes = list(equip_indexes)
-    reverse_modify_slots_order_(ordered_equip_indexes)
-
-    return [equip_index_to_realname[index] for index in ordered_equip_indexes]
-
-
-weapon_rules = [
-    {
-        "job_names": [
-            "(奶系)神思者",
-            "(奶系)炽天使",
-        ],
-        "valid_weapons": [
-            "111001",  # 夜语黑瞳
-            "111043",  # 十字架-圣者的慈悲
-            "111044",  # 十字架-闪耀的神威
-        ],
-    },
-
-    {
-        "job_names": [
-            "(奶系)冥月女神",
-        ],
-        "valid_weapons": [
-            "111001",  # 夜语黑瞳
-            "111041",  # 扫把-世界树之精灵
-            "111042",  # 扫把-纯白的祈祷
-        ],
-    },
-    # 其他职业的暂时没空加，有兴趣的可以自行添加
-]
-
-
-# is_shuchu_job = job_name not in ["(奶系)神思者", "(奶系)炽天使", "(奶系)冥月女神"]
-def check_weapons(job_name, weapon_indexs):
-    for rule in weapon_rules:
-        if job_name in rule["job_names"]:
-            for weapon in weapon_indexs:
-                if weapon not in rule["valid_weapons"]:
-                    return False
-
-    return True
-
-
 def hide_result_window_if_exists():
     global result_window
     try:
         result_window.destroy()
     except NameError as error:
         pass
-
-
-# 根据各个槽位的装备编码列表获得各个槽位的装备编码与名称列表，方便查bug
-# ex: [["11111", "11110"]] => [[("11111", "铁匠神话上衣"), ("11110", "铁匠上衣")]]
-def get_equip_slots_with_name(items):
-    res = []
-    for slot_equip_indexs in items:
-        res.append(tuple((equip_index, equip_index_to_realname[equip_index]) for equip_index in slot_equip_indexs))
-
-    return res
 
 
 def get_hardward_info() -> (str, int, str):
@@ -3310,6 +3254,25 @@ for row in db_one.rows:
             equip_index_to_row_index[index] = row[0].row
         except Exception as err:
             logger.warning("load row index failed, err={}".format(err))
+
+
+# equip_indexes的顺序与上面的搜索顺序一致，这里需要调回来
+def get_slot_names(equip_indexes):
+    ordered_equip_indexes = list(equip_indexes)
+    reverse_modify_slots_order_(ordered_equip_indexes)
+
+    return [equip_index_to_realname[index] for index in ordered_equip_indexes]
+
+
+# 根据各个槽位的装备编码列表获得各个槽位的装备编码与名称列表，方便查bug
+# ex: [["11111", "11110"]] => [[("11111", "铁匠神话上衣"), ("11110", "铁匠上衣")]]
+def get_equip_slots_with_name(items):
+    res = []
+    for slot_equip_indexs in items:
+        res.append(tuple((equip_index, equip_index_to_realname[equip_index]) for equip_index in slot_equip_indexs))
+
+    return res
+
 
 db_job = load_excel1["lvl"]
 opt_job = {}

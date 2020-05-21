@@ -138,3 +138,41 @@ def reverse_modify_slots_order_(slots):
     # 上面的_modify_slots_order的逆操作，调整后会变回默认顺序11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33
     slots[0], slots[5], slots[10], slots[1], slots[2], slots[3], slots[4], slots[6], slots[7], slots[8], slots[9] = \
         slots[0], slots[1], slots[2], slots[3], slots[4], slots[5], slots[6], slots[7], slots[8], slots[9], slots[10]
+
+
+weapon_rules = [
+    {
+        "job_names": [
+            "(奶系)神思者",
+            "(奶系)炽天使",
+        ],
+        "valid_weapons": [
+            "111001",  # 夜语黑瞳
+            "111043",  # 十字架-圣者的慈悲
+            "111044",  # 十字架-闪耀的神威
+        ],
+    },
+
+    {
+        "job_names": [
+            "(奶系)冥月女神",
+        ],
+        "valid_weapons": [
+            "111001",  # 夜语黑瞳
+            "111041",  # 扫把-世界树之精灵
+            "111042",  # 扫把-纯白的祈祷
+        ],
+    },
+    # 其他职业的暂时没空加，有兴趣的可以自行添加
+]
+
+
+# is_shuchu_job = job_name not in ["(奶系)神思者", "(奶系)炽天使", "(奶系)冥月女神"]
+def check_weapons(job_name, weapon_indexs):
+    for rule in weapon_rules:
+        if job_name in rule["job_names"]:
+            for weapon in weapon_indexs:
+                if weapon not in rule["valid_weapons"]:
+                    return False
+
+    return True
