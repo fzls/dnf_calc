@@ -54,4 +54,6 @@ from .ui_components import *
 from .config import *
 from .setting import *
 
+from .hardware_info import *
+
 from .logic import *

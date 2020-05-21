@@ -16,9 +16,7 @@ from collections import Counter
 from math import floor
 
 import numpy as np
-import pythoncom
 import requests
-import wmi
 from openpyxl import load_workbook, Workbook
 
 from dnf_calc import *
@@ -37,28 +35,6 @@ def hide_result_window_if_exists():
         result_window.destroy()
     except NameError as error:
         pass
-
-
-def get_hardward_info() -> (str, int, str):
-    pythoncom.CoInitialize()
-    wmiInfo = wmi.WMI()
-
-    cpu_name = ""
-    physical_cpu_cores = 0
-    manufacturer = ""
-
-    for cpu in wmiInfo.Win32_Processor():
-        cpu_name = cpu.Name
-
-        try:
-            physical_cpu_cores = cpu.NumberOfCores
-        except:
-            physical_cpu_cores = 1
-
-    for board_id in wmiInfo.Win32_BaseBoard():
-        manufacturer = board_id.Manufacturer  # 主板生产品牌厂家
-
-    return cpu_name, physical_cpu_cores, manufacturer
 
 
 def report_bugsnag_with_context(error, extra_context=None, show_error_messagebox=True):
