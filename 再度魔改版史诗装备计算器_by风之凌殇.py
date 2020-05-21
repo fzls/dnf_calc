@@ -30,43 +30,11 @@ if __name__ == '__main__':
     load_config()
     load_settings()
 
-g_speed_first = True
-
-
-def modify_slots_order(items, not_select_items, work_uniforms_items, transfer_slots_equips):
-    if not g_speed_first:
-        return
-
-    # 所有已选装备
-    _modify_slots_order(items)
-    # 百变怪的各部位可选装备需要与上面的部位顺序一致
-    _modify_slots_order(not_select_items)
-    # 可升级得到的各部位工作服
-    _modify_slots_order(work_uniforms_items)
-    # 跨界的备选装备
-    _modify_slots_order(transfer_slots_equips)
-
-
-def _modify_slots_order(slots):
-    # 默认槽位顺序为11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33
-    # 这种情况下，神话分布在第一位、第六位、第十一位，由于不能同时搭配两个神话，会导致额外多计算很多搭配
-    # hack: 优化：由于装备顺序不影响最终计算结果，所以把神话装备先放到前面，那么剪枝可以更高效
-    #   所有已选装备、百变怪各部位可选装备、各部位工作服的顺序需要一致，比如第一个是鞋、头肩、腰带，则其余俩也要是这个顺序
-
-    slots[0], slots[1], slots[2], slots[3], slots[4], slots[5], slots[6], slots[7], slots[8], slots[9], slots[10] = \
-        slots[0], slots[5], slots[10], slots[1], slots[2], slots[3], slots[4], slots[6], slots[7], slots[8], slots[9]
-
-
-def _reverse_modify_slots_order(slots):
-    # 上面的_modify_slots_order的逆操作，调整后会变回默认顺序11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33
-    slots[0], slots[5], slots[10], slots[1], slots[2], slots[3], slots[4], slots[6], slots[7], slots[8], slots[9] = \
-        slots[0], slots[1], slots[2], slots[3], slots[4], slots[5], slots[6], slots[7], slots[8], slots[9], slots[10]
-
 
 # equip_indexes的顺序与上面的搜索顺序一致，这里需要调回来
 def get_slot_names(equip_indexes):
     ordered_equip_indexes = list(equip_indexes)
-    _reverse_modify_slots_order(ordered_equip_indexes)
+    reverse_modify_slots_order_(ordered_equip_indexes)
 
     return [equip_index_to_realname[index] for index in ordered_equip_indexes]
 
@@ -1874,7 +1842,7 @@ def show_name():
 
     # 确保按照正常排列的顺序展示
     ordered_equip_indexes = list(equips[1:])
-    _reverse_modify_slots_order(ordered_equip_indexes)
+    reverse_modify_slots_order_(ordered_equip_indexes)
 
     ordered_equip_indexes.insert(0, equips[0])
 
