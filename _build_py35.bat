@@ -9,6 +9,11 @@ echo.
 
 python _export_excel_to_txt.py
 
+echo.
+echo [提示]: 使用python35运行一下，先确保能启动
+echo.
+
+"C:\Program Files\Python35\python.exe" 再度魔改版史诗装备计算器_by风之凌殇.py
 
 echo.
 echo [提示]: 开始打包
