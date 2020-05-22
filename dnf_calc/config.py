@@ -199,7 +199,7 @@ def load_config(config_path="config.toml"):
         raw_config = toml.load(config_path)
         g_config.auto_update_config(raw_config)
     except FileNotFoundError as error:
-        notify_error(logger, "未找到{}文件，是否直接在压缩包中打开了？".format(config_path))
+        notify_error(logger, "读取{}文件出错，是否直接在压缩包中打开了？\n具体出错为：".format(config_path, error))
         exit(0)
 
 
