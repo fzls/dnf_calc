@@ -26,7 +26,7 @@ tools\curl.exe --remote-name --remote-header-name %PYTHON_DOWNLOAD_URL%
 if not exist "%PYTHON_FULL_VERSION%.exe" cls&color 0c&echo [Error]:Download Python false!...&pause>nul&exit
 
 echo.
-echo "[提示]: 下载完成，接下来请按照步骤安装python，一路只管点第一个选项就好啦"
+echo "[提示]: 下载完成，接下来请按照步骤安装python，一路只管点第一个选项就好啦，记得把加入运行路径的选项勾上【Add Python to environment variables】"
 echo.
 
 :: 打开安装程序
@@ -38,6 +38,10 @@ del "%PYTHON_FULL_VERSION%.exe"&echo [Info]: %PYTHON_FULL_VERSION% Installation 
 :: 设置path
 set PATH=%PATH%;"%appdata%\..\Local\Programs\Python\%PYTHON_PATH_DIR%-32";"%appdata%\..\Local\Programs\Python\%PYTHON_PATH_DIR%-64";"%appdata%\..\Local\Programs\Python\%PYTHON_PATH_DIR%";"%PROGRAMFILES%\%PYTHON_PATH_DIR%";"%PROGRAMFILES(x86)%\%PYTHON_PATH_DIR%";
 set PATH=%PATH%;"%appdata%\..\Local\Programs\Python\%PYTHON_PATH_DIR%-32\Scripts";"%appdata%\..\Local\Programs\Python\%PYTHON_PATH_DIR%-64\Scripts";"%appdata%\..\Local\Programs\Python\%PYTHON_PATH_DIR%\Scripts";"%PROGRAMFILES%\%PYTHON_PATH_DIR%\Scripts";"%PROGRAMFILES(x86)%\%PYTHON_PATH_DIR%\Scripts";
+
+:: 关联python文件使用python打开
+assoc .py=Python.File
+ftype Python.File="C:\WINDOWS\pyw.exe" "%L" %*
 
 echo.
 echo "[提示]: python安装完成，接下来开始安装需要用到的一些类库"
@@ -55,6 +59,7 @@ call _build.bat
 
 echo.
 echo "[提示]: 一切都搞定啦，现在可以直接点[再度魔改版史诗装备计算器_by风之凌殇.exe]运行啦"
+echo "[提示]: 也可以直接点[再度魔改版史诗装备计算器_by风之凌殇.py]运行"
 echo.
 
 pause
