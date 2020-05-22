@@ -47,8 +47,10 @@ echo.
 echo "[提示]: python安装完成，接下来开始安装需要用到的一些类库"
 echo.
 
-:: 按照需要的类库
+:: 安装需要的类库
 pip install --no-cache-dir --no-warn-script-location -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+:: 额外安装pyinstaller用于构建打包
+pip install --no-cache-dir --no-warn-script-location -i https://pypi.tuna.tsinghua.edu.cn/simple pyinstaller
 
 echo.
 echo "[提示]: 类库安装完成，接下来开始打包构建应用"

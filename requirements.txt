@@ -3,7 +3,6 @@ requests
 toml
 pyaml
 openpyxl
-pyinstaller
 bugsnag
 pypiwin32
 wmi
