@@ -232,6 +232,22 @@ entry_name_to_indexes = {
             index_buf_first_awaken_passive_lv48,
         ]
     },
+    # (兼容旧版词条，已废弃)所有职业Lv1~50全部技能Lv+1（特性技能除外）
+    "extra_all_job_all_level_1_50_skill": {
+        "deal": [
+            index_deal_extra_passive_transfer_skill,
+            index_deal_extra_passive_first_awaken_skill,
+            index_deal_extra_active_skill_lv_1_45,
+            index_deal_extra_active_skill_lv_50,
+        ],
+        "buf": [
+            index_buf_bless_lv30,
+            index_buf_taiyang_lv50,
+            index_buf_job_passive_lv15,
+            index_buf_naiba_protect_badge_lv25,
+            index_buf_first_awaken_passive_lv48,
+        ]
+    },
     # 冷却矫正系数（仅输出职业）
     "cool_correction": {
         "deal": [index_deal_cool_correction]
@@ -358,6 +374,7 @@ entry_name_to_name = {
     "extra_percent_crit_damage": "暴击时，额外增加X%的伤害增加量。（决斗场中，适用一般效果）",
     "extra_percent_final_damage": "最终伤害增加X%",
     "extra_all_job_all_skill_lv_1_50": "所有职业Lv1~50全部技能Lv+1（特性技能除外）",
+    "extra_all_job_all_level_1_50_skill": "(兼容旧版词条，已废弃)所有职业Lv1~50全部技能Lv+1（特性技能除外）",
     "cool_correction": "冷却矫正系数（仅输出职业）",
     "reduce_percent_cool": "冷却减少时间-X%（仅奶系职业）",
     "creature_increase_owner_attack_power": "宠物技能：使主人增加X%的攻击力，是乘算，且加到最终伤害中，所以可以视为输出职业的技能攻击力词条来处理",
