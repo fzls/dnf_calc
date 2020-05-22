@@ -44,7 +44,7 @@ echo "[提示]: python安装完成，接下来开始安装需要用到的一些�
 echo.
 
 :: 按照需要的类库
-pip install --no-warn-script-location -r requirements.txt
+pip install --no-warn-script-location -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 
 echo.
 echo "[提示]: 类库安装完成，接下来开始打包构建应用"
