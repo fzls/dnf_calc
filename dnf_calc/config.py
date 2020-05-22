@@ -24,7 +24,7 @@ class ConfigInterface(metaclass=ABCMeta):
             if hasattr(self, key):
                 attr = getattr(self, key)
                 if isinstance(attr, ConfigInterface):
-                    config_field: ConfigInterface = attr
+                    config_field = attr  # type: ConfigInterface
                     config_field.auto_update_config(val)
                 else:
                     setattr(self, key, val)
@@ -40,7 +40,7 @@ class ConfigInterface(metaclass=ABCMeta):
         elif isinstance(v, set):
             res = set(self.get_str_for(sv) for sk, sv in enumerate(v))
         elif isinstance(v, dict):
-            res = {sk:self.get_str_for(sv) for sk, sv in v.items()}
+            res = {sk: self.get_str_for(sv) for sk, sv in v.items()}
 
         return res
 
@@ -95,12 +95,12 @@ class TwentySecondsDamageConfig(ConfigInterface):
         # 默认的分数与打桩的比例关系
         self.score_to_damage_rate = "1 / 1077.97 * 3320"  # 本人召唤在分数为107797%时，修炼场20s的伤害为3320e，先以这个为准给一版供参考的伤害值
         # 设定存档对应的分数与打桩的比例关系，若下列数组中配置了当前存档的打桩系数，则会使用该系数，否则使用默认的打桩系数
-        self.save_name_configs: List[SaveNameConfig] = []
+        self.save_name_configs = []  # type: List[SaveNameConfig]
 
     def auto_update_config(self, raw_config: dict):
         super().auto_update_config(raw_config)
         if "save_name_configs" in raw_config:
-            self.save_name_configs: List[SaveNameConfig] = []
+            self.save_name_configs = []  # type: List[SaveNameConfig]
             for cfg in raw_config["save_name_configs"]:
                 save_name_config = SaveNameConfig()
                 save_name_config.auto_update_config(cfg)
@@ -164,7 +164,7 @@ class Config(ConfigInterface):
         # 一些需要特殊补正的数据
         self.data_fixup = DataFixupConfig()
         # 20s打桩数据
-        self.twenty_seconds_damage: TwentySecondsDamageConfig = TwentySecondsDamageConfig()
+        self.twenty_seconds_damage = TwentySecondsDamageConfig()  # type: TwentySecondsDamageConfig
         # 一些初始值
         self.initital_data = InititalDataConfig()
         # 一些常量
