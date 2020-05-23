@@ -785,6 +785,7 @@ def calc():
         # 加上基础数据
         base_array_with_buf_bonus_attributes[index_buf_physical_and_mental_strength] += base_stat_physical_and_mental  # 体力、精神 +X
         base_array_with_buf_bonus_attributes[index_buf_intelligence] += base_stat_intelligence  # 智力 +X
+        base_array_with_buf_bonus_attributes[index_buf_bless_extra_percent_strength_and_intelligence] = 10.24 # 力量、智力增加量 +X%
         base_array_with_buf_bonus_attributes[index_buf_bless_lv30] += base_bless_level  # 祝福技能祝福等级+X
         base_array_with_buf_bonus_attributes[index_buf_taiyang_lv50] += base_taiyang_level  # 太阳技能太阳等级+X
         base_array_with_buf_bonus_attributes[index_buf_job_passive_lv15] += base_job_passive_lv15  # 15级职业被动Lv+X
@@ -821,11 +822,11 @@ def calc():
                 base_array = base_array_with_buf_bonus_attributes.copy()
 
                 # 一些需要乘算的百分比增益初始值
-                bless_extra_percent_strength_and_intelligence = 10.24  # [荣誉祝福]、[勇气祝福]、[禁忌诅咒]力量、智力增加量 +X%
-                bless_extra_percent_physical_attack_power = 0  # [荣誉祝福]、[勇气祝福]、[禁忌诅咒]物理攻击力增加量 +X%
-                bless_extra_percent_magical_attack_power = 0  # [荣誉祝福]、[勇气祝福]、[禁忌诅咒]魔法攻击力增加量 +X%
-                bless_extra_percent_independent_attack_power = 0  # [荣誉祝福]、[勇气祝福]、[禁忌诅咒]独立攻击力增加量 +X%
-                taiyang_extra_percent_strength_and_intelligence = 0  # [天启之珠]、[圣光天启]、[开幕！人偶剧场]力量、智力增加量 +X%
+                bless_extra_percent_strength_and_intelligence = base_array_with_buf_bonus_attributes[index_buf_bless_extra_percent_strength_and_intelligence]  # [荣誉祝福]、[勇气祝福]、[禁忌诅咒]力量、智力增加量 +X%
+                bless_extra_percent_physical_attack_power = base_array_with_buf_bonus_attributes[index_buf_bless_extra_percent_physical_attack_power]  # [荣誉祝福]、[勇气祝福]、[禁忌诅咒]物理攻击力增加量 +X%
+                bless_extra_percent_magical_attack_power = base_array_with_buf_bonus_attributes[index_buf_bless_extra_percent_magical_attack_power]  # [荣誉祝福]、[勇气祝福]、[禁忌诅咒]魔法攻击力增加量 +X%
+                bless_extra_percent_independent_attack_power = base_array_with_buf_bonus_attributes[index_buf_bless_extra_percent_independent_attack_power]  # [荣誉祝福]、[勇气祝福]、[禁忌诅咒]独立攻击力增加量 +X%
+                taiyang_extra_percent_strength_and_intelligence = base_array_with_buf_bonus_attributes[index_buf_taiyang_extra_strength_and_intelligence]  # [天启之珠]、[圣光天启]、[开幕！人偶剧场]力量、智力增加量 +X%
 
                 for_calc = tuple(set_on) + calc_wep
                 oneone = len(for_calc)
