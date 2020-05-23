@@ -14,6 +14,7 @@ import uuid
 import webbrowser
 from collections import Counter
 from math import floor
+from typing import List
 
 import numpy as np
 import requests
@@ -205,7 +206,7 @@ def calc():
     db_preset = load_presetc["custom"]
     job_name = jobup_select.get()
     try:
-        ele_skill = int(opt_job_ele[job_name][1])
+        ele_skill = int(opt_job_ele[job_name][0])
     except KeyError as error:
         tkinter.messagebox.showerror('部分参数有误', "未选择职业或职业非法", parent=self)
         logger.warning("job_name=%s invalid", job_name)
@@ -2748,9 +2749,6 @@ def load_checklist_noconfirm(account_index):
 
         col_custom_save_value = g_col_custom_save_value_begin + account_index
 
-        # 武器
-        wep_combopicker.set((load_cell(g_row_custom_save_start + g_row_custom_save_weapon, col_custom_save_value).value or "").split(','))
-
         # 职业
         job_name = load_cell(g_row_custom_save_start + g_row_custom_save_job, col_custom_save_value).value
         # 调整名称后，为保证兼容之前的存档，需要替换存档中的名称为新的名字
@@ -2759,7 +2757,14 @@ def load_checklist_noconfirm(account_index):
                 .replace("剑神", "极诣·剑魂").replace("黑暗君主", "极诣·鬼泣").replace("帝血弑天", "极诣·狂战士").replace("天帝", "极诣·阿修罗").replace("夜见罗刹", "极诣·剑影") \
                 .replace("剑皇", "极诣·驭剑士").replace("裁决女神", "极诣·暗殿骑士").replace("弑神者", "极诣·契魔者").replace("剑帝", "极诣·流浪武士") \
                 .replace("铁血教父", "铁血统帅")
-        jobup_select.set(job_name or "职业选择")
+        if job_name == "职业选择":
+            job_name = jobs[0]
+        jobup_select.set(job_name or jobs[0])
+        current_weapons = wep_combopicker.get_selected_entrys()
+        set_job_weapons()
+
+        # 武器
+        wep_combopicker.set((load_cell(g_row_custom_save_start + g_row_custom_save_weapon, col_custom_save_value).value or "").split(','))
 
         # 输出时间
         time_select.set(load_cell(g_row_custom_save_start + g_row_custom_save_fight_time, col_custom_save_value).value or shuchu_times[0])
@@ -3183,8 +3188,8 @@ def reset():
     baibianguai_select.set(txt_no_baibianguai)
     can_upgrade_work_unifrom_nums_select.set(txt_can_upgrade_work_unifrom_nums[0])
 
-    wep_combopicker.set("")
-    transfer_equip_combopicker.set("")
+    wep_combopicker.set(None)
+    transfer_equip_combopicker.set(None)
     can_transfer_nums_select.set(txt_can_transfer_nums[0])
     logger.info("reset")
 
@@ -3251,8 +3256,15 @@ def get_equip_slots_with_name(items):
 
 
 db_job = load_excel1["lvl"]
-opt_job = {}
+# 角色可以使用的武器类型列表
+opt_job_allowed_weapon_types = {}
+all_job_can_use_weapon_types = ["夜雨黑瞳武器"]
+# 角色的属强信息：0-属强，1-树强成长
 opt_job_ele = {}
+# 角色的数据
+# 0 	    1 	    2 	    3 	    4 	    5 	    6 	7 	    8 	    9 	        10 	        11 	    12 	13 	    14 	15 	16 	    17 	    18 	19 	    20 	21 	22
+# 职业被动	1觉被动	2觉被动	3觉被动	真觉醒	二觉	1觉	20秒	60秒	20秒比重	    60秒比重	    1~45	50 	60~80	85 	95 	100 	1~45	50 	60~80	85 	95 	100
+opt_job = {}
 jobs = []
 
 for row in db_job.rows:
@@ -3260,12 +3272,14 @@ for row in db_job.rows:
     if len(row_value) == 0:
         continue
 
+    # 第一列为职业，第二列为可使用的武器列表，第三列为属强，第四列为属强成长，之后为该职业各个与伤害计算相关的系数
     job = row_value[0]
     if job in ["20/60s", "下标", "职业系数下标（除属强外）", "职业"]:
         continue
 
-    opt_job[job] = row_value[3:]
-    opt_job_ele[job] = row_value[:3]
+    opt_job_allowed_weapon_types[job] = row_value[1].split("|")
+    opt_job_ele[job] = row_value[2:4]
+    opt_job[job] = row_value[4:]
     jobs.append(job)
 
 load_excel1.close()
@@ -3802,27 +3816,75 @@ for i in range(0, 76):
     wep_list.append(wep_name)
     wep_name_to_index[wep_name] = wep_index
 
-wep_image = PhotoImage(file="ext_img/wep.png")
-wep_g = tkinter.Label(self, image=wep_image, borderwidth=0, activebackground=dark_main, bg=dark_main)
-wep_g.place(x=29, y=55)
-wep_combopicker = Combopicker(self, values=wep_list, entrywidth=30)
-wep_combopicker.place(x=110, y=60)
+# 从武器名中提取出武器类型，如夜雨黑瞳武器、光剑-星之海：巴德纳尔、短剑-信念徽章：自由分别对应夜雨黑瞳武器、光剑、短剑
+def get_weapon_type(weapon_name:str)->str:
+    return weapon_name.split("-")[0]
 
+def get_job_allowed_weapons(job_name:str):
+    allowed_weapon_types = opt_job_allowed_weapon_types[job_name]
+
+    allowed_weapons = [] # type: list[str]
+
+    for weapon_name in wep_list:
+        weapon_type = get_weapon_type(weapon_name)
+        if weapon_type in allowed_weapon_types or weapon_type in all_job_can_use_weapon_types:
+            allowed_weapons.append(weapon_name)
+
+    return allowed_weapons
+
+# 输出时间
 shuchu_times = ['20秒(觉醒占比↑)', '60秒(觉醒占比↓)']
 time_select = tkinter.ttk.Combobox(self, width=13, values=shuchu_times)
 time_select.set(shuchu_times[0])
 time_select.place(x=390 - 17, y=220 + 52)
+
+# 某职业已选择的武器列表
+job_selected_weapons = {}
+
+def on_weapon_change():
+    global job_selected_weapons
+    job_selected_weapons[jobup_select.get()] = wep_combopicker.get_selected_entrys()
+
+# 武器选择
+wep_image = PhotoImage(file="ext_img/wep.png")
+wep_g = tkinter.Label(self, image=wep_image, borderwidth=0, activebackground=dark_main, bg=dark_main)
+wep_g.place(x=29, y=55)
+wep_combopicker = Combopicker(self, entrywidth=30)
+wep_combopicker.on_change = on_weapon_change
+wep_combopicker.place(x=110, y=60)
+
+# 职业选择
+def set_job_weapons():
+    job_name = jobup_select.get()
+    current_job_weapons = get_job_allowed_weapons(job_name)
+    wep_combopicker.set_values(current_job_weapons)
+    selected_weapons = current_job_weapons[:1]
+    if job_name in job_selected_weapons:
+        selected_weapons = job_selected_weapons[job_name]
+    wep_combopicker.set(selected_weapons)
+
+def on_job_selected(event):
+    set_job_weapons()
+
 jobup_select = tkinter.ttk.Combobox(self, width=13, values=jobs)
-jobup_select.set('职业选择')
+jobup_select.set(jobs[0])
+set_job_weapons()
 jobup_select.place(x=390 - 17, y=190 + 52)
+jobup_select.bind("<<ComboboxSelected>>",on_job_selected)
+
+# 称号选择
 style_list = styles()
 style_select = tkinter.ttk.Combobox(self, width=13, values=style_list)
 style_select.set(styles()[0])
 style_select.place(x=390 - 17, y=250 + 52)
+
+# 宠物选择
 creature_list = creatures()
 creature_select = tkinter.ttk.Combobox(self, width=13, values=creature_list)
 creature_select.set(creatures()[0])
 creature_select.place(x=390 - 17, y=280 + 52)
+
+# 冷却补正
 cool_list = ['X(纯伤害)', 'O(打开)']
 req_cool = tkinter.ttk.Combobox(self, width=13, values=cool_list)
 req_cool.set(cool_list[0])

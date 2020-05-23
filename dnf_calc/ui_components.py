@@ -97,8 +97,13 @@ class Picker(tkinter.ttk.Frame):
             self.dict_checkbutton[item].grid(row=index, column=0, sticky=tkinter.NSEW)
             self.dict_intvar_item[item].set(0)
 
+    def destroy(self):
+        for entry_name, button in self.dict_checkbutton.items():
+            button.destroy()
+        super().destroy()
 
-class Combopicker(tkinter.ttk.Entry, Picker):
+
+class Combopicker(tkinter.ttk.Entry):
     def __init__(self, master, values=[], entryvar=None, entrywidth=None, entrystyle=None, onselect=None, activebackground='#b1dcfb', activeforeground='black', selectbackground='#003eff', selectforeground='white', borderwidth=1,
                  relief="solid"):
 
@@ -106,8 +111,6 @@ class Combopicker(tkinter.ttk.Entry, Picker):
             self.entry_var = entryvar
         else:
             self.entry_var = tkinter.StringVar()
-
-        self.dict_intvar_item = {}
 
         entry_config = {}
         if entrywidth is not None:
@@ -120,13 +123,23 @@ class Combopicker(tkinter.ttk.Entry, Picker):
 
         self._is_menuoptions_visible = False
 
-        self.picker_frame = Picker(self.winfo_toplevel(), dict_intvar_item=self.dict_intvar_item, values=values, entry_wid=self.entry_var, activebackground=activebackground, activeforeground=activeforeground,
-                                   selectbackground=selectbackground, selectforeground=selectforeground,
-                                   command=self._on_selected_check)
+        self.activebackground = activebackground
+        self.activeforeground = activeforeground
+        self.selectbackground = selectbackground
+        self.selectforeground = selectforeground
+        self.picker_frame = self.new_picker_frame(values)
 
         self.bind_all("<1>", self._on_click, "+")
 
         self.bind("<Escape>", lambda event: self.hide_picker())
+
+        self.on_change = None
+
+    def new_picker_frame(self, values):
+        self.dict_intvar_item = {}
+        return Picker(self.winfo_toplevel(), dict_intvar_item=self.dict_intvar_item, values=values, entry_wid=self.entry_var,
+                      activebackground=self.activebackground, activeforeground=self.activeforeground, selectbackground=self.selectbackground, selectforeground=self.selectforeground,
+                      command=self._on_selected_check)
 
     @property
     def current_value(self):
@@ -150,7 +163,7 @@ class Combopicker(tkinter.ttk.Entry, Picker):
         # 清空内容栏
         self.entry_var.set("")
 
-        if checked_values is None:
+        if checked_values is None or checked_values == [""]:
             return
 
         # 添加选项与内容
@@ -165,6 +178,17 @@ class Combopicker(tkinter.ttk.Entry, Picker):
                 pass
 
         self.entry_var.set(temp_value)
+
+        if self.on_change is not None:
+            self.on_change()
+
+    def set_values(self, values):
+        # 干掉旧的
+        self.picker_frame.destroy()
+        # 创建新的
+        self.picker_frame = self.new_picker_frame(values)
+        # 清空内容栏
+        self.entry_var.set("")
 
     def _on_selected_check(self, SELECTED):
 
@@ -189,6 +213,9 @@ class Combopicker(tkinter.ttk.Entry, Picker):
                 temp_value += str(item)
 
         self.entry_var.set(temp_value)
+
+        if self.on_change is not None:
+            self.on_change()
 
     def _on_click(self, event):
         str_widget = str(event.widget)
