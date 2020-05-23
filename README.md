@@ -23,6 +23,10 @@ https://drive.google.com/file/d/1p8ZdzW_NzGKHHOtfPTuZSr1YgSEVtYCj/view
 ## 第三批功能说明
 ![第三批功能说明](change_log_images/功能说明3.png)
 
+# v3.5.4 2020.5.24
+## 易用性调整
+1. 武器选择列表将只会出现当前职业能够穿戴的武器
+
 # v3.5.3 2020.5.24
 ## bugfix
 1. 修正奶系五个百分比词条实际未生效的问题，在开始计算前需要正确赋值
