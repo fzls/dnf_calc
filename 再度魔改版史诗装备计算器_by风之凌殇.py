@@ -14,7 +14,6 @@ import uuid
 import webbrowser
 from collections import Counter
 from math import floor
-from typing import List
 
 import numpy as np
 import requests
@@ -2764,7 +2763,9 @@ def load_checklist_noconfirm(account_index):
         set_job_weapons()
 
         # 武器
-        wep_combopicker.set((load_cell(g_row_custom_save_start + g_row_custom_save_weapon, col_custom_save_value).value or "").split(','))
+        weapons = (load_cell(g_row_custom_save_start + g_row_custom_save_weapon, col_custom_save_value).value or "").split(',')
+        if weapons != [""] and weapons != ["选择武器"]:
+            wep_combopicker.set(weapons)
 
         # 输出时间
         time_select.set(load_cell(g_row_custom_save_start + g_row_custom_save_fight_time, col_custom_save_value).value or shuchu_times[0])
@@ -3816,14 +3817,16 @@ for i in range(0, 76):
     wep_list.append(wep_name)
     wep_name_to_index[wep_name] = wep_index
 
+
 # 从武器名中提取出武器类型，如夜雨黑瞳武器、光剑-星之海：巴德纳尔、短剑-信念徽章：自由分别对应夜雨黑瞳武器、光剑、短剑
-def get_weapon_type(weapon_name:str)->str:
+def get_weapon_type(weapon_name: str) -> str:
     return weapon_name.split("-")[0]
 
-def get_job_allowed_weapons(job_name:str):
+
+def get_job_allowed_weapons(job_name: str):
     allowed_weapon_types = opt_job_allowed_weapon_types[job_name]
 
-    allowed_weapons = [] # type: list[str]
+    allowed_weapons = []  # type: list[str]
 
     for weapon_name in wep_list:
         weapon_type = get_weapon_type(weapon_name)
@@ -3831,6 +3834,7 @@ def get_job_allowed_weapons(job_name:str):
             allowed_weapons.append(weapon_name)
 
     return allowed_weapons
+
 
 # 输出时间
 shuchu_times = ['20秒(觉醒占比↑)', '60秒(觉醒占比↓)']
@@ -3841,9 +3845,11 @@ time_select.place(x=390 - 17, y=220 + 52)
 # 某职业已选择的武器列表
 job_selected_weapons = {}
 
+
 def on_weapon_change():
     global job_selected_weapons
     job_selected_weapons[jobup_select.get()] = wep_combopicker.get_selected_entrys()
+
 
 # 武器选择
 wep_image = PhotoImage(file="ext_img/wep.png")
@@ -3853,24 +3859,27 @@ wep_combopicker = Combopicker(self, entrywidth=30)
 wep_combopicker.on_change = on_weapon_change
 wep_combopicker.place(x=110, y=60)
 
+
 # 职业选择
 def set_job_weapons():
     job_name = jobup_select.get()
     current_job_weapons = get_job_allowed_weapons(job_name)
     wep_combopicker.set_values(current_job_weapons)
     selected_weapons = current_job_weapons[:1]
-    if job_name in job_selected_weapons:
+    if job_name in job_selected_weapons and job_selected_weapons[job_name] != [""]:
         selected_weapons = job_selected_weapons[job_name]
     wep_combopicker.set(selected_weapons)
 
+
 def on_job_selected(event):
     set_job_weapons()
+
 
 jobup_select = tkinter.ttk.Combobox(self, width=13, values=jobs)
 jobup_select.set(jobs[0])
 set_job_weapons()
 jobup_select.place(x=390 - 17, y=190 + 52)
-jobup_select.bind("<<ComboboxSelected>>",on_job_selected)
+jobup_select.bind("<<ComboboxSelected>>", on_job_selected)
 
 # 称号选择
 style_list = styles()
