@@ -567,7 +567,7 @@ def calc():
         unique_index = 0
         show_number = 1
 
-        base_array_with_deal_bonus_attributes = np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+        base_array_with_deal_bonus_attributes = np.array([0.0 for idx in range(len(deal_entry_index_to_name))])
         # 加上基础数据
         base_array_with_deal_bonus_attributes[index_deal_extra_percent_skill_attack_power] = 1
         base_array_with_deal_bonus_attributes[index_deal_extra_all_element_strength] += ele_in
@@ -781,11 +781,10 @@ def calc():
         # 基础奶爸25级守护徽章等级
         base_naiba_protect_badge_lv25 = 0
 
-        base_array_with_buf_bonus_attributes = np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+        base_array_with_buf_bonus_attributes = np.array([0.0 for idx in range(len(buf_entry_index_to_name))])
         # 加上基础数据
         base_array_with_buf_bonus_attributes[index_buf_physical_and_mental_strength] += base_stat_physical_and_mental  # 体力、精神 +X
         base_array_with_buf_bonus_attributes[index_buf_intelligence] += base_stat_intelligence  # 智力 +X
-        base_array_with_buf_bonus_attributes[index_buf_bless_extra_percent_strength_and_intelligence] = 10.24 # 力量、智力增加量 +X%
         base_array_with_buf_bonus_attributes[index_buf_bless_lv30] += base_bless_level  # 祝福技能祝福等级+X
         base_array_with_buf_bonus_attributes[index_buf_taiyang_lv50] += base_taiyang_level  # 太阳技能太阳等级+X
         base_array_with_buf_bonus_attributes[index_buf_job_passive_lv15] += base_job_passive_lv15  # 15级职业被动Lv+X
@@ -1856,7 +1855,7 @@ def show_result(rank_list, job_type, ele_skill):
 
     global result_window
     result_window = tkinter.Toplevel(self)
-    result_window.title("计算结果")
+    result_window.title("计算结果 - ver" + now_version)
     result_window.attributes("-topmost", True)
     result_window.focus_force()
     result_window.geometry("{}x{}+{}+{}".format(result_window_width, result_window_height, result_window_x_offset, result_window_y_offset))

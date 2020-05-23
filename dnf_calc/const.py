@@ -77,6 +77,10 @@ index_deal_extra_active_skill_lv_85 = 25  # 25-AR-pas3-85主动技能
 index_deal_extra_active_skill_lv_95 = 26  # 26-AS-pas4-95主动技能
 index_deal_extra_active_skill_lv_100 = 27  # 27-AT-pas5-100主动技能
 
+deal_multiply_entry_indexes = [
+    index_deal_extra_percent_skill_attack_power
+]
+
 deal_entry_index_to_name = {
     index_deal_strength_and_intelligence: "0-C-stat-力智",
     index_deal_physical_magical_independent_attack_power: "1-D-att-物理/魔法/独立攻击力",
@@ -130,6 +134,14 @@ index_buf_belief_halo = 17  # 17-T-[信念光环]体力、精神 +X
 index_buf_piety_halo_or_girs_love = 18  # 18-U-[虞诚信念]、[少女的爱]力量/智力 +X
 index_buf_hymn_cool = 19  # 19-V-圣歌冷却减少X% (re: 目前好像没实装)
 index_buf_wisteria_whip_cool = 20  # 20-W-藤鞭冷却减少X% (re: 目前好像没实装)
+
+buf_multiply_entry_indexes = [
+    index_buf_bless_extra_percent_strength_and_intelligence,
+    index_buf_bless_extra_percent_physical_attack_power,
+    index_buf_bless_extra_percent_magical_attack_power,
+    index_buf_bless_extra_percent_independent_attack_power,
+    index_buf_taiyang_extra_strength_and_intelligence,
+]
 
 buf_entry_index_to_name = {
     index_buf_physical_and_mental_strength: "0-C-[守护恩赐]体力、精神 +X",

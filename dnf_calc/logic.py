@@ -71,8 +71,8 @@ def add_bonus_attributes_to_base_array(job_type, base_array, style, creature, sa
                         if "deal" not in entry_indexes:
                             continue
                         for entry_index in entry_indexes["deal"]:
-                            if entry_index == index_deal_extra_percent_skill_attack_power:
-                                # 技攻需要乘算
+                            if entry_index in deal_multiply_entry_indexes:
+                                # 需要乘算
                                 base_array[entry_index] = multiply_entry(base_array[entry_index], entry_value)
                             else:
                                 # 其余加算
@@ -91,8 +91,12 @@ def add_bonus_attributes_to_base_array(job_type, base_array, style, creature, sa
                         if "buf" not in entry_indexes:
                             continue
                         for entry_index in entry_indexes["buf"]:
-                            # 全部加算
-                            base_array[entry_index] += entry_value
+                            if entry_index in buf_multiply_entry_indexes:
+                                # 需要乘算
+                                base_array[entry_index] = multiply_entry(base_array[entry_index], entry_value)
+                            else:
+                                # 全部加算
+                                base_array[entry_index] += entry_value
                             if not entry_writen:
                                 logger.info("\t词条：{} => {}".format(entry_name_to_name[name], entry_value))
                                 entry_writen = True
