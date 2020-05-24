@@ -3875,837 +3875,93 @@ if __name__ == '__main__':
     display_realtime_counting_info_label.place(x=430, y=480)
     showcon2 = display_realtime_counting_info_label.configure
 
-set101 = tkinter.Button(self, bg=dark_main, borderwidth=0, activebackground=dark_main, image=image_list_set2['101'],
-                        command=lambda: click_set(101));
-set101.place(x=29, y=100)
-set102 = tkinter.Button(self, bg=dark_main, borderwidth=0, activebackground=dark_main, image=image_list_set2['102'],
-                        command=lambda: click_set(102));
-set102.place(x=29, y=130)
-set103 = tkinter.Button(self, bg=dark_main, borderwidth=0, activebackground=dark_main, image=image_list_set2['103'],
-                        command=lambda: click_set(103));
-set103.place(x=29, y=160)
-set104 = tkinter.Button(self, bg=dark_main, borderwidth=0, activebackground=dark_main, image=image_list_set2['104'],
-                        command=lambda: click_set(104));
-set104.place(x=29, y=190)
-set105 = tkinter.Button(self, bg=dark_main, borderwidth=0, activebackground=dark_main, image=image_list_set2['105'],
-                        command=lambda: click_set(105));
-set105.place(x=29, y=220)
-set106 = tkinter.Button(self, bg=dark_main, borderwidth=0, activebackground=dark_main, image=image_list_set2['106'],
-                        command=lambda: click_set(106));
-set106.place(x=29, y=250)
-set107 = tkinter.Button(self, bg=dark_main, borderwidth=0, activebackground=dark_main, image=image_list_set2['107'],
-                        command=lambda: click_set(107));
-set107.place(x=29, y=280)
-set108 = tkinter.Button(self, bg=dark_main, borderwidth=0, activebackground=dark_main, image=image_list_set2['108'],
-                        command=lambda: click_set(108));
-set108.place(x=29, y=310)
-set109 = tkinter.Button(self, bg=dark_main, borderwidth=0, activebackground=dark_main, image=image_list_set2['109'],
-                        command=lambda: click_set(109));
-set109.place(x=29, y=340)
-set110 = tkinter.Button(self, bg=dark_main, borderwidth=0, activebackground=dark_main, image=image_list_set2['110'],
-                        command=lambda: click_set(110));
-set110.place(x=29, y=370)
-set111 = tkinter.Button(self, bg=dark_main, borderwidth=0, activebackground=dark_main, image=image_list_set2['111'],
-                        command=lambda: click_set(111));
-set111.place(x=29, y=400)
-set112 = tkinter.Button(self, bg=dark_main, borderwidth=0, activebackground=dark_main, image=image_list_set2['112'],
-                        command=lambda: click_set(112));
-set112.place(x=29, y=430)
-set113 = tkinter.Button(self, bg=dark_main, borderwidth=0, activebackground=dark_main, image=image_list_set2['113'],
-                        command=lambda: click_set(113));
-set113.place(x=29, y=460)
-set114 = tkinter.Button(self, bg=dark_main, borderwidth=0, activebackground=dark_main, image=image_list_set2['114'],
-                        command=lambda: click_set(114));
-set114.place(x=29, y=490)
-set115 = tkinter.Button(self, bg=dark_main, borderwidth=0, activebackground=dark_main, image=image_list_set2['115'],
-                        command=lambda: click_set(115));
-set115.place(x=29, y=520)  ##
-set116 = tkinter.Button(self, bg=dark_main, borderwidth=0, activebackground=dark_main, image=image_list_set2['116'],
-                        command=lambda: click_set(116));
-set116.place(x=320 - 33, y=100)
-set117 = tkinter.Button(self, bg=dark_main, borderwidth=0, activebackground=dark_main, image=image_list_set2['117'],
-                        command=lambda: click_set(117));
-set117.place(x=320 - 33, y=130)
-set118 = tkinter.Button(self, bg=dark_main, borderwidth=0, activebackground=dark_main, image=image_list_set2['118'],
-                        command=lambda: click_set(118));
-set118.place(x=320 - 33, y=160)
-set119 = tkinter.Button(self, bg=dark_main, borderwidth=0, activebackground=dark_main, image=image_list_set2['119'],
-                        command=lambda: click_set(119));
-set119.place(x=320 - 33, y=190)  ##
-set120 = tkinter.Button(self, bg=dark_main, borderwidth=0, activebackground=dark_main, image=image_list_set2['120'],
-                        command=lambda: click_set(120));
-set120.place(x=500 - 17, y=100)
-set121 = tkinter.Button(self, bg=dark_main, borderwidth=0, activebackground=dark_main, image=image_list_set2['121'],
-                        command=lambda: click_set(121));
-set121.place(x=500 - 17, y=130)
-set122 = tkinter.Button(self, bg=dark_main, borderwidth=0, activebackground=dark_main, image=image_list_set2['122'],
-                        command=lambda: click_set(122));
-set122.place(x=500 - 17, y=160)
-set123 = tkinter.Button(self, bg=dark_main, borderwidth=0, activebackground=dark_main, image=image_list_set2['123'],
-                        command=lambda: click_set(123));
-set123.place(x=500 - 17, y=190)  ##
-set128 = tkinter.Button(self, bg=dark_main, borderwidth=0, activebackground=dark_main, image=image_list_set2['128'],
-                        command=lambda: click_set(128));
-set128.place(x=29, y=570)
-set129 = tkinter.Button(self, bg=dark_main, borderwidth=0, activebackground=dark_main, image=image_list_set2['129'],
-                        command=lambda: click_set(129));
-set129.place(x=29, y=600)
-set130 = tkinter.Button(self, bg=dark_main, borderwidth=0, activebackground=dark_main, image=image_list_set2['130'],
-                        command=lambda: click_set(130));
-set130.place(x=29, y=630)
-set131 = tkinter.Button(self, bg=dark_main, borderwidth=0, activebackground=dark_main, image=image_list_set2['131'],
-                        command=lambda: click_set(131));
-set131.place(x=29, y=660)  ##
-set124 = tkinter.Button(self, bg=dark_main, borderwidth=0, activebackground=dark_main, image=image_list_set2['124'],
-                        command=lambda: click_set(124));
-set124.place(x=225, y=570)
-set125 = tkinter.Button(self, bg=dark_main, borderwidth=0, activebackground=dark_main, image=image_list_set2['125'],
-                        command=lambda: click_set(125));
-set125.place(x=225, y=600)
-set126 = tkinter.Button(self, bg=dark_main, borderwidth=0, activebackground=dark_main, image=image_list_set2['126'],
-                        command=lambda: click_set(126));
-set126.place(x=225, y=630)
-set127 = tkinter.Button(self, bg=dark_main, borderwidth=0, activebackground=dark_main, image=image_list_set2['127'],
-                        command=lambda: click_set(127));
-set127.place(x=225, y=660)  ##
-set132 = tkinter.Button(self, bg=dark_main, borderwidth=0, activebackground=dark_main, image=image_list_set2['132'],
-                        command=lambda: click_set(132));
-set132.place(x=421, y=570)
-set133 = tkinter.Button(self, bg=dark_main, borderwidth=0, activebackground=dark_main, image=image_list_set2['133'],
-                        command=lambda: click_set(133));
-set133.place(x=421, y=600)
-set134 = tkinter.Button(self, bg=dark_main, borderwidth=0, activebackground=dark_main, image=image_list_set2['134'],
-                        command=lambda: click_set(134));
-set134.place(x=421, y=630)
-set135 = tkinter.Button(self, bg=dark_main, borderwidth=0, activebackground=dark_main, image=image_list_set2['135'],
-                        command=lambda: click_set(135));
-set135.place(x=421, y=660)  ##
+    # 套装名称图标坐标
+    def get_x_y_for_set(set_code):
+        if set_code in range(1,15+1):
+            # 防具五件套
+            return 29, 100+30*(set_code-1)
+        elif set_code in range(16, 19+1):
+            # 首饰
+            return 320-33, 100 + 30*(set_code-16)
+        elif set_code in range(20, 23+1):
+            # 特殊装备
+            return 500 - 17, 100 + 30*(set_code-20)
+        elif set_code in range(24, 27+1):
+            # 散件（中）
+            return 225, 570 + 30*(set_code-24)
+        elif set_code in range(28, 31+1):
+            # 散件（左）
+            return 29, 570 + 30*(set_code-28)
+        elif set_code in range(32, 35+1):
+            # 散件（右）
+            return 421, 570 + 30*(set_code-32)
+        else:
+            raise Exception()
 
-##지혜의 산물
-know_image = PhotoImage(file="set_name/know_name.png")
-tkinter.Label(self, bg=dark_main, image=know_image).place(x=302, y=520)
-select_item['tg13390150'] = 0;
-select_13390150 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                                 image=image_list2['13390150'], command=lambda: click_equipment(13390150))
-select_13390150.place(x=403, y=520)
-select_item['tg22390240'] = 0;
-select_22390240 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                                 image=image_list2['22390240'], command=lambda: click_equipment(22390240))
-select_22390240.place(x=433, y=520)
-select_item['tg23390450'] = 0;
-select_23390450 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                                 image=image_list2['23390450'], command=lambda: click_equipment(23390450))
-select_23390450.place(x=463, y=520)
-select_item['tg33390750'] = 0;
-select_33390750 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                                 image=image_list2['33390750'], command=lambda: click_equipment(33390750))
-select_33390750.place(x=493, y=520)
+    for set_code in range(1, 35+1):
+        exec("""set1{0:02} = tkinter.Button(self, bg=dark_main, borderwidth=0, activebackground=dark_main, image=image_list_set2['1{0:02}'],command=lambda: click_set(1{0:02}))""".format(set_code))
+        x, y = get_x_y_for_set(set_code)
+        exec("""set1{0:02}.place(x={1}, y={2})""".format(set_code, x, y))
 
-select_item['tg21400340'] = 0;
-select_21400340 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                                 image=image_list2['21400340'], command=lambda: click_equipment(21400340))
-select_21400340.place(x=524, y=520)
-select_item['tg31400540'] = 0;
-select_31400540 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                                 image=image_list2['31400540'], command=lambda: click_equipment(31400540))
-select_31400540.place(x=554, y=520)
-select_item['tg32410650'] = 0;
-select_32410650 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                                 image=image_list2['32410650'], command=lambda: click_equipment(32410650))
-select_32410650.place(x=584, y=520)
+    ##智慧产物
+    know_image = PhotoImage(file="set_name/know_name.png")
+    tkinter.Label(self, bg=dark_main, image=know_image).place(x=302, y=520)
 
-##상의
-select_item['tg11010'] = 0;
-select_11010 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['11010'], command=lambda: click_equipment(11010))
-select_11010.place(x=100, y=100)
-select_item['tg11011'] = 0;
-select_11011 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['11011'], command=lambda: click_equipment(11011))
-select_11011.place(x=130, y=100)
-select_item['tg11020'] = 0;
-select_11020 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['11020'], command=lambda: click_equipment(11020))
-select_11020.place(x=100, y=130)
-select_item['tg11021'] = 0;
-select_11021 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['11021'], command=lambda: click_equipment(11021))
-select_11021.place(x=130, y=130)
-select_item['tg11030'] = 0;
-select_11030 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['11030'], command=lambda: click_equipment(11030))
-select_11030.place(x=100, y=160)
-select_item['tg11031'] = 0;
-select_11031 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['11031'], command=lambda: click_equipment(11031))
-select_11031.place(x=130, y=160)
-select_item['tg11040'] = 0;
-select_11040 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['11040'], command=lambda: click_equipment(11040))
-select_11040.place(x=100, y=190)
-select_item['tg11041'] = 0;
-select_11041 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['11041'], command=lambda: click_equipment(11041))
-select_11041.place(x=130, y=190)
-select_item['tg11050'] = 0;
-select_11050 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['11050'], command=lambda: click_equipment(11050))
-select_11050.place(x=100, y=220)
-select_item['tg11051'] = 0;
-select_11051 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['11051'], command=lambda: click_equipment(11051))
-select_11051.place(x=130, y=220)
-select_item['tg11060'] = 0;
-select_11060 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['11060'], command=lambda: click_equipment(11060))
-select_11060.place(x=100, y=250)
-select_item['tg11061'] = 0;
-select_11061 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['11061'], command=lambda: click_equipment(11061))
-select_11061.place(x=130, y=250)
-select_item['tg11070'] = 0;
-select_11070 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['11070'], command=lambda: click_equipment(11070))
-select_11070.place(x=100, y=280)
-select_item['tg11071'] = 0;
-select_11071 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['11071'], command=lambda: click_equipment(11071))
-select_11071.place(x=130, y=280)
-select_item['tg11080'] = 0;
-select_11080 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['11080'], command=lambda: click_equipment(11080))
-select_11080.place(x=100, y=310)
-select_item['tg11081'] = 0;
-select_11081 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['11081'], command=lambda: click_equipment(11081))
-select_11081.place(x=130, y=310)
-select_item['tg11090'] = 0;
-select_11090 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['11090'], command=lambda: click_equipment(11090))
-select_11090.place(x=100, y=340)
-select_item['tg11091'] = 0;
-select_11091 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['11091'], command=lambda: click_equipment(11091))
-select_11091.place(x=130, y=340)
-select_item['tg11100'] = 0;
-select_11100 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['11100'], command=lambda: click_equipment(11100))
-select_11100.place(x=100, y=370)
-select_item['tg11101'] = 0;
-select_11101 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['11101'], command=lambda: click_equipment(11101))
-select_11101.place(x=130, y=370)
-select_item['tg11110'] = 0;
-select_11110 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['11110'], command=lambda: click_equipment(11110))
-select_11110.place(x=100, y=400)
-select_item['tg11111'] = 0;
-select_11111 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['11111'], command=lambda: click_equipment(11111))
-select_11111.place(x=130, y=400)
-select_item['tg11120'] = 0;
-select_11120 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['11120'], command=lambda: click_equipment(11120))
-select_11120.place(x=100, y=430)
-select_item['tg11121'] = 0;
-select_11121 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['11121'], command=lambda: click_equipment(11121))
-select_11121.place(x=130, y=430)
-select_item['tg11130'] = 0;
-select_11130 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['11130'], command=lambda: click_equipment(11130))
-select_11130.place(x=100, y=460)
-select_item['tg11131'] = 0;
-select_11131 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['11131'], command=lambda: click_equipment(11131))
-select_11131.place(x=130, y=460)
-select_item['tg11140'] = 0;
-select_11140 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['11140'], command=lambda: click_equipment(11140))
-select_11140.place(x=100, y=490)
-select_item['tg11141'] = 0;
-select_11141 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['11141'], command=lambda: click_equipment(11141))
-select_11141.place(x=130, y=490)
-select_item['tg11150'] = 0;
-select_11150 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['11150'], command=lambda: click_equipment(11150))
-select_11150.place(x=100, y=520)
-select_item['tg11151'] = 0;
-select_11151 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['11151'], command=lambda: click_equipment(11151))
-select_11151.place(x=130, y=520)
+    know_item_list = [13390150, 22390240, 23390450, 33390750, 21400340, 31400540, 32410650]
 
-select_item['tg11280'] = 0;
-select_11280 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['11280'], command=lambda: click_equipment(11280))
-select_11280.place(x=100, y=570)
-select_item['tg11281'] = 0;
-select_11281 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['11281'], command=lambda: click_equipment(11281))
-select_11281.place(x=130, y=570)
-select_item['tg11290'] = 0;
-select_11290 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['11290'], command=lambda: click_equipment(11290))
-select_11290.place(x=100, y=600)
-select_item['tg11291'] = 0;
-select_11291 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['11291'], command=lambda: click_equipment(11291))
-select_11291.place(x=130, y=600)
-select_item['tg11300'] = 0;
-select_11300 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['11300'], command=lambda: click_equipment(11300))
-select_11300.place(x=100, y=630)
-select_item['tg11301'] = 0;
-select_11301 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['11301'], command=lambda: click_equipment(11301))
-select_11301.place(x=130, y=630)
-select_item['tg11310'] = 0;
-select_11310 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['11310'], command=lambda: click_equipment(11310))
-select_11310.place(x=100, y=660)
-select_item['tg11311'] = 0;
-select_11311 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['11311'], command=lambda: click_equipment(11311))
-select_11311.place(x=130, y=660)
-##하의
-select_item['tg12010'] = 0;
-select_12010 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['12010'], command=lambda: click_equipment(12010))
-select_12010.place(x=161, y=100)
-select_item['tg12020'] = 0;
-select_12020 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['12020'], command=lambda: click_equipment(12020))
-select_12020.place(x=161, y=130)
-select_item['tg12030'] = 0;
-select_12030 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['12030'], command=lambda: click_equipment(12030))
-select_12030.place(x=161, y=160)
-select_item['tg12040'] = 0;
-select_12040 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['12040'], command=lambda: click_equipment(12040))
-select_12040.place(x=161, y=190)
-select_item['tg12050'] = 0;
-select_12050 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['12050'], command=lambda: click_equipment(12050))
-select_12050.place(x=161, y=220)
-select_item['tg12060'] = 0;
-select_12060 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['12060'], command=lambda: click_equipment(12060))
-select_12060.place(x=161, y=250)
-select_item['tg12070'] = 0;
-select_12070 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['12070'], command=lambda: click_equipment(12070))
-select_12070.place(x=161, y=280)
-select_item['tg12080'] = 0;
-select_12080 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['12080'], command=lambda: click_equipment(12080))
-select_12080.place(x=161, y=310)
-select_item['tg12090'] = 0;
-select_12090 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['12090'], command=lambda: click_equipment(12090))
-select_12090.place(x=161, y=340)
-select_item['tg12100'] = 0;
-select_12100 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['12100'], command=lambda: click_equipment(12100))
-select_12100.place(x=161, y=370)
-select_item['tg12110'] = 0;
-select_12110 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['12110'], command=lambda: click_equipment(12110))
-select_12110.place(x=161, y=400)
-select_item['tg12120'] = 0;
-select_12120 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['12120'], command=lambda: click_equipment(12120))
-select_12120.place(x=161, y=430)
-select_item['tg12130'] = 0;
-select_12130 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['12130'], command=lambda: click_equipment(12130))
-select_12130.place(x=161, y=460)
-select_item['tg12140'] = 0;
-select_12140 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['12140'], command=lambda: click_equipment(12140))
-select_12140.place(x=161, y=490)
-select_item['tg12150'] = 0;
-select_12150 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['12150'], command=lambda: click_equipment(12150))
-select_12150.place(x=161, y=520)
-select_item['tg12240'] = 0;
-select_12240 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['12240'], command=lambda: click_equipment(12240))
-select_12240.place(x=296, y=570)
-select_item['tg12250'] = 0;
-select_12250 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['12250'], command=lambda: click_equipment(12250))
-select_12250.place(x=296, y=600)
-select_item['tg12260'] = 0;
-select_12260 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['12260'], command=lambda: click_equipment(12260))
-select_12260.place(x=296, y=630)
-select_item['tg12270'] = 0;
-select_12270 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['12270'], command=lambda: click_equipment(12270))
-select_12270.place(x=296, y=660)
-##어깨
-select_item['tg13010'] = 0;
-select_13010 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['13010'], command=lambda: click_equipment(13010))
-select_13010.place(x=192, y=100)
-select_item['tg13020'] = 0;
-select_13020 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['13020'], command=lambda: click_equipment(13020))
-select_13020.place(x=192, y=130)
-select_item['tg13030'] = 0;
-select_13030 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['13030'], command=lambda: click_equipment(13030))
-select_13030.place(x=192, y=160)
-select_item['tg13040'] = 0;
-select_13040 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['13040'], command=lambda: click_equipment(13040))
-select_13040.place(x=192, y=190)
-select_item['tg13050'] = 0;
-select_13050 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['13050'], command=lambda: click_equipment(13050))
-select_13050.place(x=192, y=220)
-select_item['tg13060'] = 0;
-select_13060 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['13060'], command=lambda: click_equipment(13060))
-select_13060.place(x=192, y=250)
-select_item['tg13070'] = 0;
-select_13070 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['13070'], command=lambda: click_equipment(13070))
-select_13070.place(x=192, y=280)
-select_item['tg13080'] = 0;
-select_13080 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['13080'], command=lambda: click_equipment(13080))
-select_13080.place(x=192, y=310)
-select_item['tg13090'] = 0;
-select_13090 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['13090'], command=lambda: click_equipment(13090))
-select_13090.place(x=192, y=340)
-select_item['tg13100'] = 0;
-select_13100 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['13100'], command=lambda: click_equipment(13100))
-select_13100.place(x=192, y=370)
-select_item['tg13110'] = 0;
-select_13110 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['13110'], command=lambda: click_equipment(13110))
-select_13110.place(x=192, y=400)
-select_item['tg13120'] = 0;
-select_13120 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['13120'], command=lambda: click_equipment(13120))
-select_13120.place(x=192, y=430)
-select_item['tg13130'] = 0;
-select_13130 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['13130'], command=lambda: click_equipment(13130))
-select_13130.place(x=192, y=460)
-select_item['tg13140'] = 0;
-select_13140 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['13140'], command=lambda: click_equipment(13140))
-select_13140.place(x=192, y=490)
-select_item['tg13150'] = 0;
-select_13150 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['13150'], command=lambda: click_equipment(13150))
-select_13150.place(x=192, y=520)
-##벨트
-select_item['tg14010'] = 0;
-select_14010 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['14010'], command=lambda: click_equipment(14010))
-select_14010.place(x=223, y=100)
-select_item['tg14020'] = 0;
-select_14020 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['14020'], command=lambda: click_equipment(14020))
-select_14020.place(x=223, y=130)
-select_item['tg14030'] = 0;
-select_14030 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['14030'], command=lambda: click_equipment(14030))
-select_14030.place(x=223, y=160)
-select_item['tg14040'] = 0;
-select_14040 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['14040'], command=lambda: click_equipment(14040))
-select_14040.place(x=223, y=190)
-select_item['tg14050'] = 0;
-select_14050 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['14050'], command=lambda: click_equipment(14050))
-select_14050.place(x=223, y=220)
-select_item['tg14060'] = 0;
-select_14060 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['14060'], command=lambda: click_equipment(14060))
-select_14060.place(x=223, y=250)
-select_item['tg14070'] = 0;
-select_14070 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['14070'], command=lambda: click_equipment(14070))
-select_14070.place(x=223, y=280)
-select_item['tg14080'] = 0;
-select_14080 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['14080'], command=lambda: click_equipment(14080))
-select_14080.place(x=223, y=310)
-select_item['tg14090'] = 0;
-select_14090 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['14090'], command=lambda: click_equipment(14090))
-select_14090.place(x=223, y=340)
-select_item['tg14100'] = 0;
-select_14100 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['14100'], command=lambda: click_equipment(14100))
-select_14100.place(x=223, y=370)
-select_item['tg14110'] = 0;
-select_14110 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['14110'], command=lambda: click_equipment(14110))
-select_14110.place(x=223, y=400)
-select_item['tg14120'] = 0;
-select_14120 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['14120'], command=lambda: click_equipment(14120))
-select_14120.place(x=223, y=430)
-select_item['tg14130'] = 0;
-select_14130 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['14130'], command=lambda: click_equipment(14130))
-select_14130.place(x=223, y=460)
-select_item['tg14140'] = 0;
-select_14140 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['14140'], command=lambda: click_equipment(14140))
-select_14140.place(x=223, y=490)
-select_item['tg14150'] = 0;
-select_14150 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['14150'], command=lambda: click_equipment(14150))
-select_14150.place(x=223, y=520)
-##신발
-select_item['tg15010'] = 0;
-select_15010 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['15010'], command=lambda: click_equipment(15010))
-select_15010.place(x=254, y=100)
-select_item['tg15020'] = 0;
-select_15020 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['15020'], command=lambda: click_equipment(15020))
-select_15020.place(x=254, y=130)
-select_item['tg15030'] = 0;
-select_15030 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['15030'], command=lambda: click_equipment(15030))
-select_15030.place(x=254, y=160)
-select_item['tg15040'] = 0;
-select_15040 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['15040'], command=lambda: click_equipment(15040))
-select_15040.place(x=254, y=190)
-select_item['tg15050'] = 0;
-select_15050 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['15050'], command=lambda: click_equipment(15050))
-select_15050.place(x=254, y=220)
-select_item['tg15060'] = 0;
-select_15060 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['15060'], command=lambda: click_equipment(15060))
-select_15060.place(x=254, y=250)
-select_item['tg15070'] = 0;
-select_15070 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['15070'], command=lambda: click_equipment(15070))
-select_15070.place(x=254, y=280)
-select_item['tg15080'] = 0;
-select_15080 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['15080'], command=lambda: click_equipment(15080))
-select_15080.place(x=254, y=310)
-select_item['tg15090'] = 0;
-select_15090 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['15090'], command=lambda: click_equipment(15090))
-select_15090.place(x=254, y=340)
-select_item['tg15100'] = 0;
-select_15100 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['15100'], command=lambda: click_equipment(15100))
-select_15100.place(x=254, y=370)
-select_item['tg15110'] = 0;
-select_15110 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['15110'], command=lambda: click_equipment(15110))
-select_15110.place(x=254, y=400)
-select_item['tg15120'] = 0;
-select_15120 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['15120'], command=lambda: click_equipment(15120))
-select_15120.place(x=254, y=430)
-select_item['tg15130'] = 0;
-select_15130 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['15130'], command=lambda: click_equipment(15130))
-select_15130.place(x=254, y=460)
-select_item['tg15140'] = 0;
-select_15140 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['15140'], command=lambda: click_equipment(15140))
-select_15140.place(x=254, y=490)
-select_item['tg15150'] = 0;
-select_15150 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['15150'], command=lambda: click_equipment(15150))
-select_15150.place(x=254, y=520)
-select_item['tg15320'] = 0;
-select_15320 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['15320'], command=lambda: click_equipment(15320))
-select_15320.place(x=492, y=570)
-select_item['tg15330'] = 0;
-select_15330 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['15330'], command=lambda: click_equipment(15330))
-select_15330.place(x=492, y=600)
-select_item['tg15340'] = 0;
-select_15340 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['15340'], command=lambda: click_equipment(15340))
-select_15340.place(x=492, y=630)
-select_item['tg15350'] = 0;
-select_15350 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['15350'], command=lambda: click_equipment(15350))
-select_15350.place(x=492, y=660)
-##팔찌
-select_item['tg21160'] = 0;
-select_21160 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['21160'], command=lambda: click_equipment(21160))
-select_21160.place(x=370 - 12, y=100)
-select_item['tg21161'] = 0;
-select_21161 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['21161'], command=lambda: click_equipment(21161))
-select_21161.place(x=370 - 12 + 30, y=100)
-select_item['tg21170'] = 0;
-select_21170 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['21170'], command=lambda: click_equipment(21170))
-select_21170.place(x=370 - 12, y=130)
-select_item['tg21171'] = 0;
-select_21171 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['21171'], command=lambda: click_equipment(21171))
-select_21171.place(x=370 - 12 + 30, y=130)
-select_item['tg21180'] = 0;
-select_21180 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['21180'], command=lambda: click_equipment(21180))
-select_21180.place(x=370 - 12, y=160)
-select_item['tg21181'] = 0;
-select_21181 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['21181'], command=lambda: click_equipment(21181))
-select_21181.place(x=370 - 12 + 30, y=160)
-select_item['tg21190'] = 0;
-select_21190 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['21190'], command=lambda: click_equipment(21190))
-select_21190.place(x=370 - 12, y=190)
-select_item['tg21191'] = 0;
-select_21191 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['21191'], command=lambda: click_equipment(21191))
-select_21191.place(x=370 - 12 + 30, y=190)
-select_item['tg21240'] = 0;
-select_21240 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['21240'], command=lambda: click_equipment(21240))
-select_21240.place(x=327, y=570)
-select_item['tg21241'] = 0;
-select_21241 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['21241'], command=lambda: click_equipment(21241))
-select_21241.place(x=357, y=570)
-select_item['tg21250'] = 0;
-select_21250 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['21250'], command=lambda: click_equipment(21250))
-select_21250.place(x=327, y=600)
-select_item['tg21251'] = 0;
-select_21251 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['21251'], command=lambda: click_equipment(21251))
-select_21251.place(x=357, y=600)
-select_item['tg21260'] = 0;
-select_21260 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['21260'], command=lambda: click_equipment(21260))
-select_21260.place(x=327, y=630)
-select_item['tg21261'] = 0;
-select_21261 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['21261'], command=lambda: click_equipment(21261))
-select_21261.place(x=357, y=630)
-select_item['tg21270'] = 0;
-select_21270 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['21270'], command=lambda: click_equipment(21270))
-select_21270.place(x=327, y=660)
-select_item['tg21271'] = 0;
-select_21271 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['21271'], command=lambda: click_equipment(21271))
-select_21271.place(x=357, y=660)
-##목걸이
-select_item['tg22160'] = 0;
-select_22160 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['22160'], command=lambda: click_equipment(22160))
-select_22160.place(x=419, y=100)
-select_item['tg22170'] = 0;
-select_22170 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['22170'], command=lambda: click_equipment(22170))
-select_22170.place(x=419, y=130)
-select_item['tg22180'] = 0;
-select_22180 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['22180'], command=lambda: click_equipment(22180))
-select_22180.place(x=419, y=160)
-select_item['tg22190'] = 0;
-select_22190 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['22190'], command=lambda: click_equipment(22190))
-select_22190.place(x=419, y=190)
-select_item['tg22280'] = 0;
-select_22280 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['22280'], command=lambda: click_equipment(22280))
-select_22280.place(x=161, y=570)
-select_item['tg22290'] = 0;
-select_22290 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['22290'], command=lambda: click_equipment(22290))
-select_22290.place(x=161, y=600)
-select_item['tg22300'] = 0;
-select_22300 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['22300'], command=lambda: click_equipment(22300))
-select_22300.place(x=161, y=630)
-select_item['tg22310'] = 0;
-select_22310 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['22310'], command=lambda: click_equipment(22310))
-select_22310.place(x=161, y=660)
-##반지
-select_item['tg23160'] = 0;
-select_23160 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['23160'], command=lambda: click_equipment(23160))
-select_23160.place(x=450, y=100)
-select_item['tg23170'] = 0;
-select_23170 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['23170'], command=lambda: click_equipment(23170))
-select_23170.place(x=450, y=130)
-select_item['tg23180'] = 0;
-select_23180 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['23180'], command=lambda: click_equipment(23180))
-select_23180.place(x=450, y=160)
-select_item['tg23190'] = 0;
-select_23190 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['23190'], command=lambda: click_equipment(23190))
-select_23190.place(x=450, y=190)
-select_item['tg23320'] = 0;
-select_23320 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['23320'], command=lambda: click_equipment(23320))
-select_23320.place(x=523, y=570)
-select_item['tg23330'] = 0;
-select_23330 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['23330'], command=lambda: click_equipment(23330))
-select_23330.place(x=523, y=600)
-select_item['tg23340'] = 0;
-select_23340 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['23340'], command=lambda: click_equipment(23340))
-select_23340.place(x=523, y=630)
-select_item['tg23350'] = 0;
-select_23350 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['23350'], command=lambda: click_equipment(23350))
-select_23350.place(x=523, y=660)
-##보조장비
-select_item['tg31200'] = 0;
-select_31200 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['31200'], command=lambda: click_equipment(31200))
-select_31200.place(x=554, y=100)
-select_item['tg31210'] = 0;
-select_31210 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['31210'], command=lambda: click_equipment(31210))
-select_31210.place(x=554, y=130)
-select_item['tg31220'] = 0;
-select_31220 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['31220'], command=lambda: click_equipment(31220))
-select_31220.place(x=554, y=160)
-select_item['tg31230'] = 0;
-select_31230 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['31230'], command=lambda: click_equipment(31230))
-select_31230.place(x=554, y=190)
-select_item['tg31280'] = 0;
-select_31280 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['31280'], command=lambda: click_equipment(31280))
-select_31280.place(x=192, y=570)
-select_item['tg31290'] = 0;
-select_31290 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['31290'], command=lambda: click_equipment(31290))
-select_31290.place(x=192, y=600)
-select_item['tg31300'] = 0;
-select_31300 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['31300'], command=lambda: click_equipment(31300))
-select_31300.place(x=192, y=630)
-select_item['tg31310'] = 0;
-select_31310 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['31310'], command=lambda: click_equipment(31310))
-select_31310.place(x=192, y=660)
-##마법석
-select_item['tg32200'] = 0;
-select_32200 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['32200'], command=lambda: click_equipment(32200))
-select_32200.place(x=585, y=100)
-select_item['tg32210'] = 0;
-select_32210 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['32210'], command=lambda: click_equipment(32210))
-select_32210.place(x=585, y=130)
-select_item['tg32220'] = 0;
-select_32220 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['32220'], command=lambda: click_equipment(32220))
-select_32220.place(x=585, y=160)
-select_item['tg32230'] = 0;
-select_32230 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['32230'], command=lambda: click_equipment(32230))
-select_32230.place(x=585, y=190)
-select_item['tg32240'] = 0;
-select_32240 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['32240'], command=lambda: click_equipment(32240))
-select_32240.place(x=388, y=570)
-select_item['tg32250'] = 0;
-select_32250 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['32250'], command=lambda: click_equipment(32250))
-select_32250.place(x=388, y=600)
-select_item['tg32260'] = 0;
-select_32260 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['32260'], command=lambda: click_equipment(32260))
-select_32260.place(x=388, y=630)
-select_item['tg32270'] = 0;
-select_32270 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['32270'], command=lambda: click_equipment(32270))
-select_32270.place(x=388, y=660)
-##귀걸이
-select_item['tg33200'] = 0;
-select_33200 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['33200'], command=lambda: click_equipment(33200))
-select_33200.place(x=616, y=100)
-select_item['tg33201'] = 0;
-select_33201 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['33201'], command=lambda: click_equipment(33201))
-select_33201.place(x=646, y=100)
-select_item['tg33210'] = 0;
-select_33210 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['33210'], command=lambda: click_equipment(33210))
-select_33210.place(x=616, y=130)
-select_item['tg33211'] = 0;
-select_33211 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['33211'], command=lambda: click_equipment(33211))
-select_33211.place(x=646, y=130)
-select_item['tg33220'] = 0;
-select_33220 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['33220'], command=lambda: click_equipment(33220))
-select_33220.place(x=616, y=160)
-select_item['tg33221'] = 0;
-select_33221 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['33221'], command=lambda: click_equipment(33221))
-select_33221.place(x=646, y=160)
-select_item['tg33230'] = 0;
-select_33230 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['33230'], command=lambda: click_equipment(33230))
-select_33230.place(x=616, y=190)
-select_item['tg33231'] = 0;
-select_33231 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['33231'], command=lambda: click_equipment(33231))
-select_33231.place(x=646, y=190)
-select_item['tg33320'] = 0;
-select_33320 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['33320'], command=lambda: click_equipment(33320))
-select_33320.place(x=554, y=570)
-select_item['tg33321'] = 0;
-select_33321 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['33321'], command=lambda: click_equipment(33321))
-select_33321.place(x=584, y=570)
-select_item['tg33330'] = 0;
-select_33330 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['33330'], command=lambda: click_equipment(33330))
-select_33330.place(x=554, y=600)
-select_item['tg33331'] = 0;
-select_33331 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['33331'], command=lambda: click_equipment(33331))
-select_33331.place(x=584, y=600)
-select_item['tg33340'] = 0;
-select_33340 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['33340'], command=lambda: click_equipment(33340))
-select_33340.place(x=554, y=630)
-select_item['tg33341'] = 0;
-select_33341 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['33341'], command=lambda: click_equipment(33341))
-select_33341.place(x=584, y=630)
-select_item['tg33350'] = 0;
-select_33350 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['33350'], command=lambda: click_equipment(33350))
-select_33350.place(x=554, y=660)
-select_item['tg33351'] = 0;
-select_33351 = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main,
-                              image=image_list2['33351'], command=lambda: click_equipment(33351))
-select_33351.place(x=584, y=660)
+    for idx, know_equip_index in enumerate(know_item_list):
+        exec("""select_item['tg{0}'] = 0""".format(know_equip_index))
+        exec("""select_{0} = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main, image=image_list2['{0}'], command=lambda: click_equipment({0}))""".format(know_equip_index))
+        exec("""select_{0}.place(x=403+30*({1}), y=520)""".format(know_equip_index, idx))
+
+    # 装备图标坐标
+    def get_x_y_for_equip_in_set_idx_pos(set_code, idx):
+        if set_code in range(1, 15 + 1):
+            # 防具五件套
+            return 100+31*(idx), 100 + 30 * (set_code - 1)
+        elif set_code in range(16, 19 + 1):
+            # 首饰
+            return 370 - 12+31*(idx), 100 + 30 * (set_code - 16)
+        elif set_code in range(20, 23 + 1):
+            # 特殊装备
+            return 554+31*(idx), 100 + 30 * (set_code - 20)
+        elif set_code in range(24, 27 + 1):
+            # 散件（中）
+            return 296+31*(idx), 570 + 30 * (set_code - 24)
+        elif set_code in range(28, 31 + 1):
+            # 散件（左）
+            return 100+31*(idx), 570 + 30 * (set_code - 28)
+        elif set_code in range(32, 35 + 1):
+            # 散件（右）
+            return 492+31*(idx), 570 + 30 * (set_code - 32)
+        else:
+            raise Exception()
+
+
+    ##装备
+    set_slots = [
+        (1, 15, [(11,0),(11,1),(12,0),(13,0),(14,0),(15,0)]), # 防具五件套
+        (16, 19, [(21, 0), (21, 1), (22, 0), (23, 0)]), # 首饰
+        (20, 23, [(31, 0), (32, 0), (33, 0), (33, 1)]), # 特殊装备
+        (24, 27, [(12, 0), (21, 0), (21, 1), (32, 0)]), # 散件（中）
+        (28, 31, [(11, 0), (11, 1), (22, 0), (31, 0)]), # 散件（左）
+        (32, 35, [(15, 0), (23, 0), (33, 0), (33, 1)]), # 散件（右）
+    ]
+
+    for set_slot in set_slots:
+        set_code_start = set_slot[0]
+        set_code_end = set_slot[1]
+        set_slot_info = set_slot[2]
+        for set_code in range(set_code_start, set_code_end + 1):
+            for idx, val in enumerate(set_slot_info):
+                slot, god = val
+                equip_index = "{0:02}{1:02}{2:1}".format(slot, set_code, god)
+                x, y = get_x_y_for_equip_in_set_idx_pos(set_code, idx)
+
+                exec("""select_item['tg{0}'] = 0""".format(equip_index))
+                exec("""select_{0} = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main, image=image_list2['{0}'], command=lambda: click_equipment({0}))""".format(equip_index))
+                exec("""select_{0}.place(x={1}, y={2})""".format(equip_index, x, y))
+
 
 donate_image = PhotoImage(file='ext_img/donate.png')
 donate_bt = tkinter.Button(self, image=donate_image, command=donate, borderwidth=0, bg=dark_main,
