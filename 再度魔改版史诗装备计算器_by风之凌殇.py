@@ -15,6 +15,8 @@ import webbrowser
 from collections import Counter
 from math import floor
 
+import PIL.Image
+import PIL.ImageTk
 import numpy as np
 import requests
 from openpyxl import load_workbook, Workbook
@@ -1847,6 +1849,8 @@ def show_result(rank_list, job_type, ele_skill):
         result_bg = tkinter.PhotoImage(file='ext_img/bg_result2.png')
     canvas_res.create_image(canvas_width // 2, canvas_height // 2, image=result_bg)
 
+    gif_image_ids.clear()
+
     global image_list, image_list2
     global res_img11, res_img12, res_img13, res_img14, res_img15, res_img21, res_img22, res_img23, res_img31, res_img32, res_img33, res_txtbbgs, res_imgbbgs, wep_combopicker, jobup_select, res_txt_weapon
 
@@ -1974,6 +1978,9 @@ def show_result(rank_list, job_type, ele_skill):
         res_img31 = canvas_res.create_image(189, 87, image=result_image_on[0]['31'])  # 辅助装备
         res_img32 = canvas_res.create_image(219, 117, image=result_image_on[0]['32'])  # 魔法石
         res_img33 = canvas_res.create_image(189, 117, image=result_image_on[0]['33'])  # 耳环
+        gif_image_ids.extend([res_img11, res_img12, res_img13, res_img14, res_img15])
+        gif_image_ids.extend([res_img21, res_img22, res_img23])
+        gif_image_ids.extend([res_img31, res_img32, res_img33])
         res_txtbbgs = [None, None, None, None, None, None]  # 0-4 => 右边的展示区间， 5 => 左边的那个百变怪
         res_imgbbgs = [None, None, None, None, None, None]  # 0-4 => 右边的展示区间， 5 => 左边的那个百变怪
         if 'bbg' in result_image_on[0]:
@@ -1982,7 +1989,8 @@ def show_result(rank_list, job_type, ele_skill):
         cn1 = 0
         for rank in range(total_count):
             for equip_slot_index in [11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33]:
-                canvas_res.create_image(268 + cn1 * 29, 67 + 78 * rank, image=result_image_on[rank][str(equip_slot_index)])
+                res_img = canvas_res.create_image(268 + cn1 * 29, 67 + 78 * rank, image=result_image_on[rank][str(equip_slot_index)])
+                gif_image_ids.append(res_img)
                 cn1 = cn1 + 1
             if 'bbg' in result_image_on[rank]:
                 # res_txtbbgs[j] = canvas_res.create_text(268 + 5 * 29 + 14, 38 + 78 * j, text="百变怪=>", font=guide_font, fill='white')
@@ -2076,6 +2084,9 @@ def show_result(rank_list, job_type, ele_skill):
         res_img31 = canvas_res.create_image(189, 87, image=result_image_ons[2][0]['31'])
         res_img32 = canvas_res.create_image(219, 117, image=result_image_ons[2][0]['32'])
         res_img33 = canvas_res.create_image(189, 117, image=result_image_ons[2][0]['33'])
+        gif_image_ids.extend([res_img11, res_img12, res_img13, res_img14, res_img15])
+        gif_image_ids.extend([res_img21, res_img22, res_img23])
+        gif_image_ids.extend([res_img31, res_img32, res_img33])
         res_txtbbgs = [None, None, None, None, None, None]  # 0-4 => 右边的展示区间， 5 => 左边的那个百变怪
         res_imgbbgs = [None, None, None, None, None, None]  # 0-4 => 右边的展示区间， 5 => 左边的那个百变怪
         if 'bbg' in result_image_ons[2][0]:
@@ -2088,6 +2099,7 @@ def show_result(rank_list, job_type, ele_skill):
             for equip_slot_index in [11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33]:
                 temp_res = canvas_res.create_image(268 + cn1 * 29, 67 + 78 * rank, image=result_image_ons[2][rank][str(equip_slot_index)])
                 res_img_list[str(rank) + str(equip_slot_index)] = temp_res
+                gif_image_ids.append(temp_res)
                 cn1 = cn1 + 1
             if 'bbg' in result_image_ons[2][rank]:
                 res_txtbbgs[rank] = canvas_res.create_text(268 + 5 * 29 + 14, 38 + 78 * rank, text="百变怪=>", font=guide_font, fill='white')
@@ -3138,11 +3150,47 @@ def check_update_on_start():
         logger.error("更新版本失败, 错误为{}".format(err))
 
 
+# # tk image实例的名称与文件名的映射
+# tkimage_name_2_filename = {}
+# # gif文件的帧列表
+# gif_frames = {}
+
+def gif_ticker():
+    global canvas_res
+    frame_index = 0
+    while True:
+        try:
+            for btn in gif_buttons:
+                image_filename = tkimage_name_2_filename[btn["image"]]
+                if not image_filename.endswith(".gif"):
+                    continue
+                frames = gif_frames[image_filename]
+                btn["image"] = frames[frame_index % len(frames)]
+
+            try:
+                for image_id in gif_image_ids:
+                    image_filename = tkimage_name_2_filename[canvas_res.itemcget(image_id, "image")]
+                    if not image_filename.endswith(".gif"):
+                        continue
+                    frames = gif_frames[image_filename]
+                    canvas_res.itemconfig(image_id, image=frames[frame_index % len(frames)])
+            except Exception as error:
+                pass
+
+            frame_index += 1
+            time.sleep(0.1)
+        except:
+            time.sleep(1)
+            continue
+    pass
+
+
 def update_thread():
     threading.Thread(target=update_count, daemon=True).start()
     threading.Thread(target=display_realtime_counting_info, daemon=True).start()
     threading.Thread(target=load_checklist_on_start, daemon=True).start()
     threading.Thread(target=check_update_on_start, daemon=True).start()
+    threading.Thread(target=gif_ticker, daemon=True).start()
 
 
 def reset():
@@ -3643,6 +3691,7 @@ def get_job_allowed_weapons(job_name: str):
 
     return allowed_weapons
 
+
 if __name__ == '__main__':
     # 某职业已选择的武器列表
     job_selected_weapons = {}
@@ -3667,6 +3716,7 @@ def set_job_weapons():
 def on_job_selected(event):
     set_job_weapons()
 
+
 def reload_config_and_setting():
     load_config()
     load_settings()
@@ -3680,6 +3730,18 @@ current_save_name_index = 0
 def on_save_select_change(event):
     global current_save_name_index
     current_save_name_index = event.widget.current()
+
+
+def get_gif_frames(gif_path):
+    im = PIL.Image.open(gif_path)
+    frames = []
+    for f in range(im.n_frames):
+        im.seek(f)
+        photoframe = PIL.ImageTk.PhotoImage(im.copy().convert('RGBA'), name="{}_frame_{}".format(gif_path, f))
+        frames.append(photoframe)
+
+    return frames
+
 
 if __name__ == '__main__':
     ###########################################################
@@ -3707,6 +3769,13 @@ if __name__ == '__main__':
     image_list2 = {}
     image_list_set = {}
     image_list_set2 = {}
+    # tk image实例的名称与文件名的映射
+    tkimage_name_2_filename = {}
+    # gif文件的帧列表
+    gif_frames = {}
+    # gif按钮列表
+    gif_buttons = []
+    gif_image_ids = []
 
     # 读取装备图片
     # 通过遍历文件夹来实现加载所需的图片，而不是穷举所有可能，最后导致启动时要卡顿两秒，根据测试，目前读取图片共使用0:00:01.780298秒, 总共尝试加载6749个， 有效的加载为351个
@@ -3714,7 +3783,8 @@ if __name__ == '__main__':
     for filename in os.listdir(image_directory):
         # 示例文件：22390240f.png
         index = filename[:-5]  # 装备的key(除去后五位后剩余的字符串)：22390240
-        newImage = PhotoImage(file="image/{}".format(filename))  #
+        file_path = "image/{}".format(filename)
+        newImage = PhotoImage(file=file_path, name=filename)  #
         if filename[-5] == "n":  # 根据倒数第五位决定使用哪个list
             # 神话装备会有三个文件，以11011为例，分别为11011f.png/11011n.gif/11011n.png，其中后面两个为点亮时的样式，
             # 为了跟原版一致，当是神话装备时，加载点亮样式时，优先使用gif版本的
@@ -3723,6 +3793,13 @@ if __name__ == '__main__':
             image_list[index] = newImage
         else:
             image_list2[index] = newImage
+
+        tkimage_name_2_filename[newImage.name] = filename
+        if filename.endswith(".gif"):
+            frames = get_gif_frames(file_path)
+            gif_frames[filename] = frames
+            for frame in frames:
+                tkimage_name_2_filename[str(frame)] = filename
 
     # 读取套装图片
     for set_code in range(1, 36):
@@ -3760,7 +3837,6 @@ if __name__ == '__main__':
     time_select.set(shuchu_times[0])
     time_select.place(x=390 - 17, y=220 + 52)
 
-
     # 武器选择
     wep_image = PhotoImage(file="ext_img/wep.png")
     wep_g = tkinter.Label(self, image=wep_image, borderwidth=0, activebackground=dark_main, bg=dark_main)
@@ -3768,8 +3844,6 @@ if __name__ == '__main__':
     wep_combopicker = Combopicker(self, entrywidth=30)
     wep_combopicker.on_change = on_weapon_change
     wep_combopicker.place(x=110, y=60)
-
-
 
     jobup_select = tkinter.ttk.Combobox(self, width=13, values=jobs)
     jobup_select.set(jobs[0])
@@ -3802,8 +3876,6 @@ if __name__ == '__main__':
     stop_img = PhotoImage(file="ext_img/stop.png")
     tkinter.Button(self, image=stop_img, borderwidth=0, activebackground=dark_main, command=stop_calc, bg=dark_main).place(
         x=390 - 35, y=62)
-
-
 
     # 更多国服特色
     reload_config_and_setting_img = PhotoImage(file="ext_img/reload_config_and_setting.png")
@@ -3875,30 +3947,32 @@ if __name__ == '__main__':
     display_realtime_counting_info_label.place(x=430, y=480)
     showcon2 = display_realtime_counting_info_label.configure
 
+
     # 套装名称图标坐标
     def get_x_y_for_set(set_code):
-        if set_code in range(1,15+1):
+        if set_code in range(1, 15 + 1):
             # 防具五件套
-            return 29, 100+30*(set_code-1)
-        elif set_code in range(16, 19+1):
+            return 29, 100 + 30 * (set_code - 1)
+        elif set_code in range(16, 19 + 1):
             # 首饰
-            return 320-33, 100 + 30*(set_code-16)
-        elif set_code in range(20, 23+1):
+            return 320 - 33, 100 + 30 * (set_code - 16)
+        elif set_code in range(20, 23 + 1):
             # 特殊装备
-            return 500 - 17, 100 + 30*(set_code-20)
-        elif set_code in range(24, 27+1):
+            return 500 - 17, 100 + 30 * (set_code - 20)
+        elif set_code in range(24, 27 + 1):
             # 散件（中）
-            return 225, 570 + 30*(set_code-24)
-        elif set_code in range(28, 31+1):
+            return 225, 570 + 30 * (set_code - 24)
+        elif set_code in range(28, 31 + 1):
             # 散件（左）
-            return 29, 570 + 30*(set_code-28)
-        elif set_code in range(32, 35+1):
+            return 29, 570 + 30 * (set_code - 28)
+        elif set_code in range(32, 35 + 1):
             # 散件（右）
-            return 421, 570 + 30*(set_code-32)
+            return 421, 570 + 30 * (set_code - 32)
         else:
             raise Exception()
 
-    for set_code in range(1, 35+1):
+
+    for set_code in range(1, 35 + 1):
         exec("""set1{0:02} = tkinter.Button(self, bg=dark_main, borderwidth=0, activebackground=dark_main, image=image_list_set2['1{0:02}'],command=lambda: click_set(1{0:02}))""".format(set_code))
         x, y = get_x_y_for_set(set_code)
         exec("""set1{0:02}.place(x={1}, y={2})""".format(set_code, x, y))
@@ -3914,38 +3988,39 @@ if __name__ == '__main__':
         exec("""select_{0} = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main, image=image_list2['{0}'], command=lambda: click_equipment({0}))""".format(know_equip_index))
         exec("""select_{0}.place(x=403+30*({1}), y=520)""".format(know_equip_index, idx))
 
+
     # 装备图标坐标
     def get_x_y_for_equip_in_set_idx_pos(set_code, idx):
         if set_code in range(1, 15 + 1):
             # 防具五件套
-            return 100+31*(idx), 100 + 30 * (set_code - 1)
+            return 100 + 31 * (idx), 100 + 30 * (set_code - 1)
         elif set_code in range(16, 19 + 1):
             # 首饰
-            return 370 - 12+31*(idx), 100 + 30 * (set_code - 16)
+            return 370 - 12 + 31 * (idx), 100 + 30 * (set_code - 16)
         elif set_code in range(20, 23 + 1):
             # 特殊装备
-            return 554+31*(idx), 100 + 30 * (set_code - 20)
+            return 554 + 31 * (idx), 100 + 30 * (set_code - 20)
         elif set_code in range(24, 27 + 1):
             # 散件（中）
-            return 296+31*(idx), 570 + 30 * (set_code - 24)
+            return 296 + 31 * (idx), 570 + 30 * (set_code - 24)
         elif set_code in range(28, 31 + 1):
             # 散件（左）
-            return 100+31*(idx), 570 + 30 * (set_code - 28)
+            return 100 + 31 * (idx), 570 + 30 * (set_code - 28)
         elif set_code in range(32, 35 + 1):
             # 散件（右）
-            return 492+31*(idx), 570 + 30 * (set_code - 32)
+            return 492 + 31 * (idx), 570 + 30 * (set_code - 32)
         else:
             raise Exception()
 
 
     ##装备
     set_slots = [
-        (1, 15, [(11,0),(11,1),(12,0),(13,0),(14,0),(15,0)]), # 防具五件套
-        (16, 19, [(21, 0), (21, 1), (22, 0), (23, 0)]), # 首饰
-        (20, 23, [(31, 0), (32, 0), (33, 0), (33, 1)]), # 特殊装备
-        (24, 27, [(12, 0), (21, 0), (21, 1), (32, 0)]), # 散件（中）
-        (28, 31, [(11, 0), (11, 1), (22, 0), (31, 0)]), # 散件（左）
-        (32, 35, [(15, 0), (23, 0), (33, 0), (33, 1)]), # 散件（右）
+        (1, 15, [(11, 0), (11, 1), (12, 0), (13, 0), (14, 0), (15, 0)]),  # 防具五件套
+        (16, 19, [(21, 0), (21, 1), (22, 0), (23, 0)]),  # 首饰
+        (20, 23, [(31, 0), (32, 0), (33, 0), (33, 1)]),  # 特殊装备
+        (24, 27, [(12, 0), (21, 0), (21, 1), (32, 0)]),  # 散件（中）
+        (28, 31, [(11, 0), (11, 1), (22, 0), (31, 0)]),  # 散件（左）
+        (32, 35, [(15, 0), (23, 0), (33, 0), (33, 1)]),  # 散件（右）
     ]
 
     for set_slot in set_slots:
@@ -3962,6 +4037,8 @@ if __name__ == '__main__':
                 exec("""select_{0} = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main, image=image_list2['{0}'], command=lambda: click_equipment({0}))""".format(equip_index))
                 exec("""select_{0}.place(x={1}, y={2})""".format(equip_index, x, y))
 
+                if god == 1:
+                    exec("""gif_buttons.append(select_{0})""".format(equip_index))
 
 donate_image = PhotoImage(file='ext_img/donate.png')
 donate_bt = tkinter.Button(self, image=donate_image, command=donate, borderwidth=0, bg=dark_main,

@@ -6,3 +6,4 @@ openpyxl
 bugsnag
 pypiwin32
 wmi
+pillow
