@@ -18,6 +18,13 @@ max_save_count = 1000
 # 是否在点击读取存档按钮时关闭结果窗口（若存在）
 destroy_result_windows_when_click_load_checklist_button = true
 
+# 播放gif动画设置
+[gif]
+# 是否播放gif动画
+enable = true
+# 每秒播放多少帧
+frame_rate = 10
+
 [multi_threading]
 # 设置最大工作线程数，当为0时默认为当前的逻辑线程数
 max_thread = 0

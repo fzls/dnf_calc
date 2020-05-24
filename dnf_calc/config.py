@@ -51,6 +51,14 @@ class ConfigInterface(metaclass=ABCMeta):
         return str(res)
 
 
+class GifConfig(ConfigInterface):
+    def __init__(self):
+        # 是否播放gif动画
+        self.enable = True
+        # 每秒播放多少帧
+        self.frame_rate = 10
+
+
 class MultiThreadingConfig(ConfigInterface):
     def __init__(self):
         # 设置最大工作线程数，当为0时默认为当前的逻辑线程数
@@ -157,6 +165,8 @@ class Config(ConfigInterface):
         self.max_save_count = 1000
         # 是否在点击读取存档按钮时关闭结果窗口（若存在）
         self.destroy_result_windows_when_click_load_checklist_button = True
+        # 播放gif动画设置
+        self.gif = GifConfig()
         # 多线程配置
         self.multi_threading = MultiThreadingConfig()
         # 是否需要额外将输出结果导出为excel文件
@@ -205,3 +215,7 @@ def load_config(config_path="config.toml"):
 
 def config():
     return g_config
+
+if __name__ == '__main__':
+    load_config("../config.toml")
+    logger.info("gif cfg={}".format(g_config.gif))

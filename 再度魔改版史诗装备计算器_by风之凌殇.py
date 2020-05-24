@@ -3160,27 +3160,29 @@ def gif_ticker():
     frame_index = 0
     while True:
         try:
-            for btn in gif_buttons:
-                image_filename = tkimage_name_2_filename[btn["image"]]
-                if not image_filename.endswith(".gif"):
-                    continue
-                frames = gif_frames[image_filename]
-                btn["image"] = frames[frame_index % len(frames)]
-
-            try:
-                for image_id in gif_image_ids:
-                    image_filename = tkimage_name_2_filename[canvas_res.itemcget(image_id, "image")]
+            cfg = config().gif
+            if cfg.enable:
+                for btn in gif_buttons:
+                    image_filename = tkimage_name_2_filename[btn["image"]]
                     if not image_filename.endswith(".gif"):
                         continue
                     frames = gif_frames[image_filename]
-                    canvas_res.itemconfig(image_id, image=frames[frame_index % len(frames)])
-            except Exception as error:
-                pass
+                    btn["image"] = frames[frame_index % len(frames)]
+
+                try:
+                    for image_id in gif_image_ids:
+                        image_filename = tkimage_name_2_filename[canvas_res.itemcget(image_id, "image")]
+                        if not image_filename.endswith(".gif"):
+                            continue
+                        frames = gif_frames[image_filename]
+                        canvas_res.itemconfig(image_id, image=frames[frame_index % len(frames)])
+                except Exception as error:
+                    pass
 
             frame_index += 1
-            time.sleep(0.1)
+            time.sleep(1.0/cfg.frame_rate)
         except:
-            time.sleep(1)
+            time.sleep(1.0)
             continue
     pass
 
