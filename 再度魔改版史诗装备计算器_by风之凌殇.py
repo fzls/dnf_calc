@@ -1673,34 +1673,6 @@ def calc_upgrade_work_uniforms_add_counts(slots_equips, slots_not_select_equips,
 
     return total_add_counts
 
-
-main_window_width = 710
-main_window_height = 720
-main_window_x_offset = 0
-main_window_y_offset = 0
-
-other_window_x_offset = main_window_x_offset + main_window_width + 10
-
-result_window_width = 585
-result_window_readable_result_area_height = 18 * 3
-result_window_height = 402 + result_window_readable_result_area_height
-result_window_x_offset = other_window_x_offset
-result_window_y_offset = main_window_y_offset + (main_window_height - result_window_height) // 2
-
-custom_window_width = 620
-custom_window_height = 400
-custom_window_x_offset = other_window_x_offset
-custom_window_y_offset = main_window_y_offset + (main_window_height - custom_window_height) // 2
-
-change_window_width = 250
-change_window_height = 320
-change_window_x_offset = other_window_x_offset
-change_window_y_offset = main_window_y_offset + (main_window_height - change_window_height) // 2
-
-res_txt_readable_result_left_top_x = 0
-res_txt_readable_result_left_top_y = result_window_height - result_window_readable_result_area_height
-res_txt_readable_result_center_x = result_window_width // 2
-res_txt_readable_result_center_y = result_window_height - result_window_readable_result_area_height // 2
 res_txt_readable_result = None
 
 
