@@ -3420,61 +3420,6 @@ if __name__ == '__main__':
 
     load_preset0.close()
 
-
-###########################################################
-#                韩服特有的一些功能，与我们无关              #
-###########################################################
-
-def timeline_select():
-    global timeline_window
-    timeline_window = tkinter.Toplevel(self)
-    timeline_window.attributes("-topmost", True)
-    timeline_window.geometry("310x150+750+20")
-    tkinter.Label(timeline_window, text="角色名=\n(准确的)", font=guide_font).place(x=10, y=9)
-    cha_name = tkinter.Entry(timeline_window, width=13)
-    cha_name.place(x=80, y=12)
-    tkinter.Label(timeline_window, text="서버명=", font=guide_font).place(x=10, y=59)
-    sever_list = ['카인', '디레지에', '바칼', '힐더', '안톤', '카시야스', '프레이', '시로코']
-    serv_name = tkinter.ttk.Combobox(timeline_window, values=sever_list, width=11)
-    serv_name.place(x=80, y=62)
-    serv_name.set('카인')
-    load_timeline = tkinter.Button(timeline_window, command=lambda: show_timeline(cha_name.get(), serv_name.get()),
-                                   text="불러오기", font=mid_font)
-    load_timeline.place(x=200, y=25)
-    tkinter.Label(timeline_window, text="타임라인에 있는 에픽만 불러옵니다(일부X)", fg="Red").place(x=10, y=100)
-    tkinter.Label(timeline_window, text="如果服务器不稳定请多试几次", fg="Red").place(x=10, y=120)
-
-
-def show_timeline(name, server):
-    # 国服没有这个东西，干掉它，提升运行效率
-    pass
-
-
-def cha_select(jobs):
-    # 国服没有这个东西，干掉它，提升运行效率
-    pass
-
-
-def calc_my_cha(cha_name, serv_name, job_name):
-    # 国服没有这个东西，干掉它，提升运行效率
-    pass
-
-
-def cha_image(cha_code, serv_code):
-    # 国服没有这个东西，干掉它，提升运行效率
-    pass
-
-
-def show_my_cha(equipment, final_list, type_code, job_name, wep_name, ele_skill, cha_name, info_stat, *equipment2):
-    # 国服没有这个东西，干掉它，提升运行效率
-    pass
-
-
-def toggle_cha_swi():
-    # 国服没有这个东西，干掉它，提升运行效率
-    pass
-
-
 ###########################################################
 #                        ui相关变量                        #
 ###########################################################
@@ -3677,83 +3622,8 @@ def get_other_account_names():
     return [name for name in save_name_list if name != save_name_list[current_save_name_index]]
 
 
-###########################################################
-#                        tkinter初始化                    #
-###########################################################
-
-self = tkinter.Tk()
-self.title("一键史诗搭配计算器魔改版-ver" + now_version + " 魔改by风之凌殇 原创by黎明工作室（韩服）dawnclass16")
-self.geometry("{}x{}+{}+{}".format(main_window_width, main_window_height, main_window_x_offset, main_window_y_offset))
-self.resizable(config().main_window_resizable, config().main_window_resizable)
-self.configure(bg=dark_main)
-self.iconbitmap(r'ext_img/icon.ico')
-
-###########################################################
-#                      拼接ui的琐碎代码                    #
-###########################################################
-
-
-guide_font = tkinter.font.Font(family="Microsoft YaHei", size=10, weight='bold')
-mid_font = tkinter.font.Font(family="Microsoft YaHei", size=14, weight='bold')
-big_font = tkinter.font.Font(family="Microsoft YaHei", size=18, weight='bold')
-
-## 내부 구조 ##
-know_list = ['13390150', '22390240', '23390450', '33390750', '21400340', '31400540', '32410650']
-image_list = {}
-image_list2 = {}
-image_list_set = {}
-image_list_set2 = {}
-
-# 读取装备图片
-# 通过遍历文件夹来实现加载所需的图片，而不是穷举所有可能，最后导致启动时要卡顿两秒，根据测试，目前读取图片共使用0:00:01.780298秒, 总共尝试加载6749个， 有效的加载为351个
-image_directory = "image"
-for filename in os.listdir(image_directory):
-    # 示例文件：22390240f.png
-    index = filename[:-5]  # 装备的key(除去后五位后剩余的字符串)：22390240
-    newImage = PhotoImage(file="image/{}".format(filename))  #
-    if filename[-5] == "n":  # 根据倒数第五位决定使用哪个list
-        # 神话装备会有三个文件，以11011为例，分别为11011f.png/11011n.gif/11011n.png，其中后面两个为点亮时的样式，
-        # 为了跟原版一致，当是神话装备时，加载点亮样式时，优先使用gif版本的
-        if is_god(index) and index in image_list and filename.endswith(".png"):
-            continue
-        image_list[index] = newImage
-    else:
-        image_list2[index] = newImage
-
-# 读取套装图片
-for set_code in range(1, 36):
-    image_list_set[str(100 + set_code)] = eval('PhotoImage(file="set_name/{}.png")'.format(set_code + 100))
-    image_list_set2[str(100 + set_code)] = eval('PhotoImage(file="set_name/{}f.png")'.format(set_code + 100))
-
-bg_img = PhotoImage(file="ext_img/bg_img.png")
-bg_wall = tkinter.Label(self, image=bg_img)
-bg_wall.place(x=0, y=0)
-
-select_speed = tkinter.ttk.Combobox(self, values=speeds, width=15)
-select_speed.place(x=145, y=11)
-select_speed.set(speed_middle)
-
-
 def show_usage():
     webbrowser.open(os.path.realpath("./使用说明"))
-
-
-show_usage_img = PhotoImage(file="ext_img/show_usage.png")
-tkinter.Button(self, command=show_usage, image=show_usage_img, borderwidth=0, activebackground=dark_main,
-               bg=dark_main).place(x=29, y=7)
-
-reset_img = PhotoImage(file="ext_img/reset.png")
-tkinter.Button(self, command=reset, image=reset_img, borderwidth=0, activebackground=dark_main, bg=dark_main).place(
-    x=302, y=476)
-
-wep_list = []
-wep_name_to_index = {}
-for i in range(0, 76):
-    wep_index = name_one[str(i + 111001)][0]
-    wep_name = name_one[str(i + 111001)][1]
-
-    wep_list.append(wep_name)
-    wep_name_to_index[wep_name] = wep_index
 
 
 # 从武器名中提取出武器类型，如夜雨黑瞳武器、光剑-星之海：巴德纳尔、短剑-信念徽章：自由分别对应夜雨黑瞳武器、光剑、短剑
@@ -3773,29 +3643,14 @@ def get_job_allowed_weapons(job_name: str):
 
     return allowed_weapons
 
-
-# 输出时间
-shuchu_times = ['20秒(觉醒占比↑)', '60秒(觉醒占比↓)']
-time_select = tkinter.ttk.Combobox(self, width=13, values=shuchu_times)
-time_select.set(shuchu_times[0])
-time_select.place(x=390 - 17, y=220 + 52)
-
-# 某职业已选择的武器列表
-job_selected_weapons = {}
+if __name__ == '__main__':
+    # 某职业已选择的武器列表
+    job_selected_weapons = {}
 
 
 def on_weapon_change():
     global job_selected_weapons
     job_selected_weapons[jobup_select.get()] = wep_combopicker.get_selected_entrys()
-
-
-# 武器选择
-wep_image = PhotoImage(file="ext_img/wep.png")
-wep_g = tkinter.Label(self, image=wep_image, borderwidth=0, activebackground=dark_main, bg=dark_main)
-wep_g.place(x=29, y=55)
-wep_combopicker = Combopicker(self, entrywidth=30)
-wep_combopicker.on_change = on_weapon_change
-wep_combopicker.place(x=110, y=60)
 
 
 # 职业选择
@@ -3812,60 +3667,12 @@ def set_job_weapons():
 def on_job_selected(event):
     set_job_weapons()
 
-
-jobup_select = tkinter.ttk.Combobox(self, width=13, values=jobs)
-jobup_select.set(jobs[0])
-set_job_weapons()
-jobup_select.place(x=390 - 17, y=190 + 52)
-jobup_select.bind("<<ComboboxSelected>>", on_job_selected)
-
-# 称号选择
-style_list = styles()
-style_select = tkinter.ttk.Combobox(self, width=13, values=style_list)
-style_select.set(styles()[0])
-style_select.place(x=390 - 17, y=250 + 52)
-
-# 宠物选择
-creature_list = creatures()
-creature_select = tkinter.ttk.Combobox(self, width=13, values=creature_list)
-creature_select.set(creatures()[0])
-creature_select.place(x=390 - 17, y=280 + 52)
-
-# 冷却补正
-cool_list = ['X(纯伤害)', 'O(打开)']
-req_cool = tkinter.ttk.Combobox(self, width=13, values=cool_list)
-req_cool.set(cool_list[0])
-req_cool.place(x=390 - 17, y=310 + 52)
-
-calc_img = PhotoImage(file="ext_img/calc.png")
-select_all = tkinter.Button(self, image=calc_img, borderwidth=0, activebackground=dark_main, command=calc_thread,
-                            bg=dark_main)
-select_all.place(x=390 - 35, y=7)
-stop_img = PhotoImage(file="ext_img/stop.png")
-tkinter.Button(self, image=stop_img, borderwidth=0, activebackground=dark_main, command=stop_calc, bg=dark_main).place(
-    x=390 - 35, y=62)
-
-
 def reload_config_and_setting():
     load_config()
     load_settings()
     logger.info("reload_config_and_setting")
     tkinter.messagebox.showinfo("提示", "配置已重载，可继续使用")
 
-
-# 更多国服特色
-reload_config_and_setting_img = PhotoImage(file="ext_img/reload_config_and_setting.png")
-select_all = tkinter.Button(self, image=reload_config_and_setting_img, borderwidth=0, activebackground=dark_main, command=reload_config_and_setting, bg=dark_main)
-select_all.place(x=275, y=10)
-
-# timeline_img = PhotoImage(file="ext_img/timeline.png")
-# select_custom = tkinter.Button(self, image=timeline_img, borderwidth=0, activebackground=dark_main,
-#                                command=timeline_select, bg=dark_sub)
-# select_custom.place(x=345 + 165, y=340 - 100)
-custom_img = PhotoImage(file="ext_img/custom.png")
-select_custom2 = tkinter.Button(self, image=custom_img, borderwidth=0, activebackground=dark_main, command=costum,
-                                bg=dark_sub)
-select_custom2.place(x=435 + 165, y=340 - 100)
 
 current_save_name_index = 0
 
@@ -3874,66 +3681,199 @@ def on_save_select_change(event):
     global current_save_name_index
     current_save_name_index = event.widget.current()
 
+if __name__ == '__main__':
+    ###########################################################
+    #                        tkinter初始化                    #
+    ###########################################################
 
-save_select = tkinter.ttk.Combobox(self, width=8, values=save_name_list)
-save_select.place(x=345 + 165, y=410 - 100);
-save_select.set(save_name_list[0])
-save_select.bind('<<ComboboxSelected>>', on_save_select_change)
-save_img = PhotoImage(file="ext_img/SAVE.png")
-save = tkinter.Button(self, image=save_img, borderwidth=0, activebackground=dark_main, command=save_checklist,
-                      bg=dark_sub)
-save.place(x=345 + 165, y=440 - 100)
-load_img = PhotoImage(file="ext_img/LOAD.png")
-load = tkinter.Button(self, image=load_img, borderwidth=0, activebackground=dark_main, command=load_checklist,
-                      bg=dark_sub)
-load.place(x=435 + 165, y=440 - 100)
-change_name_img = PhotoImage(file="ext_img/name_change.png")
-change_list_but = tkinter.Button(self, image=change_name_img, borderwidth=0, activebackground=dark_main,
-                                 command=change_save_name, bg=dark_sub)
-change_list_but.place(x=435 + 165, y=405 - 100)
+    self = tkinter.Tk()
+    self.title("一键史诗搭配计算器魔改版-ver" + now_version + " 魔改by风之凌殇 原创by黎明工作室（韩服）dawnclass16")
+    self.geometry("{}x{}+{}+{}".format(main_window_width, main_window_height, main_window_x_offset, main_window_y_offset))
+    self.resizable(config().main_window_resizable, config().main_window_resizable)
+    self.configure(bg=dark_main)
+    self.iconbitmap(r'ext_img/icon.ico')
 
-# 百变怪选项
-txt_no_baibianguai = 'No(没有百变怪)'
-txt_has_baibianguai = 'Yes(拥有百变怪)'
-baibianguai_txt = tkinter.Label(self, text="  百变怪  ", font=guide_font, fg="white", bg=dark_sub)
-baibianguai_txt.place(x=300, y=395)
-baibianguai_select = tkinter.ttk.Combobox(self, width=13, values=[txt_no_baibianguai, txt_has_baibianguai])
-baibianguai_select.set(txt_no_baibianguai)
-baibianguai_select.place(x=390 - 17, y=395)
+    ###########################################################
+    #                      拼接ui的琐碎代码                    #
+    ###########################################################
 
-can_upgrade_work_unifrom_nums_txt = tkinter.Label(self, text="  工作服  ", font=guide_font, fg="white", bg=dark_sub)
-can_upgrade_work_unifrom_nums_txt.place(x=300, y=421)
-can_upgrade_work_unifrom_nums_select = tkinter.ttk.Combobox(self, width=13,
-                                                            values=txt_can_upgrade_work_unifrom_nums)
-can_upgrade_work_unifrom_nums_select.set(txt_can_upgrade_work_unifrom_nums[0])
-can_upgrade_work_unifrom_nums_select.place(x=390 - 17, y=421)
+    guide_font = tkinter.font.Font(family="Microsoft YaHei", size=10, weight='bold')
+    mid_font = tkinter.font.Font(family="Microsoft YaHei", size=14, weight='bold')
+    big_font = tkinter.font.Font(family="Microsoft YaHei", size=18, weight='bold')
 
-transfer_equip_txt = tkinter.Label(self, text="  跨界  ", font=guide_font, fg="white", bg=dark_sub)
-transfer_equip_txt.place(x=300, y=447)
-transfer_equip_combopicker = Combopicker(self, values=get_other_account_names(), entrywidth=11)
-transfer_equip_combopicker.place(x=390 - 17, y=447)
+    ## 내부 구조 ##
+    know_list = ['13390150', '22390240', '23390450', '33390750', '21400340', '31400540', '32410650']
+    image_list = {}
+    image_list2 = {}
+    image_list_set = {}
+    image_list_set2 = {}
 
-can_transfer_nums_select = tkinter.ttk.Combobox(self, width=2, values=txt_can_transfer_nums)
-can_transfer_nums_select.set(txt_can_transfer_nums[0])
-can_transfer_nums_select.place(x=457, y=447)
+    # 读取装备图片
+    # 通过遍历文件夹来实现加载所需的图片，而不是穷举所有可能，最后导致启动时要卡顿两秒，根据测试，目前读取图片共使用0:00:01.780298秒, 总共尝试加载6749个， 有效的加载为351个
+    image_directory = "image"
+    for filename in os.listdir(image_directory):
+        # 示例文件：22390240f.png
+        index = filename[:-5]  # 装备的key(除去后五位后剩余的字符串)：22390240
+        newImage = PhotoImage(file="image/{}".format(filename))  #
+        if filename[-5] == "n":  # 根据倒数第五位决定使用哪个list
+            # 神话装备会有三个文件，以11011为例，分别为11011f.png/11011n.gif/11011n.png，其中后面两个为点亮时的样式，
+            # 为了跟原版一致，当是神话装备时，加载点亮样式时，优先使用gif版本的
+            if is_god(index) and index in image_list and filename.endswith(".png"):
+                continue
+            image_list[index] = newImage
+        else:
+            image_list2[index] = newImage
 
-use_pulei_legend_by_default_txt = tkinter.Label(self, text="传说普雷默认", font=guide_font, fg="white", bg=dark_sub)
-use_pulei_legend_by_default_txt.place(x=510, y=240)
-use_pulei_legend_by_default_select = tkinter.ttk.Combobox(self, width=8,
-                                                          values=[txt_not_use_pulei_legend_by_default, txt_use_pulei_legend_by_default])
-use_pulei_legend_by_default_select.set(txt_not_use_pulei_legend_by_default)
-use_pulei_legend_by_default_select.place(x=510, y=270)
+    # 读取套装图片
+    for set_code in range(1, 36):
+        image_list_set[str(100 + set_code)] = eval('PhotoImage(file="set_name/{}.png")'.format(set_code + 100))
+        image_list_set2[str(100 + set_code)] = eval('PhotoImage(file="set_name/{}f.png")'.format(set_code + 100))
 
-show_count = tkinter.Label(self, font=guide_font, fg="white", bg=dark_sub)
-show_count.place(x=490, y=40)
-showcon = show_count.configure
-show_state = tkinter.Label(self, text="计算栏", font=guide_font, fg="white", bg=dark_sub)
-show_state.place(x=490, y=20)
-showsta = show_state.configure
+    bg_img = PhotoImage(file="ext_img/bg_img.png")
+    bg_wall = tkinter.Label(self, image=bg_img)
+    bg_wall.place(x=0, y=0)
 
-display_realtime_counting_info_label = tkinter.Label(self, font=guide_font, fg="white", bg=dark_sub)
-display_realtime_counting_info_label.place(x=430, y=480)
-showcon2 = display_realtime_counting_info_label.configure
+    select_speed = tkinter.ttk.Combobox(self, values=speeds, width=15)
+    select_speed.place(x=145, y=11)
+    select_speed.set(speed_middle)
+
+    show_usage_img = PhotoImage(file="ext_img/show_usage.png")
+    tkinter.Button(self, command=show_usage, image=show_usage_img, borderwidth=0, activebackground=dark_main,
+                   bg=dark_main).place(x=29, y=7)
+
+    reset_img = PhotoImage(file="ext_img/reset.png")
+    tkinter.Button(self, command=reset, image=reset_img, borderwidth=0, activebackground=dark_main, bg=dark_main).place(
+        x=302, y=476)
+
+    wep_list = []
+    wep_name_to_index = {}
+    for i in range(0, 76):
+        wep_index = name_one[str(i + 111001)][0]
+        wep_name = name_one[str(i + 111001)][1]
+
+        wep_list.append(wep_name)
+        wep_name_to_index[wep_name] = wep_index
+
+    # 输出时间
+    shuchu_times = ['20秒(觉醒占比↑)', '60秒(觉醒占比↓)']
+    time_select = tkinter.ttk.Combobox(self, width=13, values=shuchu_times)
+    time_select.set(shuchu_times[0])
+    time_select.place(x=390 - 17, y=220 + 52)
+
+
+    # 武器选择
+    wep_image = PhotoImage(file="ext_img/wep.png")
+    wep_g = tkinter.Label(self, image=wep_image, borderwidth=0, activebackground=dark_main, bg=dark_main)
+    wep_g.place(x=29, y=55)
+    wep_combopicker = Combopicker(self, entrywidth=30)
+    wep_combopicker.on_change = on_weapon_change
+    wep_combopicker.place(x=110, y=60)
+
+
+
+    jobup_select = tkinter.ttk.Combobox(self, width=13, values=jobs)
+    jobup_select.set(jobs[0])
+    set_job_weapons()
+    jobup_select.place(x=390 - 17, y=190 + 52)
+    jobup_select.bind("<<ComboboxSelected>>", on_job_selected)
+
+    # 称号选择
+    style_list = styles()
+    style_select = tkinter.ttk.Combobox(self, width=13, values=style_list)
+    style_select.set(styles()[0])
+    style_select.place(x=390 - 17, y=250 + 52)
+
+    # 宠物选择
+    creature_list = creatures()
+    creature_select = tkinter.ttk.Combobox(self, width=13, values=creature_list)
+    creature_select.set(creatures()[0])
+    creature_select.place(x=390 - 17, y=280 + 52)
+
+    # 冷却补正
+    cool_list = ['X(纯伤害)', 'O(打开)']
+    req_cool = tkinter.ttk.Combobox(self, width=13, values=cool_list)
+    req_cool.set(cool_list[0])
+    req_cool.place(x=390 - 17, y=310 + 52)
+
+    calc_img = PhotoImage(file="ext_img/calc.png")
+    select_all = tkinter.Button(self, image=calc_img, borderwidth=0, activebackground=dark_main, command=calc_thread,
+                                bg=dark_main)
+    select_all.place(x=390 - 35, y=7)
+    stop_img = PhotoImage(file="ext_img/stop.png")
+    tkinter.Button(self, image=stop_img, borderwidth=0, activebackground=dark_main, command=stop_calc, bg=dark_main).place(
+        x=390 - 35, y=62)
+
+
+
+    # 更多国服特色
+    reload_config_and_setting_img = PhotoImage(file="ext_img/reload_config_and_setting.png")
+    select_all = tkinter.Button(self, image=reload_config_and_setting_img, borderwidth=0, activebackground=dark_main, command=reload_config_and_setting, bg=dark_main)
+    select_all.place(x=275, y=10)
+
+    custom_img = PhotoImage(file="ext_img/custom.png")
+    select_custom2 = tkinter.Button(self, image=custom_img, borderwidth=0, activebackground=dark_main, command=costum,
+                                    bg=dark_sub)
+    select_custom2.place(x=435 + 165, y=340 - 100)
+
+    save_select = tkinter.ttk.Combobox(self, width=8, values=save_name_list)
+    save_select.place(x=345 + 165, y=410 - 100);
+    save_select.set(save_name_list[0])
+    save_select.bind('<<ComboboxSelected>>', on_save_select_change)
+    save_img = PhotoImage(file="ext_img/SAVE.png")
+    save = tkinter.Button(self, image=save_img, borderwidth=0, activebackground=dark_main, command=save_checklist,
+                          bg=dark_sub)
+    save.place(x=345 + 165, y=440 - 100)
+    load_img = PhotoImage(file="ext_img/LOAD.png")
+    load = tkinter.Button(self, image=load_img, borderwidth=0, activebackground=dark_main, command=load_checklist,
+                          bg=dark_sub)
+    load.place(x=435 + 165, y=440 - 100)
+    change_name_img = PhotoImage(file="ext_img/name_change.png")
+    change_list_but = tkinter.Button(self, image=change_name_img, borderwidth=0, activebackground=dark_main,
+                                     command=change_save_name, bg=dark_sub)
+    change_list_but.place(x=435 + 165, y=405 - 100)
+
+    # 百变怪选项
+    txt_no_baibianguai = 'No(没有百变怪)'
+    txt_has_baibianguai = 'Yes(拥有百变怪)'
+    baibianguai_txt = tkinter.Label(self, text="  百变怪  ", font=guide_font, fg="white", bg=dark_sub)
+    baibianguai_txt.place(x=300, y=395)
+    baibianguai_select = tkinter.ttk.Combobox(self, width=13, values=[txt_no_baibianguai, txt_has_baibianguai])
+    baibianguai_select.set(txt_no_baibianguai)
+    baibianguai_select.place(x=390 - 17, y=395)
+
+    can_upgrade_work_unifrom_nums_txt = tkinter.Label(self, text="  工作服  ", font=guide_font, fg="white", bg=dark_sub)
+    can_upgrade_work_unifrom_nums_txt.place(x=300, y=421)
+    can_upgrade_work_unifrom_nums_select = tkinter.ttk.Combobox(self, width=13,
+                                                                values=txt_can_upgrade_work_unifrom_nums)
+    can_upgrade_work_unifrom_nums_select.set(txt_can_upgrade_work_unifrom_nums[0])
+    can_upgrade_work_unifrom_nums_select.place(x=390 - 17, y=421)
+
+    transfer_equip_txt = tkinter.Label(self, text="  跨界  ", font=guide_font, fg="white", bg=dark_sub)
+    transfer_equip_txt.place(x=300, y=447)
+    transfer_equip_combopicker = Combopicker(self, values=get_other_account_names(), entrywidth=11)
+    transfer_equip_combopicker.place(x=390 - 17, y=447)
+
+    can_transfer_nums_select = tkinter.ttk.Combobox(self, width=2, values=txt_can_transfer_nums)
+    can_transfer_nums_select.set(txt_can_transfer_nums[0])
+    can_transfer_nums_select.place(x=457, y=447)
+
+    use_pulei_legend_by_default_txt = tkinter.Label(self, text="传说普雷默认", font=guide_font, fg="white", bg=dark_sub)
+    use_pulei_legend_by_default_txt.place(x=510, y=240)
+    use_pulei_legend_by_default_select = tkinter.ttk.Combobox(self, width=8,
+                                                              values=[txt_not_use_pulei_legend_by_default, txt_use_pulei_legend_by_default])
+    use_pulei_legend_by_default_select.set(txt_not_use_pulei_legend_by_default)
+    use_pulei_legend_by_default_select.place(x=510, y=270)
+
+    show_count = tkinter.Label(self, font=guide_font, fg="white", bg=dark_sub)
+    show_count.place(x=490, y=40)
+    showcon = show_count.configure
+    show_state = tkinter.Label(self, text="计算栏", font=guide_font, fg="white", bg=dark_sub)
+    show_state.place(x=490, y=20)
+    showsta = show_state.configure
+
+    display_realtime_counting_info_label = tkinter.Label(self, font=guide_font, fg="white", bg=dark_sub)
+    display_realtime_counting_info_label.place(x=430, y=480)
+    showcon2 = display_realtime_counting_info_label.configure
 
 set101 = tkinter.Button(self, bg=dark_main, borderwidth=0, activebackground=dark_main, image=image_list_set2['101'],
                         command=lambda: click_set(101));
