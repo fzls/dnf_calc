@@ -145,3 +145,4 @@ cython_debug/
 /排行结果.xlsx
 /logs
 test.py
+/test
