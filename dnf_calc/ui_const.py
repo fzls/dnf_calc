@@ -6,7 +6,7 @@
 # Author : Chen Ji
 # Email  : fzls.zju@gmail.com
 # -------------------------------
-
+from dnf_calc import from_rgb
 
 main_window_width = 710
 main_window_height = 720
@@ -29,3 +29,44 @@ custom_window_y_offset = main_window_y_offset + (main_window_height - custom_win
 res_txt_readable_result_center_x = result_window_width // 2
 res_txt_readable_result_center_y = result_window_height - result_window_readable_result_area_height // 2
 
+dark_main = from_rgb((32, 34, 37))
+dark_sub = from_rgb((46, 49, 52))
+dark_blue = from_rgb((29, 30, 36))
+
+# 目前可升级的工作服数目
+txt_can_upgrade_work_unifrom_nums = [
+    '材料够升级零件', '材料够升级一件', '材料够升级两件', '材料够升级三件', '材料够升级四件', '材料够升级五件',
+    '材料够升级六件', '材料够升级七件', '材料够升级八件', '材料够升级九件', '材料够升级十件', '材料够升级十一件',
+]
+# 预先将升级工作服数目的字符串与对应数目映射
+can_upgrade_work_unifrom_nums_str_2_int = {}
+for idx, txt in enumerate(txt_can_upgrade_work_unifrom_nums):
+    can_upgrade_work_unifrom_nums_str_2_int[txt] = idx
+
+# 目前最多可跨界的装备数目
+txt_can_transfer_nums = [
+    '0', '1', '2', '3', '4', '5',
+    '6', '7', '8', '9', '10', '11',
+]
+# 预先将目前最多可跨界的装备数目与对应数目映射
+can_transfer_nums_str_2_int = {}
+for idx, txt in enumerate(txt_can_transfer_nums):
+    can_transfer_nums_str_2_int[txt] = idx
+
+# 是否默认将普雷传说加入备选
+txt_not_use_pulei_legend_by_default = "不加入备选池"
+txt_use_pulei_legend_by_default = "加入备选池"
+
+speed_quick = '快速'
+speed_middle = '中速'
+speed_middle_not_prefer_god = '中速(不偏好神话)'
+speed_slow = '慢速'
+speed_super_slow = '超慢速'
+
+speeds = [
+    speed_quick,
+    speed_middle,
+    speed_middle_not_prefer_god,
+    speed_slow,
+    speed_super_slow
+]

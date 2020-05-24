@@ -112,8 +112,9 @@ def report_bugsnag_with_context(error, extra_context=None, show_error_messagebox
     )
 
 
-# 缓存的buff等级最大等级
-max_skill_level_map = {}
+if __name__ == '__main__':
+    # 缓存的buff等级最大等级
+    max_skill_level_map = {}
 
 
 def calc_with_try_except():
@@ -1673,7 +1674,9 @@ def calc_upgrade_work_uniforms_add_counts(slots_equips, slots_not_select_equips,
 
     return total_add_counts
 
-res_txt_readable_result = None
+
+if __name__ == '__main__':
+    res_txt_readable_result = None
 
 
 # 用文字方式写成当前搭配，避免每次都得一个个肉眼对比图标来确认是啥装备
@@ -1762,8 +1765,9 @@ def pretty_words(words, max_line_word_count, delimiter):
     return pretty_result
 
 
-# 奶系自定义数据
-custom_buf_data = {}
+if __name__ == '__main__':
+    # 奶系自定义数据
+    custom_buf_data = {}
 
 
 def load_buf_custom_data():
@@ -2670,8 +2674,9 @@ def save_custom(ele_type, cool_con, cus1, cus2, cus3, cus4, cus6, cus7, cus8, cu
         tkinter.messagebox.showerror("错误", "{}\n请关闭文件后重试".format(error), parent=self)
 
 
-# 上次读档/存档时的存档名
-g_save_name_index_on_last_load_or_save = 0
+if __name__ == '__main__':
+    # 上次读档/存档时的存档名
+    g_save_name_index_on_last_load_or_save = 0
 
 
 def load_checklist():
@@ -3171,43 +3176,44 @@ def reset():
 #                         逻辑初始化                       #
 ###########################################################
 
-exit_calc = 1
-count_valid = 0
-unique_index = 0
-count_invalid = 0
-show_number = 0
-all_list_num = 0
-g_current_rank = 0
-g_current_job = ""
-g_current_buff_type = "祝福"  # 祝福 一觉 综合
-g_rank_equips = {}
-count_start_time = time.time()  # 开始计算的时间点
+if __name__ == '__main__':
+    exit_calc = 1
+    count_valid = 0
+    unique_index = 0
+    count_invalid = 0
+    show_number = 0
+    all_list_num = 0
+    g_current_rank = 0
+    g_current_job = ""
+    g_current_buff_type = "祝福"  # 祝福 一觉 综合
+    g_rank_equips = {}
+    count_start_time = time.time()  # 开始计算的时间点
 
-# 由于这里不需要对data.xlsx写入，设置read_only为True可以大幅度加快读取速度，在我的电脑上改动前读取耗时0.67s，占启动时间32%，改动之后用时0.1s，占启动时间4%
-try:
-    load_excel1 = load_workbook("DATA.xlsx", read_only=True, data_only=True)
-except FileNotFoundError as error:
-    notify_error(logger, "data.xlsx文件不见啦，可能是未解压，请解压后再使用,err={}".format(error))
-    exit(-1)
-db_one = load_excel1["one"]
-name_one = {}
-equip_index_to_realname = {}
-equip_index_to_row_index = {}
-for row in db_one.rows:
-    row_value = [cell.value for cell in row]
-    if len(row_value) == 0 or row_value[0] is None:
-        continue
+    # 由于这里不需要对data.xlsx写入，设置read_only为True可以大幅度加快读取速度，在我的电脑上改动前读取耗时0.67s，占启动时间32%，改动之后用时0.1s，占启动时间4%
+    try:
+        load_excel1 = load_workbook("DATA.xlsx", read_only=True, data_only=True)
+    except FileNotFoundError as error:
+        notify_error(logger, "data.xlsx文件不见啦，可能是未解压，请解压后再使用,err={}".format(error))
+        exit(-1)
+    db_one = load_excel1["one"]
+    name_one = {}
+    equip_index_to_realname = {}
+    equip_index_to_row_index = {}
+    for row in db_one.rows:
+        row_value = [cell.value for cell in row]
+        if len(row_value) == 0 or row_value[0] is None:
+            continue
 
-    index = row_value[0]
-    realname = row_value[1]
+        index = row_value[0]
+        realname = row_value[1]
 
-    name_one[index] = row_value
-    equip_index_to_realname[index] = realname
-    if len(row) != 0:
-        try:
-            equip_index_to_row_index[index] = row[0].row
-        except Exception as err:
-            logger.warning("load row index failed, err={}".format(err))
+        name_one[index] = row_value
+        equip_index_to_realname[index] = realname
+        if len(row) != 0:
+            try:
+                equip_index_to_row_index[index] = row[0].row
+            except Exception as err:
+                logger.warning("load row index failed, err={}".format(err))
 
 
 # equip_indexes的顺序与上面的搜索顺序一致，这里需要调回来
@@ -3228,190 +3234,191 @@ def get_equip_slots_with_name(items):
     return res
 
 
-db_job = load_excel1["lvl"]
-# 角色可以使用的武器类型列表
-opt_job_allowed_weapon_types = {}
-all_job_can_use_weapon_types = ["夜雨黑瞳武器"]
-# 角色的属强信息：0-属强，1-树强成长
-opt_job_ele = {}
-# 角色的数据
-# 0 	    1 	    2 	    3 	    4 	    5 	    6 	7 	    8 	    9 	        10 	        11 	    12 	13 	    14 	15 	16 	    17 	    18 	19 	    20 	21 	22
-# 职业被动	1觉被动	2觉被动	3觉被动	真觉醒	二觉	1觉	20秒	60秒	20秒比重	    60秒比重	    1~45	50 	60~80	85 	95 	100 	1~45	50 	60~80	85 	95 	100
-opt_job = {}
-jobs = []
+if __name__ == '__main__':
+    db_job = load_excel1["lvl"]
+    # 角色可以使用的武器类型列表
+    opt_job_allowed_weapon_types = {}
+    all_job_can_use_weapon_types = ["夜雨黑瞳武器"]
+    # 角色的属强信息：0-属强，1-树强成长
+    opt_job_ele = {}
+    # 角色的数据
+    # 0 	    1 	    2 	    3 	    4 	    5 	    6 	7 	    8 	    9 	        10 	        11 	    12 	13 	    14 	15 	16 	    17 	    18 	19 	    20 	21 	22
+    # 职业被动	1觉被动	2觉被动	3觉被动	真觉醒	二觉	1觉	20秒	60秒	20秒比重	    60秒比重	    1~45	50 	60~80	85 	95 	100 	1~45	50 	60~80	85 	95 	100
+    opt_job = {}
+    jobs = []
 
-for row in db_job.rows:
-    row_value = [cell.value for cell in row]
-    if len(row_value) == 0:
-        continue
+    for row in db_job.rows:
+        row_value = [cell.value for cell in row]
+        if len(row_value) == 0:
+            continue
 
-    # 第一列为职业，第二列为可使用的武器列表，第三列为属强，第四列为属强成长，之后为该职业各个与伤害计算相关的系数
-    job = row_value[0]
-    if job in ["20/60s", "下标", "职业系数下标（除属强外）", "职业"]:
-        continue
+        # 第一列为职业，第二列为可使用的武器列表，第三列为属强，第四列为属强成长，之后为该职业各个与伤害计算相关的系数
+        job = row_value[0]
+        if job in ["20/60s", "下标", "职业系数下标（除属强外）", "职业"]:
+            continue
 
-    opt_job_allowed_weapon_types[job] = row_value[1].split("|")
-    opt_job_ele[job] = row_value[2:4]
-    opt_job[job] = row_value[4:]
-    jobs.append(job)
+        opt_job_allowed_weapon_types[job] = row_value[1].split("|")
+        opt_job_ele[job] = row_value[2:4]
+        opt_job[job] = row_value[4:]
+        jobs.append(job)
 
-load_excel1.close()
+    load_excel1.close()
 
-# 该变量用来控制是否要检查preset.xlsx正确初始化，若有些必要的cell没有正确运行，则会赋值，为了更快启动，魔改版本不再检查
-need_check_preset_file = False
-load_preset0 = load_workbook("preset.xlsx", read_only=not need_check_preset_file, data_only=True)
-db_custom = load_preset0["custom"]
+    # 该变量用来控制是否要检查preset.xlsx正确初始化，若有些必要的cell没有正确运行，则会赋值，为了更快启动，魔改版本不再检查
+    need_check_preset_file = False
+    load_preset0 = load_workbook("preset.xlsx", read_only=not need_check_preset_file, data_only=True)
+    db_custom = load_preset0["custom"]
 
-save_name_list = []
-for save_index in range(0, config().max_save_count):
-    save_name = db_custom.cell(save_index + 1, 5).value
-    save_name_list.append(save_name or "存档{}".format(save_index + 1))
+    save_name_list = []
+    for save_index in range(0, config().max_save_count):
+        save_name = db_custom.cell(save_index + 1, 5).value
+        save_name_list.append(save_name or "存档{}".format(save_index + 1))
 
-if need_check_preset_file:
-    ########## 버전 최초 구동 프리셋 업데이트 ###########
-    try:
-        db_save = load_preset0["one"]
-        logger.info("DATABASE 버전= " + str(db_custom['K1'].value))
-        logger.info("클라이언트 버전= " + now_version)
-        if str(db_custom['K1'].value) != now_version:
-            # logger.info("DB 업데이트")
-            db_custom['K1'] = now_version
-        if db_custom['H1'].value == None:
-            db_custom['G1'] = "up_stat"
-            db_custom['H1'] = 0
-        if db_custom['H2'].value == None:
-            db_custom['G2'] = "bless_style"
-            db_custom['H2'] = 3
-        if db_custom['H3'].value == None:
-            db_custom['G3'] = "crux_style"
-            db_custom['H3'] = 2
-        if db_custom['H4'].value == None:
-            db_custom['G4'] = "bless_plt"
-            db_custom['H4'] = 2
-        if db_custom['H5'].value == None:
-            db_custom['G5'] = "bless_cri"
-            db_custom['H5'] = 1
-        if db_custom['H6'].value == None:
-            db_custom['G6'] = "up_stat_b"
-            db_custom['H6'] = 0
+    if need_check_preset_file:
+        ########## 버전 최초 구동 프리셋 업데이트 ###########
+        try:
+            db_save = load_preset0["one"]
+            logger.info("DATABASE 버전= " + str(db_custom['K1'].value))
+            logger.info("클라이언트 버전= " + now_version)
+            if str(db_custom['K1'].value) != now_version:
+                # logger.info("DB 업데이트")
+                db_custom['K1'] = now_version
+            if db_custom['H1'].value == None:
+                db_custom['G1'] = "up_stat"
+                db_custom['H1'] = 0
+            if db_custom['H2'].value == None:
+                db_custom['G2'] = "bless_style"
+                db_custom['H2'] = 3
+            if db_custom['H3'].value == None:
+                db_custom['G3'] = "crux_style"
+                db_custom['H3'] = 2
+            if db_custom['H4'].value == None:
+                db_custom['G4'] = "bless_plt"
+                db_custom['H4'] = 2
+            if db_custom['H5'].value == None:
+                db_custom['G5'] = "bless_cri"
+                db_custom['H5'] = 1
+            if db_custom['H6'].value == None:
+                db_custom['G6'] = "up_stat_b"
+                db_custom['H6'] = 0
 
-        if db_custom['B14'].value == None:
-            db_custom['A14'] = "ele_inchant"
-            db_custom['B14'] = 116
-        if db_custom['B15'].value == None:
-            db_custom['A15'] = "ele_ora"
-            db_custom['B15'] = 20
-        if db_custom['B16'].value == None:
-            db_custom['A16'] = "ele_gem"
-            db_custom['B16'] = 7
-        if db_custom['B17'].value == None:
-            db_custom['A17'] = "ele_skill"
-        db_custom['B17'] = 0  ## 자속강 비활성화
-        if db_custom['B18'].value == None:
-            db_custom['A18'] = "ele_mob_resist"
-            db_custom['B18'] = 50
-        if db_custom['B19'].value == None:
-            db_custom['A19'] = "ele_buf_anti"
-            db_custom['B19'] = 60
+            if db_custom['B14'].value == None:
+                db_custom['A14'] = "ele_inchant"
+                db_custom['B14'] = 116
+            if db_custom['B15'].value == None:
+                db_custom['A15'] = "ele_ora"
+                db_custom['B15'] = 20
+            if db_custom['B16'].value == None:
+                db_custom['A16'] = "ele_gem"
+                db_custom['B16'] = 7
+            if db_custom['B17'].value == None:
+                db_custom['A17'] = "ele_skill"
+            db_custom['B17'] = 0  ## 자속강 비활성화
+            if db_custom['B18'].value == None:
+                db_custom['A18'] = "ele_mob_resist"
+                db_custom['B18'] = 50
+            if db_custom['B19'].value == None:
+                db_custom['A19'] = "ele_buf_anti"
+                db_custom['B19'] = 60
 
-        if db_save['A257'].value == None:
-            db_save['A257'] = '13390150';
-            db_save['B257'] = '+5 퍼펙트컨트롤'
-            db_save['C257'] = 0;
-            db_save['D257'] = 0;
-            db_save['E257'] = 0;
-            db_save['F257'] = 0;
-            db_save['G257'] = 0
-            db_save['H257'] = 0;
-            db_save['I257'] = 0;
-            db_save['J257'] = 0;
-            db_save['K257'] = 0;
-            db_save['L257'] = 0
-        if db_save['A258'].value == None:
-            db_save['A258'] = '22390240';
-            db_save['B258'] = '+4 선지자의 목걸이'
-            db_save['C258'] = 0;
-            db_save['D258'] = 0;
-            db_save['E258'] = 0;
-            db_save['F258'] = 0;
-            db_save['G258'] = 0
-            db_save['H258'] = 0;
-            db_save['I258'] = 0;
-            db_save['J258'] = 0;
-            db_save['K258'] = 0;
-            db_save['L258'] = 0
-        if db_save['A259'].value == None:
-            db_save['A259'] = '21400340';
-            db_save['B259'] = '+4 독을 머금은 가시장갑'
-            db_save['C259'] = 0;
-            db_save['D259'] = 0;
-            db_save['E259'] = 0;
-            db_save['F259'] = 0;
-            db_save['G259'] = 0
-            db_save['H259'] = 0;
-            db_save['I259'] = 0;
-            db_save['J259'] = 0;
-            db_save['K259'] = 0;
-            db_save['L259'] = 0
-        if db_save['A260'].value == None:
-            db_save['A260'] = '23390450';
-            db_save['B260'] = '+5 할기의 링'
-            db_save['C260'] = 0;
-            db_save['D260'] = 0;
-            db_save['E260'] = 0;
-            db_save['F260'] = 0;
-            db_save['G260'] = 0
-            db_save['H260'] = 0;
-            db_save['I260'] = 0;
-            db_save['J260'] = 0;
-            db_save['K260'] = 0;
-            db_save['L260'] = 0
-        if db_save['A261'].value == None:
-            db_save['A261'] = '31400540';
-            db_save['B261'] = '+4 청면수라의 가면'
-            db_save['C261'] = 0;
-            db_save['D261'] = 0;
-            db_save['E261'] = 0;
-            db_save['F261'] = 0;
-            db_save['G261'] = 0
-            db_save['H261'] = 0;
-            db_save['I261'] = 0;
-            db_save['J261'] = 0;
-            db_save['K261'] = 0;
-            db_save['L261'] = 0
-        if db_save['A262'].value == None:
-            db_save['A262'] = '32410650';
-            db_save['B262'] = '+5 적귀의 차원석'
-            db_save['C262'] = 0;
-            db_save['D262'] = 0;
-            db_save['E262'] = 0;
-            db_save['F262'] = 0;
-            db_save['G262'] = 0
-            db_save['H262'] = 0;
-            db_save['I262'] = 0;
-            db_save['J262'] = 0;
-            db_save['K262'] = 0;
-            db_save['L262'] = 0
-        if db_save['A263'].value == None:
-            db_save['A263'] = '33390750';
-            db_save['B263'] = '+5 패스트퓨처 이어링'
-            db_save['C263'] = 0;
-            db_save['D263'] = 0;
-            db_save['E263'] = 0;
-            db_save['F263'] = 0;
-            db_save['G263'] = 0
-            db_save['H263'] = 0;
-            db_save['I263'] = 0;
-            db_save['J263'] = 0;
-            db_save['K263'] = 0;
-            db_save['L263'] = 0
+            if db_save['A257'].value == None:
+                db_save['A257'] = '13390150';
+                db_save['B257'] = '+5 퍼펙트컨트롤'
+                db_save['C257'] = 0;
+                db_save['D257'] = 0;
+                db_save['E257'] = 0;
+                db_save['F257'] = 0;
+                db_save['G257'] = 0
+                db_save['H257'] = 0;
+                db_save['I257'] = 0;
+                db_save['J257'] = 0;
+                db_save['K257'] = 0;
+                db_save['L257'] = 0
+            if db_save['A258'].value == None:
+                db_save['A258'] = '22390240';
+                db_save['B258'] = '+4 선지자의 목걸이'
+                db_save['C258'] = 0;
+                db_save['D258'] = 0;
+                db_save['E258'] = 0;
+                db_save['F258'] = 0;
+                db_save['G258'] = 0
+                db_save['H258'] = 0;
+                db_save['I258'] = 0;
+                db_save['J258'] = 0;
+                db_save['K258'] = 0;
+                db_save['L258'] = 0
+            if db_save['A259'].value == None:
+                db_save['A259'] = '21400340';
+                db_save['B259'] = '+4 독을 머금은 가시장갑'
+                db_save['C259'] = 0;
+                db_save['D259'] = 0;
+                db_save['E259'] = 0;
+                db_save['F259'] = 0;
+                db_save['G259'] = 0
+                db_save['H259'] = 0;
+                db_save['I259'] = 0;
+                db_save['J259'] = 0;
+                db_save['K259'] = 0;
+                db_save['L259'] = 0
+            if db_save['A260'].value == None:
+                db_save['A260'] = '23390450';
+                db_save['B260'] = '+5 할기의 링'
+                db_save['C260'] = 0;
+                db_save['D260'] = 0;
+                db_save['E260'] = 0;
+                db_save['F260'] = 0;
+                db_save['G260'] = 0
+                db_save['H260'] = 0;
+                db_save['I260'] = 0;
+                db_save['J260'] = 0;
+                db_save['K260'] = 0;
+                db_save['L260'] = 0
+            if db_save['A261'].value == None:
+                db_save['A261'] = '31400540';
+                db_save['B261'] = '+4 청면수라의 가면'
+                db_save['C261'] = 0;
+                db_save['D261'] = 0;
+                db_save['E261'] = 0;
+                db_save['F261'] = 0;
+                db_save['G261'] = 0
+                db_save['H261'] = 0;
+                db_save['I261'] = 0;
+                db_save['J261'] = 0;
+                db_save['K261'] = 0;
+                db_save['L261'] = 0
+            if db_save['A262'].value == None:
+                db_save['A262'] = '32410650';
+                db_save['B262'] = '+5 적귀의 차원석'
+                db_save['C262'] = 0;
+                db_save['D262'] = 0;
+                db_save['E262'] = 0;
+                db_save['F262'] = 0;
+                db_save['G262'] = 0
+                db_save['H262'] = 0;
+                db_save['I262'] = 0;
+                db_save['J262'] = 0;
+                db_save['K262'] = 0;
+                db_save['L262'] = 0
+            if db_save['A263'].value == None:
+                db_save['A263'] = '33390750';
+                db_save['B263'] = '+5 패스트퓨처 이어링'
+                db_save['C263'] = 0;
+                db_save['D263'] = 0;
+                db_save['E263'] = 0;
+                db_save['F263'] = 0;
+                db_save['G263'] = 0
+                db_save['H263'] = 0;
+                db_save['I263'] = 0;
+                db_save['J263'] = 0;
+                db_save['K263'] = 0;
+                db_save['L263'] = 0
 
-        load_preset0.save("preset.xlsx")
+            load_preset0.save("preset.xlsx")
 
-    except PermissionError as error:
-        tkinter.messagebox.showerror("错误", "更新失败. 请重新运行.")
+        except PermissionError as error:
+            tkinter.messagebox.showerror("错误", "更新失败. 请重新运行.")
 
-load_preset0.close()
+    load_preset0.close()
 
 
 ###########################################################
@@ -3471,54 +3478,13 @@ def toggle_cha_swi():
 ###########################################################
 #                        ui相关变量                        #
 ###########################################################
+if __name__ == '__main__':
+    select_item = {}
 
-select_item = {}
-
-dark_main = from_rgb((32, 34, 37))
-dark_sub = from_rgb((46, 49, 52))
-dark_blue = from_rgb((29, 30, 36))
-
-# 目前可升级的工作服数目
-txt_can_upgrade_work_unifrom_nums = [
-    '材料够升级零件', '材料够升级一件', '材料够升级两件', '材料够升级三件', '材料够升级四件', '材料够升级五件',
-    '材料够升级六件', '材料够升级七件', '材料够升级八件', '材料够升级九件', '材料够升级十件', '材料够升级十一件',
-]
-# 预先将升级工作服数目的字符串与对应数目映射
-can_upgrade_work_unifrom_nums_str_2_int = {}
-for idx, txt in enumerate(txt_can_upgrade_work_unifrom_nums):
-    can_upgrade_work_unifrom_nums_str_2_int[txt] = idx
-
-# 目前最多可跨界的装备数目
-txt_can_transfer_nums = [
-    '0', '1', '2', '3', '4', '5',
-    '6', '7', '8', '9', '10', '11',
-]
-# 预先将目前最多可跨界的装备数目与对应数目映射
-can_transfer_nums_str_2_int = {}
-for idx, txt in enumerate(txt_can_transfer_nums):
-    can_transfer_nums_str_2_int[txt] = idx
-
-# 是否默认将普雷传说加入备选
-txt_not_use_pulei_legend_by_default = "不加入备选池"
-txt_use_pulei_legend_by_default = "加入备选池"
 
 ###########################################################
 #                        ui相关函数                        #
 ###########################################################
-
-speed_quick = '快速'
-speed_middle = '中速'
-speed_middle_not_prefer_god = '中速(不偏好神话)'
-speed_slow = '慢速'
-speed_super_slow = '超慢速'
-
-speeds = [
-    speed_quick,
-    speed_middle,
-    speed_middle_not_prefer_god,
-    speed_slow,
-    speed_super_slow
-]
 
 
 def guide_speed():
