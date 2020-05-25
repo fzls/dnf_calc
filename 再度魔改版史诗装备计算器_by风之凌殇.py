@@ -3212,10 +3212,33 @@ def reset():
     baibianguai_select.set(txt_no_baibianguai)
     can_upgrade_work_unifrom_nums_select.set(txt_can_upgrade_work_unifrom_nums[0])
 
-    wep_combopicker.set(None)
+    wep_combopicker.set(get_job_allowed_weapons(jobup_select.get())[:1])
     transfer_equip_combopicker.set(None)
     can_transfer_nums_select.set(txt_can_transfer_nums[0])
     logger.info("reset")
+
+
+def check_all():
+    # 点亮各个套装
+    for set_code in range(101, 135 + 1):
+        click_set(set_code)
+    # 点亮各个智慧产物
+    click_set(666)
+    # 点亮各个神话装备
+    god_list = [
+        # set_start set_end god_slot
+        (1, 15, 11),  # 防具五件套
+        (16, 19, 21),  # 首饰
+        (20, 23, 33),  # 特殊装备
+        (24, 27, 21),  # 散件（中）
+        (28, 31, 11),  # 散件（左）
+        (32, 35, 33),  # 散件（右）
+    ]
+    for set_start, set_end, god_slot in god_list:
+        for set in range(set_start, set_end + 1):
+            equip_index = "{:02}{:02}1".format(god_slot, set)
+            eval('select_' + equip_index)['image'] = image_list[equip_index]  # 修改装备图片
+            select_item['tg' + equip_index] = 1  # 修改装备状态
 
 
 ###########################################################
@@ -3863,7 +3886,10 @@ if __name__ == '__main__':
 
     reset_img = PhotoImage(file="ext_img/reset.png")
     tkinter.Button(self, command=reset, image=reset_img, borderwidth=0, activebackground=dark_main, bg=dark_main).place(
-        x=302, y=476)
+        x=300, y=476)
+    check_all_img = PhotoImage(file="ext_img/check_all.png")
+    tkinter.Button(self, command=check_all, image=check_all_img, borderwidth=0, activebackground=dark_main, bg=dark_main).place(
+        x=360, y=476)
 
     wep_list = []
     wep_name_to_index = {}
