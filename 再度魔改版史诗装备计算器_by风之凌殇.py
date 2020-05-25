@@ -5,7 +5,6 @@
 
 import collections
 import itertools
-import os
 import platform
 import queue
 import random
@@ -3497,6 +3496,9 @@ def click_equipment(code):
         select_item['tg' + str('{}'.format(code))] = 0
     if len(str(code)) == 5:
         check_set(int('1' + get_set_name(str(code))))
+    # 暂时处理智慧产物
+    if len(str(code)) == 8:
+        check_set(666)
 
 
 def check_equipment():
@@ -3520,6 +3522,24 @@ def check_equipment():
 
 
 def click_set(code):
+    # 暂时特殊处理智慧的产物
+    if code == 666:
+        set_checked = 0
+        for know_equip_index in know_item_list:
+            if select_item['tg{0}'.format(know_equip_index)] == 1:
+                set_checked += 1
+        if set_checked == 7:
+            for know_equip_index in know_item_list:
+                exec("""select_{0}["image"] = image_list2['{0}']""".format(know_equip_index))
+                select_item['tg{0}'.format(know_equip_index)] = 0
+            set_know["image"] = know_image_off
+        else:
+            for know_equip_index in know_item_list:
+                exec("""select_{0}["image"] = image_list['{0}']""".format(know_equip_index))
+                select_item['tg{0}'.format(know_equip_index)] = 1
+            set_know["image"] = know_image_on
+        return
+
     code_add = code - 100
     code_str = str(code)[1:3]
     set_checked = 0
@@ -3609,40 +3629,64 @@ def click_set(code):
 
 
 def check_set(code):
+    # 暂时特殊处理智慧的产物
+    if code == 666:
+        set_checked = 0
+        for know_equip_index in know_item_list:
+            if select_item['tg{0}'.format(know_equip_index)] == 1:
+                set_checked += 1
+        if set_checked == 7:
+            set_know["image"] = know_image_on
+        else:
+            set_know["image"] = know_image_off
+        return
+
     code_str = str(code)[1:3]
-    set_checked = 0
+    slot_set = set([])
     if code < 116:
         for i in [11, 12, 13, 14, 15]:
             if select_item['tg' + str(i) + code_str + '0'] == 1:
-                set_checked = set_checked + 1
+                slot_set.add(i)
+            if i == 11 and select_item['tg' + str(i) + code_str + '1'] == 1:
+                slot_set.add(11)
     elif code < 120:
         for i in [21, 22, 23]:
             if select_item['tg' + str(i) + code_str + '0'] == 1:
-                set_checked = set_checked + 1
+                slot_set.add(i)
+            if i == 21 and select_item['tg' + str(i) + code_str + '1'] == 1:
+                slot_set.add(21)
     elif code < 124:
         for i in [31, 32, 33]:
             if select_item['tg' + str(i) + code_str + '0'] == 1:
-                set_checked = set_checked + 1
+                slot_set.add(i)
+            if i == 33 and select_item['tg' + str(i) + code_str + '1'] == 1:
+                slot_set.add(33)
     elif code < 128:
         for i in [12, 21, 32]:
             if select_item['tg' + str(i) + code_str + '0'] == 1:
-                set_checked = set_checked + 1
+                slot_set.add(i)
+            if i == 21 and select_item['tg' + str(i) + code_str + '1'] == 1:
+                slot_set.add(21)
     elif code < 132:
         for i in [11, 22, 31]:
             if select_item['tg' + str(i) + code_str + '0'] == 1:
-                set_checked = set_checked + 1
+                slot_set.add(i)
+            if i == 11 and select_item['tg' + str(i) + code_str + '1'] == 1:
+                slot_set.add(11)
     elif code < 136:
         for i in [15, 23, 33]:
             if select_item['tg' + str(i) + code_str + '0'] == 1:
-                set_checked = set_checked + 1
+                slot_set.add(i)
+            if i == 33 and select_item['tg' + str(i) + code_str + '1'] == 1:
+                slot_set.add(33)
 
     if code < 116:
-        if set_checked == 5:
+        if len(slot_set) == 5:
             eval('set' + str(code))['image'] = image_list_set[str(code)]
         else:
             eval('set' + str(code))['image'] = image_list_set2[str(code)]
     else:
-        if set_checked == 3:
+        if len(slot_set) == 3:
             eval('set' + str(code))['image'] = image_list_set[str(code)]
         else:
             eval('set' + str(code))['image'] = image_list_set2[str(code)]
@@ -3977,8 +4021,10 @@ if __name__ == '__main__':
         exec("""set1{0:02}.place(x={1}, y={2})""".format(set_code, x, y))
 
     ##智慧产物
-    know_image = PhotoImage(file="set_name/know_name.png")
-    tkinter.Label(self, bg=dark_main, image=know_image).place(x=302, y=520)
+    know_image_off = PhotoImage(file="set_name/know_namef.png")
+    know_image_on = PhotoImage(file="set_name/know_name.png")
+    set_know = tkinter.Button(self, bg=dark_main, borderwidth=0, activebackground=dark_main, image=know_image_off, command=lambda: click_set(666))
+    set_know.place(x=302, y=520)
 
     know_item_list = [13390150, 22390240, 23390450, 33390750, 21400340, 31400540, 32410650]
 

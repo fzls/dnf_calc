@@ -8,6 +8,7 @@
 # -------------------------------
 
 import numbers
+import os
 
 import yaml
 import yaml.parser
@@ -137,7 +138,5 @@ def creatures():
 
 
 if __name__ == '__main__':
-    import os
-
     os.chdir("..")
     load_settings()
