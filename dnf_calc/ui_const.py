@@ -29,10 +29,6 @@ custom_window_y_offset = main_window_y_offset + (main_window_height - custom_win
 res_txt_readable_result_center_x = result_window_width // 2
 res_txt_readable_result_center_y = result_window_height - result_window_readable_result_area_height // 2
 
-dark_main = from_rgb((32, 34, 37))
-dark_sub = from_rgb((46, 49, 52))
-dark_blue = from_rgb((29, 30, 36))
-
 # 目前可升级的工作服数目
 txt_can_upgrade_work_unifrom_nums = [
     '材料够升级零件', '材料够升级一件', '材料够升级两件', '材料够升级三件', '材料够升级四件', '材料够升级五件',

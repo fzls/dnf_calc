@@ -3817,11 +3817,16 @@ if __name__ == '__main__':
     ###########################################################
     #                        tkinter初始化                    #
     ###########################################################
+    cfg = config()
+    bg_cfg = cfg.ui.background
+    dark_main = from_rgb(bg_cfg.main)
+    dark_sub = from_rgb(bg_cfg.sub)
+    dark_blue = from_rgb(bg_cfg.blue)
 
     self = tkinter.Tk()
     self.title("一键史诗搭配计算器魔改版-ver" + now_version + " 魔改by风之凌殇 原创by黎明工作室（韩服）dawnclass16")
     self.geometry("{}x{}+{}+{}".format(main_window_width, main_window_height, main_window_x_offset, main_window_y_offset))
-    self.resizable(config().main_window_resizable, config().main_window_resizable)
+    self.resizable(cfg.main_window_resizable, cfg.main_window_resizable)
     self.configure(bg=dark_main)
     self.iconbitmap(r'ext_img/icon.ico')
 
@@ -3829,9 +3834,16 @@ if __name__ == '__main__':
     #                      拼接ui的琐碎代码                    #
     ###########################################################
 
-    guide_font = tkinter.font.Font(family="Microsoft YaHei", size=10, weight='bold')
-    mid_font = tkinter.font.Font(family="Microsoft YaHei", size=14, weight='bold')
-    big_font = tkinter.font.Font(family="Microsoft YaHei", size=18, weight='bold')
+    font_cfg = cfg.ui.fonts
+
+    guide_font_cfg = font_cfg.guide_font
+    guide_font = tkinter.font.Font(family=guide_font_cfg.family, size=guide_font_cfg.size, weight=guide_font_cfg.weight)
+
+    mid_font_cfg = font_cfg.mid_font
+    mid_font = tkinter.font.Font(family=mid_font_cfg.family, size=mid_font_cfg.size, weight=mid_font_cfg.weight)
+
+    big_font_cfg = font_cfg.big_font
+    big_font = tkinter.font.Font(family=big_font_cfg.family, size=big_font_cfg.size, weight=big_font_cfg.weight)
 
     ## 내부 구조 ##
     know_list = ['13390150', '22390240', '23390450', '33390750', '21400340', '31400540', '32410650']

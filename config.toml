@@ -18,6 +18,48 @@ max_save_count = 1000
 # 是否在点击读取存档按钮时关闭结果窗口（若存在）
 destroy_result_windows_when_click_load_checklist_button = true
 
+# re: 增加config代码并应用到对应代码中
+# ui相关配置
+[ui]
+
+[ui.fonts]
+
+# 指引字体
+[ui.fonts.guide_font]
+# 设置字体
+family = "Microsoft YaHei"
+# 字体大小
+size = 10
+# 字体粗细：normal/bold
+weight = "bold"
+
+# 中字体
+[ui.fonts.mid_font]
+# 设置字体
+family = "Microsoft YaHei"
+# 字体大小
+size = 14
+# 字体粗细：normal/bold
+weight = "bold"
+
+# 大字体
+[ui.fonts.big_font]
+# 设置字体
+family = "Microsoft YaHei"
+# 字体大小
+size = 18
+# 字体粗细：normal/bold
+weight = "bold"
+
+# 背景色配置
+[ui.background]
+# dark_main的rgb颜色
+main = [32, 34, 37]
+# dark_sub的rgb颜色
+sub = [46, 49, 52]
+# dark_blue的rgb颜色
+blue = [29, 30, 36]
+
 # 播放gif动画设置
 [gif]
 # 是否播放gif动画

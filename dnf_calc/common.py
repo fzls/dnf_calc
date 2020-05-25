@@ -40,4 +40,4 @@ def format_time(ftime):
 def from_rgb(rgb):
     """translates an rgb tuple of int to a tkinter friendly color code
     """
-    return "#%02x%02x%02x" % rgb
+    return "#%02x%02x%02x" % tuple(rgb)

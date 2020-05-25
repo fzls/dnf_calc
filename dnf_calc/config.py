@@ -51,6 +51,42 @@ class ConfigInterface(metaclass=ABCMeta):
         return str(res)
 
 
+class FontConfig(ConfigInterface):
+    def __init__(self, family="Microsoft YaHei", size=10, weight="bold"):
+        # 设置字体
+        self.family = family
+        # 字体大小
+        self.size = size
+        # 字体粗细：normal/roman/bold/italic
+        self.weight = weight
+
+
+class FontsConfig(ConfigInterface):
+    def __init__(self):
+        # 指引字体
+        self.guide_font = FontConfig(size=10)
+        # 中字体
+        self.mid_font = FontConfig(size=14)
+        # 大字体
+        self.big_font = FontConfig(size=18)
+
+class BackgroundConfig(ConfigInterface):
+    def __init__(self):
+        # dark_main的rgb颜色
+        self.main = [32, 34, 37]
+        # dark_sub的rgb颜色
+        self.sub = [46, 49, 52]
+        # dark_blue的rgb颜色
+        self.blue = [29, 30, 36]
+
+class UIConfig(ConfigInterface):
+    def __init__(self):
+        # 字体配置
+        self.fonts = FontsConfig()
+        # 背景色配置
+        self.background = BackgroundConfig()
+
+
 class GifConfig(ConfigInterface):
     def __init__(self):
         # 是否播放gif动画
@@ -165,6 +201,8 @@ class Config(ConfigInterface):
         self.max_save_count = 1000
         # 是否在点击读取存档按钮时关闭结果窗口（若存在）
         self.destroy_result_windows_when_click_load_checklist_button = True
+        # ui相关配置
+        self.ui = UIConfig()
         # 播放gif动画设置
         self.gif = GifConfig()
         # 多线程配置
@@ -216,6 +254,7 @@ def load_config(config_path="config.toml"):
 def config():
     return g_config
 
+
 if __name__ == '__main__':
     load_config("../config.toml")
-    logger.info("gif cfg={}".format(g_config.gif))
+    logger.info("ui cfg={}".format(g_config.ui))
