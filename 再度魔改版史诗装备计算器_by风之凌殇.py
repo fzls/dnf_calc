@@ -3194,8 +3194,7 @@ def update_thread():
     threading.Thread(target=check_update_on_start, daemon=True).start()
     threading.Thread(target=gif_ticker, daemon=True).start()
 
-
-def reset():
+def reset_all_equips():
     know_list2 = ['13390150', '22390240', '23390450', '33390750', '21400340', '31400540', '32410650']
     for equip_index_excep_last_digit in range(1101, 3336):
         try:
@@ -3212,6 +3211,10 @@ def reset():
     for set_code in range(101, 136):
         check_set(set_code)
 
+
+def reset():
+    reset_all_equips()
+
     # 处理百变怪与工作服升级数目
     baibianguai_select.set(txt_no_baibianguai)
     can_upgrade_work_unifrom_nums_select.set(txt_can_upgrade_work_unifrom_nums[0])
@@ -3223,6 +3226,8 @@ def reset():
 
 
 def check_all():
+    reset_all_equips()
+
     # 点亮各个套装
     for set_code in range(101, 135 + 1):
         click_set(set_code)
