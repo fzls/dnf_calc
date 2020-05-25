@@ -3048,7 +3048,11 @@ def display_realtime_counting_info():
 
             current_equips = 0
             for slot_equips in items:
-                current_equips += len(slot_equips)
+                for equip_index in slot_equips:
+                    if get_set_name(equip_index) in ["36", "37", "38"]:
+                        # 过滤掉100传说、普雷首饰、普雷特殊装备
+                        continue
+                    current_equips += 1
             total_equips = 177
             percent = current_equips / total_equips * 100
 
