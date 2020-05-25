@@ -37,70 +37,50 @@ def add_bonus_attributes_to_base_array(job_type, base_array, style, creature, sa
     for tese in guofu_teses:
         # 处理每一种特色
         setting = get_setting(tese["setting_name"], tese["selected"])
-        if setting is not None and setting["entries"] is not None:
-            # 增加当前选择的特色的各个词条对应的该类型职业的属性
-            logger.info("应用国服特色：{}({})".format(tese["selected"], tese["name"]))
-            for entry in setting["entries"]:
-                if type(entry) is not dict:
-                    notify_error(logger,
-                                 (
-                                     "特色词条应该是一个字典，不应该是字符串，将跳过该词条\n"
-                                     "有问题的词条为：{}\n"
-                                     "注意：词条名与值之间要有空格空开，如A:B不合法，A: B和A:   B都是可以的"
-                                 ).format(entry)
-                                 )
-                    continue
-                for name, value in entry.items():
-                    entry_indexes = entry_name_to_indexes[name]
-
-                    try:
-                        entry_value = eval(str(value))
-                    except SyntaxError as error:
-                        notify_error(logger,
-                                     (
-                                         "词条的值有问题，将跳过该词条\n"
-                                         "出错的词条与其值为：{}: {}\n"
-                                         "注意只能是四则表达式或数字，请仔细检查配置表，确认是否将注释也加到双引号中了\n"
-                                     ).format(name, value)
-                                     )
+        if setting is None or setting["entries"] is None:
+            continue
+        # 增加当前选择的特色的各个词条对应的该类型职业的属性
+        logger.info("应用国服特色：{}({})".format(tese["selected"], tese["name"]))
+        for entry in setting["entries"]:
+            for name, value in entry.items():
+                entry_indexes = entry_name_to_indexes[name]
+                entry_value = eval(str(value))
+                entry_writen = False
+                if job_type == "deal":
+                    # 处理输出职业的对应属性
+                    if "deal" not in entry_indexes:
                         continue
-
-                    entry_writen = False
-                    if job_type == "deal":
-                        # 处理输出职业的对应属性
-                        if "deal" not in entry_indexes:
-                            continue
-                        for entry_index in entry_indexes["deal"]:
-                            if entry_index in deal_multiply_entry_indexes:
-                                # 需要乘算
-                                base_array[entry_index] = multiply_entry(base_array[entry_index], entry_value)
+                    for entry_index in entry_indexes["deal"]:
+                        if entry_index in deal_multiply_entry_indexes:
+                            # 需要乘算
+                            base_array[entry_index] = multiply_entry(base_array[entry_index], entry_value)
+                        else:
+                            # 其余加算
+                            if name == "extra_all_job_all_active_skill_lv_1_30" and entry_index == index_deal_extra_active_skill_lv_1_45:
+                                # 由于词条[所有职业Lv1~30全部主动技能Lv+X（特性技能除外）]不能直接对应输出职业的1-45主动技能,需要打个折,可以自行配置折扣率
+                                base_array[entry_index] += entry_value * cfg.data_fixup.extra_all_job_all_active_skill_lv_1_30_deal_1_45_rate
                             else:
-                                # 其余加算
-                                if name == "extra_all_job_all_active_skill_lv_1_30" and entry_index == index_deal_extra_active_skill_lv_1_45:
-                                    # 由于词条[所有职业Lv1~30全部主动技能Lv+X（特性技能除外）]不能直接对应输出职业的1-45主动技能,需要打个折,可以自行配置折扣率
-                                    base_array[entry_index] += entry_value * cfg.data_fixup.extra_all_job_all_active_skill_lv_1_30_deal_1_45_rate
-                                else:
-                                    # 正常情况
-                                    base_array[entry_index] += entry_value
-                            if not entry_writen:
-                                logger.info("\t词条：{} {}".format(entry_name_to_name[name], entry_value))
-                                entry_writen = True
-                            logger.info("\t\t{} => {}".format(deal_entry_index_to_name[entry_index], entry_value))
-                    else:
-                        # 处理奶系职业的对应属性
-                        if "buf" not in entry_indexes:
-                            continue
-                        for entry_index in entry_indexes["buf"]:
-                            if entry_index in buf_multiply_entry_indexes:
-                                # 需要乘算
-                                base_array[entry_index] = multiply_entry(base_array[entry_index], entry_value)
-                            else:
-                                # 全部加算
+                                # 正常情况
                                 base_array[entry_index] += entry_value
-                            if not entry_writen:
-                                logger.info("\t词条：{} => {}".format(entry_name_to_name[name], entry_value))
-                                entry_writen = True
-                            logger.info("\t\t{} => {}".format(buf_entry_index_to_name[entry_index], entry_value))
+                        if not entry_writen:
+                            logger.info("\t词条：{} {}".format(entry_name_to_name[name], entry_value))
+                            entry_writen = True
+                        logger.info("\t\t{} => {}".format(deal_entry_index_to_name[entry_index], entry_value))
+                else:
+                    # 处理奶系职业的对应属性
+                    if "buf" not in entry_indexes:
+                        continue
+                    for entry_index in entry_indexes["buf"]:
+                        if entry_index in buf_multiply_entry_indexes:
+                            # 需要乘算
+                            base_array[entry_index] = multiply_entry(base_array[entry_index], entry_value)
+                        else:
+                            # 全部加算
+                            base_array[entry_index] += entry_value
+                        if not entry_writen:
+                            logger.info("\t词条：{} => {}".format(entry_name_to_name[name], entry_value))
+                            entry_writen = True
+                        logger.info("\t\t{} => {}".format(buf_entry_index_to_name[entry_index], entry_value))
 
     all_tese_strs = []
 
