@@ -70,6 +70,7 @@ class FontsConfig(ConfigInterface):
         # 大字体
         self.big_font = FontConfig(size=18)
 
+
 class BackgroundConfig(ConfigInterface):
     def __init__(self):
         # dark_main的rgb颜色
@@ -78,6 +79,7 @@ class BackgroundConfig(ConfigInterface):
         self.sub = [46, 49, 52]
         # dark_blue的rgb颜色
         self.blue = [29, 30, 36]
+
 
 class UIConfig(ConfigInterface):
     def __init__(self):
@@ -248,7 +250,7 @@ def load_config(config_path="config.toml"):
         g_config.auto_update_config(raw_config)
     except FileNotFoundError as error:
         notify_error(logger, "读取{}文件出错，是否直接在压缩包中打开了？\n具体出错为：".format(config_path, error))
-        exit(0)
+        exit(-1)
 
 
 def config():

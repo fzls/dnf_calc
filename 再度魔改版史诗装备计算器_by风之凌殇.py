@@ -34,7 +34,7 @@ def hide_result_window_if_exists():
     global result_window
     try:
         result_window.destroy()
-    except NameError as error:
+    except Exception as error:
         pass
 
 
@@ -143,8 +143,9 @@ def calc():
     logger.debug("loading data.xlsx")
     try:
         load_excel = load_workbook("DATA.xlsx", read_only=True, data_only=True)
-    except FileNotFoundError as error:
+    except Exception as error:
         notify_error(logger, "data.xlsx文件不见啦，可能是未解压，请解压后再使用,err={}".format(error))
+        return
 
     db_one = load_excel["one"]
     opt_one = {}
@@ -208,7 +209,7 @@ def calc():
     job_name = jobup_select.get()
     try:
         ele_skill = int(opt_job_ele[job_name][0])
-    except KeyError as error:
+    except Exception as error:
         tkinter.messagebox.showerror('部分参数有误', "未选择职业或职业非法", parent=self)
         logger.warning("job_name=%s invalid", job_name)
         return
@@ -577,7 +578,7 @@ def calc():
         # 加入输出职业的特色加成
         try:
             add_bonus_attributes_to_base_array("deal", base_array_with_deal_bonus_attributes, style_select.get(), creature_select.get(), save_name_list[current_save_name_index])
-        except KeyError as error:
+        except Exception as error:
             notify_error(logger, "配置表填写有误：词条名不存在，请仔细对照配置表表头所有词条，确认在其中，err={}".format(error))
             return
 
@@ -1786,7 +1787,7 @@ def load_buf_custom_data():
         }
     except Exception as error:
         notify_error(logger, "preset.xlsx中custom表单中奶妈相关参数需要为整数，指H1->H6，请仔细检查，是否填空值了")
-        exit(0)
+        exit(-1)
 
     load_presetr.close()
 
@@ -2376,7 +2377,7 @@ def costum():
     global custom_window
     try:
         custom_window.destroy()
-    except NameError as error:
+    except Exception as error:
         pass
     custom_window = tkinter.Toplevel(self)
     custom_window.title("统一自定义")
@@ -2678,7 +2679,7 @@ def save_custom(ele_type, cool_con, cus1, cus2, cus3, cus4, cus6, cus7, cus8, cu
             ele_type, cool_con, cus1, cus2, cus3, cus4, cus6, cus7, cus8, cus9, cus10, cus11, cus12, c_stat, b_stat,
             b_style_lvl, c_style_lvl, b_plt, b_cri, ele1, ele2, ele3, ele4, ele5, ele6
         ])))
-    except PermissionError as error:
+    except Exception as error:
         tkinter.messagebox.showerror("错误", "{}\n请关闭文件后重试".format(error), parent=self)
 
 
@@ -2801,7 +2802,7 @@ def load_checklist_noconfirm(account_index):
         # 读档成功时更新上次存读档的存档名
         g_save_name_index_on_last_load_or_save = account_index
         logger.info("load_checklist({}) success".format(save_name_list[account_index]))
-    except PermissionError as error:
+    except Exception as error:
         tkinter.messagebox.showerror("错误", "请关闭preset.xlsx之后重试", parent=self)
 
 

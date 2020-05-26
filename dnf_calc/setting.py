@@ -40,7 +40,7 @@ def load_settings(settings=None):
         with open(setting["path"], "r", encoding="utf-8") as setting_file:
             try:
                 g_setting[setting["name"]] = yaml.load(setting_file, Loader=yaml.FullLoader)
-            except yaml.parser.ParserError as error:
+            except Exception as error:
                 notify_error(logger, "配置表={}的格式有问题，具体问题请看下面的报错中的line $行数$ column $列数$来定位\n错误信息：{}\n".format(setting["name"], error))
                 exit(0)
 
