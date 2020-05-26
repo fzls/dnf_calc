@@ -20,6 +20,9 @@ call _git_push_remote.bat
 :: 调用构建脚本，打包
 call _build.bat
 
+:: 复制一份各个提示文件到使用说明目录
+for %I in (提示*.txt 注意*.txt 使用说明.txt _常见问题解答*.docx _手动安装运行环境教程*.docx) do xcopy %I "使用说明\"  /Y/B
+
 echo.
 echo [提示]: 构建完成，将结果复制到发布目录
 echo.
