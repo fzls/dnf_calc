@@ -754,9 +754,9 @@ def calc():
 
     else:
         # 计算祝福数值时的额外15级转职被动等级（暂时不知道为啥要额外加）
-        base_job_passive_lv15_bless = 0
+        base_job_passive_lv15_bless = cfg.initital_data.base_job_passive_lv15_bless
         # 计算太阳数值时的额外15级转职被动等级（暂时不知道为啥要额外加）
-        base_job_passive_lv15_taiyang = 3
+        base_job_passive_lv15_taiyang = cfg.initital_data.base_job_passive_lv15_taiyang
         # 自定义祝福数据-自定义太阳数据（暂时不清楚这个是干啥的）
         base_stat_custom_bless_data_minus_taiyang_data = custom_buf_data["bless_data"] - custom_buf_data["taiyang_data"]
 

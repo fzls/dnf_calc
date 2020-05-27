@@ -159,6 +159,10 @@ class InititalDataConfig(ConfigInterface):
         self.physical_and_mental = "2674"
         # 啥也不穿的满级奶妈和奶萝的智力
         self.intelligence = "2400 - 33"
+        # 计算祝福数值时的额外15级转职被动等级（暂时不知道为啥要额外加）
+        self.base_job_passive_lv15_bless = 0
+        # 计算太阳数值时的额外15级转职被动等级（暂时不知道为啥要额外加）
+        self.base_job_passive_lv15_taiyang = 3
 
 
 class ConstConfig(ConfigInterface):
