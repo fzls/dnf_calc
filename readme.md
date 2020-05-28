@@ -13,6 +13,7 @@ https://drive.google.com/file/d/1p8ZdzW_NzGKHHOtfPTuZSr1YgSEVtYCj/view
 
 # 网盘链接（更新于2020/5/13)
 链接: https://fzls.lanzous.com/s/dnf-calc 提取码: fzls
+链接: https://fzls.lanzous.com/b01begisj 提取码: fzls
 
 # 使用简介
 ## 第一批功能说明
