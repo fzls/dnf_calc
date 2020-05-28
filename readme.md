@@ -1,5 +1,5 @@
 # 前言
-本计算器基于[韩服dawnclass-黎明工作室](https://github.com/dawnclass/DF_Calculator)所写计算器v2.3.1、[韩械](https://space.bilibili.com/4952736)汉化并加入国服特色的一键史诗搭配计算器，在其上进行了一些性能优化、扩展功能、易用性改动及bugfix。
+本计算器基于[韩服dawnclass-黎明工作室](https://github.com/dawnclass/DF_Calculator) 所写计算器v2.3.1、[韩械](https://space.bilibili.com/4952736) 汉化并加入国服特色的一键史诗搭配计算器，在其上进行了一些性能优化、扩展功能、易用性改动及bugfix。
 
 目前实现了搜索百变怪、升级工作服、跨界、多武器搭配等功能，并对启动和搜索性能做了一定优化，在操作易用性上加了一些调整。具体改动内容可见下文
 
@@ -13,17 +13,40 @@ https://drive.google.com/file/d/1p8ZdzW_NzGKHHOtfPTuZSr1YgSEVtYCj/view
 
 # 网盘链接（更新于2020/5/13)
 链接: https://fzls.lanzous.com/s/dnf-calc 提取码: fzls
-链接: https://fzls.lanzous.com/b01begisj 提取码: fzls
 
 # 使用简介
 ## 第一批功能说明
-![第一批功能说明](change_log_images/功能说明1.png)
+![第一批功能说明](使用说明/功能说明1.png)
 
 ## 第二批功能说明
-![第二批功能说明](change_log_images/功能说明2.png)
+![第二批功能说明](使用说明/功能说明2.png)
 
 ## 第三批功能说明
-![第三批功能说明](change_log_images/功能说明3.png)
+![第三批功能说明](使用说明/功能说明3.png)
+
+# v3.5.8 2020.5.28
+## 易用性
+1. 某些异常改用Exception，避免遗漏一些未捕捉的异常信息 2. 调用notify_error后要么return，要么exit，需要停止对应代码执行流程
+
+## ui
+1. 调整界面装备位置，使套装内顺序与游戏中一致，同时支持通过配置自行调整套装内装备顺序
+
+## bugfix
+1. 修复一键点亮如果已经点亮的会被取消的问题
+
+## 增加配置
+1. 奶系额外被动等级改为可配置
+
+## 文档支持
+1. 更新文档
+2. 将首层目录的一些说明也复制到使用说明目录中，同时发布时复制一份各个提示文件到使用说明目录
+
+## 其他
+1. readme增加原作者github项目地址信息
+2. 蓝奏云试用两周多，可靠性还不错，readme中改为只保留一个更加方便记忆的链接
+
+## 备注
+1. 这两天在折腾群聊机器人<_<暂时没空对计算器做一些改动
 
 # v3.5.7 2020.5.26
 ## ui优化
