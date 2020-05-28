@@ -242,6 +242,8 @@ class Config(ConfigInterface):
         self.main_window_resizable = False
         # 最大存档数
         self.max_save_count = 1000
+        # readme page
+        self.readme_page = "https://github.com/fzls/dnf_calc/blob/master/README.md"
         # 是否在点击读取存档按钮时关闭结果窗口（若存在）
         self.destroy_result_windows_when_click_load_checklist_button = True
         # ui相关配置

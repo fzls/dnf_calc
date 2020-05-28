@@ -12,6 +12,9 @@ main_window_resizable = false
 # 最大存档数
 max_save_count = 1000
 
+# readme page
+readme_page = "https://github.com/fzls/dnf_calc/blob/master/README.md"
+
 # ui相关配置
 [ui]
 

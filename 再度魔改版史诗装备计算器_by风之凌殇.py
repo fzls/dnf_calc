@@ -3083,7 +3083,7 @@ def version_int_list_to_version(version_int_list):
 # 获取最新版本号与下载网盘地址
 def get_latest_version_and_netdisk_link_passcode():
     # 获取github本项目的readme页面内容
-    readme_html_text = requests.get("https://github.com/fzls/dnf_calc/blob/master/README.md").text
+    readme_html_text = requests.get(config().readme_page).text
     # 从更新日志中提取所有版本信息
     versions = re.findall("(?<=[vV])[0-9.]+(?=\s+\d+\.\d+\.\d+)", readme_html_text)
     # 找出其中最新的那个版本号
