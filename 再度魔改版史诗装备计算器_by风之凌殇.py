@@ -4064,6 +4064,16 @@ if __name__ == '__main__':
             raise Exception()
 
 
+    # 套装编码
+    # 1 大祭司 2 魔法师 3 舞姬 4 阴影 5 裁决者 6 龙血玄黄 7 沙漠 8 灸炎 9 擎天 10 地狱 11 铁匠 12 荆棘 13 不息 14 歧路 15 大自然
+    # 16 尘封术式 17 破晓 18 三角 19 权能
+    # 20 军神 21 灵宝 22 时间 23 能量
+    # 24 黑魔法 25 时空 26 呐喊 27 狂乱
+    # 28 深渊 29 圣者 30 命运 31 愤怒
+    # 32 求道者 33 次元 34 天命 35 悲剧
+    # 36 传说防具
+    # 37 普雷首饰
+    # 38 普雷特殊
     for set_code in range(1, 35 + 1):
         exec("""set1{0:02} = tkinter.Button(self, bg=dark_main, borderwidth=0, activebackground=dark_main, image=image_list_set2['1{0:02}'],command=lambda: click_set(1{0:02}))""".format(set_code))
         x, y = get_x_y_for_set(set_code)
@@ -4111,13 +4121,14 @@ if __name__ == '__main__':
     # 11 上衣  12 裤子   13 头肩 14 腰带 15 鞋子
     # 21 手镯  22 项链   23 戒指
     # 31 辅助装备 32 魔法石 33 耳环
+    order_cfg = cfg.ui.set_equipments_order
     set_slots = [
-        (1, 15, [(11, 1), (11, 0), (13, 0), (12, 0), (15, 0), (14, 0)]),  # 防具五件套 上衣（神话）、上衣、头肩、下装、鞋、腰带
-        (16, 19, [(21, 1), (22, 0), (21, 0), (23, 0)]),  # 首饰 手镯（神话）、项链、手镯、戒指
-        (20, 23, [(33, 1), (31, 0), (32, 0), (33, 0)]),  # 特殊装备 耳环（神话）、辅助装备、魔法石、耳环
-        (24, 27, [(21, 1), (12, 0), (21, 0), (32, 0)]),  # 散件（中） 手镯（神话）、下装、手镯、魔法石
-        (28, 31, [(11, 1), (11, 0), (22, 0), (31, 0)]),  # 散件（左） 上衣（神话）、上衣、项链、辅助装备
-        (32, 35, [(33, 1), (15, 0), (23, 0), (33, 0)]),  # 散件（右） 耳环（神话）、鞋、戒指、耳环
+        (1, 15, eval(order_cfg.armor)),  # 防具五件套
+        (16, 19, eval(order_cfg.jewelry)),  # 首饰
+        (20, 23, eval(order_cfg.special_equipment)),  # 特殊装备
+        (24, 27, eval(order_cfg.spare_parts_mid)),  # 散件（中）
+        (28, 31, eval(order_cfg.spare_parts_left)),  # 散件（左）
+        (32, 35, eval(order_cfg.spare_parts_right)),  # 散件（右）
     ]
 
     for set_slot in set_slots:
