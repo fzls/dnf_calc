@@ -63,7 +63,10 @@ cd "使用说明"
 del /Q 提示*.txt 注意*.txt 使用说明.txt _常见问题解答*.docx _手动安装运行环境教程*.docx
 cd ..
 
-:: 复制一份各个提示文件到使用说明目录
-for %I in (提示*.txt 注意*.txt 使用说明.txt _常见问题解答*.docx _手动安装运行环境教程*.docx) do xcopy %I "使用说明\"  /Y/B
+xcopy 提示*.txt "使用说明\" /Y/B
+xcopy 注意*.txt "使用说明\" /Y/B
+xcopy 使用说明.txt "使用说明\" /Y/B
+xcopy _常见问题解答*.docx "使用说明\" /Y/B
+xcopy _手动安装运行环境教程*.docx "使用说明\" /Y/B
 
 pause
