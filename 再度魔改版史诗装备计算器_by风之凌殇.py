@@ -2786,6 +2786,7 @@ def load_checklist_noconfirm(account_index):
             txt_can_upgrade_work_unifrom_nums[0])
 
         # 跨界的来源账号（存档）列表
+        transfer_equip_combopicker.set_values(get_other_account_names())
         transfer_equip_combopicker.set((load_cell(g_row_custom_save_start + g_row_custom_save_transfer_from, col_custom_save_value).value or "").split(','))
 
         # 最大可跨界的数目

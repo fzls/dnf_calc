@@ -241,7 +241,7 @@ class Config(ConfigInterface):
         # 是否允许主界面缩放（界面实际布局是固定大小的）
         self.main_window_resizable = False
         # 最大存档数
-        self.max_save_count = 1000
+        self.max_save_count = 61
         # readme page
         self.readme_page = "https://github.com/fzls/dnf_calc/blob/master/README.md"
         # 是否在点击读取存档按钮时关闭结果窗口（若存在）
