@@ -1832,7 +1832,7 @@ def show_result(rank_list, job_type, ele_skill):
     logger.debug("show_result: job_type={}, ele_skill={}\nrank_list={}".format(job_type, ele_skill, rank_list))
 
     # 可能还没有任何结果的时候直接点了结束计算，这时候就不要走后续流程了
-    if (job_type == 'deal' and len(rank_list) == 0) or (job_type == 'buf' and len(rank_list[0]) ==0):
+    if (job_type == 'deal' and len(rank_list) == 0) or (job_type == 'buf' and len(rank_list[0]) == 0):
         return
 
     global result_window
