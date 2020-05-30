@@ -3871,6 +3871,11 @@ if __name__ == '__main__':
     # 通过遍历文件夹来实现加载所需的图片，而不是穷举所有可能，最后导致启动时要卡顿两秒，根据测试，目前读取图片共使用0:00:01.780298秒, 总共尝试加载6749个， 有效的加载为351个
     image_directory = "image"
     for filename in os.listdir(image_directory):
+        # 目前只处理图片目录中的gif和png文件
+        is_image = filename.endswith(".gif") or filename.endswith(".png")
+        if not is_image:
+            continue
+
         # 示例文件：22390240f.png
         index = filename[:-5]  # 装备的key(除去后五位后剩余的字符串)：22390240
         file_path = "image/{}".format(filename)
