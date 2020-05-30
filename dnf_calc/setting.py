@@ -40,6 +40,9 @@ def load_settings(settings=None):
         with open(setting["path"], "r", encoding="utf-8") as setting_file:
             try:
                 g_setting[setting["name"]] = yaml.load(setting_file, Loader=yaml.FullLoader)
+            except UnicodeDecodeError as error:
+                notify_error(logger, "配置表={}的编码格式有问题，应为utf-8，如果使用系统自带记事本的话，请下载vscode或notepad++等文本编辑器\n错误信息：{}\n".format(setting["name"], error))
+                exit(0)
             except Exception as error:
                 notify_error(logger, "配置表={}的格式有问题，具体问题请看下面的报错中的line $行数$ column $列数$来定位\n错误信息：{}\n".format(setting["name"], error))
                 exit(0)

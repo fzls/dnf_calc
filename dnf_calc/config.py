@@ -291,6 +291,9 @@ def load_config(config_path="config.toml"):
     try:
         raw_config = toml.load(config_path)
         g_config.auto_update_config(raw_config)
+    except UnicodeDecodeError as error:
+        notify_error(logger, "{}的编码格式有问题，应为utf-8，如果使用系统自带记事本的话，请下载vscode或notepad++等文本编辑器\n错误信息：{}\n".format(config_path, error))
+        exit(0)
     except Exception as error:
         notify_error(logger, "读取{}文件出错，是否直接在压缩包中打开了？\n具体出错为：".format(config_path, error))
         exit(-1)
