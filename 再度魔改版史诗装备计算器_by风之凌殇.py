@@ -13,6 +13,7 @@ import uuid
 import webbrowser
 from collections import Counter
 from math import floor
+from zipfile import BadZipFile
 
 import PIL.Image
 import PIL.ImageTk
@@ -3273,8 +3274,8 @@ if __name__ == '__main__':
     # 由于这里不需要对data.xlsx写入，设置read_only为True可以大幅度加快读取速度，在我的电脑上改动前读取耗时0.67s，占启动时间32%，改动之后用时0.1s，占启动时间4%
     try:
         load_excel1 = load_workbook("DATA.xlsx", read_only=True, data_only=True)
-    except FileNotFoundError as error:
-        notify_error(logger, "data.xlsx文件不见啦，可能是未解压，请解压后再使用,err={}".format(error))
+    except (FileNotFoundError, BadZipFile) as error:
+        notify_error(logger, "data.xlsx文件不见了或格式不对，可能是未解压，请解压后再使用,err={}".format(error))
         exit(-1)
     db_one = load_excel1["one"]
     name_one = {}
