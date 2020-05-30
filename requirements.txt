@@ -2,6 +2,7 @@ numpy
 requests
 toml
 pyaml
+pyyaml
 openpyxl
 bugsnag
 pypiwin32
