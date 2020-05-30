@@ -3,7 +3,6 @@
 
 ## 코드를 무단으로 복제하여 개조 및 배포하지 말 것##
 
-import sys
 import collections
 import itertools
 import platform
@@ -16,6 +15,7 @@ from collections import Counter
 from math import floor
 from zipfile import BadZipFile
 
+import PIL
 import PIL.Image
 import PIL.ImageTk
 import numpy as np
