@@ -3,6 +3,7 @@
 
 ## 코드를 무단으로 복제하여 개조 및 배포하지 말 것##
 
+import sys
 import collections
 import itertools
 import platform
@@ -13,7 +14,6 @@ import uuid
 import webbrowser
 from collections import Counter
 from math import floor
-from sys import exit
 from zipfile import BadZipFile
 
 import PIL.Image
@@ -1789,7 +1789,7 @@ def load_buf_custom_data():
         }
     except Exception as error:
         notify_error(logger, "preset.xlsx中custom表单中奶妈相关参数需要为整数，指H1->H6，请仔细检查，是否填空值了")
-        exit(-1)
+        sys.exit(-1)
 
     load_presetr.close()
 
@@ -3277,7 +3277,7 @@ if __name__ == '__main__':
         load_excel1 = load_workbook("DATA.xlsx", read_only=True, data_only=True)
     except (FileNotFoundError, BadZipFile) as error:
         notify_error(logger, "data.xlsx文件不见了或格式不对，可能是未解压，请解压后再使用,err={}".format(error))
-        exit(-1)
+        sys.exit(-1)
     db_one = load_excel1["one"]
     name_one = {}
     equip_index_to_realname = {}

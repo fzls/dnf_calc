@@ -6,6 +6,7 @@
 # Author : Chen Ji
 # Email  : fzls.zju@gmail.com
 # -------------------------------
+import sys
 import logging
 import pathlib
 from datetime import datetime
@@ -29,7 +30,7 @@ try:
     pathlib.Path(log_directory).mkdir(parents=True, exist_ok=True)
 except PermissionError as err:
     notify_error(None, "创建日志目录logs失败，请确认是否限制了基础的运行权限")
-    exit(-1)
+    sys.exit(-1)
 
 fileHandler = logging.FileHandler("{0}/{1}.log".format(log_directory, datetime.now().strftime('calc_%Y_%m_%d_%H_%M_%S')), encoding="utf-8")
 fileHandler.setFormatter(logFormatter)

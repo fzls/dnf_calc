@@ -6,7 +6,7 @@
 # Author : Chen Ji
 # Email  : fzls.zju@gmail.com
 # -------------------------------
-
+import sys
 import numbers
 import os
 
@@ -42,18 +42,18 @@ def load_settings(settings=None):
                     g_setting[setting["name"]] = yaml.load(setting_file, Loader=yaml.FullLoader)
             except FileNotFoundError as error:
                 notify_error(logger, "没找到配置表={}，你是否直接在压缩包中打开了？\n错误信息：{}\n".format(setting["name"], error))
-                exit(0)
+                sys.exit(0)
             except UnicodeDecodeError as error:
                 notify_error(logger, "配置表={}的编码格式有问题，应为utf-8，如果使用系统自带记事本的话，请下载vscode或notepad++等文本编辑器\n错误信息：{}\n".format(setting["name"], error))
-                exit(0)
+                sys.exit(0)
             except Exception as error:
                 notify_error(logger, "配置表={}的格式有问题，具体问题请看下面的报错中的line $行数$ column $列数$来定位\n错误信息：{}\n".format(setting["name"], error))
-                exit(0)
+                sys.exit(0)
 
     ok, msg = check_settings(g_setting)
     if not ok:
         notify_error(logger, "配置表填写有误：\n{}".format(msg))
-        exit(0)
+        sys.exit(0)
 
     logger.info("setting loaded")
     logger.debug("setting={}".format(g_setting))
