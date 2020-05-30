@@ -37,9 +37,12 @@ def load_settings(settings=None):
     g_setting = {}
 
     for setting in settings:
-        with open(setting["path"], "r", encoding="utf-8") as setting_file:
             try:
-                g_setting[setting["name"]] = yaml.load(setting_file, Loader=yaml.FullLoader)
+                with open(setting["path"], "r", encoding="utf-8") as setting_file:
+                    g_setting[setting["name"]] = yaml.load(setting_file, Loader=yaml.FullLoader)
+            except FileNotFoundError as error:
+                notify_error(logger, "没找到配置表={}，你是否直接在压缩包中打开了？\n错误信息：{}\n".format(setting["name"], error))
+                exit(0)
             except UnicodeDecodeError as error:
                 notify_error(logger, "配置表={}的编码格式有问题，应为utf-8，如果使用系统自带记事本的话，请下载vscode或notepad++等文本编辑器\n错误信息：{}\n".format(setting["name"], error))
                 exit(0)
