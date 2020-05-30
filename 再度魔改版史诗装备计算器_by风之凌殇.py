@@ -13,6 +13,7 @@ import uuid
 import webbrowser
 from collections import Counter
 from math import floor
+from sys import exit
 from zipfile import BadZipFile
 
 import PIL.Image
