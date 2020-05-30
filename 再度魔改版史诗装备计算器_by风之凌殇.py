@@ -3338,7 +3338,7 @@ if __name__ == '__main__':
         if job in ["20/60s", "下标", "职业系数下标（除属强外）", "职业"]:
             continue
 
-        opt_job_allowed_weapon_types[job] = row_value[1].split("|")
+        opt_job_allowed_weapon_types[job] = str(row_value[1]).split("|")
         opt_job_ele[job] = row_value[2:4]
         opt_job[job] = row_value[4:]
         jobs.append(job)
