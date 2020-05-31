@@ -25,6 +25,7 @@ from openpyxl import load_workbook, Workbook
 from dnf_calc import *
 
 if __name__ == '__main__':
+    multiprocessing.freeze_support()
     configure_bugsnag()
 
     # 启动时先读取config和setting
@@ -3823,6 +3824,10 @@ def get_gif_frames(gif_path):
     return frames
 
 
+def open_github_page():
+    webbrowser.open('https://github.com/fzls/dnf_calc')
+
+
 if __name__ == '__main__':
     ###########################################################
     #                        tkinter初始化                    #
@@ -4156,39 +4161,34 @@ if __name__ == '__main__':
                 if god == 1:
                     exec("""gif_buttons.append(select_{0})""".format(equip_index))
 
-donate_image = PhotoImage(file='ext_img/donate.png')
-donate_bt = tkinter.Button(self, image=donate_image, command=donate, borderwidth=0, bg=dark_main,
-                           activebackground=dark_main)
-donate_bt.place(x=625, y=550 - 28)
+    donate_image = PhotoImage(file='ext_img/donate.png')
+    donate_bt = tkinter.Button(self, image=donate_image, command=donate, borderwidth=0, bg=dark_main,
+                               activebackground=dark_main)
+    donate_bt.place(x=625, y=550 - 28)
 
+    open_github_page_image = PhotoImage(file='ext_img/open_github_page.png')
+    open_github_page_url = tkinter.Button(self, image=open_github_page_image, command=open_github_page, borderwidth=0, bg=dark_main,
+                                          activebackground=dark_main)
+    open_github_page_url.place(x=500, y=400)
 
-def open_github_page():
-    webbrowser.open('https://github.com/fzls/dnf_calc')
+    dunfaoff_image = PhotoImage(file='ext_img/dunfaoff.png')
+    dunfaoff_url = tkinter.Button(self, image=dunfaoff_image, command=dunfaoff, borderwidth=0, bg=dark_main,
+                                  activebackground=dark_main)
+    dunfaoff_url.place(x=500 + 65, y=406)
 
-
-open_github_page_image = PhotoImage(file='ext_img/open_github_page.png')
-open_github_page_url = tkinter.Button(self, image=open_github_page_image, command=open_github_page, borderwidth=0, bg=dark_main,
-                                      activebackground=dark_main)
-open_github_page_url.place(x=500, y=400)
-
-dunfaoff_image = PhotoImage(file='ext_img/dunfaoff.png')
-dunfaoff_url = tkinter.Button(self, image=dunfaoff_image, command=dunfaoff, borderwidth=0, bg=dark_main,
+    blog_image = PhotoImage(file='ext_img/blog.png')
+    blog_url = tkinter.Button(self, image=blog_image, command=blog, borderwidth=0, bg=dark_main,
                               activebackground=dark_main)
-dunfaoff_url.place(x=500 + 65, y=406)
+    blog_url.place(x=500 + 135, y=408)
 
-blog_image = PhotoImage(file='ext_img/blog.png')
-blog_url = tkinter.Button(self, image=blog_image, command=blog, borderwidth=0, bg=dark_main,
-                          activebackground=dark_main)
-blog_url.place(x=500 + 135, y=408)
+    maker_image = PhotoImage(file='ext_img/maker.png')
+    maker = tkinter.Button(self, image=maker_image, command=hamjung, borderwidth=0, bg=dark_main,
+                           activebackground=dark_main)
+    version = tkinter.Label(self, text='V ' + str(now_version) + '\n' + ver_time, font=guide_font, fg="white",
+                            bg=dark_main)
 
-maker_image = PhotoImage(file='ext_img/maker.png')
-maker = tkinter.Button(self, image=maker_image, command=hamjung, borderwidth=0, bg=dark_main,
-                       activebackground=dark_main)
-version = tkinter.Label(self, text='V ' + str(now_version) + '\n' + ver_time, font=guide_font, fg="white",
-                        bg=dark_main)
-
-maker.place(x=625, y=590)
-version.place(x=630, y=650)
+    maker.place(x=625, y=590)
+    version.place(x=630, y=650)
 
 ###########################################################
 #                 启动工作线程并进入ui主循环                #
