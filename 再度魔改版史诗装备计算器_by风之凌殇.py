@@ -4194,10 +4194,41 @@ if __name__ == '__main__':
 #                 启动工作线程并进入ui主循环                #
 ###########################################################
 
+def test_multiprocessing(q, stop_q):
+    logger.info("test_multiprocessing={}".format(multiprocessing.current_process()))
+    while True:
+        try:
+            stop_q.get_nowait()
+            break
+        except queue.Empty:
+            pass
+
+        # logger.info("{} sleep for 1 second".format(multiprocessing.current_process()))
+        time.sleep(1)
+        pass
+    logger.info("test_multiprocessing={} stopped".format(multiprocessing.current_process()))
+
 if __name__ == "__main__":
+    q = multiprocessing.Queue()
+    stop_q = multiprocessing.Queue()
+    q.cancel_join_thread()  # or else thread that puts data will not term
+    self.work_queue = q
+    workers = []
+    logger.info(multiprocessing.cpu_count())
+    for i in range(multiprocessing.cpu_count()):
+        p = multiprocessing.Process(target=test_multiprocessing, args=(q,stop_q))
+        p.start()
+        workers.append(p)
+
     update_thread()
 
     logger.info("计算器已成功启动，欢迎使用")
 
     self.mainloop()
     self.quit()
+
+    for i in range(len(workers)):
+        stop_q.put({})
+
+    for worker in workers:
+        worker.join()
