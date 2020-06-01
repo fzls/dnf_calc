@@ -13,6 +13,7 @@ import webbrowser
 from collections import Counter
 from math import floor
 from zipfile import BadZipFile
+import threading
 
 import PIL
 import PIL.Image
@@ -42,7 +43,7 @@ def hide_result_window_if_exists():
 
 def report_bugsnag_with_context(error, extra_context=None, show_error_messagebox=True):
     global exit_calc
-    exit_calc = 1
+    exit_calc.value = 1
 
     hide_result_window_if_exists()
 
@@ -126,13 +127,12 @@ if __name__ == '__main__':
 # 看了看，主要性能瓶颈在于直接使用了itertools.product遍历所有的笛卡尔积组合，导致无法提前剪枝，只能在每个组合计算前通过条件判断是否要跳过
 # 背景，假设当前处理到下标n（0-10）的装备，前面装备已选择的组合为selected_combination(of size n)，未处理装备为后面11-n-1个，其对应组合数为rcp=len(Cartesian Product(后面11-n-1个装备部位))
 def cartesianProduct(items, has_baibainguai, not_select_items, dont_pruning, set_perfect, has_uniforms, can_upgrade_work_unifrom_nums, work_uniforms_items, transfer_max_count, transfer_slots_equips,
-                     current_index, has_god, baibianguai, upgrade_work_uniforms, transfered_equips, selected_combination, producer, process_func):
+                     current_index, has_god, baibianguai, upgrade_work_uniforms, transfered_equips, selected_combination, producer, process_func, extra_context):
     invalid_cnt = 1
     for idx in range(current_index + 1, len(items)):
         invalid_cnt *= len(items[idx])
 
     def try_equip(equip):
-        global max_setopt
 
         # 增加处理后续未计算的百变怪
         bbg_invalid_cnt = 0
@@ -149,27 +149,27 @@ def cartesianProduct(items, has_baibainguai, not_select_items, dont_pruning, set
 
         # re：剪枝条件2：预计算出后面装备部位能够获得的最大价值量，若当前已有价值量与之相加低于已处理的最高价值量，则剪枝
         if not dont_pruning:
-            ub = upper_bound(selected_combination, has_god or is_god(equip), current_index + 1)
-            if ub < max_setopt - set_perfect:
+            ub = upper_bound(items, selected_combination, has_god or is_god(equip), current_index + 1, extra_context["prefer_god"])
+            if ub < extra_context["max_setopt"].value - set_perfect:
                 selected_combination.pop()
                 inc_invalid_cnt_func(invalid_cnt + bbg_invalid_cnt)
                 return
 
         if current_index < len(items) - 1:
-            if current_index != start_parallel_computing_at_depth_n:
+            if current_index != extra_context["start_parallel_computing_at_depth_n"]:
                 cartesianProduct(items, has_baibainguai, not_select_items, dont_pruning, set_perfect, has_uniforms, can_upgrade_work_unifrom_nums, work_uniforms_items, transfer_max_count, transfer_slots_equips,
-                                 current_index + 1, has_god or is_god(equip), baibianguai, upgrade_work_uniforms, transfered_equips, selected_combination, producer, process_func)
+                                 current_index + 1, has_god or is_god(equip), baibianguai, upgrade_work_uniforms, transfered_equips, selected_combination, producer, process_func, extra_context)
             else:
                 producer(items, has_baibainguai, not_select_items, dont_pruning, set_perfect, has_uniforms, can_upgrade_work_unifrom_nums, work_uniforms_items, transfer_max_count, transfer_slots_equips,
-                         current_index + 1, has_god or is_god(equip), baibianguai, upgrade_work_uniforms.copy(), transfered_equips.copy(), selected_combination.copy(), producer, process_func)
+                         current_index + 1, has_god or is_god(equip), baibianguai, upgrade_work_uniforms.copy(), transfered_equips.copy(), selected_combination.copy(), producer, process_func, extra_context)
         else:  # 符合条件的装备搭配
             if dont_pruning:
                 # 不进行任何剪枝操作，装备搭配对比的标准是最终计算出的伤害与奶量倍率
-                process_func(selected_combination, baibianguai, upgrade_work_uniforms, transfered_equips)
+                process_func(selected_combination, baibianguai, upgrade_work_uniforms, transfered_equips, extra_context)
             else:
                 # 仅当当前搭配的价值评估函数值不低于历史最高值时才视为有效搭配
                 god = 0
-                if prefer_god() and (has_god or is_god(equip)):
+                if extra_context["prefer_god"] and (has_god or is_god(equip)):
                     god = 1
                 set_list = ["1" + str(get_set_name(selected_combination[x])) for x in range(0, 11)]
                 set_val = Counter(set_list)
@@ -177,10 +177,10 @@ def cartesianProduct(items, has_baibainguai, not_select_items, dont_pruning, set
                 # 1件价值量=0，两件=1，三件、四件=2，五件=3，神话额外增加1价值量
                 setopt_num = sum([floor(x * 0.7) for x in set_val.values()]) + god
 
-                if setopt_num >= max_setopt - set_perfect:
-                    if max_setopt <= setopt_num - god * set_perfect:
-                        max_setopt = setopt_num - god * set_perfect
-                    process_func(selected_combination, baibianguai, upgrade_work_uniforms, transfered_equips)
+                if setopt_num >= extra_context["max_setopt"].value - set_perfect:
+                    if extra_context["max_setopt"].value <= setopt_num - god * set_perfect:
+                        extra_context["max_setopt"].value = setopt_num - god * set_perfect
+                    process_func(selected_combination, baibianguai, upgrade_work_uniforms, transfered_equips, extra_context)
                 else:
                     inc_invalid_cnt_func(1)
 
@@ -188,16 +188,16 @@ def cartesianProduct(items, has_baibainguai, not_select_items, dont_pruning, set
 
     # 考虑当前部位的每一件可选装备
     for equip in items[current_index]:
-        if exit_calc == 1:
-            showsta(text='已终止')
+        if extra_context["exit_calc"].value == 1:
+            # showsta(text='已终止')
             return
         try_equip(equip)
 
     # 当拥有百变怪，且目前的尝试序列尚未使用到百变怪的时候考虑使用百变怪充当当前部位
     if has_baibainguai and baibianguai is None:
         for equip in not_select_items[current_index]:
-            if exit_calc == 1:
-                showsta(text='已终止')
+            if extra_context["exit_calc"].value == 1:
+                # showsta(text='已终止')
                 return
             baibianguai = equip
             try_equip(equip)
@@ -221,68 +221,63 @@ def cartesianProduct(items, has_baibainguai, not_select_items, dont_pruning, set
     pass
 
 
-def has_god_since(idx):
-    for i in range(idx, len(slot_has_god)):
-        if slot_has_god[i]:
-            return True
+def has_god_since(items, idx):
+    for i in range(idx, len(items)):
+        for equip in items[i]:
+            if is_god(equip):
+                return True
 
     return False
-
-
-def has_no_god_since(idx):
-    return not has_god_since(idx)
 
 
 # 为当前已选择序列和后续剩余可选序列计算出一个尽可能精确的上限
 # note: 思路三：进一步降低上限，在当前已有序列的各套装个数的前提下，计算任意n个序列所能产生的价值量最大增益
 # note：思路四：进一步降低上限，在当前已有序列的各套装个数的前提下，计算后面n个序列的各套装配置下所能产生的价值量最大增益
-def upper_bound(selected_combination, selected_has_god, remaining_start_index):
-    return upper_bound_2(selected_combination, selected_has_god, remaining_start_index)
+def upper_bound(items, selected_combination, selected_has_god, remaining_start_index, prefer_god):
+    return upper_bound_2(items, selected_combination, selected_has_god, remaining_start_index, prefer_god)
 
 
-# 对照组：也就是后续
-def upper_bound_none(selected_combination, selected_has_god, remaining_start_index):
-    return 1000000
+# # 对照组：也就是后续
+# def upper_bound_none(items, selected_combination, selected_has_god, remaining_start_index):
+#     return 1000000
+#
+#
+# # note: 思路一：由于每个新增部位产生增益为1或0，因此计算当前序列的价值量，后续每个可选部位按照增益1来计算，可得到约束条件最小的最大上限
+# def upper_bound_1(items, selected_combination, selected_has_god, remaining_start_index):
+#     # 计算至今为止已有的价值量
+#     current_value = calc_equip_value(selected_combination, selected_has_god)
+#     # 后续按最大价值量计算，即每个槽位按能产生1点增益计算
+#     remaining_max_value = 11 - remaining_start_index
+#     hg = has_god_since(items, remaining_start_index)
+#     if hg:
+#         remaining_max_value += 1
+#
+#     ub = current_value + remaining_max_value
+#     return ub
 
 
-# note: 思路一：由于每个新增部位产生增益为1或0，因此计算当前序列的价值量，后续每个可选部位按照增益1来计算，可得到约束条件最小的最大上限
-def upper_bound_1(selected_combination, selected_has_god, remaining_start_index):
-    # 计算至今为止已有的价值量
-    current_value = calc_equip_value(selected_combination, selected_has_god)
-    # 后续按最大价值量计算，即每个槽位按能产生1点增益计算
-    remaining_max_value = 11 - remaining_start_index
-    hg = has_god_since(remaining_start_index)
-    if hg:
-        remaining_max_value += 1
-
-    ub = current_value + remaining_max_value
-    return ub
-
-
-if __name__ == '__main__':
-    # 新增k个装备所能产生的最大价值量（不计入神话）
-    max_inc_values = [0 for i in range(11 + 1)]
-    max_inc_values[1] = 1  # 2=>3
-    max_inc_values[2] = 2  # 1,1 => 2,2
-    max_inc_values[3] = 3  # 1,1,1 => 2,2,2
-    max_inc_values[4] = 4  # 1,1,1,1 => 2,2,2,2
-    max_inc_values[5] = 5  # 1,1,1,1 => 2,2,2,3
-    max_inc_values[6] = 6  # 1,1,1,1 => 2,2,3,3
-    max_inc_values[7] = 7  # 1,1,1,1 => 2,3,3,3
-    max_inc_values[8] = 7  # upper limit = 533->7
-    max_inc_values[9] = 7  # upper limit = 533->7
-    max_inc_values[10] = 7  # upper limit = 533->7
-    max_inc_values[11] = 7  # upper limit = 533->7
-    pass
+# 新增k个装备所能产生的最大价值量（不计入神话）
+max_inc_values = [0 for i in range(11 + 1)]
+max_inc_values[1] = 1  # 2=>3
+max_inc_values[2] = 2  # 1,1 => 2,2
+max_inc_values[3] = 3  # 1,1,1 => 2,2,2
+max_inc_values[4] = 4  # 1,1,1,1 => 2,2,2,2
+max_inc_values[5] = 5  # 1,1,1,1 => 2,2,2,3
+max_inc_values[6] = 6  # 1,1,1,1 => 2,2,3,3
+max_inc_values[7] = 7  # 1,1,1,1 => 2,3,3,3
+max_inc_values[8] = 7  # upper limit = 533->7
+max_inc_values[9] = 7  # upper limit = 533->7
+max_inc_values[10] = 7  # upper limit = 533->7
+max_inc_values[11] = 7  # upper limit = 533->7
 
 
 # note: 思路二：计算新增k个序列所能产生的价值量最大增益
-def upper_bound_2(selected_combination, selected_has_god, remaining_start_index):
+def upper_bound_2(items, selected_combination, selected_has_god, remaining_start_index, prefer_god):
     # 计算至今为止已有的价值量
-    current_value = calc_equip_value(selected_combination, selected_has_god)
+    current_value = calc_equip_value(selected_combination, selected_has_god, prefer_god)
     # 后续按最大价值量计算，即每个槽位按能产生1点增益计算
     remaining_max_value = max_inc_values[11 - remaining_start_index]
-    hg = has_god_since(remaining_start_index)
+    hg = has_god_since(items, remaining_start_index)
     if hg:
         remaining_max_value += 1
 
@@ -290,9 +285,9 @@ def upper_bound_2(selected_combination, selected_has_god, remaining_start_index)
     return ub
 
 
-def calc_equip_value(selected_combination, selected_has_god):
+def calc_equip_value(selected_combination, selected_has_god, prefer_god):
     god = 0
-    if selected_has_god and prefer_god():
+    if selected_has_god and prefer_god:
         god = 1
     set_list = ["1" + str(get_set_name(selected_combination[x])) for x in range(0, len(selected_combination))]
     set_val = Counter(set_list)
@@ -315,9 +310,154 @@ def calc_with_try_except():
 
 # 准备工作队列和工作线程
 def producer(*args):
-    if exit_calc == 1:
+    if exit_calc.value == 1:
         return
     self.work_queue.put(args)
+
+
+def process_deal(calc_now, baibianguai, upgrade_work_uniforms, transfered_equips, extra_context):
+    set_list = ["1" + str(get_set_name(calc_now[x])) for x in range(0, 11)]
+    set_on = [];
+    setapp = set_on.append
+    setcount = set_list.count
+    set_oncount = set_on.count
+    onecount = calc_now.count
+    for set_code in range(101, 136):
+        if setcount(str(set_code)) == 2:
+            setapp(str(set_code) + "1")
+        if 4 >= setcount(str(set_code)) >= 3:
+            setapp(str(set_code) + "2")
+        if setcount(str(set_code)) == 5:
+            setapp(str(set_code) + "3")
+    for set_code in range(136, 139):
+        if setcount(str(set_code)) == 2:
+            setapp(str(set_code) + "0")
+        if 4 >= setcount(str(set_code)) >= 3:
+            setapp(str(set_code) + "1")
+        if setcount(str(set_code)) == 5:
+            setapp(str(set_code) + "2")
+    if onecount('32410650') == 1:
+        if onecount('21400340') == 1:
+            setapp('1401')
+        elif onecount('31400540') == 1:
+            setapp('1401')
+
+    for wep_num in extra_context["weapon_indexs"]:
+        calc_wep = (wep_num,) + tuple(calc_now)
+        damage = 0
+        # 加上输出职业的国服特色数值后的基础数据
+        base_array = extra_context["base_array_with_deal_bonus_attributes"].copy()
+
+        skiper = base_array[index_deal_extra_percent_skill_attack_power]
+        for_calc = tuple(set_on) + calc_wep
+        oneone = len(for_calc)
+        oneonelist = []
+        for idx in range(oneone):
+            no_cut = extra_context["getone"](for_calc[idx])  ## 11번 스증
+            if no_cut is None:
+                # hack：目前select是默认初始化时将tg{1101-3336}[0,1]范围的key对应的值都设为0，而百变怪会根据select的值为0来筛选出未选择的集合
+                #  因此在这里如果为None，就是这种情况，直接返回就可以了
+                global count_invalid
+                count_invalid = count_invalid + 1
+                return
+            cut = np.array(no_cut[0:20] + no_cut[22:23] + no_cut[34:35] + no_cut[38:44])
+            skiper = multiply_entry(skiper, cut[index_deal_extra_percent_skill_attack_power])
+            oneonelist.append(cut)
+        for idx in range(oneone):
+            base_array = base_array + oneonelist[idx]
+
+        # 军神二件套且拥有军神-魔法石-军神的庇护宝石，说明遗书和古怪耳环（心之所念）不同时存在，减去5%的爆伤
+        if set_oncount('1201') == 1 and onecount('32200') == 1:
+            base_array[index_deal_extra_percent_crit_damage] -= 5
+        # 拥有军神耳环，且不拥有军神辅助装备，需要减去10%力智加成
+        if onecount("33200") == 1 and onecount("31200") == 0:
+            base_array[index_deal_extra_percent_strength_and_intelligence] -= 10
+        # 能量的主宰装备，若拥有能量耳环或能量神话耳环
+        if onecount('33230') == 1 or onecount('33231') == 1:
+            # 若不同时拥有能量辅助装备，则减去10%力智加成
+            if onecount('31230') == 0:
+                base_array[index_deal_extra_percent_addtional_damage] -= 10
+            # 如不同时拥有能量魔法石，则减去40点全属性属强
+            if onecount('32230') == 0:
+                base_array[index_deal_extra_all_element_strength] -= 40
+        # 特殊处理天命无常套装
+        if onecount('15340') == 1 or onecount('23340') == 1 or onecount('33340') == 1 or onecount(
+                '33341') == 1:
+            # 若只有散件
+            if set_oncount('1341') == 0 and set_oncount('1342') == 0:
+                # 天命鞋子，在两件套时，点数为双数增加40点属强，期望为20，若为散件则减去该属性
+                if onecount('15340') == 1:
+                    base_array[index_deal_extra_all_element_strength] -= 20
+                # 天命戒指，在两件套时，点数大于2额外增加12%伤害，期望为10%（ps：原作者给，我觉得应该应该是4/6*12=8%?）
+                elif onecount('23340') == 1:  # 天命无常-戒指-命运的捉弄
+                    base_array[index_deal_extra_percent_attack_damage] -= 10
+                # 天命耳环，在两件套时，点数为6时增加30%最终伤害，期望为5%
+                elif onecount('33340') == 1:
+                    base_array[index_deal_extra_percent_final_damage] -= 5  #
+                # 天命神话耳环，在两件套时，点数为6时增加30%最终伤害，其中点数为1时重新投色子，期望为6%
+                else:
+                    base_array[index_deal_extra_all_element_strength] -= 4  # ele=4
+                    base_array[index_deal_extra_percent_attack_damage] -= 2  # damper=2
+                    base_array[index_deal_extra_percent_final_damage] -= 1  # allper=6
+                    base_array[index_deal_extra_percent_strength_and_intelligence] -= 1.93  # staper=15
+        # 铁匠神话上衣
+        if onecount('11111') == 1:
+            # 铁匠三件套或铁匠五件套
+            if set_oncount('1112') == 1 or set_oncount('1113') == 1:
+                base_array[index_deal_cool_correction] += 10
+        # 命运神话上衣
+        if onecount('11301') == 1:
+            # 未拥有命运项链
+            if onecount('22300') != 1:
+                base_array[index_deal_extra_percent_addtional_damage] -= 10
+                base_array[index_deal_extra_percent_physical_magical_independent_attack_power] += 10
+            # 未拥有命运辅助装备
+            if onecount('31300') != 1:
+                base_array[index_deal_extra_percent_addtional_damage] -= 10
+                base_array[index_deal_extra_percent_physical_magical_independent_attack_power] += 10
+
+        base_array[index_deal_extra_percent_skill_attack_power] = skiper  # 技能攻击力 +X%
+        real_bon = (base_array[index_deal_extra_percent_addtional_damage] +  # 攻击时，附加X%的伤害，也就是白字
+                    base_array[index_deal_extra_percent_elemental_damage] *  # 攻击时，附加X%的属性伤害
+                    (base_array[index_deal_extra_all_element_strength] * 0.0045 + 1.05))  # 所有属性强化+X
+        actlvl = ((base_array[index_deal_extra_active_second_awaken_skill] +  # 二觉主动技能
+                   base_array[index_deal_extra_active_skill_lv_1_45] * extra_context["job_lv1"] +  # 1_45主动技能
+                   base_array[index_deal_extra_active_skill_lv_50] * extra_context["job_lv2"] +  # 50主动技能
+                   base_array[index_deal_extra_active_skill_lv_60_80] * extra_context["job_lv3"] +  # 60_80主动技能
+                   base_array[index_deal_extra_active_skill_lv_85] * extra_context["job_lv4"] +  # 85主动技能
+                   base_array[index_deal_extra_active_skill_lv_95] * extra_context["job_lv5"] +  # 95主动技能
+                   base_array[index_deal_extra_active_skill_lv_100] * extra_context["job_lv6"]  # 100主动技能
+                   ) / 100 + 1)
+        paslvl = (((100 + base_array[index_deal_extra_passive_transfer_skill] * extra_context["job_pas0"]) / 100) *  # 增加转职被动的等级
+                  ((100 + base_array[index_deal_extra_passive_first_awaken_skill] * extra_context["job_pas1"]) / 100) *  # 增加一绝被动的等级
+                  ((100 + base_array[index_deal_extra_passive_second_awaken_skill] * extra_context["job_pas2"]) / 100) *  # 增加二觉被动的等级
+                  ((100 + base_array[index_deal_extra_passive_third_awaken_skill] * extra_context["job_pas3"]) / 100)  # 增加三觉被动的等级
+                  )
+        damage = ((base_array[index_deal_extra_percent_attack_damage] / 100 + 1) *  # 攻击时额外增加X%的伤害增加量
+                  (base_array[index_deal_extra_percent_crit_damage] / 100 + 1) *  # 暴击时，额外增加X%的伤害增加量
+                  (real_bon / 100 + 1) *  # 白字与属强的最终综合值
+                  (base_array[index_deal_extra_percent_final_damage] / 100 + 1) *  # 最终伤害+X%
+                  (base_array[index_deal_extra_percent_physical_magical_independent_attack_power] / 100 + 1) *  # 物理/魔法/独立攻击力 +X%
+                  (base_array[index_deal_extra_percent_strength_and_intelligence] / 100 + 1) *  # 力智+X%
+                  (base_array[index_deal_extra_all_element_strength] * 0.0045 + 1.05) *  # 所有属性强化+X
+                  (base_array[index_deal_extra_percent_continued_damage] / 100 + 1) *  # 发生持续伤害5秒，伤害量为对敌人造成伤害的X%
+                  (skiper / 100 + 1) *  # 技能攻击力 +X%
+                  (base_array[index_deal_extra_percent_special_effect] / 100 + 1) *  # 特殊词条，作者为每个特殊词条打了相应的强度百分比分，如一叶障目对忍者一些技能的特殊改变被认为可以强化9%，守护的抉择（歧路鞋）的护石增强词条被认为可以增强21%
+                  actlvl * paslvl *  # 主动技能与被动技能的影响
+                  ((54500 + 3.31 * base_array[index_deal_strength_and_intelligence]) / 54500) *  # 力智
+                  ((4800 + base_array[index_deal_physical_magical_independent_attack_power]) / 4800) *  # 物理/魔法/独立攻击力
+                  (1 + extra_context["cool_on"] * base_array[index_deal_cool_correction] / 100) /  # 冷却矫正系数，每冷却1%，记0.35这个值
+                  (1.05 + 0.0045 * int(extra_context["ele_skill"])))  # 最后除去逆校正初始属强的影响
+
+        base_array[index_deal_extra_percent_addtional_damage] = real_bon
+        not_owned_equips = [uwu for uwu in upgrade_work_uniforms]
+        for equip in transfered_equips:
+            not_owned_equips.append(equip)
+
+        extra_context["minheap_queue"].put((damage, random.random(), [calc_wep, base_array, baibianguai, tuple(not_owned_equips)]))
+
+        # global count_valid
+        # count_valid = count_valid + 1
 
 ## 计算函数##
 def calc():
@@ -415,7 +555,7 @@ def calc():
     count_valid = 0
     count_invalid = 0
     show_number = 0
-    max_setopt = 0
+    max_setopt = multiprocessing.Manager().Value('i', 0)
 
     if job_name[-4:] == "(奶系)":
         active_eff_one = 15
@@ -495,7 +635,7 @@ def calc():
 
     global exit_calc
     # 开始计算
-    exit_calc = 0
+    exit_calc.value = 0
 
     has_baibainguai = baibianguai_select.get() == txt_has_baibianguai
     can_upgrade_work_unifrom_nums = get_can_upgrade_work_unifrom_nums()
@@ -503,18 +643,6 @@ def calc():
     # 超慢速时不进行任何剪枝操作，装备搭配对比的标准是最终计算出的伤害与奶量倍率
     dont_pruning = select_speed.get() == speed_super_slow
     dont_prefer_god = not prefer_god()
-
-    # items = [list11, list12, list13, list14, list15, list21, list22, list23, list31, list32, list33]
-    # 预处理，计算每个部位是否拥有神话装备
-    slot_has_god = []
-    for slot_equips in items:
-        hg = False
-        for equip in slot_equips:
-            if is_god(equip):
-                hg = True
-                break
-
-        slot_has_god.append(hg)
 
     logger.info(("all_list_num={} (original_count={} bbg_count={} work_uniforms_count={})\n"
                  "transfer_max_count={} has_baibainguai={}, can_upgrade_work_unifrom_nums={} dont_pruning={}, dont_prefer_god={}\n"
@@ -553,158 +681,42 @@ def calc():
             notify_error(logger, "配置表填写有误：词条名不存在，请仔细对照配置表表头所有词条，确认在其中，err={}".format(error))
             return
 
-        def process(calc_now, baibianguai, upgrade_work_uniforms, transfered_equips):
-            set_list = ["1" + str(get_set_name(calc_now[x])) for x in range(0, 11)]
-            set_on = [];
-            setapp = set_on.append
-            setcount = set_list.count
-            set_oncount = set_on.count
-            onecount = calc_now.count
-            for set_code in range(101, 136):
-                if setcount(str(set_code)) == 2:
-                    setapp(str(set_code) + "1")
-                if 4 >= setcount(str(set_code)) >= 3:
-                    setapp(str(set_code) + "2")
-                if setcount(str(set_code)) == 5:
-                    setapp(str(set_code) + "3")
-            for set_code in range(136, 139):
-                if setcount(str(set_code)) == 2:
-                    setapp(str(set_code) + "0")
-                if 4 >= setcount(str(set_code)) >= 3:
-                    setapp(str(set_code) + "1")
-                if setcount(str(set_code)) == 5:
-                    setapp(str(set_code) + "2")
-            if onecount('32410650') == 1:
-                if onecount('21400340') == 1:
-                    setapp('1401')
-                elif onecount('31400540') == 1:
-                    setapp('1401')
+        m = multiprocessing.Manager()
+        minheap_queue = m.Queue()
 
-            for wep_num in weapon_indexs:
-                calc_wep = (wep_num,) + tuple(calc_now)
-                damage = 0
-                # 加上输出职业的国服特色数值后的基础数据
-                base_array = base_array_with_deal_bonus_attributes.copy()
-
-                skiper = base_array[index_deal_extra_percent_skill_attack_power]
-                for_calc = tuple(set_on) + calc_wep
-                oneone = len(for_calc)
-                oneonelist = []
-                for idx in range(oneone):
-                    no_cut = getone(for_calc[idx])  ## 11번 스증
-                    if no_cut is None:
-                        # hack：目前select是默认初始化时将tg{1101-3336}[0,1]范围的key对应的值都设为0，而百变怪会根据select的值为0来筛选出未选择的集合
-                        #  因此在这里如果为None，就是这种情况，直接返回就可以了
-                        global count_invalid
-                        count_invalid = count_invalid + 1
-                        return
-                    cut = np.array(no_cut[0:20] + no_cut[22:23] + no_cut[34:35] + no_cut[38:44])
-                    skiper = multiply_entry(skiper, cut[index_deal_extra_percent_skill_attack_power])
-                    oneonelist.append(cut)
-                for idx in range(oneone):
-                    base_array = base_array + oneonelist[idx]
-
-                # 军神二件套且拥有军神-魔法石-军神的庇护宝石，说明遗书和古怪耳环（心之所念）不同时存在，减去5%的爆伤
-                if set_oncount('1201') == 1 and onecount('32200') == 1:
-                    base_array[index_deal_extra_percent_crit_damage] -= 5
-                # 拥有军神耳环，且不拥有军神辅助装备，需要减去10%力智加成
-                if onecount("33200") == 1 and onecount("31200") == 0:
-                    base_array[index_deal_extra_percent_strength_and_intelligence] -= 10
-                # 能量的主宰装备，若拥有能量耳环或能量神话耳环
-                if onecount('33230') == 1 or onecount('33231') == 1:
-                    # 若不同时拥有能量辅助装备，则减去10%力智加成
-                    if onecount('31230') == 0:
-                        base_array[index_deal_extra_percent_addtional_damage] -= 10
-                    # 如不同时拥有能量魔法石，则减去40点全属性属强
-                    if onecount('32230') == 0:
-                        base_array[index_deal_extra_all_element_strength] -= 40
-                # 特殊处理天命无常套装
-                if onecount('15340') == 1 or onecount('23340') == 1 or onecount('33340') == 1 or onecount(
-                        '33341') == 1:
-                    # 若只有散件
-                    if set_oncount('1341') == 0 and set_oncount('1342') == 0:
-                        # 天命鞋子，在两件套时，点数为双数增加40点属强，期望为20，若为散件则减去该属性
-                        if onecount('15340') == 1:
-                            base_array[index_deal_extra_all_element_strength] -= 20
-                        # 天命戒指，在两件套时，点数大于2额外增加12%伤害，期望为10%（ps：原作者给，我觉得应该应该是4/6*12=8%?）
-                        elif onecount('23340') == 1:  # 天命无常-戒指-命运的捉弄
-                            base_array[index_deal_extra_percent_attack_damage] -= 10
-                        # 天命耳环，在两件套时，点数为6时增加30%最终伤害，期望为5%
-                        elif onecount('33340') == 1:
-                            base_array[index_deal_extra_percent_final_damage] -= 5  #
-                        # 天命神话耳环，在两件套时，点数为6时增加30%最终伤害，其中点数为1时重新投色子，期望为6%
-                        else:
-                            base_array[index_deal_extra_all_element_strength] -= 4  # ele=4
-                            base_array[index_deal_extra_percent_attack_damage] -= 2  # damper=2
-                            base_array[index_deal_extra_percent_final_damage] -= 1  # allper=6
-                            base_array[index_deal_extra_percent_strength_and_intelligence] -= 1.93  # staper=15
-                # 铁匠神话上衣
-                if onecount('11111') == 1:
-                    # 铁匠三件套或铁匠五件套
-                    if set_oncount('1112') == 1 or set_oncount('1113') == 1:
-                        base_array[index_deal_cool_correction] += 10
-                # 命运神话上衣
-                if onecount('11301') == 1:
-                    # 未拥有命运项链
-                    if onecount('22300') != 1:
-                        base_array[index_deal_extra_percent_addtional_damage] -= 10
-                        base_array[index_deal_extra_percent_physical_magical_independent_attack_power] += 10
-                    # 未拥有命运辅助装备
-                    if onecount('31300') != 1:
-                        base_array[index_deal_extra_percent_addtional_damage] -= 10
-                        base_array[index_deal_extra_percent_physical_magical_independent_attack_power] += 10
-
-                base_array[index_deal_extra_percent_skill_attack_power] = skiper  # 技能攻击力 +X%
-                real_bon = (base_array[index_deal_extra_percent_addtional_damage] +  # 攻击时，附加X%的伤害，也就是白字
-                            base_array[index_deal_extra_percent_elemental_damage] *  # 攻击时，附加X%的属性伤害
-                            (base_array[index_deal_extra_all_element_strength] * 0.0045 + 1.05))  # 所有属性强化+X
-                actlvl = ((base_array[index_deal_extra_active_second_awaken_skill] +  # 二觉主动技能
-                           base_array[index_deal_extra_active_skill_lv_1_45] * job_lv1 +  # 1_45主动技能
-                           base_array[index_deal_extra_active_skill_lv_50] * job_lv2 +  # 50主动技能
-                           base_array[index_deal_extra_active_skill_lv_60_80] * job_lv3 +  # 60_80主动技能
-                           base_array[index_deal_extra_active_skill_lv_85] * job_lv4 +  # 85主动技能
-                           base_array[index_deal_extra_active_skill_lv_95] * job_lv5 +  # 95主动技能
-                           base_array[index_deal_extra_active_skill_lv_100] * job_lv6  # 100主动技能
-                           ) / 100 + 1)
-                paslvl = (((100 + base_array[index_deal_extra_passive_transfer_skill] * job_pas0) / 100) *  # 增加转职被动的等级
-                          ((100 + base_array[index_deal_extra_passive_first_awaken_skill] * job_pas1) / 100) *  # 增加一绝被动的等级
-                          ((100 + base_array[index_deal_extra_passive_second_awaken_skill] * job_pas2) / 100) *  # 增加二觉被动的等级
-                          ((100 + base_array[index_deal_extra_passive_third_awaken_skill] * job_pas3) / 100)  # 增加三觉被动的等级
-                          )
-                damage = ((base_array[index_deal_extra_percent_attack_damage] / 100 + 1) *  # 攻击时额外增加X%的伤害增加量
-                          (base_array[index_deal_extra_percent_crit_damage] / 100 + 1) *  # 暴击时，额外增加X%的伤害增加量
-                          (real_bon / 100 + 1) *  # 白字与属强的最终综合值
-                          (base_array[index_deal_extra_percent_final_damage] / 100 + 1) *  # 最终伤害+X%
-                          (base_array[index_deal_extra_percent_physical_magical_independent_attack_power] / 100 + 1) *  # 物理/魔法/独立攻击力 +X%
-                          (base_array[index_deal_extra_percent_strength_and_intelligence] / 100 + 1) *  # 力智+X%
-                          (base_array[index_deal_extra_all_element_strength] * 0.0045 + 1.05) *  # 所有属性强化+X
-                          (base_array[index_deal_extra_percent_continued_damage] / 100 + 1) *  # 发生持续伤害5秒，伤害量为对敌人造成伤害的X%
-                          (skiper / 100 + 1) *  # 技能攻击力 +X%
-                          (base_array[index_deal_extra_percent_special_effect] / 100 + 1) *  # 特殊词条，作者为每个特殊词条打了相应的强度百分比分，如一叶障目对忍者一些技能的特殊改变被认为可以强化9%，守护的抉择（歧路鞋）的护石增强词条被认为可以增强21%
-                          actlvl * paslvl *  # 主动技能与被动技能的影响
-                          ((54500 + 3.31 * base_array[index_deal_strength_and_intelligence]) / 54500) *  # 力智
-                          ((4800 + base_array[index_deal_physical_magical_independent_attack_power]) / 4800) *  # 物理/魔法/独立攻击力
-                          (1 + cool_on * base_array[index_deal_cool_correction] / 100) /  # 冷却矫正系数，每冷却1%，记0.35这个值
-                          (1.05 + 0.0045 * int(ele_skill)))  # 最后除去逆校正初始属强的影响
-
-                base_array[index_deal_extra_percent_addtional_damage] = real_bon
-                global unique_index
-                unique_index += 1
-                not_owned_equips = [uwu for uwu in upgrade_work_uniforms]
-                for equip in transfered_equips:
-                    not_owned_equips.append(equip)
-
-                minheap.add((damage, unique_index,
-                             [calc_wep, base_array, baibianguai, tuple(not_owned_equips)]))
-
-                global count_valid
-                count_valid = count_valid + 1
-
+        extra_context = {
+            "weapon_indexs": weapon_indexs,
+            "base_array_with_deal_bonus_attributes": base_array_with_deal_bonus_attributes,
+            "getone": getone,
+            "job_lv1": job_lv1,
+            "job_lv2": job_lv2,
+            "job_lv3": job_lv3,
+            "job_lv4": job_lv4,
+            "job_lv5": job_lv5,
+            "job_lv6": job_lv6,
+            "job_pas0": job_pas0,
+            "job_pas1": job_pas1,
+            "job_pas2": job_pas2,
+            "job_pas3": job_pas3,
+            "cool_on": cool_on,
+            "ele_skill": ele_skill,
+            "minheap_queue": minheap_queue,
+            "exit_calc": exit_calc,
+            "start_parallel_computing_at_depth_n": start_parallel_computing_at_depth_n,
+            "max_setopt": max_setopt,
+            "prefer_god": prefer_god(),
+        }
         cartesianProduct(items, has_baibainguai, not_select_items, dont_pruning, set_perfect, has_uniforms, can_upgrade_work_unifrom_nums, work_uniforms_items, transfer_max_count, transfer_slots_equips, 0, False, None, [], [], [], producer,
-                         process)
+                         process_deal, extra_context)
 
+        # re: 边处理可行解，并检查工作队列是否都完成了
         # 等到所有工作处理完成
         self.work_queue.join()
+
+        # 将从所有可行结果中找出可行解
+        while not minheap_queue.empty():
+            heap_item = minheap_queue.get()
+            minheap.add(heap_item)
 
         show_number = 0
         showsta(text='结果统计中')
@@ -1058,7 +1070,7 @@ def calc():
     load_excel.close()
     showsta(text='输出完成' + "时间 = " + format_time(time.time() - start_time))
     # 结束计算
-    exit_calc = 1
+    exit_calc.value = 1
     logger.info("计算耗时时间 = " + str(time.time() - start_time) + "秒")
 
 
@@ -1068,7 +1080,7 @@ def calc_thread():
 
 def stop_calc():
     global exit_calc
-    exit_calc = 1
+    exit_calc.value = 1
     logger.info("手动停止计算")
 
 
@@ -1480,8 +1492,9 @@ def get_equips():
 
 
 def inc_invalid_cnt_func(cnt):
-    global count_invalid
-    count_invalid += int(cnt)
+    # global count_invalid
+    # count_invalid += int(cnt)
+    pass
 
 
 # 装备编号的最后一位表示是否是神话装备，eg：33341
@@ -2984,7 +2997,7 @@ def update_count():
     while True:
         try:
             show_str = "{}有效搭配/{}无效".format(count_valid, count_invalid)
-            if exit_calc == 0:
+            if exit_calc.value == 0:
                 using_time = time.time() - count_start_time
                 using_time_str = format_time(using_time)
                 processed = count_valid + count_invalid
@@ -2995,13 +3008,9 @@ def update_count():
                 else:
                     remaining_time_str = "0s(未经确计数)"
             showcon(text=(
-                "{}有效搭配/{}无效\n"
-                "用时={}\n"
-                "剩余={}"
+                "用时={}"
             ).format(
-                count_valid, count_invalid,
                 using_time_str,
-                remaining_time_str,
             ))
             time.sleep(0.1)
         except Exception as e:
@@ -3230,7 +3239,7 @@ def check_all():
 ###########################################################
 
 if __name__ == '__main__':
-    exit_calc = 1
+    exit_calc = multiprocessing.Manager().Value('i', 1)
     count_valid = 0
     unique_index = 0
     count_invalid = 0
@@ -4164,7 +4173,7 @@ if __name__ == '__main__':
 #                 启动工作线程并进入ui主循环                #
 ###########################################################
 
-def consumer(work_queue, work_func):
+def consumer(work_queue, exit_calc, work_func):
     current_process = multiprocessing.current_process()
     logger.info("work thread={} started, ready to work".format(current_process))
     processed_count = 0
@@ -4173,7 +4182,7 @@ def consumer(work_queue, work_func):
         args = work_queue.get()
         processed_count += 1
         logger.info("work thread {} processing {}th work".format(current_process, processed_count))
-        if exit_calc == 0:
+        if exit_calc.value == 0:
             work_func(*args)
         work_queue.task_done()
 
@@ -4189,7 +4198,7 @@ if __name__ == "__main__":
     workers = []
     max_thread = config().multi_threading.max_thread
     for i in range(max_thread):
-        p = multiprocessing.Process(target=consumer, args=(work_queue, cartesianProduct), daemon=True, name="worker#{}".format(i + 1))
+        p = multiprocessing.Process(target=consumer, args=(work_queue, exit_calc, cartesianProduct), daemon=True, name="worker#{}".format(i + 1))
         p.start()
         workers.append(p)
 

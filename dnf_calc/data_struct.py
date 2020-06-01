@@ -12,7 +12,6 @@
 ###########################################################
 
 # 用于实现排行的最小堆
-import threading
 from heapq import heapify, heappush, heappushpop
 
 
@@ -20,16 +19,13 @@ class MinHeap():
     def __init__(self, top_n):
         self.h = []
         self.length = top_n
-        self.locker = threading.Lock()
         heapify(self.h)
 
     def add(self, element):
-        with self.locker:
-            if len(self.h) < self.length:
-                heappush(self.h, element)
-            else:
-                heappushpop(self.h, element)
+        if len(self.h) < self.length:
+            heappush(self.h, element)
+        else:
+            heappushpop(self.h, element)
 
     def getTop(self):
-        with self.locker:
-            return sorted(self.h, reverse=True)
+        return sorted(self.h, reverse=True)
