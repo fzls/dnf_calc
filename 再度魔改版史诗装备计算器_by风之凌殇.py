@@ -2712,7 +2712,8 @@ def load_checklist_noconfirm(account_index):
             job_name = job_name.replace("(奶系)奶妈", "(奶系)炽天使").replace("(奶系)奶萝", "(奶系)冥月女神").replace("(奶系)奶爸", "(奶系)神思者") \
                 .replace("剑神", "极诣·剑魂").replace("黑暗君主", "极诣·鬼泣").replace("帝血弑天", "极诣·狂战士").replace("天帝", "极诣·阿修罗").replace("夜见罗刹", "极诣·剑影") \
                 .replace("剑皇", "极诣·驭剑士").replace("裁决女神", "极诣·暗殿骑士").replace("弑神者", "极诣·契魔者").replace("剑帝", "极诣·流浪武士") \
-                .replace("铁血教父", "铁血统帅")
+                .replace("铁血教父", "铁血统帅") \
+                .replace("极诣·气功师（男）", "归元·气功师").replace("极诣·散打（男）", "归元·散打").replace("极诣·街霸（男）", "归元·街霸").replace("极诣·柔道家（男）", "归元·柔道家")
         if job_name == "职业选择":
             job_name = jobs[0]
         jobup_select.set(job_name or jobs[0])
