@@ -7,13 +7,13 @@ import collections
 import itertools
 import platform
 import random
+import threading
 import traceback
 import uuid
 import webbrowser
 from collections import Counter
 from math import floor
 from zipfile import BadZipFile
-import threading
 
 import PIL
 import PIL.Image
@@ -126,99 +126,132 @@ if __name__ == '__main__':
 
 # 看了看，主要性能瓶颈在于直接使用了itertools.product遍历所有的笛卡尔积组合，导致无法提前剪枝，只能在每个组合计算前通过条件判断是否要跳过
 # 背景，假设当前处理到下标n（0-10）的装备，前面装备已选择的组合为selected_combination(of size n)，未处理装备为后面11-n-1个，其对应组合数为rcp=len(Cartesian Product(后面11-n-1个装备部位))
-def cartesianProduct(items, has_baibainguai, not_select_items, dont_pruning, set_perfect, has_uniforms, can_upgrade_work_unifrom_nums, work_uniforms_items, transfer_max_count, transfer_slots_equips,
-                     current_index, has_god, baibianguai, upgrade_work_uniforms, transfered_equips, selected_combination, producer, process_func, extra_context):
-    invalid_cnt = 1
-    for idx in range(current_index + 1, len(items)):
-        invalid_cnt *= len(items[idx])
+def cartesianProduct(step: CalcStepData):
+    # invalid_cnt = 1
+    # for idx in range(current_index + 1, len(items)):
+    #     invalid_cnt *= len(items[idx])
 
-    def try_equip(equip):
-
-        # 增加处理后续未计算的百变怪
-        bbg_invalid_cnt = 0
-        if has_baibainguai and baibianguai is None:
-            for idx in range(current_index + 1, len(items)):
-                bbg_invalid_cnt += invalid_cnt / len(items[idx]) * len(not_select_items[idx])
-
-        # 剪枝条件1：若当前组合序列已经有神话装备（god），且当前这个部位遍历到的仍是一个神话装备，则可以直接跳过rcp个组合，当前部位之前处理下一个备选装备
-        if has_god and is_god(equip):
-            inc_invalid_cnt_func(invalid_cnt + bbg_invalid_cnt)
+    # 考虑当前部位的每一件可选装备
+    for equip in step.items[step.current_index]:
+        if step.calc_data.exit_calc.value == 1:
+            # showsta(text='已终止')
             return
+        try_equip(step, equip)
 
-        selected_combination.append(equip)
-
-        # re：剪枝条件2：预计算出后面装备部位能够获得的最大价值量，若当前已有价值量与之相加低于已处理的最高价值量，则剪枝
-        if not dont_pruning:
-            ub = upper_bound(items, selected_combination, has_god or is_god(equip), current_index + 1, extra_context["prefer_god"])
-            if ub < extra_context["max_setopt"].value - set_perfect:
-                selected_combination.pop()
-                inc_invalid_cnt_func(invalid_cnt + bbg_invalid_cnt)
+    # 当拥有百变怪，且目前的尝试序列尚未使用到百变怪的时候考虑使用百变怪充当当前部位
+    if step.has_baibianguai and step.calc_data.baibianguai is None:
+        for equip in step.not_select_items[step.current_index]:
+            if step.calc_data.exit_calc.value == 1:
+                # showsta(text='已终止')
                 return
+            step.calc_data.baibianguai = equip
+            try_equip(step, equip)
+            step.calc_data.baibianguai = None
 
-        if current_index < len(items) - 1:
-            if current_index != extra_context["start_parallel_computing_at_depth_n"]:
-                cartesianProduct(items, has_baibainguai, not_select_items, dont_pruning, set_perfect, has_uniforms, can_upgrade_work_unifrom_nums, work_uniforms_items, transfer_max_count, transfer_slots_equips,
-                                 current_index + 1, has_god or is_god(equip), baibianguai, upgrade_work_uniforms, transfered_equips, selected_combination, producer, process_func, extra_context)
+    # 若当前部位的工作服尚未拥有，且可升级工作服的次数尚未用完，则尝试本部位升级工作服
+    if not step.has_uniforms[step.current_index] and len(step.calc_data.upgrade_work_uniforms) < step.can_upgrade_work_unifrom_nums:
+        work_uniform = step.work_uniforms_items[step.current_index]
+
+        step.calc_data.upgrade_work_uniforms.append(work_uniform)
+        try_equip(step, work_uniform)
+        step.calc_data.upgrade_work_uniforms.pop()
+
+    # 当当前部位有可以从选定账号跨界的装备，且已跨界数目未超过设定上限，则考虑跨界该部位的装备
+    if len(step.transfer_slots_equips[step.current_index]) != 0 and len(step.calc_data.transfered_equips) < step.transfer_max_count:
+        for equip_to_transfer in step.transfer_slots_equips[step.current_index]:
+            step.calc_data.transfered_equips.append(equip_to_transfer)
+            try_equip(step, equip_to_transfer)
+            step.calc_data.transfered_equips.pop()
+
+    pass
+
+
+import copy
+def copy_step(step: CalcStepData)->CalcStepData:
+    copied_step = copy.copy(step)
+
+    copied_step.items = copy.deepcopy(step.items)
+    copied_step.not_select_items = copy.deepcopy(step.not_select_items)
+    copied_step.has_uniforms = copy.deepcopy(step.has_uniforms)
+    copied_step.work_uniforms_items = copy.deepcopy(step.work_uniforms_items)
+    copied_step.transfer_slots_equips = copy.deepcopy(step.transfer_slots_equips)
+
+    data = step.calc_data
+
+    copied_data = copy.copy(data)
+    copied_data.selected_combination = copy.deepcopy(data.selected_combination)
+    copied_data.upgrade_work_uniforms = copy.deepcopy(data.upgrade_work_uniforms)
+    copied_data.transfered_equips = copy.deepcopy(data.transfered_equips)
+    copied_data.weapon_indexs = copy.deepcopy(data.weapon_indexs)
+    copied_data.base_array_with_deal_bonus_attributes = data.base_array_with_deal_bonus_attributes.copy()
+    copied_data.opt_one = copy.deepcopy(data.opt_one)
+
+    copied_step.calc_data = copied_data
+
+    return copied_step
+
+
+def try_equip(step: CalcStepData, equip):
+    # # 增加处理后续未计算的百变怪
+    # bbg_invalid_cnt = 0
+    # if step.has_baibianguai and step.calc_data.baibianguai is None:
+    #     for idx in range(step.current_index + 1, len(step.items)):
+    #         bbg_invalid_cnt += invalid_cnt / len(items[idx]) * len(not_select_items[idx])
+
+    # 剪枝条件1：若当前组合序列已经有神话装备（god），且当前这个部位遍历到的仍是一个神话装备，则可以直接跳过rcp个组合，当前部位之前处理下一个备选装备
+    if step.has_god and is_god(equip):
+        # inc_invalid_cnt_func(invalid_cnt + bbg_invalid_cnt)
+        return
+
+    current_index = step.current_index
+    has_god = step.has_god
+
+    step.calc_data.selected_combination.append(equip)
+    step.current_index += 1
+    step.has_god = step.has_god or is_god(equip)
+
+    # re：剪枝条件2：预计算出后面装备部位能够获得的最大价值量，若当前已有价值量与之相加低于已处理的最高价值量，则剪枝
+    pruned = False
+    if not step.dont_pruning:
+        ub = upper_bound(step.items, step.calc_data.selected_combination, has_god or is_god(equip), current_index + 1, step.prefer_god)
+        if ub < step.max_setopt.value - step.set_perfect:
+            pruned = True
+            # step.calc_data.selected_combination.pop()
+            # inc_invalid_cnt_func(invalid_cnt + bbg_invalid_cnt)
+            # return
+
+    if not pruned:
+        if current_index < len(step.items) - 1:
+            if current_index != step.start_parallel_computing_at_depth_n:
+                cartesianProduct(step)
             else:
-                producer(items, has_baibainguai, not_select_items, dont_pruning, set_perfect, has_uniforms, can_upgrade_work_unifrom_nums, work_uniforms_items, transfer_max_count, transfer_slots_equips,
-                         current_index + 1, has_god or is_god(equip), baibianguai, upgrade_work_uniforms.copy(), transfered_equips.copy(), selected_combination.copy(), producer, process_func, extra_context)
+                producer(copy_step(step))
         else:  # 符合条件的装备搭配
-            if dont_pruning:
+            if step.dont_pruning:
                 # 不进行任何剪枝操作，装备搭配对比的标准是最终计算出的伤害与奶量倍率
-                process_func(selected_combination, baibianguai, upgrade_work_uniforms, transfered_equips, extra_context)
+                step.process_func(step.calc_data)
             else:
                 # 仅当当前搭配的价值评估函数值不低于历史最高值时才视为有效搭配
                 god = 0
-                if extra_context["prefer_god"] and (has_god or is_god(equip)):
+                if step.prefer_god and (has_god or is_god(equip)):
                     god = 1
-                set_list = ["1" + str(get_set_name(selected_combination[x])) for x in range(0, 11)]
+                set_list = ["1" + str(get_set_name(step.calc_data.selected_combination[x])) for x in range(0, 11)]
                 set_val = Counter(set_list)
                 del set_val['136', '137', '138']
-                # 1件价值量=0，两件=1，三件、四件=2，五件=3，神话额外增加1价值量
+                # 套装词条数：1件价值量=0，两件=1，三件、四件=2，五件=3，神话额外增加1价值量
                 setopt_num = sum([floor(x * 0.7) for x in set_val.values()]) + god
 
-                if setopt_num >= extra_context["max_setopt"].value - set_perfect:
-                    if extra_context["max_setopt"].value <= setopt_num - god * set_perfect:
-                        extra_context["max_setopt"].value = setopt_num - god * set_perfect
-                    process_func(selected_combination, baibianguai, upgrade_work_uniforms, transfered_equips, extra_context)
+                if setopt_num >= step.max_setopt.value - step.set_perfect:
+                    if step.max_setopt.value <= setopt_num - god * step.set_perfect:
+                        step.max_setopt.value = setopt_num - god * step.set_perfect
+                    step.process_func(step.calc_data)
                 else:
-                    inc_invalid_cnt_func(1)
+                    # inc_invalid_cnt_func(1)
+                    pass
 
-        selected_combination.pop()
-
-    # 考虑当前部位的每一件可选装备
-    for equip in items[current_index]:
-        if extra_context["exit_calc"].value == 1:
-            # showsta(text='已终止')
-            return
-        try_equip(equip)
-
-    # 当拥有百变怪，且目前的尝试序列尚未使用到百变怪的时候考虑使用百变怪充当当前部位
-    if has_baibainguai and baibianguai is None:
-        for equip in not_select_items[current_index]:
-            if extra_context["exit_calc"].value == 1:
-                # showsta(text='已终止')
-                return
-            baibianguai = equip
-            try_equip(equip)
-            baibianguai = None
-
-    # 若当前部位的工作服尚未拥有，且可升级工作服的次数尚未用完，则尝试本部位升级工作服
-    if not has_uniforms[current_index] and len(upgrade_work_uniforms) < can_upgrade_work_unifrom_nums:
-        work_uniform = work_uniforms_items[current_index]
-
-        upgrade_work_uniforms.append(work_uniform)
-        try_equip(work_uniform)
-        upgrade_work_uniforms.pop()
-
-    # 当当前部位有可以从选定账号跨界的装备，且已跨界数目未超过设定上限，则考虑跨界该部位的装备
-    if len(transfer_slots_equips[current_index]) != 0 and len(transfered_equips) < transfer_max_count:
-        for equip_to_transfer in transfer_slots_equips[current_index]:
-            transfered_equips.append(equip_to_transfer)
-            try_equip(equip_to_transfer)
-            transfered_equips.pop()
-
-    pass
+    step.has_god = has_god
+    step.current_index = current_index
+    step.calc_data.selected_combination.pop()
 
 
 def has_god_since(items, idx):
@@ -315,13 +348,13 @@ def producer(*args):
     self.work_queue.put(args)
 
 
-def process_deal(calc_now, baibianguai, upgrade_work_uniforms, transfered_equips, extra_context):
-    set_list = ["1" + str(get_set_name(calc_now[x])) for x in range(0, 11)]
-    set_on = [];
+def process_deal(data: CalcData):
+    set_list = ["1" + str(get_set_name(data.selected_combination[x])) for x in range(0, 11)]
+    set_on = []
     setapp = set_on.append
     setcount = set_list.count
     set_oncount = set_on.count
-    onecount = calc_now.count
+    onecount = data.selected_combination.count
     for set_code in range(101, 136):
         if setcount(str(set_code)) == 2:
             setapp(str(set_code) + "1")
@@ -342,23 +375,23 @@ def process_deal(calc_now, baibianguai, upgrade_work_uniforms, transfered_equips
         elif onecount('31400540') == 1:
             setapp('1401')
 
-    for wep_num in extra_context["weapon_indexs"]:
-        calc_wep = (wep_num,) + tuple(calc_now)
+    for wep_num in data.weapon_indexs:
+        calc_wep = (wep_num,) + tuple(data.selected_combination)
         damage = 0
         # 加上输出职业的国服特色数值后的基础数据
-        base_array = extra_context["base_array_with_deal_bonus_attributes"].copy()
+        base_array = data.base_array_with_deal_bonus_attributes.copy()
 
         skiper = base_array[index_deal_extra_percent_skill_attack_power]
         for_calc = tuple(set_on) + calc_wep
         oneone = len(for_calc)
         oneonelist = []
         for idx in range(oneone):
-            no_cut = extra_context["getone"](for_calc[idx])  ## 11번 스증
+            no_cut = data.opt_one.get(for_calc[idx])
             if no_cut is None:
                 # hack：目前select是默认初始化时将tg{1101-3336}[0,1]范围的key对应的值都设为0，而百变怪会根据select的值为0来筛选出未选择的集合
                 #  因此在这里如果为None，就是这种情况，直接返回就可以了
-                global count_invalid
-                count_invalid = count_invalid + 1
+                # global count_invalid
+                # count_invalid = count_invalid + 1
                 return
             cut = np.array(no_cut[0:20] + no_cut[22:23] + no_cut[34:35] + no_cut[38:44])
             skiper = multiply_entry(skiper, cut[index_deal_extra_percent_skill_attack_power])
@@ -421,17 +454,17 @@ def process_deal(calc_now, baibianguai, upgrade_work_uniforms, transfered_equips
                     base_array[index_deal_extra_percent_elemental_damage] *  # 攻击时，附加X%的属性伤害
                     (base_array[index_deal_extra_all_element_strength] * 0.0045 + 1.05))  # 所有属性强化+X
         actlvl = ((base_array[index_deal_extra_active_second_awaken_skill] +  # 二觉主动技能
-                   base_array[index_deal_extra_active_skill_lv_1_45] * extra_context["job_lv1"] +  # 1_45主动技能
-                   base_array[index_deal_extra_active_skill_lv_50] * extra_context["job_lv2"] +  # 50主动技能
-                   base_array[index_deal_extra_active_skill_lv_60_80] * extra_context["job_lv3"] +  # 60_80主动技能
-                   base_array[index_deal_extra_active_skill_lv_85] * extra_context["job_lv4"] +  # 85主动技能
-                   base_array[index_deal_extra_active_skill_lv_95] * extra_context["job_lv5"] +  # 95主动技能
-                   base_array[index_deal_extra_active_skill_lv_100] * extra_context["job_lv6"]  # 100主动技能
+                   base_array[index_deal_extra_active_skill_lv_1_45] * data.job_lv1 +  # 1_45主动技能
+                   base_array[index_deal_extra_active_skill_lv_50] * data.job_lv2 +  # 50主动技能
+                   base_array[index_deal_extra_active_skill_lv_60_80] * data.job_lv3 +  # 60_80主动技能
+                   base_array[index_deal_extra_active_skill_lv_85] * data.job_lv4 +  # 85主动技能
+                   base_array[index_deal_extra_active_skill_lv_95] * data.job_lv5 +  # 95主动技能
+                   base_array[index_deal_extra_active_skill_lv_100] * data.job_lv6  # 100主动技能
                    ) / 100 + 1)
-        paslvl = (((100 + base_array[index_deal_extra_passive_transfer_skill] * extra_context["job_pas0"]) / 100) *  # 增加转职被动的等级
-                  ((100 + base_array[index_deal_extra_passive_first_awaken_skill] * extra_context["job_pas1"]) / 100) *  # 增加一绝被动的等级
-                  ((100 + base_array[index_deal_extra_passive_second_awaken_skill] * extra_context["job_pas2"]) / 100) *  # 增加二觉被动的等级
-                  ((100 + base_array[index_deal_extra_passive_third_awaken_skill] * extra_context["job_pas3"]) / 100)  # 增加三觉被动的等级
+        paslvl = (((100 + base_array[index_deal_extra_passive_transfer_skill] * data.job_pas0) / 100) *  # 增加转职被动的等级
+                  ((100 + base_array[index_deal_extra_passive_first_awaken_skill] * data.job_pas1) / 100) *  # 增加一绝被动的等级
+                  ((100 + base_array[index_deal_extra_passive_second_awaken_skill] * data.job_pas2) / 100) *  # 增加二觉被动的等级
+                  ((100 + base_array[index_deal_extra_passive_third_awaken_skill] * data.job_pas3) / 100)  # 增加三觉被动的等级
                   )
         damage = ((base_array[index_deal_extra_percent_attack_damage] / 100 + 1) *  # 攻击时额外增加X%的伤害增加量
                   (base_array[index_deal_extra_percent_crit_damage] / 100 + 1) *  # 暴击时，额外增加X%的伤害增加量
@@ -446,18 +479,19 @@ def process_deal(calc_now, baibianguai, upgrade_work_uniforms, transfered_equips
                   actlvl * paslvl *  # 主动技能与被动技能的影响
                   ((54500 + 3.31 * base_array[index_deal_strength_and_intelligence]) / 54500) *  # 力智
                   ((4800 + base_array[index_deal_physical_magical_independent_attack_power]) / 4800) *  # 物理/魔法/独立攻击力
-                  (1 + extra_context["cool_on"] * base_array[index_deal_cool_correction] / 100) /  # 冷却矫正系数，每冷却1%，记0.35这个值
-                  (1.05 + 0.0045 * int(extra_context["ele_skill"])))  # 最后除去逆校正初始属强的影响
+                  (1 + data.cool_on * base_array[index_deal_cool_correction] / 100) /  # 冷却矫正系数，每冷却1%，记0.35这个值
+                  (1.05 + 0.0045 * int(data.ele_skill)))  # 最后除去逆校正初始属强的影响
 
         base_array[index_deal_extra_percent_addtional_damage] = real_bon
-        not_owned_equips = [uwu for uwu in upgrade_work_uniforms]
-        for equip in transfered_equips:
+        not_owned_equips = [uwu for uwu in data.upgrade_work_uniforms]
+        for equip in data.transfered_equips:
             not_owned_equips.append(equip)
 
-        extra_context["minheap_queue"].put((damage, random.random(), [calc_wep, base_array, baibianguai, tuple(not_owned_equips)]))
+        data.minheap_queue.put((damage, random.random(), [calc_wep, base_array, data.baibianguai, tuple(not_owned_equips)]))
 
         # global count_valid
         # count_valid = count_valid + 1
+
 
 ## 计算函数##
 def calc():
@@ -637,7 +671,7 @@ def calc():
     # 开始计算
     exit_calc.value = 0
 
-    has_baibainguai = baibianguai_select.get() == txt_has_baibianguai
+    has_baibianguai = baibianguai_select.get() == txt_has_baibianguai
     can_upgrade_work_unifrom_nums = get_can_upgrade_work_unifrom_nums()
     has_uniforms = pre_calc_has_uniforms(items, work_uniforms_items)
     # 超慢速时不进行任何剪枝操作，装备搭配对比的标准是最终计算出的伤害与奶量倍率
@@ -645,12 +679,12 @@ def calc():
     dont_prefer_god = not prefer_god()
 
     logger.info(("all_list_num={} (original_count={} bbg_count={} work_uniforms_count={})\n"
-                 "transfer_max_count={} has_baibainguai={}, can_upgrade_work_unifrom_nums={} dont_pruning={}, dont_prefer_god={}\n"
+                 "transfer_max_count={} has_baibianguai={}, can_upgrade_work_unifrom_nums={} dont_pruning={}, dont_prefer_god={}\n"
                  "transfer_slots_equips={}\n"
                  "has_uniforms={}\n"
                  "job_name={} weapon_names={}".format(
         all_list_num, original_count, bbg_count, work_uniforms_count,
-        transfer_max_count, has_baibainguai, can_upgrade_work_unifrom_nums, dont_pruning, dont_prefer_god,
+        transfer_max_count, has_baibianguai, can_upgrade_work_unifrom_nums, dont_pruning, dont_prefer_god,
         transfer_slots_equips,
         has_uniforms,
         job_name, weapon_names,
@@ -684,10 +718,54 @@ def calc():
         m = multiprocessing.Manager()
         minheap_queue = m.Queue()
 
+        # re: 重构计算函数的输入输出，采用面向对象的方式进行
+        step_data = CalcStepData()
+
+        step_data.items = items
+        step_data.has_baibianguai = has_baibianguai
+        step_data.not_select_items = not_select_items
+        step_data.has_uniforms = has_uniforms
+        step_data.can_upgrade_work_unifrom_nums = can_upgrade_work_unifrom_nums
+        step_data.work_uniforms_items = work_uniforms_items
+        step_data.transfer_max_count = transfer_max_count
+        step_data.transfer_slots_equips = transfer_slots_equips
+
+        step_data.current_index = 0
+        step_data.has_god = False
+        step_data.max_setopt = max_setopt
+
+        calc_data = CalcData()
+        calc_data.weapon_indexs = weapon_indexs
+        calc_data.base_array_with_deal_bonus_attributes = base_array_with_deal_bonus_attributes
+        calc_data.opt_one = opt_one
+        calc_data.job_lv1 = job_lv1
+        calc_data.job_lv2 = job_lv2
+        calc_data.job_lv3 = job_lv3
+        calc_data.job_lv4 = job_lv4
+        calc_data.job_lv5 = job_lv5
+        calc_data.job_lv6 = job_lv6
+        calc_data.job_pas0 = job_pas0
+        calc_data.job_pas1 = job_pas1
+        calc_data.job_pas2 = job_pas2
+        calc_data.job_pas3 = job_pas3
+        calc_data.cool_on = cool_on
+        calc_data.ele_skill = ele_skill
+        calc_data.minheap_queue = minheap_queue
+        calc_data.exit_calc = exit_calc
+        step_data.calc_data = calc_data
+
+        step_data.dont_pruning = dont_pruning
+        step_data.set_perfect = set_perfect
+        step_data.prefer_god = prefer_god()
+        step_data.start_parallel_computing_at_depth_n = start_parallel_computing_at_depth_n
+
+        step_data.producer = producer
+        step_data.process_func = process_deal
+
         extra_context = {
             "weapon_indexs": weapon_indexs,
             "base_array_with_deal_bonus_attributes": base_array_with_deal_bonus_attributes,
-            "getone": getone,
+            "opt_one": opt_one,
             "job_lv1": job_lv1,
             "job_lv2": job_lv2,
             "job_lv3": job_lv3,
@@ -706,8 +784,7 @@ def calc():
             "max_setopt": max_setopt,
             "prefer_god": prefer_god(),
         }
-        cartesianProduct(items, has_baibainguai, not_select_items, dont_pruning, set_perfect, has_uniforms, can_upgrade_work_unifrom_nums, work_uniforms_items, transfer_max_count, transfer_slots_equips, 0, False, None, [], [], [], producer,
-                         process_deal, extra_context)
+        cartesianProduct(step_data)
 
         # re: 边处理可行解，并检查工作队列是否都完成了
         # 等到所有工作处理完成
@@ -1040,7 +1117,7 @@ def calc():
                 global count_valid
                 count_valid = count_valid + 1
 
-        cartesianProduct(items, has_baibainguai, not_select_items, dont_pruning, set_perfect, has_uniforms, can_upgrade_work_unifrom_nums, work_uniforms_items, transfer_max_count, transfer_slots_equips, 0, False, None, [], [], [], producer,
+        cartesianProduct(items, has_baibianguai, not_select_items, dont_pruning, set_perfect, has_uniforms, can_upgrade_work_unifrom_nums, work_uniforms_items, transfer_max_count, transfer_slots_equips, 0, False, None, [], [], [], producer,
                          process)
 
         # 等到所有工作处理完成
