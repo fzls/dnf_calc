@@ -218,13 +218,14 @@ def try_equip(step: CalcStepData, equip):
             # 如果比缓存的历史最高词条数少，则剪枝
             pruned = True
         else:
-            # 否则尝试更新最新值，再判断一次
-            step.local_max_setop = step.max_setopt.value
-            if ub < step.local_max_setop - step.set_perfect:
-                pruned = True
-                # step.calc_data.selected_combination.pop()
-                # inc_invalid_cnt_func(invalid_cnt + bbg_invalid_cnt)
-                # return
+            if step.local_max_setop < step.max_possiable_setopt:
+                # 否则尝试更新最新值，再判断一次
+                step.local_max_setop = step.max_setopt.value
+                if ub < step.local_max_setop - step.set_perfect:
+                    pruned = True
+                    # step.calc_data.selected_combination.pop()
+                    # inc_invalid_cnt_func(invalid_cnt + bbg_invalid_cnt)
+                    # return
 
     if not pruned:
         if current_index < len(step.items) - 1:
@@ -248,12 +249,13 @@ def try_equip(step: CalcStepData, equip):
                 setopt_num = sum([floor(x * 0.7) for x in set_val.values()]) + god
 
                 if setopt_num >= step.local_max_setop - step.set_perfect:
-                    step.local_max_setop = step.max_setopt.value
-                    if setopt_num >= step.local_max_setop - step.set_perfect:
-                        if step.local_max_setop <= setopt_num - god * step.set_perfect:
-                            step.max_setopt.value = setopt_num - god * step.set_perfect
-                            step.local_max_setop = setopt_num - god * step.set_perfect
-                        step.process_func(step.calc_data)
+                    if step.local_max_setop < step.max_possiable_setopt:
+                        step.local_max_setop = step.max_setopt.value
+                        if setopt_num >= step.local_max_setop - step.set_perfect:
+                            if step.local_max_setop <= setopt_num - god * step.set_perfect:
+                                step.max_setopt.value = setopt_num - god * step.set_perfect
+                                step.local_max_setop = setopt_num - god * step.set_perfect
+                            step.process_func(step.calc_data)
 
     step.has_god = has_god
     step.current_index = current_index
@@ -740,6 +742,10 @@ def calc():
         step_data.has_god = False
         step_data.local_max_setop = 0
         step_data.max_setopt = max_setopt
+        step_data.max_possiable_setopt = 3 + 2 + 2 + 1  # 533 以及神话对应的一个词条
+        if set_perfect or not prefer_god():
+            # 如果神话不优先，则不计入最高历史词条
+            step_data.max_possiable_setopt-=1
 
         calc_data = CalcData()
         calc_data.weapon_indexs = weapon_indexs

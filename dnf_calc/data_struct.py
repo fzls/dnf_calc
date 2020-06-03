@@ -53,6 +53,7 @@ class CalcStepData:
         # 统计当前最优词条数 re: 这个改为每个工作进程中单独维护，这样尽量避免全局，同时改为普通的整数类型
         self.local_max_setop = 0
         self.max_setopt = 0 # type: ValueProxy[int]
+        self.max_possiable_setopt = 3+2+2+(1-0) # 533 以及神话对应的一个词条（默认神话优先）
         self.calc_data = CalcData()
 
         # 一些配置
