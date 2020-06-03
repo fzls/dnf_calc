@@ -251,11 +251,11 @@ def try_equip(step: CalcStepData, equip):
                 if setopt_num >= step.local_max_setop - step.set_perfect:
                     if step.local_max_setop < step.max_possiable_setopt:
                         step.local_max_setop = step.max_setopt.value
-                        if setopt_num >= step.local_max_setop - step.set_perfect:
-                            if step.local_max_setop <= setopt_num - god * step.set_perfect:
-                                step.max_setopt.value = setopt_num - god * step.set_perfect
-                                step.local_max_setop = setopt_num - god * step.set_perfect
-                            step.process_func(step.calc_data)
+                    if setopt_num >= step.local_max_setop - step.set_perfect:
+                        if step.local_max_setop <= setopt_num - god * step.set_perfect:
+                            step.max_setopt.value = setopt_num - god * step.set_perfect
+                            step.local_max_setop = setopt_num - god * step.set_perfect
+                        step.process_func(step.calc_data)
 
     step.has_god = has_god
     step.current_index = current_index
