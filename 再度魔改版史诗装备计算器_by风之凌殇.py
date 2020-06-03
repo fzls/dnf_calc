@@ -707,7 +707,6 @@ def calc():
     is_shuchu_job = job_name not in ["(奶系)神思者", "(奶系)炽天使", "(奶系)冥月女神"]
     if is_shuchu_job:
         getone = opt_one.get
-        minheap = MinHeap(save_top_n)
         unique_index = 0
         show_number = 1
 
@@ -723,10 +722,10 @@ def calc():
             notify_error(logger, "配置表填写有误：词条名不存在，请仔细对照配置表表头所有词条，确认在其中，err={}".format(error))
             return
 
+        # re: 继续看代码，确认其他非本地性的地方
         m = multiprocessing.Manager()
         minheap_queue = m.Queue()
 
-        # re: 重构计算函数的输入输出，采用面向对象的方式进行
         step_data = CalcStepData()
 
         step_data.items = items
@@ -781,6 +780,7 @@ def calc():
         # 等到所有工作处理完成
         self.work_queue.join()
 
+        minheap = MinHeap(save_top_n)
         # 将从所有可行结果中找出可行解
         while not minheap_queue.empty():
             heap_item = minheap_queue.get()
