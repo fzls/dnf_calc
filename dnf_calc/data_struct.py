@@ -51,7 +51,8 @@ class CalcStepData:
         self.current_index = 0
         self.has_god = False
         # 统计当前最优词条数 re: 这个改为每个工作进程中单独维护，这样尽量避免全局，同时改为普通的整数类型
-        self.max_setopt = 0
+        self.local_max_setop = 0
+        self.max_setopt = 0 # type: ValueProxy[int]
         self.calc_data = CalcData()
 
         # 一些配置

@@ -133,17 +133,17 @@ def cartesianProduct(step: CalcStepData):
 
     # 考虑当前部位的每一件可选装备
     for equip in step.items[step.current_index]:
-        if step.calc_data.exit_calc.value == 1:
+        # if step.calc_data.exit_calc.value == 1:
             # showsta(text='已终止')
-            return
+            # return
         try_equip(step, equip)
 
     # 当拥有百变怪，且目前的尝试序列尚未使用到百变怪的时候考虑使用百变怪充当当前部位
     if step.has_baibianguai and step.calc_data.baibianguai is None:
         for equip in step.not_select_items[step.current_index]:
-            if step.calc_data.exit_calc.value == 1:
-                # showsta(text='已终止')
-                return
+            # if step.calc_data.exit_calc.value == 1:
+            #     showsta(text='已终止')
+                # return
             step.calc_data.baibianguai = equip
             try_equip(step, equip)
             step.calc_data.baibianguai = None
@@ -214,11 +214,17 @@ def try_equip(step: CalcStepData, equip):
     pruned = False
     if not step.dont_pruning:
         ub = upper_bound(step.items, step.calc_data.selected_combination, has_god or is_god(equip), current_index + 1, step.prefer_god)
-        if ub < step.max_setopt.value - step.set_perfect:
+        if ub < step.local_max_setop - step.set_perfect:
+            # 如果比缓存的历史最高词条数少，则剪枝
             pruned = True
-            # step.calc_data.selected_combination.pop()
-            # inc_invalid_cnt_func(invalid_cnt + bbg_invalid_cnt)
-            # return
+        else:
+            # 否则尝试更新最新值，再判断一次
+            step.local_max_setop = step.max_setopt.value
+            if ub < step.local_max_setop - step.set_perfect:
+                pruned = True
+                # step.calc_data.selected_combination.pop()
+                # inc_invalid_cnt_func(invalid_cnt + bbg_invalid_cnt)
+                # return
 
     if not pruned:
         if current_index < len(step.items) - 1:
@@ -241,13 +247,13 @@ def try_equip(step: CalcStepData, equip):
                 # 套装词条数：1件价值量=0，两件=1，三件、四件=2，五件=3，神话额外增加1价值量
                 setopt_num = sum([floor(x * 0.7) for x in set_val.values()]) + god
 
-                if setopt_num >= step.max_setopt.value - step.set_perfect:
-                    if step.max_setopt.value <= setopt_num - god * step.set_perfect:
-                        step.max_setopt.value = setopt_num - god * step.set_perfect
-                    step.process_func(step.calc_data)
-                else:
-                    # inc_invalid_cnt_func(1)
-                    pass
+                if setopt_num >= step.local_max_setop - step.set_perfect:
+                    step.local_max_setop = step.max_setopt.value
+                    if setopt_num >= step.local_max_setop - step.set_perfect:
+                        if step.local_max_setop <= setopt_num - god * step.set_perfect:
+                            step.max_setopt.value = setopt_num - god * step.set_perfect
+                            step.local_max_setop = setopt_num - god * step.set_perfect
+                        step.process_func(step.calc_data)
 
     step.has_god = has_god
     step.current_index = current_index
@@ -343,8 +349,8 @@ def calc_with_try_except():
 
 # 准备工作队列和工作线程
 def producer(*args):
-    if exit_calc.value == 1:
-        return
+    # if exit_calc.value == 1:
+    #     return
     self.work_queue.put(args)
 
 
@@ -732,6 +738,7 @@ def calc():
 
         step_data.current_index = 0
         step_data.has_god = False
+        step_data.local_max_setop = 0
         step_data.max_setopt = max_setopt
 
         calc_data = CalcData()
@@ -762,28 +769,6 @@ def calc():
         step_data.producer = producer
         step_data.process_func = process_deal
 
-        extra_context = {
-            "weapon_indexs": weapon_indexs,
-            "base_array_with_deal_bonus_attributes": base_array_with_deal_bonus_attributes,
-            "opt_one": opt_one,
-            "job_lv1": job_lv1,
-            "job_lv2": job_lv2,
-            "job_lv3": job_lv3,
-            "job_lv4": job_lv4,
-            "job_lv5": job_lv5,
-            "job_lv6": job_lv6,
-            "job_pas0": job_pas0,
-            "job_pas1": job_pas1,
-            "job_pas2": job_pas2,
-            "job_pas3": job_pas3,
-            "cool_on": cool_on,
-            "ele_skill": ele_skill,
-            "minheap_queue": minheap_queue,
-            "exit_calc": exit_calc,
-            "start_parallel_computing_at_depth_n": start_parallel_computing_at_depth_n,
-            "max_setopt": max_setopt,
-            "prefer_god": prefer_god(),
-        }
         cartesianProduct(step_data)
 
         # re: 边处理可行解，并检查工作队列是否都完成了
@@ -4259,8 +4244,8 @@ def consumer(work_queue, exit_calc, work_func):
         args = work_queue.get()
         processed_count += 1
         logger.info("work thread {} processing {}th work".format(current_process, processed_count))
-        if exit_calc.value == 0:
-            work_func(*args)
+        # if exit_calc.value == 0:
+        work_func(*args)
         work_queue.task_done()
 
     logger.info("work thread %2d stopped, processed_count=%3", thread_index, processed_count)
