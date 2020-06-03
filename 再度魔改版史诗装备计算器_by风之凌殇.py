@@ -776,15 +776,21 @@ def calc():
 
         cartesianProduct(step_data)
 
-        # re: 边处理可行解，并检查工作队列是否都完成了
+        minheap = MinHeap(save_top_n)
+        def try_fetch_result():
+            while not minheap_queue.empty():
+                heap_item = minheap_queue.get()
+                minheap.add(heap_item)
+
+        # 在计算的同时进行排序准备工作
+        while not self.work_queue.empty():
+            try_fetch_result()
+
         # 等到所有工作处理完成
         self.work_queue.join()
 
-        minheap = MinHeap(save_top_n)
-        # 将从所有可行结果中找出可行解
-        while not minheap_queue.empty():
-            heap_item = minheap_queue.get()
-            minheap.add(heap_item)
+        # 最终将剩余结果也加入排序
+        try_fetch_result()
 
         show_number = 0
         showsta(text='结果统计中')
