@@ -167,8 +167,6 @@ def copy_step(step: CalcStepData) -> CalcStepData:
     copied_step.work_uniforms_items = copy.deepcopy(step.work_uniforms_items)
     copied_step.transfer_slots_equips = copy.deepcopy(step.transfer_slots_equips)
 
-    copied_step.has_god_since = copy.deepcopy(step.has_god_since)
-
     data = step.calc_data
 
     copied_data = copy.copy(data)
@@ -204,7 +202,7 @@ def try_equip(step: CalcStepData, equip):
         # 剪枝条件2：预计算出后面装备部位能够获得的最大价值量，若当前已有价值量与之相加低于已处理的最高价值量，则剪枝
         pruned = False
         if not step.dont_pruning:
-            ub = upper_bound(step.items, step.calc_data.selected_combination, has_god or is_god(equip), current_index + 1, step.prefer_god, step.has_god_since)
+            ub = upper_bound(step.items, step.calc_data.selected_combination, has_god or is_god(equip), current_index + 1, step.prefer_god, step.last_god_slot)
             if ub < step.local_max_setop - step.set_perfect:
                 # 如果比缓存的历史最高词条数少，则剪枝
                 pruned = True
@@ -264,8 +262,8 @@ def try_equip(step: CalcStepData, equip):
 # 为当前已选择序列和后续剩余可选序列计算出一个尽可能精确的上限
 # note: 思路三：进一步降低上限，在当前已有序列的各套装个数的前提下，计算任意n个序列所能产生的价值量最大增益
 # note：思路四：进一步降低上限，在当前已有序列的各套装个数的前提下，计算后面n个序列的各套装配置下所能产生的价值量最大增益
-def upper_bound(items, selected_combination, selected_has_god, remaining_start_index, prefer_god, has_god_since):
-    return upper_bound_2(items, selected_combination, selected_has_god, remaining_start_index, prefer_god, has_god_since)
+def upper_bound(items, selected_combination, selected_has_god, remaining_start_index, prefer_god, last_god_slot):
+    return upper_bound_2(items, selected_combination, selected_has_god, remaining_start_index, prefer_god, last_god_slot)
 
 
 # # 对照组：也就是后续
@@ -303,13 +301,12 @@ max_inc_values[11] = 7  # upper limit = 533->7
 
 
 # note: 思路二：计算新增k个序列所能产生的价值量最大增益
-def upper_bound_2(items, selected_combination, selected_has_god, remaining_start_index, prefer_god, has_god_since):
+def upper_bound_2(items, selected_combination, selected_has_god, remaining_start_index, prefer_god, last_god_slot):
     # 计算至今为止已有的价值量
     current_value = calc_equip_value(selected_combination, selected_has_god, prefer_god)
     # 后续按最大价值量计算，即每个槽位按能产生1点增益计算
     remaining_max_value = max_inc_values[11 - remaining_start_index]
-    hg = has_god_since[remaining_start_index]
-    if hg:
+    if remaining_start_index <= last_god_slot:
         remaining_max_value += 1
 
     ub = current_value + remaining_max_value
@@ -497,7 +494,7 @@ def get_last_god_slot(items):
             if is_god(equip):
                 return slot
 
-    return -1
+    return 11
 
 
 ## 计算函数##
@@ -735,9 +732,7 @@ def calc():
         step_data.transfer_max_count = transfer_max_count
         step_data.transfer_slots_equips = transfer_slots_equips
 
-        step_data.has_god_since = [False for i in range(11)]
-        for slot in range(get_last_god_slot(items)+1):
-            step_data.has_god_since[slot] = True
+        step_data.last_god_slot= get_last_god_slot(items)
 
         step_data.current_index = 0
         step_data.has_god = False

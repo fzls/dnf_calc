@@ -49,7 +49,7 @@ class CalcStepData:
         self.transfer_slots_equips = []
 
         # 预计算的一些量
-        self.has_god_since = []
+        self.last_god_slot = 11 # 表示从最后一个有神话的槽位的下标，从0开始，10结束
 
         # 计算过程维护的一些中间量
         self.current_index = 0
