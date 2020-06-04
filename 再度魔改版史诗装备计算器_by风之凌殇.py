@@ -777,17 +777,22 @@ def calc():
         cartesianProduct(step_data)
 
         minheap = MinHeap(save_top_n)
+        finished = False
         def try_fetch_result():
             while not minheap_queue.empty():
                 heap_item = minheap_queue.get()
                 minheap.add(heap_item)
 
-        # 在计算的同时进行排序准备工作
-        while not self.work_queue.empty():
-            try_fetch_result()
+        def try_fetch_result_in_background():
+            while not finished:
+                try_fetch_result()
+                time.sleep(0.5)
+
+        threading.Thread(target=try_fetch_result_in_background, daemon=True).start()
 
         # 等到所有工作处理完成
         self.work_queue.join()
+        finished = True
 
         # 最终将剩余结果也加入排序
         try_fetch_result()
