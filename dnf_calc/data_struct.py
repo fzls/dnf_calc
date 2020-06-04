@@ -15,6 +15,7 @@
 from heapq import heapify, heappush, heappushpop
 from multiprocessing import Queue
 from multiprocessing.managers import ValueProxy
+
 from numpy import ndarray
 
 
@@ -52,8 +53,8 @@ class CalcStepData:
         self.has_god = False
         # 统计当前最优词条数 re: 这个改为每个工作进程中单独维护，这样尽量避免全局，同时改为普通的整数类型
         self.local_max_setop = 0
-        self.max_setopt = 0 # type: ValueProxy[int]
-        self.max_possiable_setopt = 3+2+2+(1-0) # 533 以及神话对应的一个词条（默认神话优先）
+        self.max_setopt = 0  # type: ValueProxy[int]
+        self.max_possiable_setopt = 3 + 2 + 2 + (1 - 0)  # 533 以及神话对应的一个词条（默认神话优先）
         self.calc_data = CalcData()
 
         # 一些配置
@@ -78,7 +79,7 @@ class CalcData:
         # 玩家选定的武器
         self.weapon_indexs = []
         # 各种加成
-        self.base_array_with_deal_bonus_attributes = [] # type: ndarray
+        self.base_array_with_deal_bonus_attributes = []  # type: ndarray
         # 配置表得到的信息
         self.opt_one = {}
         self.job_lv1 = 0
@@ -98,4 +99,5 @@ class CalcData:
         # 回传结果的队列
         self.minheap_queue = None  # type: Queue
         # 用于判定是否提前停止计算的变量 re: 这个等下测试性能时先干掉，然后后面通过消息、事件之类的实现。比如calc开始时通知各个工作线程进入工作状态，stop或计算完成时通知各个工作线程进行停止状态
-        self.exit_calc = 0 # type: ValueProxy[int]
+        self.exit_calc = 0  # type: ValueProxy[int]
+

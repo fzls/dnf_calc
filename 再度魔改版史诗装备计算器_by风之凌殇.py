@@ -4,6 +4,7 @@
 ## 코드를 무단으로 복제하여 개조 및 배포하지 말 것##
 
 import collections
+import copy
 import itertools
 import platform
 import random
@@ -124,26 +125,17 @@ if __name__ == '__main__':
     start_parallel_computing_at_depth_n = config().multi_threading.start_parallel_computing_at_depth_n - 1
 
 
+# re: 明天来细看一遍搜索和计算流程，看看有没有可以为多线程计算效率做优化的地方
 # 看了看，主要性能瓶颈在于直接使用了itertools.product遍历所有的笛卡尔积组合，导致无法提前剪枝，只能在每个组合计算前通过条件判断是否要跳过
 # 背景，假设当前处理到下标n（0-10）的装备，前面装备已选择的组合为selected_combination(of size n)，未处理装备为后面11-n-1个，其对应组合数为rcp=len(Cartesian Product(后面11-n-1个装备部位))
 def cartesianProduct(step: CalcStepData):
-    # invalid_cnt = 1
-    # for idx in range(current_index + 1, len(items)):
-    #     invalid_cnt *= len(items[idx])
-
     # 考虑当前部位的每一件可选装备
     for equip in step.items[step.current_index]:
-        # if step.calc_data.exit_calc.value == 1:
-            # showsta(text='已终止')
-            # return
         try_equip(step, equip)
 
     # 当拥有百变怪，且目前的尝试序列尚未使用到百变怪的时候考虑使用百变怪充当当前部位
     if step.has_baibianguai and step.calc_data.baibianguai is None:
         for equip in step.not_select_items[step.current_index]:
-            # if step.calc_data.exit_calc.value == 1:
-            #     showsta(text='已终止')
-                # return
             step.calc_data.baibianguai = equip
             try_equip(step, equip)
             step.calc_data.baibianguai = None
@@ -166,8 +158,7 @@ def cartesianProduct(step: CalcStepData):
     pass
 
 
-import copy
-def copy_step(step: CalcStepData)->CalcStepData:
+def copy_step(step: CalcStepData) -> CalcStepData:
     copied_step = copy.copy(step)
 
     copied_step.items = copy.deepcopy(step.items)
@@ -722,7 +713,6 @@ def calc():
             notify_error(logger, "配置表填写有误：词条名不存在，请仔细对照配置表表头所有词条，确认在其中，err={}".format(error))
             return
 
-        # re: 继续看代码，确认其他非本地性的地方
         m = multiprocessing.Manager()
         minheap_queue = m.Queue()
 
@@ -744,7 +734,7 @@ def calc():
         step_data.max_possiable_setopt = 3 + 2 + 2 + 1  # 533 以及神话对应的一个词条
         if set_perfect or not prefer_god():
             # 如果神话不优先，则不计入最高历史词条
-            step_data.max_possiable_setopt-=1
+            step_data.max_possiable_setopt -= 1
 
         calc_data = CalcData()
         calc_data.weapon_indexs = weapon_indexs
@@ -778,6 +768,7 @@ def calc():
 
         minheap = MinHeap(save_top_n)
         finished = False
+
         def try_fetch_result():
             while not minheap_queue.empty():
                 heap_item = minheap_queue.get()
