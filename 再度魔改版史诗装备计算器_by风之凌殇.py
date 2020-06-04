@@ -4244,11 +4244,17 @@ if __name__ == '__main__':
 ###########################################################
 #                 启动工作线程并进入ui主循环                #
 ###########################################################
+produced_count = 0
+
 # 准备工作队列和工作线程
 def producer(*args):
     # if exit_calc.value == 1:
     #     return
     self.work_queue.put(args)
+
+    global produced_count
+    produced_count += 1
+    logger.info("producer put %3dth work into work queue", produced_count)
 
 
 def consumer(work_queue, exit_calc, work_func):
