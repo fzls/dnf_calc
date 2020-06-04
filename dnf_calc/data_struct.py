@@ -48,6 +48,9 @@ class CalcStepData:
         self.transfer_max_count = 0
         self.transfer_slots_equips = []
 
+        # 预计算的一些量
+        self.has_god_since = []
+
         # 计算过程维护的一些中间量
         self.current_index = 0
         self.has_god = False
