@@ -35,7 +35,6 @@ class MinHeap:
         return sorted(self.h, reverse=True)
 
 
-# re: 发放到工作队列中时，使用copy.deep_copy进行一次深拷贝
 class CalcStepData:
     def __init__(self):
         # 装备相关数据
@@ -49,12 +48,12 @@ class CalcStepData:
         self.transfer_slots_equips = []
 
         # 预计算的一些量
-        self.last_god_slot = 11 # 表示从最后一个有神话的槽位的下标，从0开始，10结束
+        self.last_god_slot = 11  # 表示从最后一个有神话的槽位的下标，从0开始，10结束
 
         # 计算过程维护的一些中间量
         self.current_index = 0
         self.has_god = False
-        # 统计当前最优词条数 re: 这个改为每个工作进程中单独维护，这样尽量避免全局，同时改为普通的整数类型
+        # 统计当前最优词条数
         self.local_max_setop = 0
         self.max_setopt = 0  # type: ValueProxy[int]
         self.max_possiable_setopt = 3 + 2 + 2 + (1 - 0)  # 533 以及神话对应的一个词条（默认神话优先）
@@ -103,4 +102,3 @@ class CalcData:
         self.minheap_queue = None  # type: Queue
         # 用于判定是否提前停止计算的变量 re: 这个等下测试性能时先干掉，然后后面通过消息、事件之类的实现。比如calc开始时通知各个工作线程进入工作状态，stop或计算完成时通知各个工作线程进行停止状态
         self.exit_calc = 0  # type: ValueProxy[int]
-

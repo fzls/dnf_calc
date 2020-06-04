@@ -260,32 +260,30 @@ def try_equip(step: CalcStepData, equip):
 
 
 # 为当前已选择序列和后续剩余可选序列计算出一个尽可能精确的上限
-# note: 思路三：进一步降低上限，在当前已有序列的各套装个数的前提下，计算任意n个序列所能产生的价值量最大增益
-# note：思路四：进一步降低上限，在当前已有序列的各套装个数的前提下，计算后面n个序列的各套装配置下所能产生的价值量最大增益
 def upper_bound(items, selected_combination, selected_has_god, remaining_start_index, prefer_god, last_god_slot):
     return upper_bound_2(items, selected_combination, selected_has_god, remaining_start_index, prefer_god, last_god_slot)
 
 
-# # 对照组：也就是后续
-# def upper_bound_none(items, selected_combination, selected_has_god, remaining_start_index):
-#     return 1000000
-#
-#
-# # note: 思路一：由于每个新增部位产生增益为1或0，因此计算当前序列的价值量，后续每个可选部位按照增益1来计算，可得到约束条件最小的最大上限
-# def upper_bound_1(items, selected_combination, selected_has_god, remaining_start_index):
-#     # 计算至今为止已有的价值量
-#     current_value = calc_equip_value(selected_combination, selected_has_god)
-#     # 后续按最大价值量计算，即每个槽位按能产生1点增益计算
-#     remaining_max_value = 11 - remaining_start_index
-#     hg = has_god_since(items, remaining_start_index)
-#     if hg:
-#         remaining_max_value += 1
-#
-#     ub = current_value + remaining_max_value
-#     return ub
+# note: 对照组：也就是后续
+def upper_bound_none(items, selected_combination, selected_has_god, remaining_start_index, prefer_god, last_god_slot):
+    return 1000000
 
 
-# 新增k个装备所能产生的最大价值量（不计入神话）
+# note: 思路一：由于每个新增部位产生套装词条数为1或0，因此计算当前序列的价值量，后续每个可选部位按照新增一个套装词条数来计算，可得到约束条件最小的最大上限
+def upper_bound_1(items, selected_combination, selected_has_god, remaining_start_index, prefer_god, last_god_slot):
+    # 计算至今为止已有的价值量
+    current_value = calc_equip_value(selected_combination, selected_has_god, prefer_god)
+    # 后续按最大价值量计算，即每个槽位按能产生一个套装词条数计算
+    remaining_max_value = 11 - remaining_start_index
+    # 如果后续有神话，则将神话的词条计入上限
+    if remaining_start_index <= last_god_slot:
+        remaining_max_value += 1
+
+    return current_value + remaining_max_value
+
+
+# note: 思路二：计算新增k个序列所能产生的价值量最大套装词条数
+# 新增k个装备所能产生的最大套装词条数（不计入神话）
 max_inc_values = [0 for i in range(11 + 1)]
 max_inc_values[1] = 1  # 2=>3
 max_inc_values[2] = 2  # 1,1 => 2,2
@@ -300,19 +298,19 @@ max_inc_values[10] = 7  # upper limit = 533->7
 max_inc_values[11] = 7  # upper limit = 533->7
 
 
-# note: 思路二：计算新增k个序列所能产生的价值量最大增益
 def upper_bound_2(items, selected_combination, selected_has_god, remaining_start_index, prefer_god, last_god_slot):
     # 计算至今为止已有的价值量
     current_value = calc_equip_value(selected_combination, selected_has_god, prefer_god)
-    # 后续按最大价值量计算，即每个槽位按能产生1点增益计算
+    # 后续按最大价值量计算，即每个槽位按能产生一个套装词条数计算
     remaining_max_value = max_inc_values[11 - remaining_start_index]
+    # 如果后续有神话，则将神话的词条计入上限
     if remaining_start_index <= last_god_slot:
         remaining_max_value += 1
 
-    ub = current_value + remaining_max_value
-    return ub
+    return current_value + remaining_max_value
 
 
+# 计算已有装备的套装词条数
 def calc_equip_value(selected_combination, selected_has_god, prefer_god):
     god = 0
     if selected_has_god and prefer_god:
@@ -320,27 +318,14 @@ def calc_equip_value(selected_combination, selected_has_god, prefer_god):
     set_list = ["1" + str(get_set_name(selected_combination[x])) for x in range(0, len(selected_combination))]
     set_val = Counter(set_list)
     del set_val['136', '137', '138']
-    # 1件价值量=0，两件=1，三件、四件=2，五件=3，神话额外增加1价值量
+    # 1件词条数=0，两件=1，三件、四件=2，五件=3，神话额外增加1词条数
     setopt_num = sum([floor(x * 0.7) for x in set_val.values()]) + god
 
     return setopt_num
 
 
-def calc_with_try_except():
-    if not is_debug_mode():
-        try:
-            calc()
-        except Exception as error:
-            report_bugsnag_with_context(error)
-    else:
-        calc()
-
-
-# 准备工作队列和工作线程
-def producer(*args):
-    # if exit_calc.value == 1:
-    #     return
-    self.work_queue.put(args)
+# undone: 思路三：进一步降低上限，在当前已有序列的各套装个数的前提下，计算任意n个序列所能产生的价值量最大套装词条数
+# undone：思路四：进一步降低上限，在当前已有序列的各套装个数的前提下，计算后面n个序列的各套装配置下所能产生的价值量最大套装词条数
 
 
 def process_deal(data: CalcData):
@@ -495,6 +480,16 @@ def get_last_god_slot(items):
                 return slot
 
     return 11
+
+
+def calc_with_try_except():
+    if not is_debug_mode():
+        try:
+            calc()
+        except Exception as error:
+            report_bugsnag_with_context(error)
+    else:
+        calc()
 
 
 ## 计算函数##
@@ -732,7 +727,7 @@ def calc():
         step_data.transfer_max_count = transfer_max_count
         step_data.transfer_slots_equips = transfer_slots_equips
 
-        step_data.last_god_slot= get_last_god_slot(items)
+        step_data.last_god_slot = get_last_god_slot(items)
 
         step_data.current_index = 0
         step_data.has_god = False
@@ -4249,6 +4244,12 @@ if __name__ == '__main__':
 ###########################################################
 #                 启动工作线程并进入ui主循环                #
 ###########################################################
+# 准备工作队列和工作线程
+def producer(*args):
+    # if exit_calc.value == 1:
+    #     return
+    self.work_queue.put(args)
+
 
 def consumer(work_queue, exit_calc, work_func):
     current_process = multiprocessing.current_process()
