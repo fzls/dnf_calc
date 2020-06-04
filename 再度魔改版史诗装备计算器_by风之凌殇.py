@@ -183,25 +183,20 @@ def copy_step(step: CalcStepData) -> CalcStepData:
 
 
 def try_equip(step: CalcStepData, equip):
-    # # 增加处理后续未计算的百变怪
-    # bbg_invalid_cnt = 0
-    # if step.has_baibianguai and step.calc_data.baibianguai is None:
-    #     for idx in range(step.current_index + 1, len(step.items)):
-    #         bbg_invalid_cnt += invalid_cnt / len(items[idx]) * len(not_select_items[idx])
-
-    # 剪枝条件1：若当前组合序列已经有神话装备（god），且当前这个部位遍历到的仍是一个神话装备，则可以直接跳过rcp个组合，当前部位之前处理下一个备选装备
+    # 剪枝条件1：若当前组合序列已经有神话装备（god），且当前这个部位遍历到的仍是一个神话装备，则可以直接跳过
     if step.has_god and is_god(equip):
-        # inc_invalid_cnt_func(invalid_cnt + bbg_invalid_cnt)
         return
 
+    # 保存回溯状态
     current_index = step.current_index
     has_god = step.has_god
 
+    # 更新搜索状态
     step.calc_data.selected_combination.append(equip)
     step.current_index += 1
     step.has_god = step.has_god or is_god(equip)
 
-    # re：剪枝条件2：预计算出后面装备部位能够获得的最大价值量，若当前已有价值量与之相加低于已处理的最高价值量，则剪枝
+    # 剪枝条件2：预计算出后面装备部位能够获得的最大价值量，若当前已有价值量与之相加低于已处理的最高价值量，则剪枝
     pruned = False
     if not step.dont_pruning:
         ub = upper_bound(step.items, step.calc_data.selected_combination, has_god or is_god(equip), current_index + 1, step.prefer_god)
@@ -214,40 +209,50 @@ def try_equip(step: CalcStepData, equip):
                 step.local_max_setop = step.max_setopt.value
                 if ub < step.local_max_setop - step.set_perfect:
                     pruned = True
-                    # step.calc_data.selected_combination.pop()
-                    # inc_invalid_cnt_func(invalid_cnt + bbg_invalid_cnt)
-                    # return
 
     if not pruned:
         if current_index < len(step.items) - 1:
+            # 未到最后一层，继续迭代
             if current_index != step.start_parallel_computing_at_depth_n:
+                # 未到开始进行并发计算的层数，串行搜索
                 cartesianProduct(step)
             else:
+                # 此层数的所有子树采用并行搜索
                 producer(copy_step(step))
-        else:  # 符合条件的装备搭配
-            if step.dont_pruning:
-                # 不进行任何剪枝操作，装备搭配对比的标准是最终计算出的伤害与奶量倍率
-                step.process_func(step.calc_data)
-            else:
-                # 仅当当前搭配的价值评估函数值不低于历史最高值时才视为有效搭配
+        else:
+            # 最后一层，即形成了一个装备搭配方案
+            if not step.dont_pruning:
+                # 检查是否有神话装备
                 god = 0
                 if step.prefer_god and (has_god or is_god(equip)):
                     god = 1
+                # 计算套装数目
                 set_list = ["1" + str(get_set_name(step.calc_data.selected_combination[x])) for x in range(0, 11)]
                 set_val = Counter(set_list)
                 del set_val['136', '137', '138']
                 # 套装词条数：1件价值量=0，两件=1，三件、四件=2，五件=3，神话额外增加1价值量
                 setopt_num = sum([floor(x * 0.7) for x in set_val.values()]) + god
 
+                # 仅当当前搭配的词条数不低于历史最高值时才视为有效搭配
                 if setopt_num >= step.local_max_setop - step.set_perfect:
+                    # 尝试获取全局历史最高词条数
                     if step.local_max_setop < step.max_possiable_setopt:
                         step.local_max_setop = step.max_setopt.value
+                    # 二次对比
                     if setopt_num >= step.local_max_setop - step.set_perfect:
+                        # 尝试更新全局最高词条数和本进程缓存的历史最高词条数
                         if step.local_max_setop <= setopt_num - god * step.set_perfect:
-                            step.max_setopt.value = setopt_num - god * step.set_perfect
-                            step.local_max_setop = setopt_num - god * step.set_perfect
-                        step.process_func(step.calc_data)
+                            max_setopt = setopt_num - god * step.set_perfect
+                            step.max_setopt.value = max_setopt
+                            step.local_max_setop = max_setopt
 
+                        # 开始计算装备搭配
+                        step.process_func(step.calc_data)
+            else:
+                # 不进行任何剪枝操作，装备搭配对比的标准是最终计算出的伤害与奶量倍率
+                step.process_func(step.calc_data)
+
+    # 回溯状态
     step.has_god = has_god
     step.current_index = current_index
     step.calc_data.selected_combination.pop()
