@@ -766,8 +766,6 @@ def calc():
         step_data.producer = producer
         step_data.process_func = process_deal
 
-        cartesianProduct(step_data)
-
         minheap = MinHeap(save_top_n)
         finished = False
 
@@ -782,6 +780,8 @@ def calc():
                 time.sleep(0.5)
 
         threading.Thread(target=try_fetch_result_in_background, daemon=True).start()
+
+        cartesianProduct(step_data)
 
         # 等到所有工作处理完成
         self.work_queue.join()
