@@ -83,7 +83,7 @@ class CalcData:
         # 各种加成
         self.base_array_with_deal_bonus_attributes = []  # type: ndarray
         # 配置表得到的信息
-        self.opt_one = {}
+        self.opt_one = {} # 将会预先切片，满足计算需求，避免每次计算时都重新切片
         self.job_lv1 = 0
         self.job_lv2 = 0
         self.job_lv3 = 0

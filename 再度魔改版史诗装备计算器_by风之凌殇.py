@@ -379,8 +379,7 @@ def process_deal(data: CalcData):
         # 将数据表中对应装备和套装的数据切片得到我们需要的属性列表
         attributes_list = []
         for idx in range(len(for_calc)):
-            no_cut = data.opt_one.get(for_calc[idx])
-            cut = np.array(no_cut[0:20] + no_cut[22:23] + no_cut[34:35] + no_cut[38:44])  # re：这部分改为外部传入时预先计算
+            cut = data.opt_one.get(for_calc[idx])
             skiper = multiply_entry(skiper, cut[index_deal_extra_percent_skill_attack_power])
             attributes_list.append(cut)
 
@@ -526,7 +525,6 @@ def calc():
 
     db_one = load_excel["one"]
     opt_one = {}
-    name_one = {}
     for row in db_one.rows:
         row_value = [cell.value for cell in row]
         if len(row_value) == 0:
@@ -535,8 +533,7 @@ def calc():
         name = row_value[0]
         row_value_cut = row_value[2:]
 
-        opt_one[name] = row_value_cut
-        name_one[name] = row_value
+        opt_one[name] = row_value_cut[0:20] + row_value_cut[22:23] + row_value_cut[34:35] + row_value_cut[38:44]
 
     db_set = load_excel["set"]
     opt_set = {}
@@ -710,7 +707,6 @@ def calc():
 
     is_shuchu_job = job_name not in ["(奶系)神思者", "(奶系)炽天使", "(奶系)冥月女神"]
     if is_shuchu_job:
-        getone = opt_one.get
         unique_index = 0
         show_number = 1
 
