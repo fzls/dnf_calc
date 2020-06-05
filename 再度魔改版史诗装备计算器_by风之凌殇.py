@@ -716,11 +716,7 @@ def calc():
         base_array_with_deal_bonus_attributes[index_deal_extra_all_element_strength] += ele_in
 
         # 加入输出职业的特色加成
-        try:
-            add_bonus_attributes_to_base_array("deal", base_array_with_deal_bonus_attributes, style_select.get(), creature_select.get(), save_name_list[current_save_name_index])
-        except Exception as error:
-            notify_error(logger, "配置表填写有误：词条名不存在，请仔细对照配置表表头所有词条，确认在其中，err={}".format(error))
-            return
+        add_bonus_attributes_to_base_array("deal", base_array_with_deal_bonus_attributes, style_select.get(), creature_select.get(), save_name_list[current_save_name_index])
 
         m = multiprocessing.Manager()
         minheap_queue = m.Queue()
