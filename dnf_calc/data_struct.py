@@ -15,6 +15,7 @@
 from heapq import heapify, heappush, heappushpop
 from multiprocessing import Queue
 from multiprocessing.managers import ValueProxy
+from typing import List
 
 from numpy import ndarray
 
@@ -34,6 +35,11 @@ class MinHeap:
     def getTop(self):
         return sorted(self.h, reverse=True)
 
+class MinHeapWithQueue:
+    def __init__(self, name:str, minheap:MinHeap, minheap_queue:Queue):
+        self.name = name
+        self.minheap = minheap
+        self.minheap_queue = minheap_queue
 
 class CalcStepData:
     def __init__(self):
@@ -99,6 +105,6 @@ class CalcData:
         self.ele_skill = 0
 
         # 回传结果的队列
-        self.minheap_queue = None  # type: Queue
+        self.minheap_queues = None  # type: List[Queue]
         # 用于判定是否提前停止计算的变量 re: 这个等下测试性能时先干掉，然后后面通过消息、事件之类的实现。比如calc开始时通知各个工作线程进入工作状态，stop或计算完成时通知各个工作线程进行停止状态
         self.exit_calc = 0  # type: ValueProxy[int]

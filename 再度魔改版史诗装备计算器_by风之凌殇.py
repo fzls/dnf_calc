@@ -482,7 +482,7 @@ def process_deal(data: CalcData):
         for equip in data.transfered_equips:
             not_owned_equips.append(equip)
 
-        data.minheap_queue.put((damage, random.random(), [calc_wep, base_array, data.baibianguai, tuple(not_owned_equips)]))
+        data.minheap_queues[0].put((damage, random.random(), [calc_wep, base_array, data.baibianguai, tuple(not_owned_equips)]))
 
 
 def get_last_god_slot(items):
@@ -719,7 +719,10 @@ def calc():
         add_bonus_attributes_to_base_array("deal", base_array_with_deal_bonus_attributes, style_select.get(), creature_select.get(), save_name_list[current_save_name_index])
 
         m = multiprocessing.Manager()
-        minheap_queue = m.Queue()
+
+        minheap_with_queues = [
+            MinHeapWithQueue("输出排行", MinHeap(save_top_n), m.Queue()),
+        ]
 
         step_data = CalcStepData()
 
@@ -759,7 +762,7 @@ def calc():
         calc_data.job_pas3 = job_pas3
         calc_data.cool_on = cool_on
         calc_data.ele_skill = ele_skill
-        calc_data.minheap_queue = minheap_queue
+        calc_data.minheap_queues = [mq.minheap_queue for mq in minheap_with_queues]
         calc_data.exit_calc = exit_calc
         step_data.calc_data = calc_data
 
@@ -771,25 +774,25 @@ def calc():
         step_data.producer = producer
         step_data.process_func = process_deal
 
-        minheap = MinHeap(save_top_n)
         finished = False
         global totalResult
         totalResult = 0
 
-        def try_fetch_result():
+        def try_fetch_result(mq: MinHeapWithQueue):
             global totalResult
-            while not minheap_queue.empty():
-                heap_item = minheap_queue.get()
-                minheap.add(heap_item)
+            while not mq.minheap_queue.empty():
+                heap_item = mq.minheap_queue.get()
+                mq.minheap.add(heap_item)
                 totalResult += 1
 
-        def try_fetch_result_in_background():
+        def try_fetch_result_in_background(mq: MinHeapWithQueue):
             while not finished:
-                logger.debug("try_fetch_result_in_background minheap_queue count={} totalResult={}".format(minheap_queue.qsize(), totalResult))
-                try_fetch_result()
+                logger.debug("{}: try_fetch_result_in_background minheap_queue count={} totalResult={}".format(mq.name, mq.minheap_queue.qsize(), totalResult))
+                try_fetch_result(mq)
                 time.sleep(0.5)
 
-        threading.Thread(target=try_fetch_result_in_background, daemon=True).start()
+        for mq in minheap_with_queues:
+            threading.Thread(target=try_fetch_result_in_background, args=(mq,), daemon=True).start()
 
         cartesianProduct(step_data)
 
@@ -798,14 +801,15 @@ def calc():
         finished = True
 
         # 最终将剩余结果也加入排序
-        logger.debug("after join minheap_queue count={} totalResult={}".format(minheap_queue.qsize(), totalResult))
-        try_fetch_result()
+        for mq in minheap_with_queues:
+            logger.debug("{}: after join minheap_queue count={} totalResult={}".format(mq.name, mq.minheap_queue.qsize(), totalResult))
+            try_fetch_result(mq)
+            logger.info("{}: after final minheap_queue count={} totalResult={}".format(mq.name, mq.minheap_queue.qsize(), totalResult))
 
-        logger.info("after final minheap_queue count={} totalResult={}".format(minheap_queue.qsize(), totalResult))
         show_number = 0
         showsta(text='结果统计中')
 
-        all_ranking = minheap.getTop()
+        all_ranking = minheap_with_queues[0].minheap.getTop()
         ranking = []
         for index, data in enumerate(all_ranking[:ui_top_n]):
             damage = data[0]
