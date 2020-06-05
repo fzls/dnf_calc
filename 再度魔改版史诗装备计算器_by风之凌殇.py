@@ -118,9 +118,6 @@ def report_bugsnag_with_context(error, extra_context=None, show_error_messagebox
 
 
 if __name__ == '__main__':
-    # 缓存的buff等级最大等级
-    max_skill_level_map = {}
-
     # 代码中深度从0开始计算，-1则表示不启用
     start_parallel_computing_at_depth_n = config().multi_threading.start_parallel_computing_at_depth_n - 1
 
@@ -176,6 +173,10 @@ def copy_step(step: CalcStepData) -> CalcStepData:
     copied_data.weapon_indexs = copy.deepcopy(data.weapon_indexs)
     copied_data.base_array_with_deal_bonus_attributes = data.base_array_with_deal_bonus_attributes.copy()
     copied_data.opt_one = copy.deepcopy(data.opt_one)
+    copied_data.base_array_with_buf_bonus_attributes = data.base_array_with_buf_bonus_attributes.copy()
+    copied_data.const = copy.deepcopy(data.const)
+    copied_data.opt_buf = copy.deepcopy(data.opt_buf)
+    copied_data.opt_buflvl = copy.deepcopy(data.opt_buflvl)
 
     copied_step.calc_data = copied_data
 
@@ -376,16 +377,17 @@ def process_deal(data: CalcData):
         base_array = data.base_array_with_deal_bonus_attributes.copy()
         # 获取加成后的技攻
         skiper = base_array[index_deal_extra_percent_skill_attack_power]
-        # 将数据表中对应装备和套装的数据切片得到我们需要的属性列表
-        attributes_list = []
+        # 计算加算词条和乘算词条最终值
         for idx in range(len(for_calc)):
+            # 获取装备属性
             cut = data.opt_one.get(for_calc[idx])
+            # 加算
+            base_array = base_array + cut
+            # 乘算部分
             skiper = multiply_entry(skiper, cut[index_deal_extra_percent_skill_attack_power])
-            attributes_list.append(cut)
 
-        # 累加各个属性
-        for idx in range(len(for_calc)):
-            base_array = base_array + attributes_list[idx]
+        # 为乘算的词条赋最终值
+        base_array[index_deal_extra_percent_skill_attack_power] = skiper  # 技能攻击力 +X%
 
         #################################计算各种特殊条件触发的属性#################################
         # 军神二件套且拥有军神-魔法石-军神的庇护宝石，说明遗书和古怪耳环（心之所念）不同时存在，减去5%的爆伤
@@ -443,7 +445,6 @@ def process_deal(data: CalcData):
                 base_array[index_deal_extra_percent_physical_magical_independent_attack_power] += 10
 
         #################################核心计算公式#################################
-        base_array[index_deal_extra_percent_skill_attack_power] = skiper  # 技能攻击力 +X%
         real_bon = (base_array[index_deal_extra_percent_addtional_damage] +  # 攻击时，附加X%的伤害，也就是白字
                     base_array[index_deal_extra_percent_elemental_damage] *  # 攻击时，附加X%的属性伤害
                     (base_array[index_deal_extra_all_element_strength] * 0.0045 + 1.05))  # 所有属性强化+X
@@ -482,7 +483,293 @@ def process_deal(data: CalcData):
         for equip in data.transfered_equips:
             not_owned_equips.append(equip)
 
-        data.minheap_queues[0].put((damage, random.random(), [calc_wep, base_array, data.baibianguai, tuple(not_owned_equips)]))
+        save_data = [calc_wep, base_array, data.baibianguai, tuple(not_owned_equips)]
+
+        unique_index = random.random()
+        data.minheap_queues[0].put((damage, unique_index, copy.deepcopy(save_data)))
+
+# 缓存的buff等级最大等级
+max_skill_level_map = {
+    "hol_b_stat": 40,
+    "hol_b_atta": 40,
+    "hol_pas0_1": 10,
+    "hol_pas1": 20,
+    "hol_act2": 35,
+    "se_b_stat": 40,
+    "se_b_atta": 40,
+    "pas0": 29,
+    "se_pas1": 20,
+    "se_pas2": 35,
+    "c_stat": 40,
+    "pas3": 12,
+    "hol_pas1_out": 20,
+}
+
+
+def process_buf(data: CalcData):
+    equips = data.selected_combination
+    # 计算各个套装的装备数目
+    set_counter = Counter(["1" + str(get_set_name(equips[x])) for x in range(0, 11)])
+    set_on = []
+
+    for set_code, cnt in set_counter.items():
+        n_set_code = int(set_code)
+        if 101 <= n_set_code <= 135:
+            # 计算100史诗装备的套装数目
+            if cnt <= 1:
+                continue
+            elif cnt == 2:
+                set_on.append(set_code + "1")
+            elif 3 <= cnt <= 4:
+                set_on.append(set_code + "2")
+            elif cnt == 5:
+                set_on.append(set_code + "3")
+        elif 136 <= n_set_code <= 138:
+            # 计算100传说、普雷特殊、首饰的套装数目
+            if cnt <= 1:
+                continue
+            elif cnt == 2:
+                set_on.append(set_code + "0")
+            elif 3 <= cnt <= 4:
+                set_on.append(set_code + "1")
+            elif cnt == 5:
+                set_on.append(set_code + "2")
+        elif n_set_code == 141:
+            if set_counter.get("140") >= 1:
+                set_on.append('1401')
+
+    for wep_num in data.weapon_indexs:
+        #################################计算附带各种加成后，当前搭配的各个词条属性#################################
+        # 武器、装备列表
+        calc_wep = (wep_num,) + tuple(equips)
+        # 加上适用的套装属性列表
+        for_calc = tuple(set_on) + calc_wep
+
+        # 拷贝一份加上奶系职业的国服特色数值后的基础数据
+        base_array = data.base_array_with_buf_bonus_attributes.copy()
+        # 获取一些需要乘算的百分比增益初始值
+        bless_extra_percent_strength_and_intelligence = base_array[index_buf_bless_extra_percent_strength_and_intelligence]  # [荣誉祝福]、[勇气祝福]、[禁忌诅咒]力量、智力增加量 +X%
+        bless_extra_percent_physical_attack_power = base_array[index_buf_bless_extra_percent_physical_attack_power]  # [荣誉祝福]、[勇气祝福]、[禁忌诅咒]物理攻击力增加量 +X%
+        bless_extra_percent_magical_attack_power = base_array[index_buf_bless_extra_percent_magical_attack_power]  # [荣誉祝福]、[勇气祝福]、[禁忌诅咒]魔法攻击力增加量 +X%
+        bless_extra_percent_independent_attack_power = base_array[index_buf_bless_extra_percent_independent_attack_power]  # [荣誉祝福]、[勇气祝福]、[禁忌诅咒]独立攻击力增加量 +X%
+        taiyang_extra_percent_strength_and_intelligence = base_array[index_buf_taiyang_extra_strength_and_intelligence]  # [天启之珠]、[圣光天启]、[开幕！人偶剧场]力量、智力增加量 +X%
+
+        # 计算加算词条和乘算词条最终值
+        for idx in range(len(for_calc)):
+            # 获取装备属性
+            cut = data.opt_buf.get(for_calc[idx])
+            # 加算
+            base_array = base_array + cut
+            # 乘算部分
+            bless_extra_percent_strength_and_intelligence = multiply_entry(bless_extra_percent_strength_and_intelligence, cut[index_buf_bless_extra_percent_strength_and_intelligence])
+            bless_extra_percent_physical_attack_power = multiply_entry(bless_extra_percent_physical_attack_power, cut[index_buf_bless_extra_percent_physical_attack_power])
+            bless_extra_percent_magical_attack_power = multiply_entry(bless_extra_percent_magical_attack_power, cut[index_buf_bless_extra_percent_magical_attack_power])
+            bless_extra_percent_independent_attack_power = multiply_entry(bless_extra_percent_independent_attack_power, cut[index_buf_bless_extra_percent_independent_attack_power])
+            taiyang_extra_percent_strength_and_intelligence = multiply_entry(taiyang_extra_percent_strength_and_intelligence, cut[index_buf_taiyang_extra_percent_strength_and_intelligence])
+
+        # 为乘算的词条赋最终值
+        base_array[index_buf_bless_extra_percent_strength_and_intelligence] = bless_extra_percent_strength_and_intelligence  # [荣誉祝福]、[勇气祝福]、[禁忌诅咒]力量、智力增加量 +X%
+        base_array[index_buf_bless_extra_percent_physical_attack_power] = bless_extra_percent_physical_attack_power  # [荣誉祝福]、[勇气祝福]、[禁忌诅咒]物理攻击力增加量 +X%
+        base_array[index_buf_bless_extra_percent_magical_attack_power] = bless_extra_percent_magical_attack_power  # [荣誉祝福]、[勇气祝福]、[禁忌诅咒]魔法攻击力增加量 +X%
+        base_array[index_buf_bless_extra_percent_independent_attack_power] = bless_extra_percent_independent_attack_power  # [荣誉祝福]、[勇气祝福]、[禁忌诅咒]独立攻击力增加量 +X%
+        base_array[index_buf_taiyang_extra_strength_and_intelligence] = taiyang_extra_percent_strength_and_intelligence  # [天启之珠]、[圣光天启]、[开幕！人偶剧场]力量、智力增加量 +X%
+
+        # 保证各个技能的等级不超过上限
+        def get_skill_level_data(skill_name, buff_index, base_level=0):
+            # 获取该等级的额外附加上限
+            max_level = max_skill_level_map[skill_name]
+
+            # 保证等级不超过该上限
+            level = int(min(max_level, base_array[buff_index] + base_level))
+            return data.opt_buflvl.get(skill_name)[level]
+
+        if data.job_name == "(奶系)神思者":
+            # 祝福增加的三攻
+            bless_increase_attack_power = get_skill_level_data('hol_b_atta', index_buf_bless_lv30)
+            # 守护恩赐（15级）和守护徽章（25级）增加的体力、精神数值（祝福）
+            passive_lv15_lv25_increase_physical_and_mental_strength_bless = get_skill_level_data('pas0', index_buf_job_passive_lv15, data.base_job_passive_lv15_bless) \
+                                                                            + get_skill_level_data('hol_pas0_1', index_buf_naiba_protect_badge_lv25)
+            # 守护恩赐（15级）和守护徽章（25级）增加的体力、精神数值（太阳）
+            passive_lv15_lv25_increase_physical_and_mental_strength_taiyang = get_skill_level_data('pas0', index_buf_job_passive_lv15, data.base_job_passive_lv15_taiyang) \
+                                                                              + get_skill_level_data('hol_pas0_1', index_buf_naiba_protect_badge_lv25)
+            # 一觉被动（信念光环）增加的体力、精神数值
+            first_awaken_passive_increase_physical_and_mental_strength = get_skill_level_data('hol_pas1', index_buf_first_awaken_passive_lv48)
+            # 二觉增加的体力、精神数值
+            second_awaken_increase_physical_and_mental_strength = get_skill_level_data('hol_act2', index_buf_second_awaken_lv85)
+            # 三觉被动增加的体力、精神数值
+            third_awaken_passive_increase_physical_and_mental_strength = get_skill_level_data('pas3', index_buf_third_awaken_passive_lv95)
+            # 祝福适用的体力、精神数值
+            physical_and_mental_strength_bless = base_array[index_buf_physical_and_mental_strength] + passive_lv15_lv25_increase_physical_and_mental_strength_bless \
+                                                 + first_awaken_passive_increase_physical_and_mental_strength + second_awaken_increase_physical_and_mental_strength \
+                                                 + third_awaken_passive_increase_physical_and_mental_strength + 19 * base_array[index_buf_amplification] \
+                                                 + data.base_stat_custom_bless_data_minus_taiyang_data
+            # 太阳适用的体力、精神数值
+            physical_and_mental_strength_taiyang = base_array[index_buf_physical_and_mental_strength] + passive_lv15_lv25_increase_physical_and_mental_strength_taiyang \
+                                                   + first_awaken_passive_increase_physical_and_mental_strength + second_awaken_increase_physical_and_mental_strength \
+                                                   + third_awaken_passive_increase_physical_and_mental_strength + 19 * base_array[index_buf_amplification]
+
+            physical_and_mental_divisor = data.const.naiba_physical_and_mental_divisor
+
+            # 祝福最终增加的力智
+            bless_final_increase_strength_and_intelligence = int(
+                int(get_skill_level_data('hol_b_stat', index_buf_bless_lv30) * (bless_extra_percent_strength_and_intelligence / 100 + 1)) * (physical_and_mental_strength_bless / physical_and_mental_divisor + 1)
+            )
+            # 祝福最终增加的物理攻击力
+            bless_final_increase_physical_attack_power = int(
+                int(bless_increase_attack_power * (bless_extra_percent_physical_attack_power / 100 + 1)) * (physical_and_mental_strength_bless / physical_and_mental_divisor + 1)
+            )
+            # 祝福最终增加的魔法攻击力
+            bless_final_increase_magical_attack_power = int(
+                int(bless_increase_attack_power * (bless_extra_percent_magical_attack_power / 100 + 1)) * (physical_and_mental_strength_bless / physical_and_mental_divisor + 1)
+            )
+            # 祝福最终增加的独立攻击力
+            bless_final_increase_independent_attack_power = int(
+                int(bless_increase_attack_power * (bless_extra_percent_independent_attack_power / 100 + 1)) * (physical_and_mental_strength_bless / physical_and_mental_divisor + 1)
+            )
+            # 祝福最终增加的三攻（平均值）
+            bless_final_increase_attack_power_average = int(
+                (bless_final_increase_physical_attack_power + bless_final_increase_magical_attack_power + bless_final_increase_independent_attack_power) / 3
+            )
+            # 太阳最终增加的力智
+            taiyang_final_increase_strength_and_intelligence = int(
+                int(
+                    (get_skill_level_data('c_stat', index_buf_taiyang_lv50) + base_array[index_buf_taiyang_extra_strength_and_intelligence]) * (taiyang_extra_percent_strength_and_intelligence / 100 + 1)
+                ) * (physical_and_mental_strength_taiyang / 750 + 1)
+            )
+            # 信念光环增加的体力、精神数值
+            belief_halo_increase_physical_and_mental_strength = int(get_skill_level_data('hol_pas1_out', index_buf_first_awaken_passive_lv48) + 213 + base_array[index_buf_belief_halo])
+            # 一觉被动概览
+            first_awaken_passive_overview = "{increase_intelligence_and_strength}  ({level}级)".format(
+                increase_intelligence_and_strength=int(get_skill_level_data('hol_pas1_out', index_buf_first_awaken_passive_lv48) + 213 + base_array[index_buf_belief_halo]),
+                level=int(20 + base_array[index_buf_first_awaken_passive_lv48])
+            )
+            # 祝福概览
+            bless_overview = "{increase_intelligence_and_strength}/{increase_attack_power_average}   [{physical_and_mental_strength}({level}级)]".format(
+                increase_intelligence_and_strength=bless_final_increase_strength_and_intelligence,
+                increase_attack_power_average=bless_final_increase_attack_power_average,
+                physical_and_mental_strength=physical_and_mental_strength_bless,
+                level=int(base_array[index_buf_bless_lv30]),
+            )
+            # 太阳适用的面板数值（奶爸为体精、奶妈奶萝为智力）
+            physical_and_mental_strength_or_intelligence_taiyang = physical_and_mental_strength_taiyang
+            # 一觉被动增加的面板数值（奶爸为体精、奶妈奶萝为智力）
+            first_awaken_increase_physical_and_mental_strength_or_intelligence = belief_halo_increase_physical_and_mental_strength
+            # 祝福适用的面板数值
+            bless_mianban = physical_and_mental_strength_bless
+
+        else:
+            intelligence_divisor = 675
+            sing_song_increase_rate = 1.25
+            if data.job_name == "(奶系)炽天使":
+                intelligence_divisor = data.const.naima_intelligence_divisor  # 多少智力折合一级祝福
+                sing_song_increase_rate = data.const.naima_sing_song_increase_rate_base + data.const.naima_sing_song_increase_rate_amplification_coef * base_array[index_buf_amplification]  # 唱歌时的倍率
+            if data.job_name == "(奶系)冥月女神":
+                intelligence_divisor = data.const.nailuo_intelligence_divisor  # 多少智力折合一级祝福
+                sing_song_increase_rate = (data.const.nailuo_sing_song_increase_rate_base + data.const.nailuo_sing_song_increase_rate_amplification_coef * base_array[index_buf_amplification]) \
+                                          * data.const.nailuo_sing_song_increase_rate_final_coef  # 唱歌时的倍率
+
+            # 祝福增加的三攻
+            bless_increase_attack_power = get_skill_level_data('se_b_atta', index_buf_bless_lv30)
+            # [启示：圣歌]、[人偶操纵者] 增加的智力数值（祝福）
+            passive_lv15_increase_intelligence_bless = get_skill_level_data('pas0', index_buf_job_passive_lv15, data.base_job_passive_lv15_bless)
+            # [启示：圣歌]、[人偶操纵者] 增加的智力数值（太阳）
+            passive_lv15_increase_intelligence_taiyang = get_skill_level_data('pas0', index_buf_job_passive_lv15, data.base_job_passive_lv15_taiyang)
+            # 一觉被动（[虞诚信念]、[少女的爱]）增加的智力数值
+            first_awaken_passive_increase_intelligence = get_skill_level_data('se_pas1', index_buf_first_awaken_passive_lv48) + base_array[index_buf_piety_halo_or_girs_love]
+            # 二觉被动增加的智力数值
+            second_awaken_increase_intelligence = get_skill_level_data('se_pas2', index_buf_second_awaken_passive_lv75)
+            # 三觉被动增加的智力数值
+            third_awaken_passive_increase_intelligence = get_skill_level_data('pas3', index_buf_third_awaken_passive_lv95)
+            # 祝福适用的智力数值
+            intelligence_bless = base_array[index_buf_intelligence] + passive_lv15_increase_intelligence_bless \
+                                 + first_awaken_passive_increase_intelligence + second_awaken_increase_intelligence \
+                                 + third_awaken_passive_increase_intelligence + data.base_stat_custom_bless_data_minus_taiyang_data
+            # 太阳适用的智力数值
+            intelligence_taiyang = base_array[index_buf_intelligence] + passive_lv15_increase_intelligence_taiyang \
+                                   + first_awaken_passive_increase_intelligence + second_awaken_increase_intelligence \
+                                   + third_awaken_passive_increase_intelligence
+            # 祝福最终增加的力智
+            bless_final_increase_strength_and_intelligence = int(
+                int(get_skill_level_data('se_b_stat', index_buf_bless_lv30) * (bless_extra_percent_strength_and_intelligence / 100 + 1)) * (intelligence_bless / intelligence_divisor + 1) * sing_song_increase_rate
+            )
+            # 祝福最终增加的物理攻击力
+            bless_final_increase_physical_attack_power = int(
+                int(bless_increase_attack_power * (bless_extra_percent_physical_attack_power / 100 + 1) * (intelligence_bless / intelligence_divisor + 1)) * sing_song_increase_rate
+            )
+            # 祝福最终增加的魔法攻击力
+            bless_final_increase_magical_attack_power = int(
+                int(bless_increase_attack_power * (bless_extra_percent_magical_attack_power / 100 + 1) * (intelligence_bless / intelligence_divisor + 1)) * sing_song_increase_rate
+            )
+            # 祝福最终增加的独立攻击力
+            bless_final_increase_independent_attack_power = int(
+                int(bless_increase_attack_power * (bless_extra_percent_independent_attack_power / 100 + 1) * (intelligence_bless / intelligence_divisor + 1)) * sing_song_increase_rate
+            )
+            # 祝福最终增加的三攻（平均值）
+            bless_final_increase_attack_power_average = int(
+                (bless_final_increase_physical_attack_power + bless_final_increase_magical_attack_power + bless_final_increase_independent_attack_power) / 3
+            )
+            # 太阳最终增加的力智
+            taiyang_final_increase_strength_and_intelligence = int(
+                int((get_skill_level_data('c_stat', index_buf_taiyang_lv50) + base_array[index_buf_taiyang_extra_strength_and_intelligence]) * (taiyang_extra_percent_strength_and_intelligence / 100 + 1)) * (
+                        intelligence_taiyang / 750 + 1))
+            # 虔诚信念或少女的爱增加的智力数值
+            piety_halo_or_girs_love_increase_intelligence = int(first_awaken_passive_increase_intelligence + 442)
+            # 一觉被动概览
+            first_awaken_passive_overview = "{increase_intelligence_and_strength}  ({level}级)".format(
+                increase_intelligence_and_strength=int(first_awaken_passive_increase_intelligence + 442),
+                level=int(20 + base_array[index_buf_first_awaken_passive_lv48])
+            )
+            # 祝福概览
+            bless_overview = ("{increase_lizhi_with_sing_song}({increase_lizhi})/ {increase_ap_with_sing_song}({increase_ap})\n"
+                              "图内={intelligence}({level}级) 站街面板={street_intelligence}").format(
+                increase_lizhi_with_sing_song=bless_final_increase_strength_and_intelligence,
+                increase_lizhi=int(bless_final_increase_strength_and_intelligence / sing_song_increase_rate),
+                increase_ap_with_sing_song=bless_final_increase_attack_power_average,
+                increase_ap=int(bless_final_increase_attack_power_average / sing_song_increase_rate),
+                intelligence=int(intelligence_bless),
+                level=int(base_array[index_buf_bless_lv30]),
+                street_intelligence=int(intelligence_bless) - 501,
+            )
+            # 太阳适用的面板数值（奶爸为体精、奶妈奶萝为智力）
+            physical_and_mental_strength_or_intelligence_taiyang = intelligence_taiyang
+            # 一觉被动增加的面板数值（奶爸为体精、奶妈奶萝为智力）
+            first_awaken_increase_physical_and_mental_strength_or_intelligence = piety_halo_or_girs_love_increase_intelligence
+            # 祝福适用的面板数值
+            bless_mianban = intelligence_bless
+
+        # 太阳概览
+        taiyang_overview = "{increase_intelligence_and_strength} [{physical_and_mental_strength_or_intelligence_taiyang}({level}级)]".format(
+            increase_intelligence_and_strength=taiyang_final_increase_strength_and_intelligence,
+            physical_and_mental_strength_or_intelligence_taiyang=int(physical_and_mental_strength_or_intelligence_taiyang),
+            level=int(base_array[index_buf_taiyang_lv50]),
+        )
+
+        not_owned_equips = [uwu for uwu in data.upgrade_work_uniforms]
+        for equip in data.transfered_equips:
+            not_owned_equips.append(equip)
+
+        # 1 祝福得分
+        bless_score = ((15000 + bless_final_increase_strength_and_intelligence) / 250 + 1) * (2650 + bless_final_increase_attack_power_average)
+        # 2 太阳得分
+        taiyang_score = ((15000 + taiyang_final_increase_strength_and_intelligence) / 250 + 1) * 2650
+        # 3 综合得分
+        total_score = ((15000 + first_awaken_increase_physical_and_mental_strength_or_intelligence + taiyang_final_increase_strength_and_intelligence + bless_final_increase_strength_and_intelligence) / 250 + 1) \
+                      * (2650 + bless_final_increase_attack_power_average)
+
+        # 统计数据
+        all_score_str = "{}/{}/{}".format(
+            int(bless_score / 10),
+            int(taiyang_score / 10),
+            int(total_score / 10),
+        )
+        save_data = [calc_wep, [bless_overview, taiyang_overview, first_awaken_passive_overview, all_score_str], data.baibianguai, tuple(not_owned_equips)]
+
+        # 加入排序
+        unique_index = random.random()
+        data.minheap_queues[0].put((bless_score, unique_index, copy.deepcopy(save_data)))
+        data.minheap_queues[1].put((taiyang_score, unique_index, copy.deepcopy(save_data)))
+        data.minheap_queues[2].put((total_score, unique_index, copy.deepcopy(save_data)))
+        data.minheap_queues[3].put((bless_mianban, unique_index, copy.deepcopy(save_data)))
 
 
 def get_last_god_slot(items):
@@ -705,6 +992,8 @@ def calc():
     if cfg.export_result_as_excel.enable:
         save_top_n = max(save_top_n, cfg.export_result_as_excel.export_rank_count)
 
+    global totalResult
+
     is_shuchu_job = job_name not in ["(奶系)神思者", "(奶系)炽天使", "(奶系)冥月女神"]
     if is_shuchu_job:
         unique_index = 0
@@ -775,7 +1064,6 @@ def calc():
         step_data.process_func = process_deal
 
         finished = False
-        global totalResult
         totalResult = 0
 
         def try_fetch_result(mq: MinHeapWithQueue):
@@ -831,16 +1119,7 @@ def calc():
         # 自定义祝福数据-自定义太阳数据（暂时不清楚这个是干啥的）
         base_stat_custom_bless_data_minus_taiyang_data = custom_buf_data["bless_data"] - custom_buf_data["taiyang_data"]
 
-        lvlget = opt_buflvl.get
-        minheap_bless = MinHeap(save_top_n)
-        minheap_taiyang = MinHeap(save_top_n)
-        minheap_total = MinHeap(save_top_n)
-        minheap_mianban = MinHeap(save_top_n)
-        unique_index = 0
-        setget = opt_buf.get
         show_number = 1
-
-        cfg = config()
 
         # 基础体力、精神
         base_stat_physical_and_mental = eval(cfg.initital_data.physical_and_mental) + custom_buf_data["taiyang_data"]
@@ -867,271 +1146,100 @@ def calc():
         # 增加奶系的国服特色
         add_bonus_attributes_to_base_array("buf", base_array_with_buf_bonus_attributes, style_select.get(), creature_select.get(), save_name_list[current_save_name_index])
 
-        def process(calc_now, baibianguai, upgrade_work_uniforms, transfered_equips):
-            set_list = ["1" + str(get_set_name(calc_now[x])) for x in range(0, 11)]
-            set_val = Counter(set_list)
-            del set_val['136', '137', '138']
-            set_on = [];
-            setapp = set_on.append
-            setcount = set_list.count
-            for set_code in range(101, 136):
-                if setcount(str(set_code)) == 2:
-                    setapp(str(set_code) + "1")
-                if 4 >= setcount(str(set_code)) >= 3:
-                    setapp(str(set_code) + "2")
-                if setcount(str(set_code)) == 5:
-                    setapp(str(set_code) + "3")
-            for set_code in range(136, 139):
-                if setcount(str(set_code)) == 2:
-                    setapp(str(set_code) + "0")
-                if 4 >= setcount(str(set_code)) >= 3:
-                    setapp(str(set_code) + "1")
-                if setcount(str(set_code)) == 5:
-                    setapp(str(set_code) + "2")
+        m = multiprocessing.Manager()
 
-            for wep_num in weapon_indexs:
-                calc_wep = (wep_num,) + tuple(calc_now)
-                # 加上奶系职业的国服特色数值后的基础数据
-                base_array = base_array_with_buf_bonus_attributes.copy()
+        minheap_with_queues = [
+            MinHeapWithQueue("祝福排行", MinHeap(save_top_n), m.Queue()),
+            MinHeapWithQueue("太阳排行", MinHeap(save_top_n), m.Queue()),
+            MinHeapWithQueue("综合排行", MinHeap(save_top_n), m.Queue()),
+            MinHeapWithQueue("面板排行", MinHeap(save_top_n), m.Queue()),
+        ]
 
-                # 一些需要乘算的百分比增益初始值
-                bless_extra_percent_strength_and_intelligence = base_array_with_buf_bonus_attributes[index_buf_bless_extra_percent_strength_and_intelligence]  # [荣誉祝福]、[勇气祝福]、[禁忌诅咒]力量、智力增加量 +X%
-                bless_extra_percent_physical_attack_power = base_array_with_buf_bonus_attributes[index_buf_bless_extra_percent_physical_attack_power]  # [荣誉祝福]、[勇气祝福]、[禁忌诅咒]物理攻击力增加量 +X%
-                bless_extra_percent_magical_attack_power = base_array_with_buf_bonus_attributes[index_buf_bless_extra_percent_magical_attack_power]  # [荣誉祝福]、[勇气祝福]、[禁忌诅咒]魔法攻击力增加量 +X%
-                bless_extra_percent_independent_attack_power = base_array_with_buf_bonus_attributes[index_buf_bless_extra_percent_independent_attack_power]  # [荣誉祝福]、[勇气祝福]、[禁忌诅咒]独立攻击力增加量 +X%
-                taiyang_extra_percent_strength_and_intelligence = base_array_with_buf_bonus_attributes[index_buf_taiyang_extra_strength_and_intelligence]  # [天启之珠]、[圣光天启]、[开幕！人偶剧场]力量、智力增加量 +X%
+        step_data = CalcStepData()
 
-                for_calc = tuple(set_on) + calc_wep
-                oneone = len(for_calc)
-                oneonelist = []
-                for idx in range(oneone):
-                    # 获取该装备的buff属性
-                    cut = setget(for_calc[idx])
-                    no_cut = np.array(cut)
-                    base_array = base_array + no_cut
-                    # 更新需要乘算的数据
-                    bless_extra_percent_strength_and_intelligence = multiply_entry(bless_extra_percent_strength_and_intelligence, no_cut[index_buf_bless_extra_percent_strength_and_intelligence])
-                    bless_extra_percent_physical_attack_power = multiply_entry(bless_extra_percent_physical_attack_power, no_cut[index_buf_bless_extra_percent_physical_attack_power])
-                    bless_extra_percent_magical_attack_power = multiply_entry(bless_extra_percent_magical_attack_power, no_cut[index_buf_bless_extra_percent_magical_attack_power])
-                    bless_extra_percent_independent_attack_power = multiply_entry(bless_extra_percent_independent_attack_power, no_cut[index_buf_bless_extra_percent_independent_attack_power])
-                    taiyang_extra_percent_strength_and_intelligence = multiply_entry(taiyang_extra_percent_strength_and_intelligence, no_cut[index_buf_taiyang_extra_percent_strength_and_intelligence])
-                    oneonelist.append(no_cut)
+        step_data.items = items
+        step_data.has_baibianguai = has_baibianguai
+        step_data.not_select_items = not_select_items
+        step_data.has_uniforms = has_uniforms
+        step_data.can_upgrade_work_unifrom_nums = can_upgrade_work_unifrom_nums
+        step_data.work_uniforms_items = work_uniforms_items
+        step_data.transfer_max_count = transfer_max_count
+        step_data.transfer_slots_equips = transfer_slots_equips
 
-                # 保证各个技能的等级不超过上限
-                def get_skill_level_data(skill_name, buff_index, base_level=0):
-                    # 获取该等级的额外附加上限，第一位是0，填充补位的，后面可能有多余的None列，excel自动补齐的
-                    global max_skill_level_map
-                    if skill_name not in max_skill_level_map:
-                        max_skill_level_map[skill_name] = sum(1 for val in lvlget(skill_name) if val is not None) - 1
-                    max_level = max_skill_level_map[skill_name]
+        step_data.last_god_slot = get_last_god_slot(items)
 
-                    # 保证等级不超过该上限
-                    level = int(min(max_level, base_array[buff_index] + base_level))
-                    return lvlget(skill_name)[level]
+        step_data.current_index = 0
+        step_data.has_god = False
+        step_data.local_max_setop = 0
+        step_data.max_setopt = max_setopt
+        step_data.max_possiable_setopt = 3 + 2 + 2 + 1  # 533 以及神话对应的一个词条
+        if set_perfect or not prefer_god():
+            # 如果神话不优先，则不计入最高历史词条
+            step_data.max_possiable_setopt -= 1
 
-                if job_name == "(奶系)神思者":
-                    # 祝福增加的三攻
-                    bless_increase_attack_power = get_skill_level_data('hol_b_atta', index_buf_bless_lv30)
-                    # 守护恩赐（15级）和守护徽章（25级）增加的体力、精神数值（祝福）
-                    passive_lv15_lv25_increase_physical_and_mental_strength_bless = get_skill_level_data('pas0', index_buf_job_passive_lv15, base_job_passive_lv15_bless) \
-                                                                                    + get_skill_level_data('hol_pas0_1', index_buf_naiba_protect_badge_lv25)
-                    # 守护恩赐（15级）和守护徽章（25级）增加的体力、精神数值（太阳）
-                    passive_lv15_lv25_increase_physical_and_mental_strength_taiyang = get_skill_level_data('pas0', index_buf_job_passive_lv15, base_job_passive_lv15_taiyang) \
-                                                                                      + get_skill_level_data('hol_pas0_1', index_buf_naiba_protect_badge_lv25)
-                    # 一觉被动（信念光环）增加的体力、精神数值
-                    first_awaken_passive_increase_physical_and_mental_strength = get_skill_level_data('hol_pas1', index_buf_first_awaken_passive_lv48)
-                    # 二觉增加的体力、精神数值
-                    second_awaken_increase_physical_and_mental_strength = get_skill_level_data('hol_act2', index_buf_second_awaken_lv85)
-                    # 三觉被动增加的体力、精神数值
-                    third_awaken_passive_increase_physical_and_mental_strength = get_skill_level_data('pas3', index_buf_third_awaken_passive_lv95)
-                    # 祝福适用的体力、精神数值
-                    physical_and_mental_strength_bless = base_array[index_buf_physical_and_mental_strength] + passive_lv15_lv25_increase_physical_and_mental_strength_bless \
-                                                         + first_awaken_passive_increase_physical_and_mental_strength + second_awaken_increase_physical_and_mental_strength \
-                                                         + third_awaken_passive_increase_physical_and_mental_strength + 19 * base_array[index_buf_amplification] \
-                                                         + base_stat_custom_bless_data_minus_taiyang_data
-                    # 太阳适用的体力、精神数值
-                    physical_and_mental_strength_taiyang = base_array[index_buf_physical_and_mental_strength] + passive_lv15_lv25_increase_physical_and_mental_strength_taiyang \
-                                                           + first_awaken_passive_increase_physical_and_mental_strength + second_awaken_increase_physical_and_mental_strength \
-                                                           + third_awaken_passive_increase_physical_and_mental_strength + 19 * base_array[index_buf_amplification]
+        calc_data = CalcData()
+        calc_data.weapon_indexs = weapon_indexs
+        calc_data.base_array_with_buf_bonus_attributes = base_array_with_buf_bonus_attributes
+        calc_data.job_name = job_name
+        calc_data.const = cfg.const
+        calc_data.opt_buf = opt_buf
+        calc_data.opt_buflvl = opt_buflvl
+        calc_data.base_job_passive_lv15_bless = base_job_passive_lv15_bless
+        calc_data.base_job_passive_lv15_taiyang = base_job_passive_lv15_taiyang
+        calc_data.base_stat_custom_bless_data_minus_taiyang_data = base_stat_custom_bless_data_minus_taiyang_data
+        calc_data.base_stat_physical_and_mental = base_stat_physical_and_mental
+        calc_data.base_stat_intelligence = base_stat_intelligence
+        calc_data.base_bless_level = base_bless_level
+        calc_data.base_taiyang_level = base_taiyang_level
+        calc_data.base_job_passive_lv15 = base_job_passive_lv15
+        calc_data.base_naiba_protect_badge_lv25 = base_naiba_protect_badge_lv25
+        calc_data.minheap_queues = [mq.minheap_queue for mq in minheap_with_queues]
+        calc_data.exit_calc = exit_calc
+        step_data.calc_data = calc_data
 
-                    physical_and_mental_divisor = cfg.const.naiba_physical_and_mental_divisor
+        step_data.dont_pruning = dont_pruning
+        step_data.set_perfect = set_perfect
+        step_data.prefer_god = prefer_god()
+        step_data.start_parallel_computing_at_depth_n = start_parallel_computing_at_depth_n
 
-                    # 祝福最终增加的力智
-                    bless_final_increase_strength_and_intelligence = int(
-                        int(get_skill_level_data('hol_b_stat', index_buf_bless_lv30) * (bless_extra_percent_strength_and_intelligence / 100 + 1)) * (physical_and_mental_strength_bless / physical_and_mental_divisor + 1)
-                    )
-                    # 祝福最终增加的物理攻击力
-                    bless_final_increase_physical_attack_power = int(
-                        int(bless_increase_attack_power * (bless_extra_percent_physical_attack_power / 100 + 1)) * (physical_and_mental_strength_bless / physical_and_mental_divisor + 1)
-                    )
-                    # 祝福最终增加的魔法攻击力
-                    bless_final_increase_magical_attack_power = int(
-                        int(bless_increase_attack_power * (bless_extra_percent_magical_attack_power / 100 + 1)) * (physical_and_mental_strength_bless / physical_and_mental_divisor + 1)
-                    )
-                    # 祝福最终增加的独立攻击力
-                    bless_final_increase_independent_attack_power = int(
-                        int(bless_increase_attack_power * (bless_extra_percent_independent_attack_power / 100 + 1)) * (physical_and_mental_strength_bless / physical_and_mental_divisor + 1)
-                    )
-                    # 祝福最终增加的三攻（平均值）
-                    bless_final_increase_attack_power_average = int(
-                        (bless_final_increase_physical_attack_power + bless_final_increase_magical_attack_power + bless_final_increase_independent_attack_power) / 3
-                    )
-                    # 太阳最终增加的力智
-                    taiyang_final_increase_strength_and_intelligence = int(
-                        int(
-                            (get_skill_level_data('c_stat', index_buf_taiyang_lv50) + base_array[index_buf_taiyang_extra_strength_and_intelligence]) * (taiyang_extra_percent_strength_and_intelligence / 100 + 1)
-                        ) * (physical_and_mental_strength_taiyang / 750 + 1)
-                    )
-                    # 信念光环增加的体力、精神数值
-                    belief_halo_increase_physical_and_mental_strength = int(get_skill_level_data('hol_pas1_out', index_buf_first_awaken_passive_lv48) + 213 + base_array[index_buf_belief_halo])
-                    # 一觉被动概览
-                    first_awaken_passive_overview = "{increase_intelligence_and_strength}  ({level}级)".format(
-                        increase_intelligence_and_strength=int(get_skill_level_data('hol_pas1_out', index_buf_first_awaken_passive_lv48) + 213 + base_array[index_buf_belief_halo]),
-                        level=int(20 + base_array[index_buf_first_awaken_passive_lv48])
-                    )
-                    # 祝福概览
-                    bless_overview = "{increase_intelligence_and_strength}/{increase_attack_power_average}   [{physical_and_mental_strength}({level}级)]".format(
-                        increase_intelligence_and_strength=bless_final_increase_strength_and_intelligence,
-                        increase_attack_power_average=bless_final_increase_attack_power_average,
-                        physical_and_mental_strength=physical_and_mental_strength_bless,
-                        level=int(base_array[index_buf_bless_lv30]),
-                    )
-                    # 太阳适用的面板数值（奶爸为体精、奶妈奶萝为智力）
-                    physical_and_mental_strength_or_intelligence_taiyang = physical_and_mental_strength_taiyang
-                    # 一觉被动增加的面板数值（奶爸为体精、奶妈奶萝为智力）
-                    first_awaken_increase_physical_and_mental_strength_or_intelligence = belief_halo_increase_physical_and_mental_strength
-                    # 祝福适用的面板数值
-                    bless_mianban = physical_and_mental_strength_bless
+        step_data.producer = producer
+        step_data.process_func = process_buf
 
-                else:
-                    intelligence_divisor = 675
-                    sing_song_increase_rate = 1.25
-                    const = cfg.const
-                    if job_name == "(奶系)炽天使":
-                        intelligence_divisor = const.naima_intelligence_divisor  # 多少智力折合一级祝福
-                        sing_song_increase_rate = const.naima_sing_song_increase_rate_base + const.naima_sing_song_increase_rate_amplification_coef * base_array[index_buf_amplification]  # 唱歌时的倍率
-                    if job_name == "(奶系)冥月女神":
-                        intelligence_divisor = const.nailuo_intelligence_divisor  # 多少智力折合一级祝福
-                        sing_song_increase_rate = (const.nailuo_sing_song_increase_rate_base + const.nailuo_sing_song_increase_rate_amplification_coef * base_array[index_buf_amplification]) \
-                                                  * const.nailuo_sing_song_increase_rate_final_coef  # 唱歌时的倍率
+        finished = False
+        totalResult = 0
 
-                    # 祝福增加的三攻
-                    bless_increase_attack_power = get_skill_level_data('se_b_atta', index_buf_bless_lv30)
-                    # [启示：圣歌]、[人偶操纵者] 增加的智力数值（祝福）
-                    passive_lv15_increase_intelligence_bless = get_skill_level_data('pas0', index_buf_job_passive_lv15, base_job_passive_lv15_bless)
-                    # [启示：圣歌]、[人偶操纵者] 增加的智力数值（太阳）
-                    passive_lv15_increase_intelligence_taiyang = get_skill_level_data('pas0', index_buf_job_passive_lv15, base_job_passive_lv15_taiyang)
-                    # 一觉被动（[虞诚信念]、[少女的爱]）增加的智力数值
-                    first_awaken_passive_increase_intelligence = get_skill_level_data('se_pas1', index_buf_first_awaken_passive_lv48) + base_array[index_buf_piety_halo_or_girs_love]
-                    # 二觉被动增加的智力数值
-                    second_awaken_increase_intelligence = get_skill_level_data('se_pas2', index_buf_second_awaken_passive_lv75)
-                    # 三觉被动增加的智力数值
-                    third_awaken_passive_increase_intelligence = get_skill_level_data('pas3', index_buf_third_awaken_passive_lv95)
-                    # 祝福适用的智力数值
-                    intelligence_bless = base_array[index_buf_intelligence] + passive_lv15_increase_intelligence_bless \
-                                         + first_awaken_passive_increase_intelligence + second_awaken_increase_intelligence \
-                                         + third_awaken_passive_increase_intelligence + base_stat_custom_bless_data_minus_taiyang_data
-                    # 太阳适用的智力数值
-                    intelligence_taiyang = base_array[index_buf_intelligence] + passive_lv15_increase_intelligence_taiyang \
-                                           + first_awaken_passive_increase_intelligence + second_awaken_increase_intelligence \
-                                           + third_awaken_passive_increase_intelligence
-                    # 祝福最终增加的力智
-                    bless_final_increase_strength_and_intelligence = int(
-                        int(get_skill_level_data('se_b_stat', index_buf_bless_lv30) * (bless_extra_percent_strength_and_intelligence / 100 + 1)) * (intelligence_bless / intelligence_divisor + 1) * sing_song_increase_rate
-                    )
-                    # 祝福最终增加的物理攻击力
-                    bless_final_increase_physical_attack_power = int(
-                        int(bless_increase_attack_power * (bless_extra_percent_physical_attack_power / 100 + 1) * (intelligence_bless / intelligence_divisor + 1)) * sing_song_increase_rate
-                    )
-                    # 祝福最终增加的魔法攻击力
-                    bless_final_increase_magical_attack_power = int(
-                        int(bless_increase_attack_power * (bless_extra_percent_magical_attack_power / 100 + 1) * (intelligence_bless / intelligence_divisor + 1)) * sing_song_increase_rate
-                    )
-                    # 祝福最终增加的独立攻击力
-                    bless_final_increase_independent_attack_power = int(
-                        int(bless_increase_attack_power * (bless_extra_percent_independent_attack_power / 100 + 1) * (intelligence_bless / intelligence_divisor + 1)) * sing_song_increase_rate
-                    )
-                    # 祝福最终增加的三攻（平均值）
-                    bless_final_increase_attack_power_average = int(
-                        (bless_final_increase_physical_attack_power + bless_final_increase_magical_attack_power + bless_final_increase_independent_attack_power) / 3
-                    )
-                    # 太阳最终增加的力智
-                    taiyang_final_increase_strength_and_intelligence = int(
-                        int((get_skill_level_data('c_stat', index_buf_taiyang_lv50) + base_array[index_buf_taiyang_extra_strength_and_intelligence]) * (taiyang_extra_percent_strength_and_intelligence / 100 + 1)) * (
-                                intelligence_taiyang / 750 + 1))
-                    # 虔诚信念或少女的爱增加的智力数值
-                    piety_halo_or_girs_love_increase_intelligence = int(first_awaken_passive_increase_intelligence + 442)
-                    # 一觉被动概览
-                    first_awaken_passive_overview = "{increase_intelligence_and_strength}  ({level}级)".format(
-                        increase_intelligence_and_strength=int(first_awaken_passive_increase_intelligence + 442),
-                        level=int(20 + base_array[index_buf_first_awaken_passive_lv48])
-                    )
-                    # 祝福概览
-                    bless_overview = ("{increase_lizhi_with_sing_song}({increase_lizhi})/ {increase_ap_with_sing_song}({increase_ap})\n"
-                                      "图内={intelligence}({level}级) 站街面板={street_intelligence}").format(
-                        increase_lizhi_with_sing_song=bless_final_increase_strength_and_intelligence,
-                        increase_lizhi=int(bless_final_increase_strength_and_intelligence / sing_song_increase_rate),
-                        increase_ap_with_sing_song=bless_final_increase_attack_power_average,
-                        increase_ap=int(bless_final_increase_attack_power_average / sing_song_increase_rate),
-                        intelligence=int(intelligence_bless),
-                        level=int(base_array[index_buf_bless_lv30]),
-                        street_intelligence=int(intelligence_bless) - 501,
-                    )
-                    # 太阳适用的面板数值（奶爸为体精、奶妈奶萝为智力）
-                    physical_and_mental_strength_or_intelligence_taiyang = intelligence_taiyang
-                    # 一觉被动增加的面板数值（奶爸为体精、奶妈奶萝为智力）
-                    first_awaken_increase_physical_and_mental_strength_or_intelligence = piety_halo_or_girs_love_increase_intelligence
-                    # 祝福适用的面板数值
-                    bless_mianban = intelligence_bless
+        def try_fetch_result(mq: MinHeapWithQueue):
+            global totalResult
+            while not mq.minheap_queue.empty():
+                heap_item = mq.minheap_queue.get()
+                mq.minheap.add(heap_item)
+                totalResult += 1
 
-                # 太阳概览
-                taiyang_overview = "{increase_intelligence_and_strength} [{physical_and_mental_strength_or_intelligence_taiyang}({level}级)]".format(
-                    increase_intelligence_and_strength=taiyang_final_increase_strength_and_intelligence,
-                    physical_and_mental_strength_or_intelligence_taiyang=int(physical_and_mental_strength_or_intelligence_taiyang),
-                    level=int(base_array[index_buf_taiyang_lv50]),
-                )
+        def try_fetch_result_in_background(mq: MinHeapWithQueue):
+            while not finished:
+                logger.debug("{}: try_fetch_result_in_background minheap_queue count={} totalResult={}".format(mq.name, mq.minheap_queue.qsize(), totalResult))
+                try_fetch_result(mq)
+                time.sleep(0.5)
 
-                global unique_index
-                unique_index += 1
-                not_owned_equips = [uwu for uwu in upgrade_work_uniforms]
-                for equip in transfered_equips:
-                    not_owned_equips.append(equip)
+        for mq in minheap_with_queues:
+            threading.Thread(target=try_fetch_result_in_background, args=(mq,), daemon=True).start()
 
-                # 1 祝福得分
-                bless_score = ((15000 + bless_final_increase_strength_and_intelligence) / 250 + 1) * (2650 + bless_final_increase_attack_power_average)
-                # 2 太阳得分
-                taiyang_score = ((15000 + taiyang_final_increase_strength_and_intelligence) / 250 + 1) * 2650
-                # 3 综合得分
-                total_score = ((15000 + first_awaken_increase_physical_and_mental_strength_or_intelligence + taiyang_final_increase_strength_and_intelligence + bless_final_increase_strength_and_intelligence) / 250 + 1) \
-                              * (2650 + bless_final_increase_attack_power_average)
-
-                # 统计数据
-                all_score_str = "{}/{}/{}".format(
-                    int(bless_score / 10),
-                    int(taiyang_score / 10),
-                    int(total_score / 10),
-                )
-                save_data = [calc_wep, [bless_overview, taiyang_overview, first_awaken_passive_overview, all_score_str], baibianguai, tuple(not_owned_equips)]
-
-                # 加入排序
-                minheap_bless.add((bless_score, unique_index, save_data))
-                minheap_taiyang.add((taiyang_score, unique_index, save_data))
-                minheap_total.add((total_score, unique_index, save_data))
-                minheap_mianban.add((bless_mianban, unique_index, save_data))
-
-                global count_valid
-                count_valid = count_valid + 1
-
-        cartesianProduct(items, has_baibianguai, not_select_items, dont_pruning, set_perfect, has_uniforms, can_upgrade_work_unifrom_nums, work_uniforms_items, transfer_max_count, transfer_slots_equips, 0, False, None, [], [], [], producer,
-                         process)
+        cartesianProduct(step_data)
 
         # 等到所有工作处理完成
         self.work_queue.join()
+        finished = True
+
+        # 最终将剩余结果也加入排序
+        for mq in minheap_with_queues:
+            logger.debug("{}: after join minheap_queue count={} totalResult={}".format(mq.name, mq.minheap_queue.qsize(), totalResult))
+            try_fetch_result(mq)
+            logger.info("{}: after final minheap_queue count={} totalResult={}".format(mq.name, mq.minheap_queue.qsize(), totalResult))
 
         show_number = 0
         showsta(text='结果统计中')
 
-        all_rankings = [minheap_bless.getTop(), minheap_taiyang.getTop(), minheap_total.getTop(), minheap_mianban.getTop()]
+        all_rankings = [mq.minheap.getTop() for mq in minheap_with_queues]
         rankings = [[] for x in range(len(all_rankings))]
         for rank_type_index in range(len(all_rankings)):
             for index, data in enumerate(all_rankings[rank_type_index][:ui_top_n]):

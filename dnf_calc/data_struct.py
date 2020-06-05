@@ -16,6 +16,7 @@ from heapq import heapify, heappush, heappushpop
 from multiprocessing import Queue
 from multiprocessing.managers import ValueProxy
 from typing import List
+from .config import ConstConfig
 
 from numpy import ndarray
 
@@ -86,6 +87,8 @@ class CalcData:
 
         # 玩家选定的武器
         self.weapon_indexs = []
+
+        # ----------------------输出职业----------------------
         # 各种加成
         self.base_array_with_deal_bonus_attributes = []  # type: ndarray
         # 配置表得到的信息
@@ -103,6 +106,24 @@ class CalcData:
         # 玩家设定的其他信息
         self.cool_on = 0
         self.ele_skill = 0
+
+        # ----------------------奶系职业----------------------
+        # 各种加成
+        self.base_array_with_buf_bonus_attributes = []  # type: ndarray
+        # 配置表得到的信息
+        self.job_name = ""
+        self.const = None # type: ConstConfig
+        self.opt_buf = {}
+        self.opt_buflvl = {}
+        self.base_job_passive_lv15_bless = 0
+        self.base_job_passive_lv15_taiyang = 0
+        self.base_stat_custom_bless_data_minus_taiyang_data = 0
+        self.base_stat_physical_and_mental = 0
+        self.base_stat_intelligence = 0
+        self.base_bless_level = 0
+        self.base_taiyang_level = 0
+        self.base_job_passive_lv15 = 0
+        self.base_naiba_protect_badge_lv25 = 0
 
         # 回传结果的队列
         self.minheap_queues = None  # type: List[Queue]
