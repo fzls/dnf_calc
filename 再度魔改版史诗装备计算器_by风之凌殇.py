@@ -768,14 +768,19 @@ def calc():
 
         minheap = MinHeap(save_top_n)
         finished = False
+        global totalResult
+        totalResult = 0
 
         def try_fetch_result():
+            global totalResult
             while not minheap_queue.empty():
                 heap_item = minheap_queue.get()
                 minheap.add(heap_item)
+                totalResult += 1
 
         def try_fetch_result_in_background():
             while not finished:
+                logger.debug("try_fetch_result_in_background minheap_queue count={} totalResult={}".format(minheap_queue.qsize(), totalResult))
                 try_fetch_result()
                 time.sleep(0.5)
 
@@ -788,8 +793,10 @@ def calc():
         finished = True
 
         # 最终将剩余结果也加入排序
+        logger.debug("after join minheap_queue count={} totalResult={}".format(minheap_queue.qsize(), totalResult))
         try_fetch_result()
 
+        logger.info("after final minheap_queue count={} totalResult={}".format(minheap_queue.qsize(), totalResult))
         show_number = 0
         showsta(text='结果统计中')
 
