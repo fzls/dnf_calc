@@ -334,8 +334,9 @@ def calc_equip_value(selected_combination, selected_has_god, prefer_god):
 #       2. 调整代码
 
 def process_deal(data: CalcData):
+    equips = data.selected_combination
     # 计算各个套装的装备数目
-    set_counter = Counter(["1" + str(get_set_name(data.selected_combination[x])) for x in range(0, 11)])
+    set_counter = Counter(["1" + str(get_set_name(equips[x])) for x in range(0, 11)])
     set_on = []
 
     for set_code, cnt in set_counter.items():
@@ -365,56 +366,62 @@ def process_deal(data: CalcData):
                 set_on.append('1401')
 
     for wep_num in data.weapon_indexs:
-        calc_wep = (wep_num,) + tuple(data.selected_combination)
-        damage = 0
-        # 加上输出职业的国服特色数值后的基础数据
-        base_array = data.base_array_with_deal_bonus_attributes.copy()
-
-        skiper = base_array[index_deal_extra_percent_skill_attack_power]
+        #################################计算附带各种加成后，当前搭配的各个词条属性#################################
+        # 武器、装备列表
+        calc_wep = (wep_num,) + tuple(equips)
+        # 加上适用的套装属性列表
         for_calc = tuple(set_on) + calc_wep
-        oneone = len(for_calc)
-        oneonelist = []
-        for idx in range(oneone):
+
+        # 拷贝一份加上输出职业的国服特色数值后的基础数据
+        base_array = data.base_array_with_deal_bonus_attributes.copy()
+        # 获取加成后的技攻
+        skiper = base_array[index_deal_extra_percent_skill_attack_power]
+        # 将数据表中对应装备和套装的数据切片得到我们需要的属性列表
+        attributes_list = []
+        for idx in range(len(for_calc)):
             no_cut = data.opt_one.get(for_calc[idx])
             if no_cut is None:
                 # hack：目前select是默认初始化时将tg{1101-3336}[0,1]范围的key对应的值都设为0，而百变怪会根据select的值为0来筛选出未选择的集合
                 #  因此在这里如果为None，就是这种情况，直接返回就可以了
-                # global count_invalid
-                # count_invalid = count_invalid + 1
                 return
-            cut = np.array(no_cut[0:20] + no_cut[22:23] + no_cut[34:35] + no_cut[38:44])
+            cut = np.array(no_cut[0:20] + no_cut[22:23] + no_cut[34:35] + no_cut[38:44])  # re：这部分改为外部传入时预先计算
             skiper = multiply_entry(skiper, cut[index_deal_extra_percent_skill_attack_power])
-            oneonelist.append(cut)
-        for idx in range(oneone):
-            base_array = base_array + oneonelist[idx]
+            attributes_list.append(cut)
 
+        # 累加各个属性
+        for idx in range(len(for_calc)):
+            base_array = base_array + attributes_list[idx]
+
+        #################################计算各种特殊条件触发的属性#################################
         # 军神二件套且拥有军神-魔法石-军神的庇护宝石，说明遗书和古怪耳环（心之所念）不同时存在，减去5%的爆伤
-        if set_on.count('1201') == 1 and data.selected_combination.count('32200') == 1:
+        if "1201" in set_on and "32200" in equips:
             base_array[index_deal_extra_percent_crit_damage] -= 5
+
         # 拥有军神耳环，且不拥有军神辅助装备，需要减去10%力智加成
-        if data.selected_combination.count("33200") == 1 and data.selected_combination.count("31200") == 0:
+        if "33200" in equips and "31200" not in equips:
             base_array[index_deal_extra_percent_strength_and_intelligence] -= 10
+
         # 能量的主宰装备，若拥有能量耳环或能量神话耳环
-        if data.selected_combination.count('33230') == 1 or data.selected_combination.count('33231') == 1:
+        if '33230' in equips or '33231' in equips:
             # 若不同时拥有能量辅助装备，则减去10%力智加成
-            if data.selected_combination.count('31230') == 0:
+            if '31230' not in equips:
                 base_array[index_deal_extra_percent_addtional_damage] -= 10
             # 如不同时拥有能量魔法石，则减去40点全属性属强
-            if data.selected_combination.count('32230') == 0:
+            if '32230' not in equips:
                 base_array[index_deal_extra_all_element_strength] -= 40
+
         # 特殊处理天命无常套装
-        if data.selected_combination.count('15340') == 1 or data.selected_combination.count('23340') == 1 or data.selected_combination.count('33340') == 1 or data.selected_combination.count(
-                '33341') == 1:
+        if '15340' in equips or '23340' in equips or '33340' in equips or '33341' in equips:
             # 若只有散件
-            if set_on.count('1341') == 0 and set_on.count('1342') == 0:
+            if '1341' not in set_on and '1342' not in set_on:
                 # 天命鞋子，在两件套时，点数为双数增加40点属强，期望为20，若为散件则减去该属性
-                if data.selected_combination.count('15340') == 1:
+                if '15340' in equips:
                     base_array[index_deal_extra_all_element_strength] -= 20
                 # 天命戒指，在两件套时，点数大于2额外增加12%伤害，期望为10%（ps：原作者给，我觉得应该应该是4/6*12=8%?）
-                elif data.selected_combination.count('23340') == 1:  # 天命无常-戒指-命运的捉弄
+                elif '23340' in equips:  # 天命无常-戒指-命运的捉弄
                     base_array[index_deal_extra_percent_attack_damage] -= 10
                 # 天命耳环，在两件套时，点数为6时增加30%最终伤害，期望为5%
-                elif data.selected_combination.count('33340') == 1:
+                elif '33340' in equips:
                     base_array[index_deal_extra_percent_final_damage] -= 5  #
                 # 天命神话耳环，在两件套时，点数为6时增加30%最终伤害，其中点数为1时重新投色子，期望为6%
                 else:
@@ -422,22 +429,25 @@ def process_deal(data: CalcData):
                     base_array[index_deal_extra_percent_attack_damage] -= 2  # damper=2
                     base_array[index_deal_extra_percent_final_damage] -= 1  # allper=6
                     base_array[index_deal_extra_percent_strength_and_intelligence] -= 1.93  # staper=15
+
         # 铁匠神话上衣
-        if data.selected_combination.count('11111') == 1:
+        if '11111' in equips:
             # 铁匠三件套或铁匠五件套
-            if set_on.count('1112') == 1 or set_on.count('1113') == 1:
+            if '1112' in set_on or '1113' in set_on:
                 base_array[index_deal_cool_correction] += 10
+
         # 命运神话上衣
-        if data.selected_combination.count('11301') == 1:
+        if '11301' in equips:
             # 未拥有命运项链
-            if data.selected_combination.count('22300') != 1:
+            if '22300' not in equips:
                 base_array[index_deal_extra_percent_addtional_damage] -= 10
                 base_array[index_deal_extra_percent_physical_magical_independent_attack_power] += 10
             # 未拥有命运辅助装备
-            if data.selected_combination.count('31300') != 1:
+            if '31300' not in equips:
                 base_array[index_deal_extra_percent_addtional_damage] -= 10
                 base_array[index_deal_extra_percent_physical_magical_independent_attack_power] += 10
 
+        #################################核心计算公式#################################
         base_array[index_deal_extra_percent_skill_attack_power] = skiper  # 技能攻击力 +X%
         real_bon = (base_array[index_deal_extra_percent_addtional_damage] +  # 攻击时，附加X%的伤害，也就是白字
                     base_array[index_deal_extra_percent_elemental_damage] *  # 攻击时，附加X%的属性伤害
@@ -471,15 +481,13 @@ def process_deal(data: CalcData):
                   (1 + data.cool_on * base_array[index_deal_cool_correction] / 100) /  # 冷却矫正系数，每冷却1%，记0.35这个值
                   (1.05 + 0.0045 * int(data.ele_skill)))  # 最后除去逆校正初始属强的影响
 
+        #################################准备排行数据#################################
         base_array[index_deal_extra_percent_addtional_damage] = real_bon
         not_owned_equips = [uwu for uwu in data.upgrade_work_uniforms]
         for equip in data.transfered_equips:
             not_owned_equips.append(equip)
 
         data.minheap_queue.put((damage, random.random(), [calc_wep, base_array, data.baibianguai, tuple(not_owned_equips)]))
-
-        # global count_valid
-        # count_valid = count_valid + 1
 
 
 def get_last_god_slot(items):
