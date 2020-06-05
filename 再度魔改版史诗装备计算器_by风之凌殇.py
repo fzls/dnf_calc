@@ -328,32 +328,41 @@ def calc_equip_value(selected_combination, selected_has_god, prefer_god):
 # undone：思路四：进一步降低上限，在当前已有序列的各套装个数的前提下，计算后面n个序列的各套装配置下所能产生的价值量最大套装词条数
 
 
+# re: 明天细看一遍这个输出职业的实际计算过程
+# re: 然后开始把奶系职业的也给抽离出来
+#       1. 整合参数，并移到外侧
+#       2. 调整代码
+
 def process_deal(data: CalcData):
-    set_list = ["1" + str(get_set_name(data.selected_combination[x])) for x in range(0, 11)]
+    # 计算各个套装的装备数目
+    set_counter = Counter(["1" + str(get_set_name(data.selected_combination[x])) for x in range(0, 11)])
     set_on = []
-    setapp = set_on.append
-    setcount = set_list.count
-    set_oncount = set_on.count
-    onecount = data.selected_combination.count
-    for set_code in range(101, 136):
-        if setcount(str(set_code)) == 2:
-            setapp(str(set_code) + "1")
-        if 4 >= setcount(str(set_code)) >= 3:
-            setapp(str(set_code) + "2")
-        if setcount(str(set_code)) == 5:
-            setapp(str(set_code) + "3")
-    for set_code in range(136, 139):
-        if setcount(str(set_code)) == 2:
-            setapp(str(set_code) + "0")
-        if 4 >= setcount(str(set_code)) >= 3:
-            setapp(str(set_code) + "1")
-        if setcount(str(set_code)) == 5:
-            setapp(str(set_code) + "2")
-    if onecount('32410650') == 1:
-        if onecount('21400340') == 1:
-            setapp('1401')
-        elif onecount('31400540') == 1:
-            setapp('1401')
+
+    for set_code, cnt in set_counter.items():
+        n_set_code = int(set_code)
+        if 101 <= n_set_code <= 135:
+            # 计算100史诗装备的套装数目
+            if cnt <= 1:
+                continue
+            elif cnt == 2:
+                set_on.append(set_code + "1")
+            elif 3 <= cnt <= 4:
+                set_on.append(set_code + "2")
+            elif cnt == 5:
+                set_on.append(set_code + "3")
+        elif 136 <= n_set_code <= 138:
+            # 计算100传说、普雷特殊、首饰的套装数目
+            if cnt <= 1:
+                continue
+            elif cnt == 2:
+                set_on.append(set_code + "0")
+            elif 3 <= cnt <= 4:
+                set_on.append(set_code + "1")
+            elif cnt == 5:
+                set_on.append(set_code + "2")
+        elif n_set_code == 141:
+            if set_counter.get("140") >= 1:
+                set_on.append('1401')
 
     for wep_num in data.weapon_indexs:
         calc_wep = (wep_num,) + tuple(data.selected_combination)
@@ -380,32 +389,32 @@ def process_deal(data: CalcData):
             base_array = base_array + oneonelist[idx]
 
         # 军神二件套且拥有军神-魔法石-军神的庇护宝石，说明遗书和古怪耳环（心之所念）不同时存在，减去5%的爆伤
-        if set_oncount('1201') == 1 and onecount('32200') == 1:
+        if set_on.count('1201') == 1 and data.selected_combination.count('32200') == 1:
             base_array[index_deal_extra_percent_crit_damage] -= 5
         # 拥有军神耳环，且不拥有军神辅助装备，需要减去10%力智加成
-        if onecount("33200") == 1 and onecount("31200") == 0:
+        if data.selected_combination.count("33200") == 1 and data.selected_combination.count("31200") == 0:
             base_array[index_deal_extra_percent_strength_and_intelligence] -= 10
         # 能量的主宰装备，若拥有能量耳环或能量神话耳环
-        if onecount('33230') == 1 or onecount('33231') == 1:
+        if data.selected_combination.count('33230') == 1 or data.selected_combination.count('33231') == 1:
             # 若不同时拥有能量辅助装备，则减去10%力智加成
-            if onecount('31230') == 0:
+            if data.selected_combination.count('31230') == 0:
                 base_array[index_deal_extra_percent_addtional_damage] -= 10
             # 如不同时拥有能量魔法石，则减去40点全属性属强
-            if onecount('32230') == 0:
+            if data.selected_combination.count('32230') == 0:
                 base_array[index_deal_extra_all_element_strength] -= 40
         # 特殊处理天命无常套装
-        if onecount('15340') == 1 or onecount('23340') == 1 or onecount('33340') == 1 or onecount(
+        if data.selected_combination.count('15340') == 1 or data.selected_combination.count('23340') == 1 or data.selected_combination.count('33340') == 1 or data.selected_combination.count(
                 '33341') == 1:
             # 若只有散件
-            if set_oncount('1341') == 0 and set_oncount('1342') == 0:
+            if set_on.count('1341') == 0 and set_on.count('1342') == 0:
                 # 天命鞋子，在两件套时，点数为双数增加40点属强，期望为20，若为散件则减去该属性
-                if onecount('15340') == 1:
+                if data.selected_combination.count('15340') == 1:
                     base_array[index_deal_extra_all_element_strength] -= 20
                 # 天命戒指，在两件套时，点数大于2额外增加12%伤害，期望为10%（ps：原作者给，我觉得应该应该是4/6*12=8%?）
-                elif onecount('23340') == 1:  # 天命无常-戒指-命运的捉弄
+                elif data.selected_combination.count('23340') == 1:  # 天命无常-戒指-命运的捉弄
                     base_array[index_deal_extra_percent_attack_damage] -= 10
                 # 天命耳环，在两件套时，点数为6时增加30%最终伤害，期望为5%
-                elif onecount('33340') == 1:
+                elif data.selected_combination.count('33340') == 1:
                     base_array[index_deal_extra_percent_final_damage] -= 5  #
                 # 天命神话耳环，在两件套时，点数为6时增加30%最终伤害，其中点数为1时重新投色子，期望为6%
                 else:
@@ -414,18 +423,18 @@ def process_deal(data: CalcData):
                     base_array[index_deal_extra_percent_final_damage] -= 1  # allper=6
                     base_array[index_deal_extra_percent_strength_and_intelligence] -= 1.93  # staper=15
         # 铁匠神话上衣
-        if onecount('11111') == 1:
+        if data.selected_combination.count('11111') == 1:
             # 铁匠三件套或铁匠五件套
-            if set_oncount('1112') == 1 or set_oncount('1113') == 1:
+            if set_on.count('1112') == 1 or set_on.count('1113') == 1:
                 base_array[index_deal_cool_correction] += 10
         # 命运神话上衣
-        if onecount('11301') == 1:
+        if data.selected_combination.count('11301') == 1:
             # 未拥有命运项链
-            if onecount('22300') != 1:
+            if data.selected_combination.count('22300') != 1:
                 base_array[index_deal_extra_percent_addtional_damage] -= 10
                 base_array[index_deal_extra_percent_physical_magical_independent_attack_power] += 10
             # 未拥有命运辅助装备
-            if onecount('31300') != 1:
+            if data.selected_combination.count('31300') != 1:
                 base_array[index_deal_extra_percent_addtional_damage] -= 10
                 base_array[index_deal_extra_percent_physical_magical_independent_attack_power] += 10
 
@@ -4247,11 +4256,11 @@ if __name__ == '__main__':
     maker.place(x=625, y=590)
     version.place(x=630, y=650)
 
-
 ###########################################################
 #                 启动工作线程并进入ui主循环                #
 ###########################################################
 produced_count = 0
+
 
 # 准备工作队列和工作线程
 def producer(*args):
