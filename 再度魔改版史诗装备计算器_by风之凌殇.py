@@ -1228,6 +1228,7 @@ def calc():
     showsta(text='输出完成' + "时间 = " + format_time(time.time() - start_time))
     # 结束计算
     exit_calc.value = 1
+    logger.info("工作进程数：{}个 共处理workItem：{}个".format(max_thread, produced_count))
     logger.info("计算耗时时间 = " + str(time.time() - start_time) + "秒")
 
 
