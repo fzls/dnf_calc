@@ -114,10 +114,9 @@ def report_bugsnag_with_context(error, extra_context=None, show_error_messagebox
     )
 
 
-# re: 明天来细看一遍搜索和计算流程，看看有没有可以为多线程计算效率做优化的地方
-# 看了看，主要性能瓶颈在于直接使用了itertools.product遍历所有的笛卡尔积组合，导致无法提前剪枝，只能在每个组合计算前通过条件判断是否要跳过
+# 带剪枝的dfs搜索装备搭配过程
 # 背景，假设当前处理到下标n（0-10）的装备，前面装备已选择的组合为selected_combination(of size n)，未处理装备为后面11-n-1个，其对应组合数为rcp=len(Cartesian Product(后面11-n-1个装备部位))
-def cartesianProduct(step: CalcStepData):
+def dfs(step: CalcStepData):
     # 考虑当前部位的每一件可选装备
     for equip in step.items[step.current_index]:
         try_equip(step, equip)
@@ -209,7 +208,7 @@ def try_equip(step: CalcStepData, equip):
         if not pruned:
             if current_index != step.start_parallel_computing_at_depth_n:
                 # 未到开始进行并发计算的层数，串行搜索
-                cartesianProduct(step)
+                dfs(step)
             else:
                 # 此层数的所有子树采用并行搜索
                 producer(copy_step(step))
@@ -1091,7 +1090,7 @@ def calc():
 
         step_data.process_func = process_deal
 
-        cartesianProduct(step_data)
+        dfs(step_data)
 
         # 等到所有工作处理完成
         self.work_queue.join()
@@ -1182,7 +1181,7 @@ def calc():
 
         step_data.process_func = process_buf
 
-        cartesianProduct(step_data)
+        dfs(step_data)
 
         # 等到所有工作处理完成
         self.work_queue.join()
@@ -4302,7 +4301,7 @@ if __name__ == "__main__":
     workers = []
     max_thread = config().multi_threading.max_thread
     for i in range(max_thread):
-        p = multiprocessing.Process(target=consumer, args=(work_queue, exit_calc, cartesianProduct), daemon=True, name="worker#{}".format(i + 1))
+        p = multiprocessing.Process(target=consumer, args=(work_queue, exit_calc, dfs), daemon=True, name="worker#{}".format(i + 1))
         p.start()
         workers.append(p)
 
