@@ -332,35 +332,7 @@ def get_god_value(selected_has_god, remaining_start_index, prefer_god, last_god_
 
 def process_deal(data: CalcData):
     equips = data.selected_combination
-    # 计算各个套装的装备数目
-    set_counter = Counter(["1" + str(get_set_name(equips[x])) for x in range(0, 11)])
-    set_on = []
-
-    for set_code, cnt in set_counter.items():
-        n_set_code = int(set_code)
-        if 101 <= n_set_code <= 135:
-            # 计算100史诗装备的套装数目
-            if cnt <= 1:
-                continue
-            elif cnt == 2:
-                set_on.append(set_code + "1")
-            elif 3 <= cnt <= 4:
-                set_on.append(set_code + "2")
-            elif cnt == 5:
-                set_on.append(set_code + "3")
-        elif 136 <= n_set_code <= 138:
-            # 计算100传说、普雷特殊、首饰的套装数目
-            if cnt <= 1:
-                continue
-            elif cnt == 2:
-                set_on.append(set_code + "0")
-            elif 3 <= cnt <= 4:
-                set_on.append(set_code + "1")
-            elif cnt == 5:
-                set_on.append(set_code + "2")
-        elif n_set_code == 141:
-            if set_counter.get("140") >= 1:
-                set_on.append('1401')
+    set_on = get_set_on(equips)
 
     for wep_num in data.weapon_indexs:
         #################################计算附带各种加成后，当前搭配的各个词条属性#################################
@@ -491,35 +463,7 @@ def process_deal(data: CalcData):
 
 def process_buf(data: CalcData):
     equips = data.selected_combination
-    # 计算各个套装的装备数目
-    set_counter = Counter(["1" + str(get_set_name(equips[x])) for x in range(0, 11)])
-    set_on = []
-
-    for set_code, cnt in set_counter.items():
-        n_set_code = int(set_code)
-        if 101 <= n_set_code <= 135:
-            # 计算100史诗装备的套装数目
-            if cnt <= 1:
-                continue
-            elif cnt == 2:
-                set_on.append(set_code + "1")
-            elif 3 <= cnt <= 4:
-                set_on.append(set_code + "2")
-            elif cnt == 5:
-                set_on.append(set_code + "3")
-        elif 136 <= n_set_code <= 138:
-            # 计算100传说、普雷特殊、首饰的套装数目
-            if cnt <= 1:
-                continue
-            elif cnt == 2:
-                set_on.append(set_code + "0")
-            elif 3 <= cnt <= 4:
-                set_on.append(set_code + "1")
-            elif cnt == 5:
-                set_on.append(set_code + "2")
-        elif n_set_code == 141:
-            if set_counter.get("140") >= 1:
-                set_on.append('1401')
+    set_on = get_set_on(equips)
 
     for wep_num in data.weapon_indexs:
         #################################计算附带各种加成后，当前搭配的各个词条属性#################################
@@ -753,6 +697,45 @@ def process_buf(data: CalcData):
         data.minheap_queues[1].put((taiyang_score, unique_index, copy.deepcopy(save_data)))
         data.minheap_queues[2].put((total_score, unique_index, copy.deepcopy(save_data)))
         data.minheap_queues[3].put((bless_mianban, unique_index, copy.deepcopy(save_data)))
+
+
+def get_set_on(equips):
+    """
+    计算各个套装的装备数目
+    @param equips: 装备搭配列表
+    @type equips: List[string]
+    @return: 形成的套装数目列表
+    """
+    set_on = []
+
+    set_counter = Counter(["1" + str(get_set_name(equips[x])) for x in range(0, 11)])
+    for set_code, cnt in set_counter.items():
+        n_set_code = int(set_code)
+        if 101 <= n_set_code <= 135:
+            # 计算100史诗装备的套装数目
+            if cnt <= 1:
+                continue
+            elif cnt == 2:
+                set_on.append(set_code + "1")
+            elif 3 <= cnt <= 4:
+                set_on.append(set_code + "2")
+            elif cnt == 5:
+                set_on.append(set_code + "3")
+        elif 136 <= n_set_code <= 138:
+            # 计算100传说、普雷特殊、首饰的套装数目
+            if cnt <= 1:
+                continue
+            elif cnt == 2:
+                set_on.append(set_code + "0")
+            elif 3 <= cnt <= 4:
+                set_on.append(set_code + "1")
+            elif cnt == 5:
+                set_on.append(set_code + "2")
+        elif n_set_code == 141:
+            if set_counter.get("140") >= 1:
+                set_on.append('1401')
+
+    return set_on
 
 
 # 获取最后一个拥有神话的装备槽位的下标，以计算时的装备槽位顺序为准。若未找到，则返回-1。在搜索时，判断后续是否可能出现神话装备，可以通过判断下标是否小于等于该值
