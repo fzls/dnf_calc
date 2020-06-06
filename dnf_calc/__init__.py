@@ -6,9 +6,9 @@
 # Author : Chen Ji
 # Email  : fzls.zju@gmail.com
 # -------------------------------
-import sys
 import logging
 import pathlib
+import sys
 from datetime import datetime
 
 from .common import *
@@ -55,6 +55,7 @@ from .setting import *
 
 from .hardware_info import *
 
+from .update import *
 from .logic import *
 
 # ui
