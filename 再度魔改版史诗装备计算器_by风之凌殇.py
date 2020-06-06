@@ -278,7 +278,7 @@ def upper_bound_1(items, selected_combination, selected_has_god, remaining_start
     remaining_max_value = 11 - remaining_start_index
     # 获取神话的词条
     god_value = get_god_value(selected_has_god, remaining_start_index, prefer_god, last_god_slot)
-    
+
     return current_value + remaining_max_value + god_value
 
 
@@ -319,12 +319,12 @@ def calc_equip_value(selected_combination, selected_has_god, prefer_god):
 
     return setopt_num
 
+
 def get_god_value(selected_has_god, remaining_start_index, prefer_god, last_god_slot):
     if prefer_god and (selected_has_god or remaining_start_index <= last_god_slot):
         return 1
     else:
         return 0
-
 
 
 # undone: 思路三：进一步降低上限，在当前已有序列的各套装个数的前提下，计算任意n个序列所能产生的价值量最大套装词条数
@@ -490,6 +490,7 @@ def process_deal(data: CalcData):
         unique_index = random.random()
         data.minheap_queues[0].put((damage, unique_index, copy.deepcopy(save_data)))
 
+
 # 缓存的buff等级最大等级
 max_skill_level_map = {
     "hol_b_stat": 40,
@@ -554,7 +555,7 @@ def process_buf(data: CalcData):
         bless_extra_percent_physical_attack_power = base_array[index_buf_bless_extra_percent_physical_attack_power]  # [荣誉祝福]、[勇气祝福]、[禁忌诅咒]物理攻击力增加量 +X%
         bless_extra_percent_magical_attack_power = base_array[index_buf_bless_extra_percent_magical_attack_power]  # [荣誉祝福]、[勇气祝福]、[禁忌诅咒]魔法攻击力增加量 +X%
         bless_extra_percent_independent_attack_power = base_array[index_buf_bless_extra_percent_independent_attack_power]  # [荣誉祝福]、[勇气祝福]、[禁忌诅咒]独立攻击力增加量 +X%
-        taiyang_extra_percent_strength_and_intelligence = base_array[index_buf_taiyang_extra_strength_and_intelligence]  # [天启之珠]、[圣光天启]、[开幕！人偶剧场]力量、智力增加量 +X%
+        taiyang_extra_percent_strength_and_intelligence = base_array[index_buf_taiyang_extra_percent_strength_and_intelligence]  # [天启之珠]、[圣光天启]、[开幕！人偶剧场]力量、智力增加量 +X%
 
         # 计算加算词条和乘算词条最终值
         for idx in range(len(for_calc)):
@@ -574,7 +575,7 @@ def process_buf(data: CalcData):
         base_array[index_buf_bless_extra_percent_physical_attack_power] = bless_extra_percent_physical_attack_power  # [荣誉祝福]、[勇气祝福]、[禁忌诅咒]物理攻击力增加量 +X%
         base_array[index_buf_bless_extra_percent_magical_attack_power] = bless_extra_percent_magical_attack_power  # [荣誉祝福]、[勇气祝福]、[禁忌诅咒]魔法攻击力增加量 +X%
         base_array[index_buf_bless_extra_percent_independent_attack_power] = bless_extra_percent_independent_attack_power  # [荣誉祝福]、[勇气祝福]、[禁忌诅咒]独立攻击力增加量 +X%
-        base_array[index_buf_taiyang_extra_strength_and_intelligence] = taiyang_extra_percent_strength_and_intelligence  # [天启之珠]、[圣光天启]、[开幕！人偶剧场]力量、智力增加量 +X%
+        base_array[index_buf_taiyang_extra_percent_strength_and_intelligence] = taiyang_extra_percent_strength_and_intelligence  # [天启之珠]、[圣光天启]、[开幕！人偶剧场]力量、智力增加量 +X%
 
         # 保证各个技能的等级不超过上限
         def get_skill_level_data(skill_name, buff_index, base_level=0):
