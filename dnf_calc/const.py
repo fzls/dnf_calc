@@ -420,3 +420,20 @@ entry_name_to_name = {
     "extra_all_job_all_skill_lv_25_30_in_buff_dress_up": "(在buff换装中，且与当前身上穿的不一样)所有职业Lv25~30全部技能Lv+X（特性技能除外）",
     "extra_all_job_all_skill_lv_30_35_in_buff_dress_up": "(在buff换装中，且与当前身上穿的不一样)所有职业Lv30~35全部技能Lv+X（特性技能除外）",
 }
+
+# 预计算的buff等级最大等级
+max_skill_level_map = {
+    "hol_b_stat": 40,
+    "hol_b_atta": 40,
+    "hol_pas0_1": 10,
+    "hol_pas1": 20,
+    "hol_act2": 35,
+    "se_b_stat": 40,
+    "se_b_atta": 40,
+    "pas0": 29,
+    "se_pas1": 20,
+    "se_pas2": 35,
+    "c_stat": 40,
+    "pas3": 12,
+    "hol_pas1_out": 20,
+}

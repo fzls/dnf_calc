@@ -330,11 +330,6 @@ def get_god_value(selected_has_god, remaining_start_index, prefer_god, last_god_
 # undone：思路四：进一步降低上限，在当前已有序列的各套装个数的前提下，计算后面n个序列的各套装配置下所能产生的价值量最大套装词条数
 
 
-# re: 明天细看一遍这个输出职业的实际计算过程
-# re: 然后开始把奶系职业的也给抽离出来
-#       1. 整合参数，并移到外侧
-#       2. 调整代码
-
 def process_deal(data: CalcData):
     equips = data.selected_combination
     # 计算各个套装的装备数目
@@ -369,6 +364,7 @@ def process_deal(data: CalcData):
 
     for wep_num in data.weapon_indexs:
         #################################计算附带各种加成后，当前搭配的各个词条属性#################################
+
         # 武器、装备列表
         calc_wep = (wep_num,) + tuple(equips)
         # 加上适用的套装属性列表
@@ -391,6 +387,7 @@ def process_deal(data: CalcData):
         base_array[index_deal_extra_percent_skill_attack_power] = skiper  # 技能攻击力 +X%
 
         #################################计算各种特殊条件触发的属性#################################
+
         # 军神二件套且拥有军神-魔法石-军神的庇护宝石，说明遗书和古怪耳环（心之所念）不同时存在，减去5%的爆伤
         if "1201" in set_on and "32200" in equips:
             base_array[index_deal_extra_percent_crit_damage] -= 5
@@ -446,6 +443,7 @@ def process_deal(data: CalcData):
                 base_array[index_deal_extra_percent_physical_magical_independent_attack_power] += 10
 
         #################################核心计算公式#################################
+
         real_bon = (base_array[index_deal_extra_percent_addtional_damage] +  # 攻击时，附加X%的伤害，也就是白字
                     base_array[index_deal_extra_percent_elemental_damage] *  # 攻击时，附加X%的属性伤害
                     (base_array[index_deal_extra_all_element_strength] * 0.0045 + 1.05))  # 所有属性强化+X
@@ -479,6 +477,7 @@ def process_deal(data: CalcData):
                   (1.05 + 0.0045 * int(data.ele_skill)))  # 最后除去逆校正初始属强的影响
 
         #################################准备排行数据#################################
+
         base_array[index_deal_extra_percent_addtional_damage] = real_bon
         not_owned_equips = [uwu for uwu in data.upgrade_work_uniforms]
         for equip in data.transfered_equips:
@@ -488,24 +487,6 @@ def process_deal(data: CalcData):
 
         unique_index = random.random()
         data.minheap_queues[0].put((damage, unique_index, copy.deepcopy(save_data)))
-
-
-# 缓存的buff等级最大等级
-max_skill_level_map = {
-    "hol_b_stat": 40,
-    "hol_b_atta": 40,
-    "hol_pas0_1": 10,
-    "hol_pas1": 20,
-    "hol_act2": 35,
-    "se_b_stat": 40,
-    "se_b_atta": 40,
-    "pas0": 29,
-    "se_pas1": 20,
-    "se_pas2": 35,
-    "c_stat": 40,
-    "pas3": 12,
-    "hol_pas1_out": 20,
-}
 
 
 def process_buf(data: CalcData):
