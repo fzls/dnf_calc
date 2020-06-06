@@ -772,13 +772,14 @@ def process_buf(data: CalcData):
         data.minheap_queues[3].put((bless_mianban, unique_index, copy.deepcopy(save_data)))
 
 
+# 获取最后一个拥有神话的装备槽位的下标，以计算时的装备槽位顺序为准。若未找到，则返回-1。在搜索时，判断后续是否可能出现神话装备，可以通过判断下标是否小于等于该值
 def get_last_god_slot(items):
     for slot in range(10, -1, -1):
         for equip in items[slot]:
             if is_god(equip):
                 return slot
 
-    return 11
+    return -1
 
 
 def calc_with_try_except():
