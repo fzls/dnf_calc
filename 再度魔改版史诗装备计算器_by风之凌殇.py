@@ -998,6 +998,63 @@ def calc():
 
     global totalResult
 
+
+    m = multiprocessing.Manager()
+    minheap_with_queues = []
+
+    step_data = CalcStepData()
+
+    step_data.items = items
+    step_data.has_baibianguai = has_baibianguai
+    step_data.not_select_items = not_select_items
+    step_data.has_uniforms = has_uniforms
+    step_data.can_upgrade_work_unifrom_nums = can_upgrade_work_unifrom_nums
+    step_data.work_uniforms_items = work_uniforms_items
+    step_data.transfer_max_count = transfer_max_count
+    step_data.transfer_slots_equips = transfer_slots_equips
+
+    step_data.last_god_slot = get_last_god_slot(items)
+
+    step_data.current_index = 0
+    step_data.has_god = False
+    step_data.local_max_setop = 0
+    step_data.max_setopt = max_setopt
+    step_data.max_possiable_setopt = 3 + 2 + 2 + 1  # 533 以及神话对应的一个词条
+    if set_perfect or not prefer_god():
+        # 如果神话不优先，则不计入最高历史词条
+        step_data.max_possiable_setopt -= 1
+
+    calc_data = CalcData()
+    calc_data.weapon_indexs = weapon_indexs
+    calc_data.exit_calc = exit_calc
+    step_data.calc_data = calc_data
+
+    step_data.dont_pruning = dont_pruning
+    step_data.set_perfect = set_perfect
+    step_data.prefer_god = prefer_god()
+    step_data.start_parallel_computing_at_depth_n = start_parallel_computing_at_depth_n
+
+    step_data.producer = producer
+
+    finished = False
+    totalResult = 0
+
+    def try_fetch_result(mq: MinHeapWithQueue):
+        global totalResult
+        while not mq.minheap_queue.empty():
+            heap_item = mq.minheap_queue.get()
+            mq.minheap.add(heap_item)
+            totalResult += 1
+
+    def try_fetch_result_in_background(mq: MinHeapWithQueue):
+        while not finished:
+            logger.debug("{}: try_fetch_result_in_background minheap_queue count={} totalResult={}".format(mq.name, mq.minheap_queue.qsize(), totalResult))
+            try_fetch_result(mq)
+            time.sleep(0.5)
+
+    for mq in minheap_with_queues:
+        threading.Thread(target=try_fetch_result_in_background, args=(mq,), daemon=True).start()
+
     is_shuchu_job = job_name not in ["(奶系)神思者", "(奶系)炽天使", "(奶系)冥月女神"]
     if is_shuchu_job:
         unique_index = 0
@@ -1011,36 +1068,11 @@ def calc():
         # 加入输出职业的特色加成
         add_bonus_attributes_to_base_array("deal", base_array_with_deal_bonus_attributes, style_select.get(), creature_select.get(), save_name_list[current_save_name_index])
 
-        m = multiprocessing.Manager()
-
         minheap_with_queues = [
             MinHeapWithQueue("输出排行", MinHeap(save_top_n), m.Queue()),
         ]
 
-        step_data = CalcStepData()
-
-        step_data.items = items
-        step_data.has_baibianguai = has_baibianguai
-        step_data.not_select_items = not_select_items
-        step_data.has_uniforms = has_uniforms
-        step_data.can_upgrade_work_unifrom_nums = can_upgrade_work_unifrom_nums
-        step_data.work_uniforms_items = work_uniforms_items
-        step_data.transfer_max_count = transfer_max_count
-        step_data.transfer_slots_equips = transfer_slots_equips
-
-        step_data.last_god_slot = get_last_god_slot(items)
-
-        step_data.current_index = 0
-        step_data.has_god = False
-        step_data.local_max_setop = 0
-        step_data.max_setopt = max_setopt
-        step_data.max_possiable_setopt = 3 + 2 + 2 + 1  # 533 以及神话对应的一个词条
-        if set_perfect or not prefer_god():
-            # 如果神话不优先，则不计入最高历史词条
-            step_data.max_possiable_setopt -= 1
-
-        calc_data = CalcData()
-        calc_data.weapon_indexs = weapon_indexs
+        calc_data = step_data.calc_data
         calc_data.base_array_with_deal_bonus_attributes = base_array_with_deal_bonus_attributes
         calc_data.opt_one = opt_one
         calc_data.job_lv1 = job_lv1
@@ -1056,36 +1088,10 @@ def calc():
         calc_data.cool_on = cool_on
         calc_data.ele_skill = ele_skill
         calc_data.minheap_queues = [mq.minheap_queue for mq in minheap_with_queues]
-        calc_data.exit_calc = exit_calc
         step_data.calc_data = calc_data
 
-        step_data.dont_pruning = dont_pruning
-        step_data.set_perfect = set_perfect
-        step_data.prefer_god = prefer_god()
-        step_data.start_parallel_computing_at_depth_n = start_parallel_computing_at_depth_n
-
-        step_data.producer = producer
         step_data.process_func = process_deal
-
-        finished = False
-        totalResult = 0
-
-        def try_fetch_result(mq: MinHeapWithQueue):
-            global totalResult
-            while not mq.minheap_queue.empty():
-                heap_item = mq.minheap_queue.get()
-                mq.minheap.add(heap_item)
-                totalResult += 1
-
-        def try_fetch_result_in_background(mq: MinHeapWithQueue):
-            while not finished:
-                logger.debug("{}: try_fetch_result_in_background minheap_queue count={} totalResult={}".format(mq.name, mq.minheap_queue.qsize(), totalResult))
-                try_fetch_result(mq)
-                time.sleep(0.5)
-
-        for mq in minheap_with_queues:
-            threading.Thread(target=try_fetch_result_in_background, args=(mq,), daemon=True).start()
-
+        
         cartesianProduct(step_data)
 
         # 等到所有工作处理完成
@@ -1150,8 +1156,6 @@ def calc():
         # 增加奶系的国服特色
         add_bonus_attributes_to_base_array("buf", base_array_with_buf_bonus_attributes, style_select.get(), creature_select.get(), save_name_list[current_save_name_index])
 
-        m = multiprocessing.Manager()
-
         minheap_with_queues = [
             MinHeapWithQueue("祝福排行", MinHeap(save_top_n), m.Queue()),
             MinHeapWithQueue("太阳排行", MinHeap(save_top_n), m.Queue()),
@@ -1159,30 +1163,7 @@ def calc():
             MinHeapWithQueue("面板排行", MinHeap(save_top_n), m.Queue()),
         ]
 
-        step_data = CalcStepData()
-
-        step_data.items = items
-        step_data.has_baibianguai = has_baibianguai
-        step_data.not_select_items = not_select_items
-        step_data.has_uniforms = has_uniforms
-        step_data.can_upgrade_work_unifrom_nums = can_upgrade_work_unifrom_nums
-        step_data.work_uniforms_items = work_uniforms_items
-        step_data.transfer_max_count = transfer_max_count
-        step_data.transfer_slots_equips = transfer_slots_equips
-
-        step_data.last_god_slot = get_last_god_slot(items)
-
-        step_data.current_index = 0
-        step_data.has_god = False
-        step_data.local_max_setop = 0
-        step_data.max_setopt = max_setopt
-        step_data.max_possiable_setopt = 3 + 2 + 2 + 1  # 533 以及神话对应的一个词条
-        if set_perfect or not prefer_god():
-            # 如果神话不优先，则不计入最高历史词条
-            step_data.max_possiable_setopt -= 1
-
-        calc_data = CalcData()
-        calc_data.weapon_indexs = weapon_indexs
+        calc_data = step_data.calc_data
         calc_data.base_array_with_buf_bonus_attributes = base_array_with_buf_bonus_attributes
         calc_data.job_name = job_name
         calc_data.const = cfg.const
@@ -1198,35 +1179,9 @@ def calc():
         calc_data.base_job_passive_lv15 = base_job_passive_lv15
         calc_data.base_naiba_protect_badge_lv25 = base_naiba_protect_badge_lv25
         calc_data.minheap_queues = [mq.minheap_queue for mq in minheap_with_queues]
-        calc_data.exit_calc = exit_calc
         step_data.calc_data = calc_data
 
-        step_data.dont_pruning = dont_pruning
-        step_data.set_perfect = set_perfect
-        step_data.prefer_god = prefer_god()
-        step_data.start_parallel_computing_at_depth_n = start_parallel_computing_at_depth_n
-
-        step_data.producer = producer
         step_data.process_func = process_buf
-
-        finished = False
-        totalResult = 0
-
-        def try_fetch_result(mq: MinHeapWithQueue):
-            global totalResult
-            while not mq.minheap_queue.empty():
-                heap_item = mq.minheap_queue.get()
-                mq.minheap.add(heap_item)
-                totalResult += 1
-
-        def try_fetch_result_in_background(mq: MinHeapWithQueue):
-            while not finished:
-                logger.debug("{}: try_fetch_result_in_background minheap_queue count={} totalResult={}".format(mq.name, mq.minheap_queue.qsize(), totalResult))
-                try_fetch_result(mq)
-                time.sleep(0.5)
-
-        for mq in minheap_with_queues:
-            threading.Thread(target=try_fetch_result_in_background, args=(mq,), daemon=True).start()
 
         cartesianProduct(step_data)
 
