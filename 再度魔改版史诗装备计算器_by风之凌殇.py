@@ -276,11 +276,10 @@ def upper_bound_1(items, selected_combination, selected_has_god, remaining_start
     current_value = calc_equip_value(selected_combination, selected_has_god, prefer_god)
     # 后续按最大价值量计算，即每个槽位按能产生一个套装词条数计算
     remaining_max_value = 11 - remaining_start_index
-    # 如果后续有神话，则将神话的词条计入上限
-    if remaining_start_index <= last_god_slot:
-        remaining_max_value += 1
-
-    return current_value + remaining_max_value
+    # 获取神话的词条
+    god_value = get_god_value(selected_has_god, remaining_start_index, prefer_god, last_god_slot)
+    
+    return current_value + remaining_max_value + god_value
 
 
 # note: 思路二：计算新增k个序列所能产生的价值量最大套装词条数
@@ -304,25 +303,28 @@ def upper_bound_2(items, selected_combination, selected_has_god, remaining_start
     current_value = calc_equip_value(selected_combination, selected_has_god, prefer_god)
     # 后续按最大价值量计算，即每个槽位按能产生一个套装词条数计算
     remaining_max_value = max_inc_values[11 - remaining_start_index]
-    # 如果后续有神话，则将神话的词条计入上限
-    if remaining_start_index <= last_god_slot:
-        remaining_max_value += 1
+    # 获取神话的词条
+    god_value = get_god_value(selected_has_god, remaining_start_index, prefer_god, last_god_slot)
 
-    return current_value + remaining_max_value
+    return current_value + remaining_max_value + god_value
 
 
 # 计算已有装备的套装词条数
 def calc_equip_value(selected_combination, selected_has_god, prefer_god):
-    god = 0
-    if selected_has_god and prefer_god:
-        god = 1
     set_list = ["1" + str(get_set_name(selected_combination[x])) for x in range(0, len(selected_combination))]
     set_val = Counter(set_list)
     del set_val['136', '137', '138']
-    # 1件词条数=0，两件=1，三件、四件=2，五件=3，神话额外增加1词条数
-    setopt_num = sum([floor(x * 0.7) for x in set_val.values()]) + god
+    # 1件词条数=0，两件=1，三件、四件=2，五件=3
+    setopt_num = sum([floor(x * 0.7) for x in set_val.values()])
 
     return setopt_num
+
+def get_god_value(selected_has_god, remaining_start_index, prefer_god, last_god_slot):
+    if prefer_god and (selected_has_god or remaining_start_index <= last_god_slot):
+        return 1
+    else:
+        return 0
+
 
 
 # undone: 思路三：进一步降低上限，在当前已有序列的各套装个数的前提下，计算任意n个序列所能产生的价值量最大套装词条数
