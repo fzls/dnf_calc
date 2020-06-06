@@ -45,6 +45,17 @@ class MinHeapWithQueue:
         self.minheap_queue = minheap_queue
 
 
+class UpdateInfo:
+    def __init__(self):
+        self.latest_version = ""
+        self.netdisk_link = ""
+        self.netdisk_passcode = ""
+        self.update_message = ""
+
+    def __str__(self):
+        return str(self.__dict__)
+
+
 class CalcStepData:
     def __init__(self):
         # 装备相关数据
