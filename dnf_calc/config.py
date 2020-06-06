@@ -6,9 +6,9 @@
 # Author : Chen Ji
 # Email  : fzls.zju@gmail.com
 # -------------------------------
-import sys
 import logging
 import multiprocessing
+import sys
 from abc import ABCMeta
 from typing import List
 
@@ -137,15 +137,16 @@ class GifConfig(ConfigInterface):
 
 class MultiThreadingConfig(ConfigInterface):
     def __init__(self):
-        # 设置最大工作线程数，当为0时默认为当前的逻辑线程数
-        self.max_thread = multiprocessing.cpu_count()
+        self.default_max_thread = 4 * multiprocessing.cpu_count()
+        # 设置最大工作线程数，当为0时默认为四倍当前机器的逻辑线程数
+        self.max_thread = self.default_max_thread
         # 设置dfs的第多少层开始多线程并行计算（从1开始计数，0表示不启用多线程并行计算）
         self.start_parallel_computing_at_depth_n = 2
 
     def auto_update_config(self, raw_config: dict):
         super().auto_update_config(raw_config)
         if self.max_thread == 0:
-            self.max_thread = multiprocessing.cpu_count()
+            self.max_thread = self.default_max_thread
 
 
 class ExportResultAsExcelConfig(ConfigInterface):
