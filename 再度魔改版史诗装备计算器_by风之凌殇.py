@@ -114,11 +114,6 @@ def report_bugsnag_with_context(error, extra_context=None, show_error_messagebox
     )
 
 
-if __name__ == '__main__':
-    # 代码中深度从0开始计算，-1则表示不启用
-    start_parallel_computing_at_depth_n = config().multi_threading.start_parallel_computing_at_depth_n - 1
-
-
 # re: 明天来细看一遍搜索和计算流程，看看有没有可以为多线程计算效率做优化的地方
 # 看了看，主要性能瓶颈在于直接使用了itertools.product遍历所有的笛卡尔积组合，导致无法提前剪枝，只能在每个组合计算前通过条件判断是否要跳过
 # 背景，假设当前处理到下标n（0-10）的装备，前面装备已选择的组合为selected_combination(of size n)，未处理装备为后面11-n-1个，其对应组合数为rcp=len(Cartesian Product(后面11-n-1个装备部位))
@@ -1028,7 +1023,8 @@ def calc():
     step_data.dont_pruning = dont_pruning
     step_data.set_perfect = set_perfect
     step_data.prefer_god = prefer_god()
-    step_data.start_parallel_computing_at_depth_n = start_parallel_computing_at_depth_n
+    # 代码中深度从0开始计算，-1则表示不启用
+    step_data.start_parallel_computing_at_depth_n = config().multi_threading.start_parallel_computing_at_depth_n - 1
 
     step_data.producer = producer
 
