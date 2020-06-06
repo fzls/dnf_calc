@@ -1036,8 +1036,16 @@ def calc():
 
     step_data.producer = producer
 
+    global calc_index, produced_count
+    calc_index+=1
+    produced_count = 0
+
     finished = False
     totalResult = 0
+
+    def log_result_queue_info(log_func, rank_name, msg, qsize):
+        log_func("calc#{}: {}: {} minheap_queue count={} totalResult={}, totalWork={}".format(calc_index, rank_name, msg, qsize, totalResult, produced_count))
+
 
     def try_fetch_result(mq: MinHeapWithQueue):
         global totalResult
@@ -1048,7 +1056,7 @@ def calc():
 
     def try_fetch_result_in_background(mq: MinHeapWithQueue):
         while not finished:
-            logger.debug("{}: try_fetch_result_in_background minheap_queue count={} totalResult={}".format(mq.name, mq.minheap_queue.qsize(), totalResult))
+            log_result_queue_info(logger.debug, mq.name, "try_fetch_result_in_background", mq.minheap_queue.qsize())
             try_fetch_result(mq)
             time.sleep(0.5)
 
@@ -1091,7 +1099,7 @@ def calc():
         step_data.calc_data = calc_data
 
         step_data.process_func = process_deal
-        
+
         cartesianProduct(step_data)
 
         # 等到所有工作处理完成
@@ -1100,9 +1108,9 @@ def calc():
 
         # 最终将剩余结果也加入排序
         for mq in minheap_with_queues:
-            logger.debug("{}: after join minheap_queue count={} totalResult={}".format(mq.name, mq.minheap_queue.qsize(), totalResult))
+            log_result_queue_info(logger.debug, mq.name, "after join", mq.minheap_queue.qsize())
             try_fetch_result(mq)
-            logger.info("{}: after final minheap_queue count={} totalResult={}".format(mq.name, mq.minheap_queue.qsize(), totalResult))
+            log_result_queue_info(logger.info, mq.name, "after final", mq.minheap_queue.qsize())
 
         show_number = 0
         showsta(text='结果统计中')
@@ -1191,9 +1199,9 @@ def calc():
 
         # 最终将剩余结果也加入排序
         for mq in minheap_with_queues:
-            logger.debug("{}: after join minheap_queue count={} totalResult={}".format(mq.name, mq.minheap_queue.qsize(), totalResult))
+            log_result_queue_info(logger.debug, mq.name, "after join", mq.minheap_queue.qsize())
             try_fetch_result(mq)
-            logger.info("{}: after final minheap_queue count={} totalResult={}".format(mq.name, mq.minheap_queue.qsize(), totalResult))
+            log_result_queue_info(logger.info, mq.name, "after final", mq.minheap_queue.qsize())
 
         show_number = 0
         showsta(text='结果统计中')
@@ -4338,16 +4346,18 @@ if __name__ == '__main__':
 ###########################################################
 #                 启动工作线程并进入ui主循环                #
 ###########################################################
+calc_index = 0
 produced_count = 0
 
 
 # 准备工作队列和工作线程
 def producer(*args):
+    global calc_index, produced_count
+
     # if exit_calc.value == 1:
     #     return
-    self.work_queue.put(args)
+    self.work_queue.put((calc_index, args))
 
-    global produced_count
     produced_count += 1
     logger.info("producer put %3dth work into work queue", produced_count)
 
@@ -4355,10 +4365,14 @@ def producer(*args):
 def consumer(work_queue, exit_calc, work_func):
     current_process = multiprocessing.current_process()
     logger.info("work thread={} started, ready to work".format(current_process))
+    current_calc_index = 0
     processed_count = 0
     while True:
         # 加一个超时，用于最终计算完成时，没有新的task，超时1s退出
-        args = work_queue.get()
+        calc_index, args = work_queue.get()
+        if calc_index != current_calc_index:
+            current_calc_index = calc_index
+            processed_count = 0
         processed_count += 1
         logger.info("work thread {} processing {}th work".format(current_process, processed_count))
         # if exit_calc.value == 0:
