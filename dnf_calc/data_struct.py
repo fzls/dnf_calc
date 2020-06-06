@@ -16,9 +16,10 @@ from heapq import heapify, heappush, heappushpop
 from multiprocessing import Queue
 from multiprocessing.managers import ValueProxy
 from typing import List
-from .config import ConstConfig
 
 from numpy import ndarray
+
+from .config import ConstConfig
 
 
 class MinHeap:
@@ -36,11 +37,13 @@ class MinHeap:
     def getTop(self):
         return sorted(self.h, reverse=True)
 
+
 class MinHeapWithQueue:
-    def __init__(self, name:str, minheap:MinHeap, minheap_queue:Queue):
+    def __init__(self, name: str, minheap: MinHeap, minheap_queue: Queue):
         self.name = name
         self.minheap = minheap
         self.minheap_queue = minheap_queue
+
 
 class CalcStepData:
     def __init__(self):
@@ -92,7 +95,7 @@ class CalcData:
         # 各种加成
         self.base_array_with_deal_bonus_attributes = []  # type: ndarray
         # 配置表得到的信息
-        self.opt_one = {} # 将会预先切片，满足计算需求，避免每次计算时都重新切片
+        self.opt_one = {}  # 将会预先切片，满足计算需求，避免每次计算时都重新切片
         self.job_lv1 = 0
         self.job_lv2 = 0
         self.job_lv3 = 0
@@ -112,7 +115,7 @@ class CalcData:
         self.base_array_with_buf_bonus_attributes = []  # type: ndarray
         # 配置表得到的信息
         self.job_name = ""
-        self.const = None # type: ConstConfig
+        self.const = None  # type: ConstConfig
         self.opt_buf = {}
         self.opt_buflvl = {}
         self.base_job_passive_lv15_bless = 0
