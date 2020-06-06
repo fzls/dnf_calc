@@ -8,6 +8,7 @@ import copy
 import itertools
 import platform
 import threading
+import tkinter.messagebox
 import traceback
 import uuid
 from collections import Counter
@@ -115,8 +116,12 @@ def report_bugsnag_with_context(error, extra_context=None, show_error_messagebox
 
 
 # 带剪枝的dfs搜索装备搭配过程
-# 背景，假设当前处理到下标n（0-10）的装备，前面装备已选择的组合为selected_combination(of size n)，未处理装备为后面11-n-1个，其对应组合数为rcp=len(Cartesian Product(后面11-n-1个装备部位))
 def dfs(step: CalcStepData):
+    """
+    背景，假设当前处理到下标n（0-10）的装备，前面装备已选择的组合为selected_combination(of size n)，未处理装备为后面11-n-1个，其对应组合数为rcp=len(Cartesian Product(后面11-n-1个装备部位))
+
+    @param step: 搜索过程的状态
+    """
     # 考虑当前部位的每一件可选装备
     for equip in step.items[step.current_index]:
         try_equip(step, equip)
@@ -143,10 +148,13 @@ def dfs(step: CalcStepData):
             try_equip(step, equip_to_transfer)
             step.calc_data.transfered_equips.pop()
 
-    pass
-
 
 def copy_step(step: CalcStepData) -> CalcStepData:
+    """
+    用于在进行并发计算时对搜索状态中的引用类型数据进行深拷贝
+    @param step: 要复制的搜索状态
+    @return: 一份拷贝的搜索状态，其中一些引用类型数据将被深拷贝，跨进程队列、变量等将维持引用
+    """
     copied_step = copy.copy(step)
 
     copied_step.items = copy.deepcopy(step.items)
@@ -1227,9 +1235,13 @@ def calc_thread():
 
 
 def stop_calc():
-    global exit_calc
-    exit_calc.value = 1
+    # global exit_calc
+    # exit_calc.value = 1
     logger.info("手动停止计算")
+    tkinter.messagebox.showinfo("提示", (
+        "多进程中同步状态性能开销比较大，因此处于性能考虑，目前废弃了停止功能\n"
+        "请直接点击右上角关闭程序再开启来实现中途停止计算"
+    ))
 
 
 # 输出职业的表格输出列名
