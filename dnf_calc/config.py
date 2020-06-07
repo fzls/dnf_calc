@@ -138,7 +138,10 @@ class GifConfig(ConfigInterface):
 class MultiThreadingConfig(ConfigInterface):
     def __init__(self):
         self.default_max_thread = 4 * multiprocessing.cpu_count()
-        # 设置最大工作线程数，当为0时默认为四倍当前机器的逻辑线程数
+        # 默认最大线程数不超过32，避免出现3900X这种24核心的cpu默认96个导致崩溃。手动设置时不受该限制影响
+        if self.default_max_thread > 32:
+            self.default_max_thread = 32
+        # 设置最大工作线程数，当为0时默认为min(4*逻辑线程数, 32)
         self.max_thread = self.default_max_thread
         # 设置dfs的第多少层开始多线程并行计算（从1开始计数，0表示不启用多线程并行计算）
         self.start_parallel_computing_at_depth_n = 2

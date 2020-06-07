@@ -103,7 +103,7 @@ enable = true
 frame_rate = 10
 
 [multi_threading]
-# 设置最大工作线程数，当为0时默认为四倍当前机器的逻辑线程数
+# 设置最大工作线程数，当为0时默认为min(4*逻辑线程数, 32)
 max_thread = 0
 # 设置dfs的第多少层开始多线程并行计算（从1开始计数，0表示不启用多线程并行计算）
 start_parallel_computing_at_depth_n = 2
