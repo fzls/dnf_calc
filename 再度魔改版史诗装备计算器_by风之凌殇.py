@@ -386,9 +386,6 @@ def calc():
             try_fetch_result(mq)
             time.sleep(0.5)
 
-    for mq in minheap_with_queues:
-        threading.Thread(target=try_fetch_result_in_background, args=(mq,), daemon=True).start()
-
     is_shuchu_job = job_name not in ["(奶系)神思者", "(奶系)炽天使", "(奶系)冥月女神"]
     if is_shuchu_job:
         unique_index = 0
@@ -405,6 +402,9 @@ def calc():
         minheap_with_queues = [
             MinHeapWithQueue("输出排行", MinHeap(save_top_n), m.Queue()),
         ]
+
+        for mq in minheap_with_queues:
+            threading.Thread(target=try_fetch_result_in_background, args=(mq,), daemon=True).start()
 
         calc_data = step_data.calc_data
         calc_data.base_array_with_deal_bonus_attributes = base_array_with_deal_bonus_attributes
@@ -496,6 +496,9 @@ def calc():
             MinHeapWithQueue("综合排行", MinHeap(save_top_n), m.Queue()),
             MinHeapWithQueue("面板排行", MinHeap(save_top_n), m.Queue()),
         ]
+
+        for mq in minheap_with_queues:
+            threading.Thread(target=try_fetch_result_in_background, args=(mq,), daemon=True).start()
 
         calc_data = step_data.calc_data
         calc_data.base_array_with_buf_bonus_attributes = base_array_with_buf_bonus_attributes
