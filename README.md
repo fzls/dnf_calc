@@ -36,6 +36,7 @@ https://drive.google.com/file/d/1p8ZdzW_NzGKHHOtfPTuZSr1YgSEVtYCj/view
 # v3.6.1 2020.6.7
 ## bugfix
 1. 修正在拥有【赤鬼的次元石】，但不拥有【青面修罗的面具】或【噙毒手套】的时候，set_counter.get("140")会返回None，从而导致异常的问题
+2. 奶系职业的智慧产物尚未加入，原作者最新版加入了部分，下次有空补一下，暂时遇到智慧产物的就跳过
 
 # v3.6.0 2020.6.7
 ## 多进程并发计算支持
