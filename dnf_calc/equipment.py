@@ -158,7 +158,7 @@ def get_set_on(equips):
             elif cnt == 5:
                 set_on.append(set_code + "2")
         elif n_set_code == 141:
-            if set_counter.get("140") >= 1:
+            if set_counter.get("140", 0) >= 1:
                 set_on.append('1401')
 
     return set_on
