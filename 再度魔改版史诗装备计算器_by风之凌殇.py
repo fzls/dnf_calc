@@ -1525,7 +1525,7 @@ def export_result(ele_skill, col_names, job_name, cool, equip_index_to_realname,
 
     def _export_reuslt():
         book = Workbook()
-        book.remove_sheet(book.active)
+        book.remove(book.active)
         for sheet_index, rt in enumerate(rankings):
             ranking_name = rt[0]
 
