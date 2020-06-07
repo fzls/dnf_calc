@@ -570,35 +570,22 @@ def stop_calc():
     ))
 
 
+def get_set_code(equip_index_except_first_digit):
+    return str(equip_index_except_first_digit)[1:3]
+
+
 def get_equips():
-    list11 = [];
-    list12 = [];
-    list13 = [];
-    list14 = [];
-    list15 = []
-    list21 = [];
-    list22 = [];
-    list23 = [];
-    list31 = [];
-    list32 = [];
-    list33 = []
+    # 选中的装备
+    list11, list12, list13, list14, list15 = [[] for i in range(5)]
+    list21, list22, list23 = [[] for i in range(3)]
+    list31, list32, list33 = [[] for i in range(3)]
+    # 套装
     list_setcode = []
     set_has_god = {}
     # 未选中的装备
-    listns11 = [];
-    listns12 = [];
-    listns13 = [];
-    listns14 = [];
-    listns15 = []
-    listns21 = [];
-    listns22 = [];
-    listns23 = [];
-    listns31 = [];
-    listns32 = [];
-    listns33 = []
-
-    def get_set_code(equip_index_except_first_digit):
-        return str(equip_index_except_first_digit)[1:3]
+    listns11, listns12, listns13, listns14, listns15 = [[] for i in range(5)]
+    listns21, listns22, listns23 = [[] for i in range(3)]
+    listns31, listns32, listns33 = [[] for i in range(3)]
 
     # re: 日后重构的时候要把这个给干掉，改为用循环，而且根据装备表中实际配置的套装上限来填写上限，不需要每个部位都重复写一次
     for equip_index_except_first_digit in range(1010, 1999):
