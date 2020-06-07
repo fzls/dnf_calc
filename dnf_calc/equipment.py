@@ -125,7 +125,6 @@ def is_god(equip):
     return int(equip[-1]) == 1
 
 
-
 def get_set_on(equips):
     """
     计算各个套装的装备数目
@@ -164,6 +163,7 @@ def get_set_on(equips):
 
     return set_on
 
+
 # 计数器排序规则：次数多的在前面，同等次数下，套装序号小的放前面
 def sort_counter_key(counter_item):
     return -counter_item[1], int(counter_item[0])
@@ -196,11 +196,19 @@ def get_readable_names(equip_index_to_realname, weapon, equips):
     return readable_names
 
 
-
-
 # equip_indexes的顺序与上面的搜索顺序一致，这里需要调回来
 def get_slot_names(equip_index_to_realname, equip_indexes):
     ordered_equip_indexes = list(equip_indexes)
     reverse_modify_slots_order_(ordered_equip_indexes)
 
     return [equip_index_to_realname[index] for index in ordered_equip_indexes]
+
+
+# 根据各个槽位的装备编码列表获得各个槽位的装备编码与名称列表，方便查bug
+# ex: [["11111", "11110"]] => [[("11111", "铁匠神话上衣"), ("11110", "铁匠上衣")]]
+def get_equip_slots_with_name(equip_index_to_realname, items):
+    res = []
+    for slot_equip_indexs in items:
+        res.append(tuple((equip_index, equip_index_to_realname[equip_index]) for equip_index in slot_equip_indexs))
+
+    return res

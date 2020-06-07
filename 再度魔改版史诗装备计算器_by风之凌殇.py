@@ -73,7 +73,7 @@ def report_bugsnag_with_context(error, extra_context=None, show_error_messagebox
             "save_name": save_name_list[current_save_name_index],
         },
         "euqips": {
-            "items": get_equip_slots_with_name(items),
+            "items": get_equip_slots_with_name(equip_index_to_realname, items),
             "not_select_items": not_select_items,
             "work_uniforms_items": work_uniforms_items,
         },
@@ -2406,18 +2406,6 @@ if __name__ == '__main__':
             except Exception as err:
                 logger.warning("load row index failed, err={}".format(err))
 
-
-# 根据各个槽位的装备编码列表获得各个槽位的装备编码与名称列表，方便查bug
-# ex: [["11111", "11110"]] => [[("11111", "铁匠神话上衣"), ("11110", "铁匠上衣")]]
-def get_equip_slots_with_name(items):
-    res = []
-    for slot_equip_indexs in items:
-        res.append(tuple((equip_index, equip_index_to_realname[equip_index]) for equip_index in slot_equip_indexs))
-
-    return res
-
-
-if __name__ == '__main__':
     db_job = load_excel1["lvl"]
     # 角色可以使用的武器类型列表
     opt_job_allowed_weapon_types = {}
@@ -2447,159 +2435,13 @@ if __name__ == '__main__':
 
     load_excel1.close()
 
-    # 该变量用来控制是否要检查preset.xlsx正确初始化，若有些必要的cell没有正确运行，则会赋值，为了更快启动，魔改版本不再检查
-    need_check_preset_file = False
-    load_preset0 = load_workbook("preset.xlsx", read_only=not need_check_preset_file, data_only=True)
+    load_preset0 = load_workbook("preset.xlsx", read_only=True, data_only=True)
     db_custom = load_preset0["custom"]
 
     save_name_list = []
     for save_index in range(0, config().max_save_count):
         save_name = db_custom.cell(save_index + 1, 5).value
         save_name_list.append(save_name or "存档{}".format(save_index + 1))
-
-    if need_check_preset_file:
-        ########## 버전 최초 구동 프리셋 업데이트 ###########
-        try:
-            db_save = load_preset0["one"]
-            logger.info("DATABASE 버전= " + str(db_custom['K1'].value))
-            logger.info("클라이언트 버전= " + now_version)
-            if str(db_custom['K1'].value) != now_version:
-                # logger.info("DB 업데이트")
-                db_custom['K1'] = now_version
-            if db_custom['H1'].value == None:
-                db_custom['G1'] = "up_stat"
-                db_custom['H1'] = 0
-            if db_custom['H2'].value == None:
-                db_custom['G2'] = "bless_style"
-                db_custom['H2'] = 3
-            if db_custom['H3'].value == None:
-                db_custom['G3'] = "crux_style"
-                db_custom['H3'] = 2
-            if db_custom['H4'].value == None:
-                db_custom['G4'] = "bless_plt"
-                db_custom['H4'] = 2
-            if db_custom['H5'].value == None:
-                db_custom['G5'] = "bless_cri"
-                db_custom['H5'] = 1
-            if db_custom['H6'].value == None:
-                db_custom['G6'] = "up_stat_b"
-                db_custom['H6'] = 0
-
-            if db_custom['B14'].value == None:
-                db_custom['A14'] = "ele_inchant"
-                db_custom['B14'] = 116
-            if db_custom['B15'].value == None:
-                db_custom['A15'] = "ele_ora"
-                db_custom['B15'] = 20
-            if db_custom['B16'].value == None:
-                db_custom['A16'] = "ele_gem"
-                db_custom['B16'] = 7
-            if db_custom['B17'].value == None:
-                db_custom['A17'] = "ele_skill"
-            db_custom['B17'] = 0  ## 자속강 비활성화
-            if db_custom['B18'].value == None:
-                db_custom['A18'] = "ele_mob_resist"
-                db_custom['B18'] = 50
-            if db_custom['B19'].value == None:
-                db_custom['A19'] = "ele_buf_anti"
-                db_custom['B19'] = 60
-
-            if db_save['A257'].value == None:
-                db_save['A257'] = '13390150';
-                db_save['B257'] = '+5 퍼펙트컨트롤'
-                db_save['C257'] = 0;
-                db_save['D257'] = 0;
-                db_save['E257'] = 0;
-                db_save['F257'] = 0;
-                db_save['G257'] = 0
-                db_save['H257'] = 0;
-                db_save['I257'] = 0;
-                db_save['J257'] = 0;
-                db_save['K257'] = 0;
-                db_save['L257'] = 0
-            if db_save['A258'].value == None:
-                db_save['A258'] = '22390240';
-                db_save['B258'] = '+4 선지자의 목걸이'
-                db_save['C258'] = 0;
-                db_save['D258'] = 0;
-                db_save['E258'] = 0;
-                db_save['F258'] = 0;
-                db_save['G258'] = 0
-                db_save['H258'] = 0;
-                db_save['I258'] = 0;
-                db_save['J258'] = 0;
-                db_save['K258'] = 0;
-                db_save['L258'] = 0
-            if db_save['A259'].value == None:
-                db_save['A259'] = '21400340';
-                db_save['B259'] = '+4 독을 머금은 가시장갑'
-                db_save['C259'] = 0;
-                db_save['D259'] = 0;
-                db_save['E259'] = 0;
-                db_save['F259'] = 0;
-                db_save['G259'] = 0
-                db_save['H259'] = 0;
-                db_save['I259'] = 0;
-                db_save['J259'] = 0;
-                db_save['K259'] = 0;
-                db_save['L259'] = 0
-            if db_save['A260'].value == None:
-                db_save['A260'] = '23390450';
-                db_save['B260'] = '+5 할기의 링'
-                db_save['C260'] = 0;
-                db_save['D260'] = 0;
-                db_save['E260'] = 0;
-                db_save['F260'] = 0;
-                db_save['G260'] = 0
-                db_save['H260'] = 0;
-                db_save['I260'] = 0;
-                db_save['J260'] = 0;
-                db_save['K260'] = 0;
-                db_save['L260'] = 0
-            if db_save['A261'].value == None:
-                db_save['A261'] = '31400540';
-                db_save['B261'] = '+4 청면수라의 가면'
-                db_save['C261'] = 0;
-                db_save['D261'] = 0;
-                db_save['E261'] = 0;
-                db_save['F261'] = 0;
-                db_save['G261'] = 0
-                db_save['H261'] = 0;
-                db_save['I261'] = 0;
-                db_save['J261'] = 0;
-                db_save['K261'] = 0;
-                db_save['L261'] = 0
-            if db_save['A262'].value == None:
-                db_save['A262'] = '32410650';
-                db_save['B262'] = '+5 적귀의 차원석'
-                db_save['C262'] = 0;
-                db_save['D262'] = 0;
-                db_save['E262'] = 0;
-                db_save['F262'] = 0;
-                db_save['G262'] = 0
-                db_save['H262'] = 0;
-                db_save['I262'] = 0;
-                db_save['J262'] = 0;
-                db_save['K262'] = 0;
-                db_save['L262'] = 0
-            if db_save['A263'].value == None:
-                db_save['A263'] = '33390750';
-                db_save['B263'] = '+5 패스트퓨처 이어링'
-                db_save['C263'] = 0;
-                db_save['D263'] = 0;
-                db_save['E263'] = 0;
-                db_save['F263'] = 0;
-                db_save['G263'] = 0
-                db_save['H263'] = 0;
-                db_save['I263'] = 0;
-                db_save['J263'] = 0;
-                db_save['K263'] = 0;
-                db_save['L263'] = 0
-
-            load_preset0.save("preset.xlsx")
-
-        except PermissionError as error:
-            tkinter.messagebox.showerror("错误", "更新失败. 请重新运行.")
 
     load_preset0.close()
 
