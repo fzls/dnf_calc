@@ -6,6 +6,7 @@
 # Author : Chen Ji
 # Email  : fzls.zju@gmail.com
 # -------------------------------
+import collections
 from collections import Counter
 
 from .const import *
@@ -162,3 +163,44 @@ def get_set_on(equips):
                 set_on.append('1401')
 
     return set_on
+
+# 计数器排序规则：次数多的在前面，同等次数下，套装序号小的放前面
+def sort_counter_key(counter_item):
+    return -counter_item[1], int(counter_item[0])
+
+
+def get_readable_names(equip_index_to_realname, weapon, equips):
+    readable_names = []
+    readable_names.append(equip_index_to_realname[weapon])
+
+    # 智慧产物以外的套装信息
+    set_list = ["1" + str(get_set_name(equips[x])) for x in range(0, 11) if len(equips[x]) < 8]
+    for set_index, count in sorted(collections.Counter(set_list).most_common(), key=sort_counter_key):
+        readable_names.append("{}-{}".format(equip_index_to_realname[set_index], count))
+
+    # 智慧产物单独列出
+    wisdom_indexs = [equips[x] for x in range(0, 11) if len(equips[x]) == 8]
+    # 赤鬼的次元石改造五阶段词条：装备[青面修罗的面具]、[噙毒手套]中1种以上时，释放疯魔索伦之力。 - 攻击时，附加7%的伤害。
+    if wisdom_indexs.count('32410650') == 1:
+        if wisdom_indexs.count('21400340'):
+            readable_names.append(equip_index_to_realname["1401"])
+            wisdom_indexs.remove('32410650')
+            wisdom_indexs.remove('21400340')
+        elif wisdom_indexs.count('31400540') == 1:
+            readable_names.append(equip_index_to_realname["1401"])
+            wisdom_indexs.remove('32410650')
+            wisdom_indexs.remove('31400540')
+    for wisdom_index in wisdom_indexs:
+        readable_names.append(equip_index_to_realname[wisdom_index])
+
+    return readable_names
+
+
+
+
+# equip_indexes的顺序与上面的搜索顺序一致，这里需要调回来
+def get_slot_names(equip_index_to_realname, equip_indexes):
+    ordered_equip_indexes = list(equip_indexes)
+    reverse_modify_slots_order_(ordered_equip_indexes)
+
+    return [equip_index_to_realname[index] for index in ordered_equip_indexes]

@@ -59,6 +59,7 @@ from .update import *
 from .logic import *
 from .equipment import *
 
+from .export_def import *
 from .export import *
 
 from .parallel_dfs import *

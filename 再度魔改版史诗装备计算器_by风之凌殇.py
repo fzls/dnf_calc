@@ -3,10 +3,8 @@
 
 ## 코드를 무단으로 복제하여 개조 및 배포하지 말 것##
 
-import collections
 import itertools
 import platform
-import threading
 import tkinter.messagebox
 import traceback
 import uuid
@@ -16,7 +14,7 @@ import PIL
 import PIL.Image
 import PIL.ImageTk
 import numpy as np
-from openpyxl import load_workbook, Workbook
+from openpyxl import load_workbook
 
 from dnf_calc import *
 
@@ -455,7 +453,7 @@ def calc():
 
         show_result(ranking, 'deal', ele_skill)
 
-        export_result(ele_skill, deal_col_names, jobup_select.get(), req_cool.get(), equip_index_to_realname, extract_deal_rank_cols, [
+        export_result(ele_skill, deal_col_names, jobup_select.get(), req_cool.get(), equip_index_to_realname, custom_buf_data, extract_deal_rank_cols, [
             ("伤害排行", all_ranking)
         ])
 
@@ -546,7 +544,7 @@ def calc():
 
         show_result(rankings, 'buf', ele_skill)
 
-        export_result(ele_skill, buf_col_names, jobup_select.get(), req_cool.get(), equip_index_to_realname, extract_buf_rank_cols, [
+        export_result(ele_skill, buf_col_names, jobup_select.get(), req_cool.get(), equip_index_to_realname, custom_buf_data, extract_buf_rank_cols, [
             ("祝福排行", all_rankings[0]),
             ("太阳排行", all_rankings[1]),
             ("综合排行", all_rankings[2]),
@@ -570,86 +568,6 @@ def stop_calc():
         "多进程中同步状态性能开销比较大，因此处于性能考虑，目前废弃了停止功能\n"
         "请直接点击右上角关闭程序再开启来实现中途停止计算"
     ))
-
-# re：移到export文件
-def extract_deal_rank_cols(ele_skill, job_name, cool, equip_index_to_realname, ranking_name, rank, ranking_detail):
-    # (damage, unique_index, [calc_wep, base_array, baibianguai, tuple(not_owned_equips)])
-    damage = "{}%".format(int(100 * ranking_detail[0]))
-    weapon_index = ranking_detail[2][0][0]
-    equip_indexes = ranking_detail[2][0][1:]
-    base_array = ranking_detail[2][1]
-    baibianguai = ranking_detail[2][2]
-    not_owned_equips = ranking_detail[2][3]
-
-    cols = []
-    cols.append(rank)  # 排行
-    cols.append(damage)  # 伤害倍率
-    cols.append(job_name)  # 职业
-    cols.append(" | ".join(get_readable_names(equip_index_to_realname, weapon_index, equip_indexes)))  # 搭配概览
-    cols.append(equip_index_to_realname[weapon_index])  # 武器
-    # 上衣 裤子 头肩 腰带 鞋子 手镯 项链 戒指 辅助装备 魔法石 耳环
-    cols.extend(get_slot_names(equip_index_to_realname, equip_indexes))
-    bbg = ""  # 百变怪
-    if baibianguai is not None:
-        bbg = equip_index_to_realname[baibianguai]
-    cols.append(bbg)
-    cols.append(",".join(equip_index_to_realname[equip_index] for equip_index in not_owned_equips))  # 跨界或升级工作服得来的装备
-    for index_deal in range(28):
-        cols.append(base_array[index_deal])
-    cols.append(cool)  # 冷却补正
-    cols.append(ele_skill)  # 技能属强补正
-    cols.append("{}%".format(round(100 * (1.05 / (1.05 + int(ele_skill) * 0.0045) - 1), 1)))  # 逆补正
-
-    if len(cols) != len(deal_col_names):
-        raise Exception("col number not match")
-
-    return cols
-
-
-def extract_buf_rank_cols(ele_skill, job_name, cool, equip_index_to_realname, ranking_name, rank, ranking_detail):
-    # (score, unique_index, [calc_wep, [bless_overview, taiyang_overview, first_awaken_passive_overview, all_score_str], baibianguai, tuple(not_owned_equips)])
-    score = ranking_detail[0]
-    weapon_index = ranking_detail[2][0][0]
-    equip_indexes = ranking_detail[2][0][1:]
-
-    score = ranking_detail[0]  # xx标准
-    if ranking_name != "祝福适用面板排行":
-        # 除面板得分外，其余的都要除10
-        score = score // 10
-    bless = ranking_detail[2][1][0]  # 祝福数据
-    taiyang = ranking_detail[2][1][1]  # 太阳数据
-    taiyang_passive = ranking_detail[2][1][2]  # 太阳被动
-    all_score = ranking_detail[2][1][3]  # 三个标准下的得分
-
-    baibianguai = ranking_detail[2][2]
-    not_owned_equips = ranking_detail[2][3]
-
-    cols = []
-    cols.append(rank)  # 排行
-    cols.append(score)  # 得分
-    cols.append(all_score)  # 祝福得分/一觉得分/综合得分
-    cols.append(job_name)  # 职业
-    cols.append(" | ".join(get_readable_names(equip_index_to_realname, weapon_index, equip_indexes)))  # 搭配概览
-    cols.append(equip_index_to_realname[weapon_index])  # 武器
-    # 上衣 裤子 头肩 腰带 鞋子 手镯 项链 戒指 辅助装备 魔法石 耳环
-    cols.extend(get_slot_names(equip_index_to_realname, equip_indexes))
-    bbg = ""  # 百变怪
-    if baibianguai is not None:
-        bbg = equip_index_to_realname[baibianguai]
-    cols.append(bbg)
-    cols.append(",".join(equip_index_to_realname[equip_index] for equip_index in not_owned_equips))  # 跨界或升级工作服得来的装备
-    cols.append(bless)  # 祝福
-    cols.append(taiyang)  # 一觉
-    cols.append(taiyang_passive)  # 一觉被动
-    cols.append(custom_buf_data["bless_level"])  # 自定义祝福+X级
-    cols.append(custom_buf_data["taiyang_level"])  # 自定义一觉+X级
-    cols.append(custom_buf_data["bless_data"])  # 祝福数据+
-    cols.append(custom_buf_data["taiyang_data"])  # 太阳数据+
-
-    if len(cols) != len(buf_col_names):
-        raise Exception("col number not match")
-
-    return cols
 
 
 def get_equips():
@@ -1036,38 +954,6 @@ def change_readable_result_area(weapon, equips, is_create):
                                                          font=guide_font, fill='white')
     else:
         canvas_res.itemconfig(res_txt_readable_result, text=content)
-
-
-# 计数器排序规则：次数多的在前面，同等次数下，套装序号小的放前面
-def sort_counter_key(counter_item):
-    return -counter_item[1], int(counter_item[0])
-
-
-def get_readable_names(equip_index_to_realname, weapon, equips):
-    readable_names = []
-    readable_names.append(equip_index_to_realname[weapon])
-
-    # 智慧产物以外的套装信息
-    set_list = ["1" + str(get_set_name(equips[x])) for x in range(0, 11) if len(equips[x]) < 8]
-    for set_index, count in sorted(collections.Counter(set_list).most_common(), key=sort_counter_key):
-        readable_names.append("{}-{}".format(equip_index_to_realname[set_index], count))
-
-    # 智慧产物单独列出
-    wisdom_indexs = [equips[x] for x in range(0, 11) if len(equips[x]) == 8]
-    # 赤鬼的次元石改造五阶段词条：装备[青面修罗的面具]、[噙毒手套]中1种以上时，释放疯魔索伦之力。 - 攻击时，附加7%的伤害。
-    if wisdom_indexs.count('32410650') == 1:
-        if wisdom_indexs.count('21400340'):
-            readable_names.append(equip_index_to_realname["1401"])
-            wisdom_indexs.remove('32410650')
-            wisdom_indexs.remove('21400340')
-        elif wisdom_indexs.count('31400540') == 1:
-            readable_names.append(equip_index_to_realname["1401"])
-            wisdom_indexs.remove('32410650')
-            wisdom_indexs.remove('31400540')
-    for wisdom_index in wisdom_indexs:
-        readable_names.append(equip_index_to_realname[wisdom_index])
-
-    return readable_names
 
 
 # 展示当前搭配的各装备名称
@@ -1515,46 +1401,6 @@ def show_result(rank_list, job_type, ele_skill):
     canvas_res.image = result_bg
     res_bt1.image = show_detail_img
     res_bt_show_name.image = show_name_img
-
-
-# 导出结果到excel
-def export_result(ele_skill, col_names, job_name, cool, equip_index_to_realname, extract_rank_cols_func, rankings):
-    export_config = config().export_result_as_excel
-    if not export_config.enable:
-        return
-
-    def _export_reuslt():
-        book = Workbook()
-        book.remove(book.active)
-        for sheet_index, rt in enumerate(rankings):
-            ranking_name = rt[0]
-
-            # 为该排行榜创建sheet
-            sheet = book.create_sheet(ranking_name, sheet_index)
-
-            row = 1
-            # 首行为列名
-            for col_index, col_name in enumerate(col_names):
-                sheet.cell(row, col_index + 1).value = col_name
-
-            # 其余行为各个排行条目
-            for index, ranking in enumerate(rt[1]):
-                rank = index + 1
-                col_values = extract_rank_cols_func(ele_skill, job_name, cool, equip_index_to_realname, ranking_name, rank, ranking)
-
-                row += 1
-                for col_index, col_value in enumerate(col_values):
-                    sheet.cell(row, col_index + 1).value = col_value
-
-        # 保存文件
-        book.save(export_config.export_file_name)
-        tkinter.messagebox.showinfo("排行结果已导出", "前{}排行数据已导出到当前目录下的{}，可打开进行查看".format(
-            export_config.export_rank_count,
-            export_config.export_file_name,
-        ))
-
-    threading.Thread(target=_export_reuslt, daemon=True).start()
-    return
 
 
 def change_rank(now, job_type):
@@ -2572,14 +2418,6 @@ if __name__ == '__main__':
                 equip_index_to_row_index[index] = row[0].row
             except Exception as err:
                 logger.warning("load row index failed, err={}".format(err))
-
-
-# equip_indexes的顺序与上面的搜索顺序一致，这里需要调回来
-def get_slot_names(equip_index_to_realname, equip_indexes):
-    ordered_equip_indexes = list(equip_indexes)
-    reverse_modify_slots_order_(ordered_equip_indexes)
-
-    return [equip_index_to_realname[index] for index in ordered_equip_indexes]
 
 
 # 根据各个槽位的装备编码列表获得各个槽位的装备编码与名称列表，方便查bug
