@@ -33,6 +33,10 @@ https://drive.google.com/file/d/1p8ZdzW_NzGKHHOtfPTuZSr1YgSEVtYCj/view
 5. 修复若干bug
 6. 更多版本更新细节请看README.md
 
+# v3.6.1 2020.6.7
+## bugfix
+1. 修正在拥有【赤鬼的次元石】，但不拥有【青面修罗的面具】或【噙毒手套】的时候，set_counter.get("140")会返回None，从而导致异常的问题
+
 # v3.6.0 2020.6.7
 ## 多进程并发计算支持
 1. 使用multiprocessing模块实现多核多进程并发计算，最多可完全占用全部逻辑cpu核心
