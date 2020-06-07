@@ -170,6 +170,9 @@ def process_buf(data: CalcData):
         for idx in range(len(for_calc)):
             # 获取装备属性
             cut = data.opt_buf.get(for_calc[idx])
+            if cut is None:
+                # note: 奶系职业的智慧产物尚未加入，原作者最新版加入了部分，下次有空补一下
+                continue
             # 加算
             base_array = base_array + cut
             # 乘算部分
