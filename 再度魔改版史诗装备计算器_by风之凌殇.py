@@ -379,6 +379,8 @@ def calc():
             heap_item = mq.minheap_queue.get()
             mq.minheap.add(heap_item)
             totalResult += 1
+            if totalResult % 1000 == 0:
+                log_result_queue_info(logger.info, mq.name, "try_fetch_result periodly report", mq.minheap_queue.qsize())
 
     def try_fetch_result_in_background(mq: MinHeapWithQueue):
         while not finished:
