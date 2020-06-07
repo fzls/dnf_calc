@@ -112,6 +112,8 @@ def report_bugsnag_with_context(error, extra_context=None, show_error_messagebox
     )
 
 
+def calc_thread():
+    threading.Thread(target=calc_with_try_except, daemon=True).start()
 
 
 def calc_with_try_except():
@@ -453,7 +455,7 @@ def calc():
 
         show_result(ranking, 'deal', ele_skill)
 
-        export_result(ele_skill, deal_col_names, extract_deal_rank_cols, [
+        export_result(ele_skill, deal_col_names, jobup_select.get(), req_cool.get(), equip_index_to_realname, extract_deal_rank_cols, [
             ("伤害排行", all_ranking)
         ])
 
@@ -544,7 +546,7 @@ def calc():
 
         show_result(rankings, 'buf', ele_skill)
 
-        export_result(ele_skill, buf_col_names, extract_buf_rank_cols, [
+        export_result(ele_skill, buf_col_names, jobup_select.get(), req_cool.get(), equip_index_to_realname, extract_buf_rank_cols, [
             ("祝福排行", all_rankings[0]),
             ("太阳排行", all_rankings[1]),
             ("综合排行", all_rankings[2]),
@@ -560,10 +562,6 @@ def calc():
     logger.info("计算耗时时间 = " + str(time.time() - start_time) + "秒")
 
 
-def calc_thread():
-    threading.Thread(target=calc_with_try_except, daemon=True).start()
-
-
 def stop_calc():
     # global exit_calc
     # exit_calc.value = 1
@@ -573,62 +571,8 @@ def stop_calc():
         "请直接点击右上角关闭程序再开启来实现中途停止计算"
     ))
 
-
-# 输出职业的表格输出列名
-deal_col_names = (
-    "排行",
-    "伤害倍率",
-    "职业",
-    "搭配概览",
-    "武器",
-    "上衣",
-    "裤子",
-    "头肩",
-    "腰带",
-    "鞋子",
-    "手镯",
-    "项链",
-    "戒指",
-    "辅助装备",
-    "魔法石",
-    "耳环",
-    "百变怪",
-    "跨界或升级工作服得来的装备",
-    "力智",
-    "物理/魔法/独立攻击力",
-    "攻击时额外增加X%的伤害增加量",
-    "暴击时，额外增加X%的伤害增加量",
-    "攻击时，附加X%的伤害，也就是白字",
-    "攻击时，附加X%的属性伤害",
-    "最终伤害+X%",
-    "物理/魔法/独立攻击力 +X%",
-    "力智+X%",
-    "所有属性强化+X",
-    "发生持续伤害5秒，伤害量为对敌人造成伤害的X%",
-    "技能攻击力 +X%",
-    "特殊词条",
-    "攻击速度 +X%",
-    "魔法/物理暴击率 +X%",
-    "主动技能增加等级所带来的的影响",
-    "增加转职被动的等级",
-    "增加一绝被动的等级",
-    "增加二觉被动的等级",
-    "增加三觉被动的等级",
-    "冷却矫正系数，每冷却1%，记0.35这个值",
-    "二觉主动技能",
-    "1-45主动技能",
-    "50主动技能",
-    "60~80主动技能",
-    "85主动技能",
-    "95主动技能",
-    "100主动技能",
-    "冷却补正",
-    "技能属强补正",
-    "逆校正",
-)
-
-
-def extract_deal_rank_cols(ele_skill, ranking_name, rank, ranking_detail):
+# re：移到export文件
+def extract_deal_rank_cols(ele_skill, job_name, cool, equip_index_to_realname, ranking_name, rank, ranking_detail):
     # (damage, unique_index, [calc_wep, base_array, baibianguai, tuple(not_owned_equips)])
     damage = "{}%".format(int(100 * ranking_detail[0]))
     weapon_index = ranking_detail[2][0][0]
@@ -640,11 +584,11 @@ def extract_deal_rank_cols(ele_skill, ranking_name, rank, ranking_detail):
     cols = []
     cols.append(rank)  # 排行
     cols.append(damage)  # 伤害倍率
-    cols.append(jobup_select.get())  # 职业
-    cols.append(" | ".join(get_readable_names(weapon_index, equip_indexes)))  # 搭配概览
+    cols.append(job_name)  # 职业
+    cols.append(" | ".join(get_readable_names(equip_index_to_realname, weapon_index, equip_indexes)))  # 搭配概览
     cols.append(equip_index_to_realname[weapon_index])  # 武器
     # 上衣 裤子 头肩 腰带 鞋子 手镯 项链 戒指 辅助装备 魔法石 耳环
-    cols.extend(get_slot_names(equip_indexes))
+    cols.extend(get_slot_names(equip_index_to_realname, equip_indexes))
     bbg = ""  # 百变怪
     if baibianguai is not None:
         bbg = equip_index_to_realname[baibianguai]
@@ -652,7 +596,7 @@ def extract_deal_rank_cols(ele_skill, ranking_name, rank, ranking_detail):
     cols.append(",".join(equip_index_to_realname[equip_index] for equip_index in not_owned_equips))  # 跨界或升级工作服得来的装备
     for index_deal in range(28):
         cols.append(base_array[index_deal])
-    cols.append(req_cool.get())  # 冷却补正
+    cols.append(cool)  # 冷却补正
     cols.append(ele_skill)  # 技能属强补正
     cols.append("{}%".format(round(100 * (1.05 / (1.05 + int(ele_skill) * 0.0045) - 1), 1)))  # 逆补正
 
@@ -662,38 +606,7 @@ def extract_deal_rank_cols(ele_skill, ranking_name, rank, ranking_detail):
     return cols
 
 
-# 奶系职业的表格输出列名
-buf_col_names = (
-    "排行",
-    "得分",
-    "祝福得分/一觉得分/综合得分",
-    "职业",
-    "搭配概览",
-    "武器",
-    "上衣",
-    "裤子",
-    "头肩",
-    "腰带",
-    "鞋子",
-    "手镯",
-    "项链",
-    "戒指",
-    "辅助装备",
-    "魔法石",
-    "耳环",
-    "百变怪",
-    "跨界或升级工作服得来的装备",
-    "祝福",
-    "一觉",
-    "一觉被动",
-    "自定义祝福+X级",
-    "自定义一觉+X级",
-    "祝福数据+",
-    "太阳数据+",
-)
-
-
-def extract_buf_rank_cols(ele_skill, ranking_name, rank, ranking_detail):
+def extract_buf_rank_cols(ele_skill, job_name, cool, equip_index_to_realname, ranking_name, rank, ranking_detail):
     # (score, unique_index, [calc_wep, [bless_overview, taiyang_overview, first_awaken_passive_overview, all_score_str], baibianguai, tuple(not_owned_equips)])
     score = ranking_detail[0]
     weapon_index = ranking_detail[2][0][0]
@@ -715,11 +628,11 @@ def extract_buf_rank_cols(ele_skill, ranking_name, rank, ranking_detail):
     cols.append(rank)  # 排行
     cols.append(score)  # 得分
     cols.append(all_score)  # 祝福得分/一觉得分/综合得分
-    cols.append(jobup_select.get())  # 职业
-    cols.append(" | ".join(get_readable_names(weapon_index, equip_indexes)))  # 搭配概览
+    cols.append(job_name)  # 职业
+    cols.append(" | ".join(get_readable_names(equip_index_to_realname, weapon_index, equip_indexes)))  # 搭配概览
     cols.append(equip_index_to_realname[weapon_index])  # 武器
     # 上衣 裤子 头肩 腰带 鞋子 手镯 项链 戒指 辅助装备 魔法石 耳环
-    cols.extend(get_slot_names(equip_indexes))
+    cols.extend(get_slot_names(equip_index_to_realname, equip_indexes))
     bbg = ""  # 百变怪
     if baibianguai is not None:
         bbg = equip_index_to_realname[baibianguai]
@@ -1115,7 +1028,7 @@ if __name__ == '__main__':
 def change_readable_result_area(weapon, equips, is_create):
     global res_txt_readable_result, canvas_res
 
-    readable_names = get_readable_names(weapon, equips)
+    readable_names = get_readable_names(equip_index_to_realname, weapon, equips)
     content = pretty_words(readable_names, 40, ' | ')
     if is_create:
         res_txt_readable_result = canvas_res.create_text(res_txt_readable_result_center_x, res_txt_readable_result_center_y,
@@ -1130,7 +1043,7 @@ def sort_counter_key(counter_item):
     return -counter_item[1], int(counter_item[0])
 
 
-def get_readable_names(weapon, equips):
+def get_readable_names(equip_index_to_realname, weapon, equips):
     readable_names = []
     readable_names.append(equip_index_to_realname[weapon])
 
@@ -1605,7 +1518,7 @@ def show_result(rank_list, job_type, ele_skill):
 
 
 # 导出结果到excel
-def export_result(ele_skill, col_names, extract_rank_cols_func, rankings):
+def export_result(ele_skill, col_names, job_name, cool, equip_index_to_realname, extract_rank_cols_func, rankings):
     export_config = config().export_result_as_excel
     if not export_config.enable:
         return
@@ -1627,7 +1540,7 @@ def export_result(ele_skill, col_names, extract_rank_cols_func, rankings):
             # 其余行为各个排行条目
             for index, ranking in enumerate(rt[1]):
                 rank = index + 1
-                col_values = extract_rank_cols_func(ele_skill, ranking_name, rank, ranking)
+                col_values = extract_rank_cols_func(ele_skill, job_name, cool, equip_index_to_realname, ranking_name, rank, ranking)
 
                 row += 1
                 for col_index, col_value in enumerate(col_values):
@@ -2662,7 +2575,7 @@ if __name__ == '__main__':
 
 
 # equip_indexes的顺序与上面的搜索顺序一致，这里需要调回来
-def get_slot_names(equip_indexes):
+def get_slot_names(equip_index_to_realname, equip_indexes):
     ordered_equip_indexes = list(equip_indexes)
     reverse_modify_slots_order_(ordered_equip_indexes)
 
