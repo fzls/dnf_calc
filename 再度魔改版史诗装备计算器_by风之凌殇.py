@@ -467,6 +467,7 @@ def process_buf(data: CalcData):
 
     for wep_num in data.weapon_indexs:
         #################################计算附带各种加成后，当前搭配的各个词条属性#################################
+
         # 武器、装备列表
         calc_wep = (wep_num,) + tuple(equips)
         # 加上适用的套装属性列表
@@ -509,6 +510,8 @@ def process_buf(data: CalcData):
             # 保证等级不超过该上限
             level = int(min(max_level, base_array[buff_index] + base_level))
             return data.opt_buflvl.get(skill_name)[level]
+
+        #################################核心计算公式#################################
 
         if data.job_name == "(奶系)神思者":
             # 祝福增加的三攻
@@ -683,6 +686,8 @@ def process_buf(data: CalcData):
         total_score = ((15000 + first_awaken_increase_physical_and_mental_strength_or_intelligence + taiyang_final_increase_strength_and_intelligence + bless_final_increase_strength_and_intelligence) / 250 + 1) \
                       * (2650 + bless_final_increase_attack_power_average)
 
+        #################################准备排行数据#################################
+
         # 统计数据
         all_score_str = "{}/{}/{}".format(
             int(bless_score / 10),
@@ -736,16 +741,6 @@ def get_set_on(equips):
                 set_on.append('1401')
 
     return set_on
-
-
-# 获取最后一个拥有神话的装备槽位的下标，以计算时的装备槽位顺序为准。若未找到，则返回-1。在搜索时，判断后续是否可能出现神话装备，可以通过判断下标是否小于等于该值
-def get_last_god_slot(items):
-    for slot in range(10, -1, -1):
-        for equip in items[slot]:
-            if is_god(equip):
-                return slot
-
-    return -1
 
 
 def calc_with_try_except():
@@ -1613,50 +1608,6 @@ def get_equips():
     work_uniforms_items = ["11150", "12150", "13150", "14150", "15150", "21190", "22190", "23190", "31230", "32230", "33230"]
 
     return items, not_select_items, work_uniforms_items
-
-
-def inc_invalid_cnt_func(cnt):
-    # global count_invalid
-    # count_invalid += int(cnt)
-    pass
-
-
-# 装备编号的最后一位表示是否是神话装备，eg：33341
-def is_god(equip):
-    return int(equip[-1]) == 1
-
-
-def get_set_name(equip):
-    # eg. 31290	圣者-辅助装备中29表示该装备属于套装29=圣者
-    return equip[2:4]
-
-
-# 36套装为传说
-def is_legend(equip):
-    return get_set_name(equip) == "36"
-
-
-# 37为普雷首饰，38为普雷特殊
-def is_pulei(equip):
-    return get_set_name(equip) in ["37", "38"]
-
-
-# 百变怪是否可以转换成该装备
-def can_convert_from_baibianguai(equip):
-    # 百变怪不能转换为神话装备
-    if is_god(equip):
-        return False
-    # 百变怪不能转化为工作服
-    if equip in work_uniforms:
-        return False
-    # 百变怪不能转化为智慧产物
-    if equip in the_product_of_wisdoms:
-        return False
-    # 百变怪不能转化为传说、普雷
-    if is_legend(equip) or is_pulei(equip):
-        return False
-
-    return True
 
 
 def calc_ori_counts(all_slots_equips):

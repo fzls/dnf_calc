@@ -57,6 +57,7 @@ from .hardware_info import *
 
 from .update import *
 from .logic import *
+from .equipment import *
 
 # ui
 from .ui_components import *
