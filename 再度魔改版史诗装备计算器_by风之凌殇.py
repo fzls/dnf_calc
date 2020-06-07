@@ -364,16 +364,14 @@ def calc():
     step_data.start_parallel_computing_at_depth_n = config().multi_threading.start_parallel_computing_at_depth_n - 1
 
     step_data.producer = producer
-
-    global calc_index, produced_count
-    calc_index += 1
-    produced_count = 0
+    producer_data.calc_index += 1
+    producer_data.produced_count = 0
 
     finished = False
     totalResult = 0
 
     def log_result_queue_info(log_func, rank_name, msg, qsize):
-        log_func("calc#{}: {}: {} minheap_queue count={} totalResult={}, totalWork={}".format(calc_index, rank_name, msg, qsize, totalResult, produced_count))
+        log_func("calc#{}: {}: {} minheap_queue count={} totalResult={}, totalWork={}".format(producer_data.calc_index, rank_name, msg, qsize, totalResult, producer_data.produced_count))
 
     def try_fetch_result(mq: MinHeapWithQueue):
         global totalResult
@@ -431,7 +429,7 @@ def calc():
         parallel_dfs(step_data)
 
         # 等到所有工作处理完成
-        self.work_queue.join()
+        producer_data.work_queue.join()
         finished = True
 
         # 最终将剩余结果也加入排序
@@ -522,7 +520,7 @@ def calc():
         parallel_dfs(step_data)
 
         # 等到所有工作处理完成
-        self.work_queue.join()
+        producer_data.work_queue.join()
         finished = True
 
         # 最终将剩余结果也加入排序
@@ -556,7 +554,7 @@ def calc():
     showsta(text='输出完成' + "时间 = " + format_time(time.time() - start_time))
     # 结束计算
     exit_calc.value = 1
-    logger.info("工作进程数：{}个 共处理workItem：{}个".format(max_thread, produced_count))
+    logger.info("工作进程数：{}个 共处理workItem：{}个".format(max_thread, producer_data.produced_count))
     logger.info("计算耗时时间 = " + str(time.time() - start_time) + "秒")
 
 
@@ -3134,47 +3132,12 @@ if __name__ == '__main__':
 ###########################################################
 #                 启动工作线程并进入ui主循环                #
 ###########################################################
-calc_index = 0
-produced_count = 0
-
-
-# 准备工作队列和工作线程
-def producer(*args):
-    global calc_index, produced_count
-
-    # if exit_calc.value == 1:
-    #     return
-    self.work_queue.put((calc_index, args))
-
-    produced_count += 1
-    logger.info("producer put %3dth work into work queue", produced_count)
-
-
-def consumer(work_queue, exit_calc, work_func):
-    current_process = multiprocessing.current_process()
-    logger.info("work thread={} started, ready to work".format(current_process))
-    current_calc_index = 0
-    processed_count = 0
-    while True:
-        # 加一个超时，用于最终计算完成时，没有新的task，超时1s退出
-        calc_index, args = work_queue.get()
-        if calc_index != current_calc_index:
-            current_calc_index = calc_index
-            processed_count = 0
-        processed_count += 1
-        logger.info("work thread {} processing {}th work".format(current_process, processed_count))
-        # if exit_calc.value == 0:
-        work_func(*args)
-        work_queue.task_done()
-
-    logger.info("work thread %2d stopped, processed_count=%3", thread_index, processed_count)
-
 
 if __name__ == "__main__":
     # 工作队列
     work_queue = multiprocessing.JoinableQueue()
     work_queue.cancel_join_thread()  # or else thread that puts data will not term
-    self.work_queue = work_queue
+    producer_data.work_queue = work_queue
     # 工作进程
     workers = []
     max_thread = config().multi_threading.max_thread
