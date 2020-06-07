@@ -839,7 +839,7 @@ def calc():
 
         step_data.process_func = process_deal
 
-        dfs(step_data)
+        parallel_dfs(step_data)
 
         # 等到所有工作处理完成
         self.work_queue.join()
@@ -930,7 +930,7 @@ def calc():
 
         step_data.process_func = process_buf
 
-        dfs(step_data)
+        parallel_dfs(step_data)
 
         # 等到所有工作处理完成
         self.work_queue.join()
@@ -4010,7 +4010,7 @@ if __name__ == "__main__":
     workers = []
     max_thread = config().multi_threading.max_thread
     for i in range(max_thread):
-        p = multiprocessing.Process(target=consumer, args=(work_queue, exit_calc, dfs), daemon=True, name="worker#{}".format(i + 1))
+        p = multiprocessing.Process(target=consumer, args=(work_queue, exit_calc, parallel_dfs), daemon=True, name="worker#{}".format(i + 1))
         p.start()
         workers.append(p)
 

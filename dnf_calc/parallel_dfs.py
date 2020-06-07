@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # -------------------------------
-# File   : dfs
+# File   : parallel_dfs
 # Date   : 2020/6/7 0007
 # Author : Chen Ji
 # Email  : fzls.zju@gmail.com
@@ -14,7 +14,7 @@ from dnf_calc import CalcStepData, is_god, get_set_name
 
 
 # 带剪枝的dfs搜索装备搭配过程
-def dfs(step: CalcStepData):
+def parallel_dfs(step: CalcStepData):
     """
     背景，假设当前处理到下标n（0-10）的装备，前面装备已选择的组合为selected_combination(of size n)，未处理装备为后面11-n-1个，其对应组合数为rcp=len(Cartesian Product(后面11-n-1个装备部位))
 
@@ -114,7 +114,7 @@ def try_equip(step: CalcStepData, equip):
         if not pruned:
             if current_index != step.start_parallel_computing_at_depth_n:
                 # 未到开始进行并发计算的层数，串行搜索
-                dfs(step)
+                parallel_dfs(step)
             else:
                 # 此层数的所有子树采用并行搜索
                 step.producer(copy_step(step))

@@ -59,7 +59,7 @@ from .update import *
 from .logic import *
 from .equipment import *
 
-from .dfs import *
+from .parallel_dfs import *
 
 # ui
 from .ui_components import *
