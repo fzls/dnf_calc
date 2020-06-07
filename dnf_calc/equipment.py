@@ -6,6 +6,8 @@
 # Author : Chen Ji
 # Email  : fzls.zju@gmail.com
 # -------------------------------
+from collections import Counter
+
 from .const import *
 
 
@@ -120,3 +122,43 @@ def get_set_name(equip):
 # 装备编号的最后一位表示是否是神话装备，eg：33341
 def is_god(equip):
     return int(equip[-1]) == 1
+
+
+
+def get_set_on(equips):
+    """
+    计算各个套装的装备数目
+    @param equips: 装备搭配列表
+    @type equips: List[string]
+    @return: 形成的套装数目列表
+    """
+    set_on = []
+
+    set_counter = Counter(["1" + str(get_set_name(equips[x])) for x in range(0, 11)])
+    for set_code, cnt in set_counter.items():
+        n_set_code = int(set_code)
+        if 101 <= n_set_code <= 135:
+            # 计算100史诗装备的套装数目
+            if cnt <= 1:
+                continue
+            elif cnt == 2:
+                set_on.append(set_code + "1")
+            elif 3 <= cnt <= 4:
+                set_on.append(set_code + "2")
+            elif cnt == 5:
+                set_on.append(set_code + "3")
+        elif 136 <= n_set_code <= 138:
+            # 计算100传说、普雷特殊、首饰的套装数目
+            if cnt <= 1:
+                continue
+            elif cnt == 2:
+                set_on.append(set_code + "0")
+            elif 3 <= cnt <= 4:
+                set_on.append(set_code + "1")
+            elif cnt == 5:
+                set_on.append(set_code + "2")
+        elif n_set_code == 141:
+            if set_counter.get("140") >= 1:
+                set_on.append('1401')
+
+    return set_on

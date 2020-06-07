@@ -60,6 +60,7 @@ from .logic import *
 from .equipment import *
 
 from .parallel_dfs import *
+from .calc_core import *
 
 # ui
 from .ui_components import *
