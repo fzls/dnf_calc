@@ -382,7 +382,7 @@ def calc():
 
     def try_fetch_result_in_background(mq: MinHeapWithQueue):
         while not finished:
-            log_result_queue_info(logger.debug, mq.name, "try_fetch_result_in_background", mq.minheap_queue.qsize())
+            log_result_queue_info(logger.info, mq.name, "try_fetch_result_in_background", mq.minheap_queue.qsize())
             try_fetch_result(mq)
             time.sleep(0.5)
 
@@ -434,7 +434,7 @@ def calc():
 
         # 最终将剩余结果也加入排序
         for mq in minheap_with_queues:
-            log_result_queue_info(logger.debug, mq.name, "after join", mq.minheap_queue.qsize())
+            log_result_queue_info(logger.info, mq.name, "after join", mq.minheap_queue.qsize())
             try_fetch_result(mq)
             log_result_queue_info(logger.info, mq.name, "after final", mq.minheap_queue.qsize())
 
@@ -528,7 +528,7 @@ def calc():
 
         # 最终将剩余结果也加入排序
         for mq in minheap_with_queues:
-            log_result_queue_info(logger.debug, mq.name, "after join", mq.minheap_queue.qsize())
+            log_result_queue_info(logger.info, mq.name, "after join", mq.minheap_queue.qsize())
             try_fetch_result(mq)
             log_result_queue_info(logger.info, mq.name, "after final", mq.minheap_queue.qsize())
 
