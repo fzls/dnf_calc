@@ -33,6 +33,11 @@ https://drive.google.com/file/d/1p8ZdzW_NzGKHHOtfPTuZSr1YgSEVtYCj/view
 5. 修复若干bug
 6. 更多版本更新细节请看README.md
 
+# v3.6.2 2020.6.7
+## bugfix
+1. 处理重构代码后并发排行逻辑没有实际应用而导致内存溢出的问题
+2. 并发排行进度日志均改为info级别，方便查看
+
 # v3.6.1 2020.6.7
 ## bugfix
 1. 修正在拥有【赤鬼的次元石】，但不拥有【青面修罗的面具】或【噙毒手套】的时候，set_counter.get("140")会返回None，从而导致异常的问题
