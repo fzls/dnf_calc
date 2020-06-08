@@ -59,6 +59,9 @@ def consumer(work_queue, exit_calc, work_func):
             logger.info("work thread {} processing {}th work".format(current_process, processed_count))
 
             work_func(*args)
+        except BrokenPipeError as error:
+            # 这个一般是程序退出的时候发生的，这种情况直接退出
+            return
         except Exception as error:
             report_bugsnag_in_worker(current_process, error, processed_count, [arg.__dict__ for arg in args])
         finally:
