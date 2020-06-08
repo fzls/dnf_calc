@@ -59,7 +59,6 @@ def consumer(work_queue, exit_calc, work_func):
             logger.info("work thread {} processing {}th work".format(current_process, processed_count))
 
             work_func(*args)
-            raise Exception("test 3")
         except Exception as error:
             report_bugsnag_in_worker(current_process, error, processed_count, [arg.__dict__ for arg in args])
         finally:
