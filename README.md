@@ -26,10 +26,14 @@ https://drive.google.com/file/d/1p8ZdzW_NzGKHHOtfPTuZSr1YgSEVtYCj/view
 ![第三批功能说明](使用说明/功能说明3.png)
 
 # 更新公告
-1. 测试代码忘记删除了
-2. 工作线程增加try except保护，同时增加初始化bugsnag以支持在worker中出错时能上报数据
-3. 默认最大线程数不超过32，避免出现3900X这种24核心的cpu默认96个导致崩溃。手动设置时不受该限制影响
-4. 排行增加定期刷日志，方便看进度
+1. 计算过程中直接关闭程序会抛BrokenPipeError异常，这种时候直接return，不必弹窗
+2. work_queue.get()也可能抛异常，但是好像会消耗队列数目？还是加下保护吧
+
+# v3.6.5 2020.6.8
+## bugfix
+1. 修正公告解析错误
+2. 计算过程中直接关闭程序会抛BrokenPipeError异常，这种时候直接return，不必弹窗
+3. work_queue.get()也可能抛异常，但是好像会消耗队列数目？还是加下保护吧
 
 # v3.6.4 2020.6.8
 ## bugfix
