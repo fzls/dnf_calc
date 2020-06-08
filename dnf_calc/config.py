@@ -280,11 +280,12 @@ class Config(ConfigInterface):
     def on_config_update(self, raw_config: dict):
         consoleHandler.setLevel(self.log_level_map[self.log_level])
 
-        logger.info("config loaded")
-        logging.info("log level change to %s", self.log_level)
-        logging.info("max thread is set to %d", self.multi_threading.max_thread)
-        logger.debug("raw_config={}".format(raw_config))
-        logger.debug("config={}".format(g_config))
+        if multiprocessing.current_process().name == "MainProcess":
+            logger.info("config loaded")
+            logging.info("log level change to %s", self.log_level)
+            logging.info("max thread is set to %d", self.multi_threading.max_thread)
+            logger.debug("raw_config={}".format(raw_config))
+            logger.debug("config={}".format(g_config))
 
 
 g_config = Config()

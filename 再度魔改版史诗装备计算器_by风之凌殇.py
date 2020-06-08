@@ -21,6 +21,7 @@ from dnf_calc import *
 if __name__ == '__main__':
     multiprocessing.freeze_support()
     configure_bugsnag()
+    logger.info("configure_bugsnag done in {}".format(multiprocessing.current_process()))
 
     # 启动时先读取config和setting
     load_config()

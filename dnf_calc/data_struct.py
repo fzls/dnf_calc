@@ -90,6 +90,11 @@ class CalcStepData:
         self.producer = None
         self.process_func = None
 
+    def __str__(self):
+        return "{}".format({
+            "CalcStepData": self.__dict__,
+            "CalcData": self.calc_data,
+        })
 
 class CalcData:
     def __init__(self):
@@ -143,3 +148,18 @@ class CalcData:
         self.minheap_queues = None  # type: List[Queue]
         # 用于判定是否提前停止计算的变量 re: 这个等下测试性能时先干掉，然后后面通过消息、事件之类的实现。比如calc开始时通知各个工作线程进入工作状态，stop或计算完成时通知各个工作线程进行停止状态
         self.exit_calc = 0  # type: ValueProxy[int]
+
+    def __str__(self):
+        return "{}".format({
+            "weapon_indexs": self.weapon_indexs,
+            "selected_combination": self.selected_combination,
+            "baibianguai": self.baibianguai,
+            "upgrade_work_uniforms": self.upgrade_work_uniforms,
+            "transfered_equips": self.transfered_equips,
+
+            "base_array_with_deal_bonus_attributes": self.base_array_with_deal_bonus_attributes,
+            "cool_on": self.cool_on,
+            "ele_skill":self.ele_skill,
+            "job_name":self.job_name,
+            "const":self.const,
+        })

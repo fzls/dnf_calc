@@ -6,6 +6,7 @@
 # Author : Chen Ji
 # Email  : fzls.zju@gmail.com
 # -------------------------------
+import multiprocessing
 import sys
 import numbers
 import os
@@ -55,8 +56,9 @@ def load_settings(settings=None):
         notify_error(logger, "配置表填写有误：\n{}".format(msg))
         sys.exit(0)
 
-    logger.info("setting loaded")
-    logger.debug("setting={}".format(g_setting))
+    if multiprocessing.current_process().name == "MainProcess":
+        logger.info("setting loaded")
+        logger.debug("setting={}".format(g_setting))
 
 
 def check_settings(setting_map):
