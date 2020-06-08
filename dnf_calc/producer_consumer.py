@@ -38,6 +38,9 @@ def producer(*args):
 
 
 def consumer(work_queue, exit_calc, work_func):
+    """
+    @type work_queue: multiprocessing.JoinableQueue
+    """
     current_process = multiprocessing.current_process()
     # 为工作线程配置bugsnag信息
     configure_bugsnag()
@@ -49,9 +52,10 @@ def consumer(work_queue, exit_calc, work_func):
     logger.info("work thread={} started, configure_bugsnag done, ready to work".format(current_process))
     current_calc_index = 0
     processed_count = 0
-    while True:
-        calc_index, args = work_queue.get()
+    continue_wrok = True
+    while continue_wrok:
         try:
+            calc_index, args = work_queue.get()
             if calc_index != current_calc_index:
                 current_calc_index = calc_index
                 processed_count = 0
@@ -61,11 +65,17 @@ def consumer(work_queue, exit_calc, work_func):
             work_func(*args)
         except BrokenPipeError as error:
             # 这个一般是程序退出的时候发生的，这种情况直接退出
-            return
+            logger.warning("work thread={} BrokenPipeError quit job".format(current_process))
+            continue_wrok = False
         except Exception as error:
-            report_bugsnag_in_worker(current_process, error, processed_count, [arg.__dict__ for arg in args])
+            args_list = []
+            if 'args' in locals():
+                args_list = [arg.__dict__ for arg in args]
+            report_bugsnag_in_worker(current_process, error, processed_count, args_list)
         finally:
             work_queue.task_done()
+
+    logger.info("work thread ={} stopped, processed_count={}".format(current_process, processed_count))
 
 
 def report_bugsnag_in_worker(current_process, error, processed_count, args, show_error_messagebox=True):
