@@ -4,10 +4,8 @@
 ## 코드를 무단으로 복제하여 개조 및 배포하지 말 것##
 
 import itertools
-import platform
+import queue
 import tkinter.messagebox
-import traceback
-import uuid
 from zipfile import BadZipFile
 
 import PIL
@@ -124,6 +122,7 @@ def calc_with_try_except():
     else:
         calc()
 
+minheap_with_queues = []  # type: List[MinHeapWithQueue]
 
 ## 计算函数##
 def calc():
@@ -326,10 +325,9 @@ def calc():
     if cfg.export_result_as_excel.enable:
         save_top_n = max(save_top_n, cfg.export_result_as_excel.export_rank_count)
 
-    global totalResult
-
     m = multiprocessing.Manager()
-    minheap_with_queues = []
+    global minheap_with_queues
+    minheap_with_queues = []  # type: List[MinHeapWithQueue]
 
     step_data = CalcStepData()
 
@@ -369,23 +367,28 @@ def calc():
     producer_data.produced_count = 0
 
     finished = False
-    totalResult = 0
 
-    def log_result_queue_info(log_func, rank_name, msg, qsize):
-        log_func("calc#{}: {}: {} minheap_queue count={} totalResult={}, totalWork={}".format(producer_data.calc_index, rank_name, msg, qsize, totalResult, producer_data.produced_count))
+    def log_result_queue_info(log_func, msg, mq: MinHeapWithQueue):
+        log_func("calc#{}: {}: {} remaining_qize={} processed_result={}, speed={:.2f}/s estimated_remaining_time={}, totalWork={}".format(
+            producer_data.calc_index,
+            mq.name, msg, mq.minheap_queue.qsize(), mq.processed_result_count, mq.process_results_per_second(), format_time(mq.remaining_time()),
+            producer_data.produced_count,
+        ))
 
     def try_fetch_result(mq: MinHeapWithQueue):
-        global totalResult
-        while not mq.minheap_queue.empty():
-            heap_item = mq.minheap_queue.get()
-            mq.minheap.add(heap_item)
-            totalResult += 1
-            if totalResult % 1000 == 0:
-                log_result_queue_info(logger.info, mq.name, "try_fetch_result periodly report", mq.minheap_queue.qsize())
+        while True:
+            try:
+                heap_item = mq.minheap_queue.get(block=False)
+                mq.minheap.add(heap_item)
+                mq.processed_result_count += 1
+                if mq.processed_result_count % 1000 == 0:
+                    log_result_queue_info(logger.info, "try_fetch_result periodly report", mq)
+            except queue.Empty as error:
+                break
 
     def try_fetch_result_in_background(mq: MinHeapWithQueue):
         while not finished:
-            log_result_queue_info(logger.info, mq.name, "try_fetch_result_in_background", mq.minheap_queue.qsize())
+            log_result_queue_info(logger.info, "try_fetch_result_in_background", mq)
             try_fetch_result(mq)
             time.sleep(0.5)
 
@@ -406,8 +409,12 @@ def calc():
             MinHeapWithQueue("输出排行", MinHeap(save_top_n), m.Queue()),
         ]
 
+        # 异步排行线程
+        fetch_result_threads = []
         for mq in minheap_with_queues:
-            threading.Thread(target=try_fetch_result_in_background, args=(mq,), daemon=True).start()
+            thread = threading.Thread(target=try_fetch_result_in_background, args=(mq,), daemon=True)
+            thread.start()
+            fetch_result_threads.append(thread)
 
         calc_data = step_data.calc_data
         calc_data.base_array_with_deal_bonus_attributes = base_array_with_deal_bonus_attributes
@@ -435,11 +442,15 @@ def calc():
         producer_data.work_queue.join()
         finished = True
 
-        # 最终将剩余结果也加入排序
+        # 等待异步排行线程退出
+        for thread in fetch_result_threads:
+            thread.join()
+
+        # 最终将剩余结果（若有）也加入排序
         for mq in minheap_with_queues:
-            log_result_queue_info(logger.info, mq.name, "after join", mq.minheap_queue.qsize())
+            log_result_queue_info(logger.info, "after join", mq)
             try_fetch_result(mq)
-            log_result_queue_info(logger.info, mq.name, "after final", mq.minheap_queue.qsize())
+            log_result_queue_info(logger.info, "after final", mq)
 
         show_number = 0
         showsta(text='结果统计中')
@@ -531,9 +542,9 @@ def calc():
 
         # 最终将剩余结果也加入排序
         for mq in minheap_with_queues:
-            log_result_queue_info(logger.info, mq.name, "after join", mq.minheap_queue.qsize())
+            log_result_queue_info(logger.info, "after join", mq)
             try_fetch_result(mq)
-            log_result_queue_info(logger.info, mq.name, "after final", mq.minheap_queue.qsize())
+            log_result_queue_info(logger.info, "after final", mq)
 
         show_number = 0
         showsta(text='结果统计中')
@@ -2185,6 +2196,7 @@ def update_count():
     global count_valid, count_invalid, show_number
     global showcon, all_list_num, count_start_time
     global exit_calc
+    global minheap_with_queues  # type: List[MinHeapWithQueue]
     hours = 0
     minutes = 0
     seconds = 0
@@ -2196,17 +2208,20 @@ def update_count():
             if exit_calc.value == 0:
                 using_time = time.time() - count_start_time
                 using_time_str = format_time(using_time)
-                processed = count_valid + count_invalid
-                if all_list_num >= processed:
-                    remaining_time = (all_list_num - count_valid - count_invalid) / (
-                            count_valid + count_invalid + 1) * using_time
-                    remaining_time_str = format_time(remaining_time)
-                else:
-                    remaining_time_str = "0s(未经确计数)"
+
+                remaining_times = list(filter(lambda rt: rt > 0, [mq.remaining_time() for mq in minheap_with_queues]))
+                remaining_time = 0
+                if len(remaining_times) != 0:
+                    remaining_time = sum(remaining_times) / len(remaining_times)
+
+                remaining_time_str = format_time(remaining_time)
+
             showcon(text=(
-                "用时={}"
+                "用时={}\n"
+                "剩余={}"
             ).format(
                 using_time_str,
+                remaining_time_str,
             ))
             time.sleep(0.1)
         except Exception as e:

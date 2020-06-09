@@ -11,6 +11,7 @@
 #                       辅助的数据结构                     #
 ###########################################################
 
+import time
 # 用于实现排行的最小堆
 from heapq import heapify, heappush, heappushpop
 from multiprocessing import Queue
@@ -43,6 +44,23 @@ class MinHeapWithQueue:
         self.name = name
         self.minheap = minheap
         self.minheap_queue = minheap_queue
+
+        self.start_time = time.time()
+        self.processed_result_count = 0
+
+    def process_results_per_second(self)->float:
+        return float(self.processed_result_count) / (time.time() - self.start_time)
+
+    def remaining_time(self) -> float:
+        rt = 0.0
+        if self.processed_result_count == 0:
+            # 啥都没处理的时候，预估剩余一天时间
+            rt = 86400.0
+        else:
+            # 否则预估剩余时间=当前已处理速度*当前结果队列大小
+            rt = (time.time() - self.start_time) / float(self.processed_result_count) * self.minheap_queue.qsize()
+
+        return rt
 
 
 class UpdateInfo:
@@ -95,6 +113,7 @@ class CalcStepData:
             "CalcStepData": self.__dict__,
             "CalcData": self.calc_data,
         })
+
 
 class CalcData:
     def __init__(self):
@@ -159,7 +178,7 @@ class CalcData:
 
             "base_array_with_deal_bonus_attributes": self.base_array_with_deal_bonus_attributes,
             "cool_on": self.cool_on,
-            "ele_skill":self.ele_skill,
-            "job_name":self.job_name,
-            "const":self.const,
+            "ele_skill": self.ele_skill,
+            "job_name": self.job_name,
+            "const": self.const,
         })
