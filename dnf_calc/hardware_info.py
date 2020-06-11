@@ -6,11 +6,16 @@
 # Author : Chen Ji
 # Email  : fzls.zju@gmail.com
 # -------------------------------
-import pythoncom
-import wmi
+import platform
+if platform.system() == "Windows":
+    import pythoncom
+    import wmi
 
 
 def get_hardward_info() -> (str, int, str):
+    if platform.system() != "Windows":
+        return "", 0, ""
+
     pythoncom.CoInitialize()
     wmiInfo = wmi.WMI()
 
