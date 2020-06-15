@@ -167,7 +167,7 @@ def process_buf(step: CalcStepData):
         taiyang_for_calc = tuple(get_set_on(taiyang_equips)) + taiyang_calc_wep
 
         # 计算太阳装的属性
-        _, taiyang_score, _, _, taiyang_overview, first_awaken_passive_overview, \
+        _, taiyang_score, taiyang_mianban, _, taiyang_overview, first_awaken_passive_overview, \
         first_awaken_increase_physical_and_mental_strength_or_intelligence, taiyang_final_increase_strength_and_intelligence, _, _ \
             = calc_buf(data, taiyang_for_calc)
 
@@ -182,7 +182,7 @@ def process_buf(step: CalcStepData):
             bless_for_calc = tuple(get_set_on(bless_huanzhuang.equips)) + bless_calc_wep
 
             # 计算buf装的属性
-            bless_score, _, bless_mianban, bless_overview, _, _, \
+            bless_score, _, _, bless_overview, _, _, \
             _, _, bless_final_increase_strength_and_intelligence, bless_final_increase_attack_power_average \
                 = calc_buf(data, bless_for_calc)
 
@@ -190,8 +190,6 @@ def process_buf(step: CalcStepData):
             # 3 综合得分
             total_score = ((15000 + first_awaken_increase_physical_and_mental_strength_or_intelligence + taiyang_final_increase_strength_and_intelligence + bless_final_increase_strength_and_intelligence) / 250 + 1) \
                           * (2650 + bless_final_increase_attack_power_average)
-
-            # undone: 将bless_mianban改为太阳面板，因为这个才是实际站街会看到的面板
 
             # 统计数据
             all_score_str = "{}/{}/{}".format(
@@ -212,7 +210,7 @@ def process_buf(step: CalcStepData):
             data.minheap_queues[0].put((bless_score, unique_index, copy.deepcopy(save_data)))
             data.minheap_queues[1].put((taiyang_score, unique_index, copy.deepcopy(save_data)))
             data.minheap_queues[2].put((total_score, unique_index, copy.deepcopy(save_data)))
-            data.minheap_queues[3].put((bless_mianban, unique_index, copy.deepcopy(save_data)))
+            data.minheap_queues[3].put((taiyang_mianban, unique_index, copy.deepcopy(save_data)))
 
 
 def calc_buf(data, for_calc):
@@ -327,8 +325,6 @@ def calc_buf(data, for_calc):
         physical_and_mental_strength_or_intelligence_taiyang = physical_and_mental_strength_taiyang
         # 一觉被动增加的面板数值（奶爸为体精、奶妈奶萝为智力）
         first_awaken_increase_physical_and_mental_strength_or_intelligence = belief_halo_increase_physical_and_mental_strength
-        # 祝福适用的面板数值
-        bless_mianban = physical_and_mental_strength_bless
 
     else:
         intelligence_divisor = 675
@@ -401,26 +397,26 @@ def calc_buf(data, for_calc):
             increase_ap=int(bless_final_increase_attack_power_average / sing_song_increase_rate),
             intelligence=int(intelligence_bless),
             level=int(base_array[index_buf_bless_lv30]),
-            street_intelligence=int(intelligence_bless) - 501,
+            street_intelligence=int(intelligence_taiyang) - 541,
         )
         # 太阳适用的面板数值（奶爸为体精、奶妈奶萝为智力）
         physical_and_mental_strength_or_intelligence_taiyang = intelligence_taiyang
         # 一觉被动增加的面板数值（奶爸为体精、奶妈奶萝为智力）
         first_awaken_increase_physical_and_mental_strength_or_intelligence = piety_halo_or_girs_love_increase_intelligence
-        # 祝福适用的面板数值
-        bless_mianban = intelligence_bless
     # 太阳概览
     taiyang_overview = "{increase_intelligence_and_strength} [{physical_and_mental_strength_or_intelligence_taiyang}({level}级)]".format(
         increase_intelligence_and_strength=taiyang_final_increase_strength_and_intelligence,
         physical_and_mental_strength_or_intelligence_taiyang=int(physical_and_mental_strength_or_intelligence_taiyang),
         level=int(base_array[index_buf_taiyang_lv50]),
     )
+    # 太阳适用的面板数值
+    taiyang_mianban = physical_and_mental_strength_or_intelligence_taiyang
     # 1 祝福得分
     bless_score = ((15000 + bless_final_increase_strength_and_intelligence) / 250 + 1) * (2650 + bless_final_increase_attack_power_average)
     # 2 太阳得分
     taiyang_score = ((15000 + taiyang_final_increase_strength_and_intelligence) / 250 + 1) * 2650
 
-    return bless_score, taiyang_score, bless_mianban, bless_overview, taiyang_overview, first_awaken_passive_overview, \
+    return bless_score, taiyang_score, taiyang_mianban, bless_overview, taiyang_overview, first_awaken_passive_overview, \
            first_awaken_increase_physical_and_mental_strength_or_intelligence, taiyang_final_increase_strength_and_intelligence, bless_final_increase_strength_and_intelligence, bless_final_increase_attack_power_average
 
 

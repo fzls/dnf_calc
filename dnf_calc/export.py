@@ -123,7 +123,7 @@ def extract_buf_rank_cols(ele_skill, job_name, cool, equip_index_to_realname, cu
     equip_indexes = ranking_detail[2][0][1:]
 
     score = ranking_detail[0]  # xx标准
-    if ranking_name != "祝福适用面板排行":
+    if ranking_name != "太阳适用面板排行":
         # 除面板得分外，其余的都要除10
         score = score // 10
     bless = ranking_detail[2][1][0]  # 祝福数据

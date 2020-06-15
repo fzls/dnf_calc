@@ -578,7 +578,7 @@ def calc():
             ("祝福排行", all_rankings[0]),
             ("太阳排行", all_rankings[1]),
             ("综合排行", all_rankings[2]),
-            ("祝福适用面板排行", all_rankings[3]),
+            ("太阳适用面板排行", all_rankings[3]),
         ])
 
     load_presetc.close()
