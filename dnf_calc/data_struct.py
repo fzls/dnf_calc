@@ -16,7 +16,7 @@ import time
 from heapq import heapify, heappush, heappushpop
 from multiprocessing import Queue
 from multiprocessing.managers import ValueProxy
-from typing import List
+from typing import List, Dict, Set
 
 from numpy import ndarray
 
@@ -48,8 +48,8 @@ class MinHeapWithQueue:
         self.start_time = time.time()
         self.processed_result_count = 0
 
-    def process_results_per_second(self)->float:
-        return float(self.processed_result_count) / (time.time() - self.start_time)
+    def process_results_per_second(self) -> float:
+        return float(self.processed_result_count) / (time.time() - self.start_time + 1e-6)
 
     def remaining_time(self) -> float:
         rt = 0.0
@@ -88,6 +88,9 @@ class CalcStepData:
 
         # 预计算的一些量
         self.last_god_slot = 11  # 表示从最后一个有神话的槽位的下标，从0开始，10结束
+        # 仅奶系使用的一些数据
+        # 当前已拥有的装备中，各个套装的装备信息。set_index => set(equip_index)
+        self.owned_set_2_equips_map = {}  # type: Dict[str, Set[str]]
 
         # 计算过程维护的一些中间量
         self.current_index = 0
@@ -122,9 +125,13 @@ class CalcData:
         self.baibianguai = None
         self.upgrade_work_uniforms = []
         self.transfered_equips = []
+        self.selected_set_2_equips_map = {}  # type: Dict[str, Set[str]]
 
         # 玩家选定的武器
         self.weapon_indexs = []
+
+        # 职业类型
+        self.is_shuchu_job = True  # 是否是输出职业
 
         # ----------------------输出职业----------------------
         # 各种加成
@@ -175,6 +182,7 @@ class CalcData:
             "baibianguai": self.baibianguai,
             "upgrade_work_uniforms": self.upgrade_work_uniforms,
             "transfered_equips": self.transfered_equips,
+            "selected_set_2_equips_map": self.selected_set_2_equips_map,
 
             "base_array_with_deal_bonus_attributes": self.base_array_with_deal_bonus_attributes,
             "cool_on": self.cool_on,
@@ -182,3 +190,12 @@ class CalcData:
             "job_name": self.job_name,
             "const": self.const,
         })
+
+
+class BlessHuanZhuang:
+    def __init__(self, equips, huanzhuang_equip, is_baibianguai, upgrade_work_uniform, is_transfered):
+        self.equips = equips  # 勇气祝福换装装备（最多允许与太阳装备有一个部位不同）
+        self.huanzhuang_equip = huanzhuang_equip  # 与太阳装备不同的那件装备
+        self.is_baibianguai = is_baibianguai  # 切装装备是否是百变怪变过来的
+        self.upgrade_work_uniform = upgrade_work_uniform  # 切装装备是否是额外升级的工作服
+        self.is_transfered = is_transfered  # 切装装备是否是跨界过来的

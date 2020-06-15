@@ -117,7 +117,7 @@ def extract_deal_rank_cols(ele_skill, job_name, cool, equip_index_to_realname, c
 
 
 def extract_buf_rank_cols(ele_skill, job_name, cool, equip_index_to_realname, custom_buf_data, ranking_name, rank, ranking_detail):
-    # (score, unique_index, [calc_wep, [bless_overview, taiyang_overview, first_awaken_passive_overview, all_score_str], baibianguai, tuple(not_owned_equips)])
+    # (score, unique_index, [taiyang_calc_wep, [bless_overview, taiyang_overview, first_awaken_passive_overview, all_score_str], baibianguai, tuple(noe), huanzhuang_equip])
     score = ranking_detail[0]
     weapon_index = ranking_detail[2][0][0]
     equip_indexes = ranking_detail[2][0][1:]
@@ -133,16 +133,21 @@ def extract_buf_rank_cols(ele_skill, job_name, cool, equip_index_to_realname, cu
 
     baibianguai = ranking_detail[2][2]
     not_owned_equips = ranking_detail[2][3]
+    huanzhuang_equip = ranking_detail[2][4]
 
     cols = []
     cols.append(rank)  # 排行
     cols.append(score)  # 得分
     cols.append(all_score)  # 祝福得分/一觉得分/综合得分
     cols.append(job_name)  # 职业
-    cols.append(" | ".join(get_readable_names(equip_index_to_realname, weapon_index, equip_indexes)))  # 搭配概览
+    cols.append(" | ".join(get_readable_names(equip_index_to_realname, weapon_index, equip_indexes, huanzhuang_equip)))  # 搭配概览
     cols.append(equip_index_to_realname[weapon_index])  # 武器
     # 上衣 裤子 头肩 腰带 鞋子 手镯 项链 戒指 辅助装备 魔法石 耳环
     cols.extend(get_slot_names(equip_index_to_realname, equip_indexes))
+    huanzhuang = ""
+    if huanzhuang_equip != "":
+        huanzhuang = equip_index_to_realname[huanzhuang_equip]
+    cols.append(huanzhuang)  # 祝福切装
     bbg = ""  # 百变怪
     if baibianguai is not None:
         bbg = equip_index_to_realname[baibianguai]

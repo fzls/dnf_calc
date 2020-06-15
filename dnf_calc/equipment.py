@@ -115,6 +115,15 @@ def is_pulei(equip):
     return get_set_name(equip) in ["37", "38"]
 
 
+##装备
+# 11 上衣  12 裤子   13 头肩 14 腰带 15 鞋子
+# 21 手镯  22 项链   23 戒指
+# 31 辅助装备 32 魔法石 33 耳环
+def get_slot_index(equip):
+    # eg. 31290	圣者-辅助装备中31表示该装备属于部位31=辅助装备
+    return equip[0:2]
+
+
 def get_set_name(equip):
     # eg. 31290	圣者-辅助装备中29表示该装备属于套装29=圣者
     return equip[2:4]
@@ -169,7 +178,7 @@ def sort_counter_key(counter_item):
     return -counter_item[1], int(counter_item[0])
 
 
-def get_readable_names(equip_index_to_realname, weapon, equips):
+def get_readable_names(equip_index_to_realname, weapon, equips, huanzhuang_equip=""):
     readable_names = []
     readable_names.append(equip_index_to_realname[weapon])
 
@@ -192,6 +201,9 @@ def get_readable_names(equip_index_to_realname, weapon, equips):
             wisdom_indexs.remove('31400540')
     for wisdom_index in wisdom_indexs:
         readable_names.append(equip_index_to_realname[wisdom_index])
+
+    if huanzhuang_equip != "":
+        readable_names.append("{}(祝福切装)".format(equip_index_to_realname[huanzhuang_equip]))
 
     return readable_names
 

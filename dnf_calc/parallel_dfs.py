@@ -60,6 +60,7 @@ def copy_step(step: CalcStepData) -> CalcStepData:
     copied_step.has_uniforms = copy.deepcopy(step.has_uniforms)
     copied_step.work_uniforms_items = copy.deepcopy(step.work_uniforms_items)
     copied_step.transfer_slots_equips = copy.deepcopy(step.transfer_slots_equips)
+    copied_step.owned_set_2_equips_map = copy.deepcopy(step.owned_set_2_equips_map)
 
     data = step.calc_data
 
@@ -67,6 +68,7 @@ def copy_step(step: CalcStepData) -> CalcStepData:
     copied_data.selected_combination = copy.deepcopy(data.selected_combination)
     copied_data.upgrade_work_uniforms = copy.deepcopy(data.upgrade_work_uniforms)
     copied_data.transfered_equips = copy.deepcopy(data.transfered_equips)
+    copied_data.selected_set_2_equips_map = copy.deepcopy(data.selected_set_2_equips_map)
     copied_data.weapon_indexs = copy.deepcopy(data.weapon_indexs)
     copied_data.base_array_with_deal_bonus_attributes = data.base_array_with_deal_bonus_attributes.copy()
     copied_data.opt_one = copy.deepcopy(data.opt_one)
@@ -89,8 +91,13 @@ def try_equip(step: CalcStepData, equip):
     current_index = step.current_index
     has_god = step.has_god
 
+    set_name = get_set_name(equip)
+    if set_name not in step.calc_data.selected_set_2_equips_map:
+        step.calc_data.selected_set_2_equips_map[set_name] = set()
+
     # 更新搜索状态
     step.calc_data.selected_combination.append(equip)
+    step.calc_data.selected_set_2_equips_map[set_name].add(equip)
     step.current_index += 1
     step.has_god = step.has_god or is_god(equip)
 
@@ -146,14 +153,15 @@ def try_equip(step: CalcStepData, equip):
                         step.local_max_setop = max_setopt
 
                     # 开始计算装备搭配
-                    step.process_func(step.calc_data)
+                    step.process_func(step)
         else:
             # 不进行任何剪枝操作，装备搭配对比的标准是最终计算出的伤害与奶量倍率
-            step.process_func(step.calc_data)
+            step.process_func(step)
 
     # 回溯状态
     step.has_god = has_god
     step.current_index = current_index
+    step.calc_data.selected_set_2_equips_map[set_name].remove(equip)
     step.calc_data.selected_combination.pop()
 
 
