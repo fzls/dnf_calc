@@ -155,7 +155,8 @@ def process_buf(step: CalcStepData):
     bless_huanzhuang_list = [
         BlessHuanZhuang(data.selected_combination, "", False, False, False)
     ]
-    bless_huanzhuang_list.extend(get_bless_huanzhuang_equips_list(step))
+    if step.calc_data.enable_buf_huanzhuang_search:
+        bless_huanzhuang_list.extend(get_bless_huanzhuang_equips_list(step))
 
     for wep_num in data.weapon_indexs:
         #################################计算附带各种加成后，当前搭配的各个词条属性#################################

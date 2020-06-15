@@ -15,6 +15,19 @@ max_save_count = 61
 # readme page
 readme_page = "https://github.com/fzls/dnf_calc/blob/master/README.md"
 
+####################全局配置中以上所有配置修改后需要重新启动才能生效###############
+####################全局配置中以下所有配置修改后将立即生效########################
+
+# 是否在点击读取存档按钮时关闭结果窗口（若存在）
+destroy_result_windows_when_click_load_checklist_button = false
+
+# 是否启用奶系的切装（限单件）搜索方案
+enable_buf_huanzhuang_search = true
+
+#####################################################################
+#                   全局配置和各个子节配置的分隔点                     #
+#####################################################################
+
 # ui相关配置
 [ui]
 
@@ -89,11 +102,14 @@ spare_parts_left = "[(11, 1), (11, 0), (22, 0), (31, 0)]"
 # 散件（右）（32-35） 耳环（神话）、鞋、戒指、耳环
 spare_parts_right = "[(33, 1), (15, 0), (23, 0), (33, 0)]"
 
-####################以上所有配置修改后需要重新启动才能生效########################
-####################以下所有配置修改后将立即生效########################
+[multi_threading]
+# 设置最大工作线程数，当为0时默认为min(2*逻辑线程数, 32)
+max_thread = 0
+# 设置dfs的第多少层开始多线程并行计算（从1开始计数，0表示不启用多线程并行计算）
+start_parallel_computing_at_depth_n = 2
 
-# 是否在点击读取存档按钮时关闭结果窗口（若存在）
-destroy_result_windows_when_click_load_checklist_button = true
+####################各个子节配置中以上所有配置修改后需要重新启动才能生效###############
+####################各个子节配置中以下所有配置修改后将立即生效########################
 
 # 播放gif动画设置
 [gif]
@@ -101,12 +117,6 @@ destroy_result_windows_when_click_load_checklist_button = true
 enable = true
 # 每秒播放多少帧
 frame_rate = 10
-
-[multi_threading]
-# 设置最大工作线程数，当为0时默认为min(2*逻辑线程数, 32)
-max_thread = 0
-# 设置dfs的第多少层开始多线程并行计算（从1开始计数，0表示不启用多线程并行计算）
-start_parallel_computing_at_depth_n = 2
 
 # 是否需要额外将输出结果导出为excel文件
 [export_result_as_excel]

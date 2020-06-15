@@ -251,6 +251,8 @@ class Config(ConfigInterface):
         self.readme_page = "https://github.com/fzls/dnf_calc/blob/master/README.md"
         # 是否在点击读取存档按钮时关闭结果窗口（若存在）
         self.destroy_result_windows_when_click_load_checklist_button = True
+        # 是否启用奶系的切装（限单件）搜索方案
+        self.enable_buf_huanzhuang_search = True
         # ui相关配置
         self.ui = UIConfig()
         # 播放gif动画设置
