@@ -19,7 +19,7 @@ readme_page = "https://github.com/fzls/dnf_calc/blob/master/README.md"
 ####################全局配置中以下所有配置修改后将立即生效########################
 
 # 是否在点击读取存档按钮时关闭结果窗口（若存在）
-destroy_result_windows_when_click_load_checklist_button = false
+destroy_result_windows_when_click_load_checklist_button = true
 
 # 是否启用奶系的切装（限单件）搜索方案
 enable_buf_huanzhuang_search = true
