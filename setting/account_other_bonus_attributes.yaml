@@ -135,13 +135,13 @@
     # 增幅+10
     - strength_and_intelligence: 44 # 异次元智力+44
     # 附魔
-    - extra_all_element_strength: 23 # 所有属性强化 +23
+    - extra_all_element_strength: 25 # 所有属性强化 +25
 
     ## 项链
     # 增幅+10
     - strength_and_intelligence: 44 # 异次元智力+44
     # 附魔
-    - extra_all_element_strength: 23 # 所有属性强化 +23
+    - extra_all_element_strength: 25 # 所有属性强化 +25
 
     ## 戒指
     # 红色徽章(上)
@@ -174,7 +174,7 @@
     - physical_and_mental_strength: 28 # 强化+10 四维(体精)+28
     - strength_and_intelligence: 44 # 异次元智力+44
     # 附魔
-    - extra_all_element_strength: 15 # 所有属性强化 +15
+    - extra_all_element_strength: 18 # 所有属性强化 +18
 
     ## 耳环
     # 强化+12
