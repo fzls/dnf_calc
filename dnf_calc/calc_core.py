@@ -186,6 +186,12 @@ def process_buf(step: CalcStepData):
             _, _, bless_final_increase_strength_and_intelligence, bless_final_increase_attack_power_average \
                 = calc_buf(data, bless_for_calc)
 
+            # 奶妈/奶萝增加站街预估
+            if data.job_name != "(奶系)神思者":
+                bless_overview += " 站街面板 = {street_intelligence}".format(
+                    street_intelligence=int(taiyang_mianban) - 541
+                )
+
             #################################准备排行数据#################################
             # 3 综合得分
             total_score = ((15000 + first_awaken_increase_physical_and_mental_strength_or_intelligence + taiyang_final_increase_strength_and_intelligence + bless_final_increase_strength_and_intelligence) / 250 + 1) \
@@ -390,14 +396,13 @@ def calc_buf(data, for_calc):
         )
         # 祝福概览
         bless_overview = ("{increase_lizhi_with_sing_song}({increase_lizhi})/ {increase_ap_with_sing_song}({increase_ap})\n"
-                          "图内={intelligence}({level}级) 站街面板={street_intelligence}").format(
+                          "图内={intelligence}({level}级)").format(
             increase_lizhi_with_sing_song=bless_final_increase_strength_and_intelligence,
             increase_lizhi=int(bless_final_increase_strength_and_intelligence / sing_song_increase_rate),
             increase_ap_with_sing_song=bless_final_increase_attack_power_average,
             increase_ap=int(bless_final_increase_attack_power_average / sing_song_increase_rate),
             intelligence=int(intelligence_bless),
             level=int(base_array[index_buf_bless_lv30]),
-            street_intelligence=int(intelligence_taiyang) - 541,
         )
         # 太阳适用的面板数值（奶爸为体精、奶妈奶萝为智力）
         physical_and_mental_strength_or_intelligence_taiyang = intelligence_taiyang
