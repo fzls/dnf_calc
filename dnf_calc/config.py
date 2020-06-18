@@ -253,6 +253,12 @@ class Config(ConfigInterface):
         self.destroy_result_windows_when_click_load_checklist_button = True
         # 是否启用奶系的切装（限单件）搜索方案
         self.enable_buf_huanzhuang_search = True
+        # 奶系切装排除的部位，用于将特定部位的切装方案排除，如鞋子上有宝珠的话，换装打造成本太高
+        # 装备部位编码
+        # 11 上衣  12 裤子   13 头肩 14 腰带 15 鞋子
+        # 21 手镯  22 项链   23 戒指
+        # 31 辅助装备 32 魔法石 33 耳环
+        self.exclude_buf_huanzhuang_slot = [] # type: List[str]
         # ui相关配置
         self.ui = UIConfig()
         # 播放gif动画设置

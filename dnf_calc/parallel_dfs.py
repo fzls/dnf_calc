@@ -76,6 +76,7 @@ def copy_step(step: CalcStepData) -> CalcStepData:
     copied_data.const = copy.deepcopy(data.const)
     copied_data.opt_buf = copy.deepcopy(data.opt_buf)
     copied_data.opt_buflvl = copy.deepcopy(data.opt_buflvl)
+    copied_data.exclude_buf_huanzhuang_slot = copy.deepcopy(data.exclude_buf_huanzhuang_slot)
 
     copied_step.calc_data = copied_data
 

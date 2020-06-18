@@ -534,6 +534,7 @@ def calc():
         calc_data.base_job_passive_lv15 = base_job_passive_lv15
         calc_data.base_naiba_protect_badge_lv25 = base_naiba_protect_badge_lv25
         calc_data.enable_buf_huanzhuang_search = cfg.enable_buf_huanzhuang_search
+        calc_data.exclude_buf_huanzhuang_slot = cfg.exclude_buf_huanzhuang_slot
         calc_data.minheap_queues = [mq.minheap_queue for mq in minheap_with_queues]
         step_data.calc_data = calc_data
 

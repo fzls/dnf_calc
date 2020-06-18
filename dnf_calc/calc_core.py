@@ -436,6 +436,9 @@ def get_bless_huanzhuang_equips_list(step: CalcStepData):
         for replaced_equip in equips:
             replaced_is_god = is_god(replaced_equip)
             slot_index = get_slot_index(replaced_equip)
+            if slot_index in step.calc_data.exclude_buf_huanzhuang_slot:
+                # 跳过不考虑切装的部位
+                continue
             for target_setcode, target_equips in step.calc_data.selected_set_2_equips_map.items():
                 if target_setcode == set_code:
                     # 过滤掉替换的套装

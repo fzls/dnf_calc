@@ -170,6 +170,7 @@ class CalcData:
         self.base_job_passive_lv15 = 0
         self.base_naiba_protect_badge_lv25 = 0
         self.enable_buf_huanzhuang_search = True
+        self.exclude_buf_huanzhuang_slot = [] # type: List[str]
 
         # 回传结果的队列
         self.minheap_queues = None  # type: List[Queue]
