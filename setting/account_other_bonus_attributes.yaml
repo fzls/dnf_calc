@@ -122,7 +122,11 @@
     ## 武器
     # 强化+12
     - physical_magical_independent_attack_power: 849 # 魔法攻击力+849
-    # 附魔(暗属性攻击)
+    # 附魔
+    - extra_all_element_strength: 15 # 暗属性强化 +15
+
+    ## 辟邪玉
+    # 暗属性攻击
 
     ## 称号
     # 称号基础属性已在称号表中添加,无需处理
