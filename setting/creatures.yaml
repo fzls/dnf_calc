@@ -40,6 +40,9 @@
 # extra_all_job_all_skill_lv_25_30_in_buff_dress_up:(在buff换装中，且与当前身上穿的不一样)所有职业Lv25~30全部技能Lv+X（特性技能除外）
 # extra_all_job_all_skill_lv_30_35_in_buff_dress_up:(在buff换装中，且与当前身上穿的不一样)所有职业Lv30~35全部技能Lv+X（特性技能除外）
 # extra_percent_attack_damage:                      攻击时额外增加X%的伤害增加量
+# fixup_bless_intelligence:                         祝福补正的智力，用于修正勇气换装与太阳装的差异，如太阳装用与贝奇邂逅称号+90智力，附魔+35，身上穿二级勇气+80智力，那么勇气的称号比太阳少45，可以填-45来修正
+# fixup_bless_physical_and_mental_strength:         祝福补正的体精，用于修正勇气换装与太阳装的差异，如太阳装用与贝奇邂逅称号+90体精，附魔+35，身上穿二级勇气+80体精，那么勇气的称号比太阳少45，可以填-45来修正
+# fixup_bless_skill_lv:                             祝福补正的等级，用于修正勇气换装与太阳装的差异，如太阳装用打宝珠的年套称号+1级祝福，身上穿二级勇气，那么需要填-1将年套的1级祝福抵扣，然后这样填二级勇气的时候就可以直接填2级，而不用手动修正数值
 # extra_taiyang_strength_and_intelligence:          [天启之珠]、[圣光天启]、[开幕！人偶剧场]力量/智力 +X
 
 - names:

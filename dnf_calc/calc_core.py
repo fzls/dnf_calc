@@ -169,7 +169,7 @@ def process_buf(step: CalcStepData):
         # 计算太阳装的属性
         _, taiyang_score, taiyang_mianban, _, taiyang_overview, first_awaken_passive_overview, \
         first_awaken_increase_physical_and_mental_strength_or_intelligence, taiyang_final_increase_strength_and_intelligence, _, _ \
-            = calc_buf(data, taiyang_for_calc)
+            = calc_buf(data, taiyang_for_calc, False)
 
         not_owned_equips = [uwu for uwu in data.upgrade_work_uniforms]
         for equip in data.transfered_equips:
@@ -184,7 +184,7 @@ def process_buf(step: CalcStepData):
             # 计算buf装的属性
             bless_score, _, _, bless_overview, _, _, \
             _, _, bless_final_increase_strength_and_intelligence, bless_final_increase_attack_power_average \
-                = calc_buf(data, bless_for_calc)
+                = calc_buf(data, bless_for_calc, True)
 
             # 奶妈/奶萝增加站街预估
             if data.job_name != "(奶系)神思者":
@@ -222,9 +222,15 @@ def process_buf(step: CalcStepData):
             data.minheap_queues[3].put((taiyang_mianban, unique_index, copy.deepcopy(save_data)))
 
 
-def calc_buf(data, for_calc):
+def calc_buf(data, for_calc, is_bless):
     # 拷贝一份加上奶系职业的国服特色数值后的基础数据
     base_array = data.base_array_with_buf_bonus_attributes.copy()
+    if is_bless:
+        # 如果当前是计算祝福的数值，则将祝福的补正数值叠加到对应属性上
+        base_array[index_buf_physical_and_mental_strength] += base_array[index_buf_fixup_bless_physical_and_mental_strength]
+        base_array[index_buf_intelligence] += base_array[index_buf_fixup_bless_intelligence]
+        base_array[index_buf_bless_lv30] += base_array[index_buf_fixup_bless_skill_lv]
+
     # 获取一些需要乘算的百分比增益初始值
     bless_extra_percent_strength_and_intelligence = base_array[index_buf_bless_extra_percent_strength_and_intelligence]  # [荣誉祝福]、[勇气祝福]、[禁忌诅咒]力量、智力增加量 +X%
     bless_extra_percent_physical_attack_power = base_array[index_buf_bless_extra_percent_physical_attack_power]  # [荣誉祝福]、[勇气祝福]、[禁忌诅咒]物理攻击力增加量 +X%

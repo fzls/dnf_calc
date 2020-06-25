@@ -134,6 +134,9 @@ index_buf_belief_halo = 17  # 17-T-[信念光环]体力、精神 +X
 index_buf_piety_halo_or_girs_love = 18  # 18-U-[虞诚信念]、[少女的爱]力量/智力 +X
 index_buf_hymn_cool = 19  # 19-V-圣歌冷却减少X% (re: 目前好像没实装)
 index_buf_wisteria_whip_cool = 20  # 20-W-藤鞭冷却减少X% (re: 目前好像没实装)
+index_buf_fixup_bless_intelligence = 21 # 21-X-仅用于自定义特色:祝福补正的智力，用于修正勇气换装与太阳装的差异
+index_buf_fixup_bless_physical_and_mental_strength = 22 # 22-Y-仅用于自定义特色:祝福补正的体精，用于修正勇气换装与太阳装的差异
+index_buf_fixup_bless_skill_lv = 23 # 23-Z-仅用于自定义特色:祝福补正的等级，用于修正勇气换装与太阳装的差异
 
 buf_multiply_entry_indexes = [
     index_buf_bless_extra_percent_strength_and_intelligence,
@@ -165,6 +168,9 @@ buf_entry_index_to_name = {
     index_buf_piety_halo_or_girs_love: "18-U-[虞诚信念]、[少女的爱]力量/智力 +X",
     index_buf_hymn_cool: "19-V-圣歌冷却减少X% (re: 目前好像没实装)",
     index_buf_wisteria_whip_cool: "20-W-藤鞭冷却减少X% (re: 目前好像没实装)",
+    index_buf_fixup_bless_intelligence: "21-X-仅用于自定义特色:祝福补正的智力，用于修正勇气换装与太阳装的差异",
+    index_buf_fixup_bless_physical_and_mental_strength: "22-Y-仅用于自定义特色:祝福补正的体精，用于修正勇气换装与太阳装的差异",
+    index_buf_fixup_bless_skill_lv: "23-Z-仅用于自定义特色:祝福补正的等级，用于修正勇气换装与太阳装的差异",
 }
 
 job_to_base_array_index_range_and_index_to_name_dict = {
@@ -175,7 +181,7 @@ job_to_base_array_index_range_and_index_to_name_dict = {
     },
     "buf": {
         "index_begin": index_buf_physical_and_mental_strength,
-        "index_end": index_buf_wisteria_whip_cool,
+        "index_end": index_buf_fixup_bless_skill_lv,
         "index_to_name_dict": buf_entry_index_to_name,
     },
 }
@@ -394,6 +400,24 @@ entry_name_to_indexes = {
             index_buf_taiyang_extra_strength_and_intelligence,
         ]
     },
+    # 祝福补正的智力，用于修正勇气换装与太阳装的差异
+    "fixup_bless_intelligence": {
+        "buf": [
+            index_buf_fixup_bless_intelligence,
+        ]
+    },
+    # 祝福补正的体精，用于修正勇气换装与太阳装的差异
+    "fixup_bless_physical_and_mental_strength": {
+        "buf": [
+            index_buf_fixup_bless_physical_and_mental_strength,
+        ]
+    },
+    # 祝福补正的等级，用于修正勇气换装与太阳装的差异
+    "fixup_bless_skill_lv": {
+        "buf": [
+            index_buf_fixup_bless_skill_lv,
+        ]
+    },
 }
 
 entry_name_to_name = {
@@ -431,6 +455,9 @@ entry_name_to_name = {
     "extra_all_job_all_skill_lv_30_35_in_buff_dress_up": "(在buff换装中，且与当前身上穿的不一样)所有职业Lv30~35全部技能Lv+X（特性技能除外）",
     "extra_percent_attack_damage": "攻击时额外增加X%的伤害增加量",
     "extra_taiyang_strength_and_intelligence": "[天启之珠]、[圣光天启]、[开幕！人偶剧场]力量/智力 +X",
+    "fixup_bless_intelligence": "祝福补正的智力，用于修正勇气换装与太阳装的差异",
+    "fixup_bless_physical_and_mental_strength": "祝福补正的体精，用于修正勇气换装与太阳装的差异",
+    "fixup_bless_skill_lv": "祝福补正的等级，用于修正勇气换装与太阳装的差异",
 }
 
 # 预计算的buff等级最大等级
