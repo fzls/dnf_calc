@@ -298,19 +298,27 @@ def calc_buf(data, for_calc, is_bless):
 
         # 祝福最终增加的力智
         bless_final_increase_strength_and_intelligence = int(
-            int(get_skill_level_data('hol_b_stat', index_buf_bless_lv30) * (bless_extra_percent_strength_and_intelligence / 100 + 1)) * (physical_and_mental_strength_bless / physical_and_mental_divisor + 1)
+            int(
+                (get_skill_level_data('hol_b_stat', index_buf_bless_lv30) + base_array[index_buf_bless_extra_strength_and_intelligence]) * (bless_extra_percent_strength_and_intelligence / 100 + 1)
+            ) * (physical_and_mental_strength_bless / physical_and_mental_divisor + 1)
         )
         # 祝福最终增加的物理攻击力
         bless_final_increase_physical_attack_power = int(
-            int(bless_increase_attack_power * (bless_extra_percent_physical_attack_power / 100 + 1)) * (physical_and_mental_strength_bless / physical_and_mental_divisor + 1)
+            int(
+                (bless_increase_attack_power + base_array[index_buf_bless_extra_physical_attack_power]) * (bless_extra_percent_physical_attack_power / 100 + 1)
+            ) * (physical_and_mental_strength_bless / physical_and_mental_divisor + 1)
         )
         # 祝福最终增加的魔法攻击力
         bless_final_increase_magical_attack_power = int(
-            int(bless_increase_attack_power * (bless_extra_percent_magical_attack_power / 100 + 1)) * (physical_and_mental_strength_bless / physical_and_mental_divisor + 1)
+            int(
+                (bless_increase_attack_power + base_array[index_buf_bless_extra_magical_attack_power]) * (bless_extra_percent_magical_attack_power / 100 + 1)
+            ) * (physical_and_mental_strength_bless / physical_and_mental_divisor + 1)
         )
         # 祝福最终增加的独立攻击力
         bless_final_increase_independent_attack_power = int(
-            int(bless_increase_attack_power * (bless_extra_percent_independent_attack_power / 100 + 1)) * (physical_and_mental_strength_bless / physical_and_mental_divisor + 1)
+            int(
+                (bless_increase_attack_power + base_array[index_buf_bless_extra_independent_attack_power]) * (bless_extra_percent_independent_attack_power / 100 + 1)
+            ) * (physical_and_mental_strength_bless / physical_and_mental_divisor + 1)
         )
         # 祝福最终增加的三攻（平均值）
         bless_final_increase_attack_power_average = int(
@@ -374,19 +382,27 @@ def calc_buf(data, for_calc, is_bless):
                                + third_awaken_passive_increase_intelligence
         # 祝福最终增加的力智
         bless_final_increase_strength_and_intelligence = int(
-            int(get_skill_level_data('se_b_stat', index_buf_bless_lv30) * (bless_extra_percent_strength_and_intelligence / 100 + 1)) * (intelligence_bless / intelligence_divisor + 1) * sing_song_increase_rate
+            int(
+                (get_skill_level_data('se_b_stat', index_buf_bless_lv30) + base_array[index_buf_bless_extra_strength_and_intelligence]) * (bless_extra_percent_strength_and_intelligence / 100 + 1)
+            ) * (intelligence_bless / intelligence_divisor + 1) * sing_song_increase_rate
         )
         # 祝福最终增加的物理攻击力
         bless_final_increase_physical_attack_power = int(
-            int(bless_increase_attack_power * (bless_extra_percent_physical_attack_power / 100 + 1) * (intelligence_bless / intelligence_divisor + 1)) * sing_song_increase_rate
+            int(
+                (bless_increase_attack_power + base_array[index_buf_bless_extra_physical_attack_power]) * (bless_extra_percent_physical_attack_power / 100 + 1) * (intelligence_bless / intelligence_divisor + 1)
+            ) * sing_song_increase_rate
         )
         # 祝福最终增加的魔法攻击力
         bless_final_increase_magical_attack_power = int(
-            int(bless_increase_attack_power * (bless_extra_percent_magical_attack_power / 100 + 1) * (intelligence_bless / intelligence_divisor + 1)) * sing_song_increase_rate
+            int(
+                (bless_increase_attack_power + base_array[index_buf_bless_extra_magical_attack_power]) * (bless_extra_percent_magical_attack_power / 100 + 1) * (intelligence_bless / intelligence_divisor + 1)
+            ) * sing_song_increase_rate
         )
         # 祝福最终增加的独立攻击力
         bless_final_increase_independent_attack_power = int(
-            int(bless_increase_attack_power * (bless_extra_percent_independent_attack_power / 100 + 1) * (intelligence_bless / intelligence_divisor + 1)) * sing_song_increase_rate
+            int(
+                (bless_increase_attack_power + base_array[index_buf_bless_extra_independent_attack_power]) * (bless_extra_percent_independent_attack_power / 100 + 1) * (intelligence_bless / intelligence_divisor + 1)
+            ) * sing_song_increase_rate
         )
         # 祝福最终增加的三攻（平均值）
         bless_final_increase_attack_power_average = int(
@@ -394,8 +410,9 @@ def calc_buf(data, for_calc, is_bless):
         )
         # 太阳最终增加的力智
         taiyang_final_increase_strength_and_intelligence = int(
-            int((get_skill_level_data('c_stat', index_buf_taiyang_lv50) + base_array[index_buf_taiyang_extra_strength_and_intelligence]) * (taiyang_extra_percent_strength_and_intelligence / 100 + 1)) * (
-                    intelligence_taiyang / 750 + 1))
+            int(
+                (get_skill_level_data('c_stat', index_buf_taiyang_lv50) + base_array[index_buf_taiyang_extra_strength_and_intelligence]) * (taiyang_extra_percent_strength_and_intelligence / 100 + 1)
+            ) * (intelligence_taiyang / 750 + 1))
         # 虔诚信念或少女的爱增加的智力数值
         piety_halo_or_girs_love_increase_intelligence = int(first_awaken_passive_increase_intelligence + 442)
         # 一觉被动概览

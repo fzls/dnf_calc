@@ -46,7 +46,16 @@
 # fixup_bless_intelligence:                         祝福补正的智力，用于修正勇气换装与太阳装的差异，如太阳装用与贝奇邂逅称号+90智力，附魔+35，身上穿二级勇气+80智力，那么勇气的称号比太阳少45，可以填-45来修正
 # fixup_bless_physical_and_mental_strength:         祝福补正的体精，用于修正勇气换装与太阳装的差异，如太阳装用与贝奇邂逅称号+90体精，附魔+35，身上穿二级勇气+80体精，那么勇气的称号比太阳少45，可以填-45来修正
 # fixup_bless_skill_lv:                             祝福补正的等级，用于修正勇气换装与太阳装的差异，如太阳装用打宝珠的年套称号+1级祝福，身上穿二级勇气，那么需要填-1将年套的1级祝福抵扣，然后这样填二级勇气的时候就可以直接填2级，而不用手动修正数值
+# extra_bless_strength_and_intelligence:            [荣誉祝福]、[勇气祝福]、[禁忌诅咒]力量、智力增加量 +X
+# extra_bless_percent_strength_and_intelligence:    [荣誉祝福]、[勇气祝福]、[禁忌诅咒]力量、智力增加量 +X%
+# extra_bless_physical_attack_power:                [荣誉祝福]、[勇气祝福]、[禁忌诅咒]物理攻击力增加量 +X
+# extra_bless_magical_attack_power:                 [荣誉祝福]、[勇气祝福]、[禁忌诅咒]魔法攻击力增加量 +X
+# extra_bless_independent_attack_power:             [荣誉祝福]、[勇气祝福]、[禁忌诅咒]独立攻击力增加量 +X
+# extra_bless_percent_physical_attack_power:        [荣誉祝福]、[勇气祝福]、[禁忌诅咒]物理攻击力增加量 +X%
+# extra_bless_percent_magical_attack_power:         [荣誉祝福]、[勇气祝福]、[禁忌诅咒]魔法攻击力增加量 +X%
+# extra_bless_percent_independent_attack_power:     [荣誉祝福]、[勇气祝福]、[禁忌诅咒]独立攻击力增加量 +X%
 # extra_taiyang_strength_and_intelligence:          [天启之珠]、[圣光天启]、[开幕！人偶剧场]力量/智力 +X
+# extra_taiyang_percent_strength_and_intelligence:  [天启之珠]、[圣光天启]、[开幕！人偶剧场]力量、智力增加量 +X%
 
 ## 简单示例如下
 

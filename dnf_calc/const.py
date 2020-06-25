@@ -137,6 +137,10 @@ index_buf_wisteria_whip_cool = 20  # 20-W-藤鞭冷却减少X% (re: 目前好像
 index_buf_fixup_bless_intelligence = 21 # 21-X-仅用于自定义特色:祝福补正的智力，用于修正勇气换装与太阳装的差异
 index_buf_fixup_bless_physical_and_mental_strength = 22 # 22-Y-仅用于自定义特色:祝福补正的体精，用于修正勇气换装与太阳装的差异
 index_buf_fixup_bless_skill_lv = 23 # 23-Z-仅用于自定义特色:祝福补正的等级，用于修正勇气换装与太阳装的差异
+index_buf_bless_extra_strength_and_intelligence = 24 # 24-AA-仅用于辟邪玉:[荣誉祝福]、[勇气祝福]、[禁忌诅咒]力量、智力增加量 +X
+index_buf_bless_extra_physical_attack_power = 25 # 25-AB-仅用于辟邪玉:[荣誉祝福]、[勇气祝福]、[禁忌诅咒]物理攻击力增加量 +X
+index_buf_bless_extra_magical_attack_power = 26 # 26-AC-仅用于辟邪玉:[荣誉祝福]、[勇气祝福]、[禁忌诅咒]魔法攻击力增加量 +X
+index_buf_bless_extra_independent_attack_power = 27 # 27-AD-仅用于辟邪玉:[荣誉祝福]、[勇气祝福]、[禁忌诅咒]独立攻击力增加量 +X
 
 buf_multiply_entry_indexes = [
     index_buf_bless_extra_percent_strength_and_intelligence,
@@ -171,6 +175,10 @@ buf_entry_index_to_name = {
     index_buf_fixup_bless_intelligence: "21-X-仅用于自定义特色:祝福补正的智力，用于修正勇气换装与太阳装的差异",
     index_buf_fixup_bless_physical_and_mental_strength: "22-Y-仅用于自定义特色:祝福补正的体精，用于修正勇气换装与太阳装的差异",
     index_buf_fixup_bless_skill_lv: "23-Z-仅用于自定义特色:祝福补正的等级，用于修正勇气换装与太阳装的差异",
+    index_buf_bless_extra_strength_and_intelligence: "24-AA-仅用于辟邪玉:[荣誉祝福]、[勇气祝福]、[禁忌诅咒]力量、智力增加量 +X",
+    index_buf_bless_extra_physical_attack_power: "25-AB-仅用于辟邪玉:[荣誉祝福]、[勇气祝福]、[禁忌诅咒]物理攻击力增加量 +X",
+    index_buf_bless_extra_magical_attack_power: "26-AC-仅用于辟邪玉:[荣誉祝福]、[勇气祝福]、[禁忌诅咒]魔法攻击力增加量 +X",
+    index_buf_bless_extra_independent_attack_power: "27-AD-仅用于辟邪玉:[荣誉祝福]、[勇气祝福]、[禁忌诅咒]独立攻击力增加量 +X",
 }
 
 job_to_base_array_index_range_and_index_to_name_dict = {
@@ -181,7 +189,7 @@ job_to_base_array_index_range_and_index_to_name_dict = {
     },
     "buf": {
         "index_begin": index_buf_physical_and_mental_strength,
-        "index_end": index_buf_fixup_bless_skill_lv,
+        "index_end": index_buf_bless_extra_independent_attack_power,
         "index_to_name_dict": buf_entry_index_to_name,
     },
 }
@@ -394,12 +402,6 @@ entry_name_to_indexes = {
     "extra_percent_attack_damage": {
         "deal": [index_deal_extra_percent_attack_damage],
     },
-    # [天启之珠]、[圣光天启]、[开幕！人偶剧场]力量/智力 +X
-    "extra_taiyang_strength_and_intelligence": {
-        "buf": [
-            index_buf_taiyang_extra_strength_and_intelligence,
-        ]
-    },
     # 祝福补正的智力，用于修正勇气换装与太阳装的差异
     "fixup_bless_intelligence": {
         "buf": [
@@ -416,6 +418,66 @@ entry_name_to_indexes = {
     "fixup_bless_skill_lv": {
         "buf": [
             index_buf_fixup_bless_skill_lv,
+        ]
+    },
+    # [荣誉祝福]、[勇气祝福]、[禁忌诅咒]力量、智力增加量 +X
+    "extra_bless_strength_and_intelligence": {
+        "buf": [
+            index_buf_bless_extra_strength_and_intelligence,
+        ]
+    },
+    # [荣誉祝福]、[勇气祝福]、[禁忌诅咒]力量、智力增加量 +X%
+    "extra_bless_percent_strength_and_intelligence": {
+        "buf": [
+            index_buf_bless_extra_percent_strength_and_intelligence,
+        ]
+    },
+    # [荣誉祝福]、[勇气祝福]、[禁忌诅咒]物理攻击力增加量 +X
+    "extra_bless_physical_attack_power": {
+        "buf": [
+            index_buf_bless_extra_physical_attack_power,
+        ]
+    },
+    # [荣誉祝福]、[勇气祝福]、[禁忌诅咒]魔法攻击力增加量 +X
+    "extra_bless_magical_attack_power": {
+        "buf": [
+            index_buf_bless_extra_magical_attack_power,
+        ]
+    },
+    # [荣誉祝福]、[勇气祝福]、[禁忌诅咒]独立攻击力增加量 +X
+    "extra_bless_independent_attack_power": {
+        "buf": [
+            index_buf_bless_extra_independent_attack_power,
+        ]
+    },
+    # [荣誉祝福]、[勇气祝福]、[禁忌诅咒]物理攻击力增加量 +X%
+    "extra_bless_percent_physical_attack_power": {
+        "buf": [
+            index_buf_bless_extra_percent_physical_attack_power,
+        ]
+    },
+    # [荣誉祝福]、[勇气祝福]、[禁忌诅咒]魔法攻击力增加量 +X%
+    "extra_bless_percent_magical_attack_power": {
+        "buf": [
+            index_buf_bless_extra_percent_magical_attack_power,
+        ]
+    },
+    # [荣誉祝福]、[勇气祝福]、[禁忌诅咒]独立攻击力增加量 +X%
+    "extra_bless_percent_independent_attack_power": {
+        "buf": [
+            index_buf_bless_extra_percent_independent_attack_power,
+        ]
+    },
+    # [天启之珠]、[圣光天启]、[开幕！人偶剧场]力量/智力 +X
+    "extra_taiyang_strength_and_intelligence": {
+        "buf": [
+            index_buf_taiyang_extra_strength_and_intelligence,
+        ]
+    },
+    # [天启之珠]、[圣光天启]、[开幕！人偶剧场]力量、智力增加量 +X%
+    "extra_taiyang_percent_strength_and_intelligence": {
+        "buf": [
+            index_buf_taiyang_extra_percent_strength_and_intelligence,
         ]
     },
 }
@@ -454,10 +516,19 @@ entry_name_to_name = {
     "extra_all_job_all_skill_lv_25_30_in_buff_dress_up": "(在buff换装中，且与当前身上穿的不一样)所有职业Lv25~30全部技能Lv+X（特性技能除外）",
     "extra_all_job_all_skill_lv_30_35_in_buff_dress_up": "(在buff换装中，且与当前身上穿的不一样)所有职业Lv30~35全部技能Lv+X（特性技能除外）",
     "extra_percent_attack_damage": "攻击时额外增加X%的伤害增加量",
-    "extra_taiyang_strength_and_intelligence": "[天启之珠]、[圣光天启]、[开幕！人偶剧场]力量/智力 +X",
     "fixup_bless_intelligence": "祝福补正的智力，用于修正勇气换装与太阳装的差异",
     "fixup_bless_physical_and_mental_strength": "祝福补正的体精，用于修正勇气换装与太阳装的差异",
     "fixup_bless_skill_lv": "祝福补正的等级，用于修正勇气换装与太阳装的差异",
+    "extra_bless_strength_and_intelligence": "[荣誉祝福]、[勇气祝福]、[禁忌诅咒]力量、智力增加量 +X",
+    "extra_bless_percent_strength_and_intelligence": "[荣誉祝福]、[勇气祝福]、[禁忌诅咒]力量、智力增加量 +X%",
+    "extra_bless_physical_attack_power": "[荣誉祝福]、[勇气祝福]、[禁忌诅咒]物理攻击力增加量 +X",
+    "extra_bless_magical_attack_power": "[荣誉祝福]、[勇气祝福]、[禁忌诅咒]魔法攻击力增加量 +X",
+    "extra_bless_independent_attack_power": "[荣誉祝福]、[勇气祝福]、[禁忌诅咒]独立攻击力增加量 +X",
+    "extra_bless_percent_physical_attack_power": "[荣誉祝福]、[勇气祝福]、[禁忌诅咒]物理攻击力增加量 +X%",
+    "extra_bless_percent_magical_attack_power": "[荣誉祝福]、[勇气祝福]、[禁忌诅咒]魔法攻击力增加量 +X%",
+    "extra_bless_percent_independent_attack_power": "[荣誉祝福]、[勇气祝福]、[禁忌诅咒]独立攻击力增加量 +X%",
+    "extra_taiyang_strength_and_intelligence": "[天启之珠]、[圣光天启]、[开幕！人偶剧场]力量/智力 +X",
+    "extra_taiyang_percent_strength_and_intelligence": "[天启之珠]、[圣光天启]、[开幕！人偶剧场]力量、智力增加量 +X%",
 }
 
 # 预计算的buff等级最大等级
