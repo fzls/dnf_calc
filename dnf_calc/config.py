@@ -228,6 +228,9 @@ class ConstConfig(ConfigInterface):
         self.nailuo_sing_song_increase_rate_amplification_coef = 0.05
         self.nailuo_sing_song_increase_rate_final_coef = 1.20
 
+        # 奶妈、奶萝站街、进图面板差值（估算用）
+        self.naima_nailuo_mianban_delta = 487
+
 
 class Config(ConfigInterface):
     log_level_map = {

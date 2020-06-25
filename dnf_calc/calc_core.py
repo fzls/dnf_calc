@@ -189,7 +189,7 @@ def process_buf(step: CalcStepData):
             # 奶妈/奶萝增加站街预估
             if data.job_name != "(奶系)神思者":
                 bless_overview += " 站街面板 = {street_intelligence}".format(
-                    street_intelligence=int(taiyang_mianban) - 541
+                    street_intelligence=int(taiyang_mianban) - data.const.naima_nailuo_mianban_delta
                 )
 
             #################################准备排行数据#################################
