@@ -2,9 +2,12 @@
 
 # 配置表格式
 # 首层为数组
-# 第二层包括两个字段
+# 第二层包括三个字段
 # 1. names: 表示存档名称，计算时会尝试从本表中查找当前存档是否存在对应特色配置，若存在，则会将各个词条一一应用
 # 2. entries: 各个词条的列表，具体词条名称和含义对应关系可以参照下面的说明及现有例子
+# 3. deal_equip_fixup: 该存档各个装备的补正信息，具体用法请见注释中现有例子，大体格式为equip_index => list(attr_index=>attr_value)
+#                      其中equip_index为data.xlsx中该装备的编码，可查询data.xlsx得知；attr_index为装备属性词条名称，可查询const.py得知，例如index_deal_strength_and_intelligence、index_buf_physical_and_mental_strength
+#                      ps: 该配置项为高阶用法，如果整不明白建议不用，想用的话自己根据例子和提示琢磨- -
 
 # 词条名称及含义
 #             词条名称                                 词条含义
@@ -303,6 +306,14 @@
     - extra_all_element_strength: 8 # 所有属性强化 +8
     - physical_magical_independent_attack_power: 10 # 魔法攻击力+10
 
+#  deal_equip_fixup:
+#    11010:
+#      - index_deal_strength_and_intelligence: 10
+#      - index_deal_physical_magical_independent_attack_power: -10
+#    11011:
+#      - index_deal_strength_and_intelligence: 10
+#      - index_deal_physical_magical_independent_attack_power: -10
+
 
 - names:
     - "奶妈"
@@ -548,3 +559,10 @@
     - extra_all_element_strength: 8 # 所有属性强化 +8
     - physical_magical_independent_attack_power: 20 # 独立攻击力+20
 
+#  buf_equip_fixup:
+#    11010:
+#      - index_buf_physical_and_mental_strength: 10
+#      - index_buf_intelligence: -10
+#    11011:
+#      - index_buf_physical_and_mental_strength: 10
+#      - index_buf_intelligence: -10

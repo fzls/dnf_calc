@@ -15,6 +15,7 @@
 # 计算乘算的词条在增加对应比例后新的比率。如原先为增加20%技攻，新的词条额外增加50%技攻，则实际为1.2*1.5-1=80%技攻提升率
 from dnf_calc import config, get_setting, logger
 from .const import *
+import numpy as np
 
 
 def multiply_entry(old_inc_percent, add_inc_percent):
@@ -22,7 +23,7 @@ def multiply_entry(old_inc_percent, add_inc_percent):
 
 
 # 获取国服特殊加成属性, job_type = "buf" or "deal"
-def add_bonus_attributes_to_base_array(job_type, base_array, style, creature, save_name):
+def add_bonus_attributes_to_base_array(job_type, base_array, style, creature, save_name, equip_fixup, equip_index_to_realname):
     cfg = config()
 
     original_base_array = base_array.copy()
@@ -82,16 +83,45 @@ def add_bonus_attributes_to_base_array(job_type, base_array, style, creature, sa
                             entry_writen = True
                         logger.info("\t\t{} => {}".format(buf_entry_index_to_name[entry_index], entry_value))
 
-    all_tese_strs = []
-
     diff_base_array = base_array - original_base_array
+    logger.info("最终特色加成属性如下:\n{}".format(format_base_array(job_type, diff_base_array)))
+
+    # 读取当前存档的装备补正信息
+    save_setting = get_setting("account_other_bonus_attributes", save_name)
+    if setting is not None:
+        logger.info("尝试查找补正信息")
+        fixup_cfg = {
+            "deal": ("deal_equip_fixup", deal_entry_index_to_name),
+            "buf": ("buf_equip_fixup", buf_entry_index_to_name)
+        }[job_type]
+
+        if fixup_cfg[0] in setting:
+            for equip_index, entries in setting[fixup_cfg[0]].items():
+                equip_index = str(equip_index)
+                for entry in entries:
+                    for name, value in entry.items():
+                        entry_index = eval(name)
+                        entry_value = eval(str(value))
+
+                        if equip_index not in equip_fixup:
+                            equip_fixup[equip_index] = np.array([0.0 for idx in range(len(fixup_cfg[1]))])
+                        equip_fixup[equip_index][entry_index] += entry_value
+
+        logger.info("最终装备补正数据为:\n")
+        for equip_index, ba in equip_fixup.items():
+            logger.info("{}-{}\n{}".format(equip_index, equip_index_to_realname[equip_index], format_base_array(job_type, ba)))
+
+
+def format_base_array(job_type, base_array)->str:
+    all_attributes_str = []
+
     index_info = job_to_base_array_index_range_and_index_to_name_dict[job_type]
     index_to_name_dict = index_info["index_to_name_dict"]
     for index in range(index_info["index_begin"], index_info["index_end"] + 1):
         name = index_to_name_dict[index]
-        if diff_base_array[index] == 0:
+        if base_array[index] == 0:
             # 跳过没有实际加成的特色词条
             continue
-        all_tese_strs.append("{} => {}".format(name, diff_base_array[index]))
+        all_attributes_str.append("{} => {}".format(name, base_array[index]))
 
-    logger.info("最终特色加成属性如下:\n{}".format("\n".join(all_tese_strs)))
+    return "\n".join(all_attributes_str)

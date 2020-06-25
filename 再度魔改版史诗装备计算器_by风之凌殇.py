@@ -404,8 +404,16 @@ def calc():
         base_array_with_deal_bonus_attributes[index_deal_extra_percent_skill_attack_power] = 1
         base_array_with_deal_bonus_attributes[index_deal_extra_all_element_strength] += ele_in
 
+        # 当前存档的装备补正信息 equip_index => list(attribute_index_str => fixup_value)
+        deal_equip_fixup = {}
+
         # 加入输出职业的特色加成
-        add_bonus_attributes_to_base_array("deal", base_array_with_deal_bonus_attributes, style_select.get(), creature_select.get(), save_name_list[current_save_name_index])
+        add_bonus_attributes_to_base_array("deal", base_array_with_deal_bonus_attributes, style_select.get(), creature_select.get(), save_name_list[current_save_name_index], deal_equip_fixup, equip_index_to_realname)
+
+        # 补正装备
+        for equip_index, ba in deal_equip_fixup.items():
+            if equip_index in opt_one:
+                opt_one[equip_index] += ba
 
         minheap_with_queues = [
             MinHeapWithQueue("输出排行", MinHeap(save_top_n), m.Queue()),
@@ -504,8 +512,16 @@ def calc():
         base_array_with_buf_bonus_attributes[index_buf_job_passive_lv15] += base_job_passive_lv15  # 15级职业被动Lv+X
         base_array_with_buf_bonus_attributes[index_buf_naiba_protect_badge_lv25] += base_naiba_protect_badge_lv25  # 奶爸25级守护徽章等级+X
 
+        # 当前存档的装备补正信息 equip_index => list(attribute_index_str => fixup_value)
+        buf_equip_fixup = {}
+
         # 增加奶系的国服特色
-        add_bonus_attributes_to_base_array("buf", base_array_with_buf_bonus_attributes, style_select.get(), creature_select.get(), save_name_list[current_save_name_index])
+        add_bonus_attributes_to_base_array("buf", base_array_with_buf_bonus_attributes, style_select.get(), creature_select.get(), save_name_list[current_save_name_index], buf_equip_fixup, equip_index_to_realname)
+
+        # 补正装备
+        for equip_index, ba in buf_equip_fixup.items():
+            if equip_index in opt_buf:
+                opt_buf[equip_index] += ba
 
         minheap_with_queues = [
             MinHeapWithQueue("祝福排行", MinHeap(save_top_n), m.Queue()),
