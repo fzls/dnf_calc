@@ -209,7 +209,10 @@ def process_buf(step: CalcStepData):
             noe = not_owned_equips.copy()
             if bless_huanzhuang.upgrade_work_uniform or bless_huanzhuang.is_transfered:
                 noe.append(bless_huanzhuang.huanzhuang_equip)
-            save_data = [taiyang_calc_wep, [bless_overview, taiyang_overview, first_awaken_passive_overview, all_score_str], baibianguai, tuple(noe), bless_huanzhuang.huanzhuang_equip]
+            total_increase_strength_and_intelligence = taiyang_final_increase_strength_and_intelligence + bless_final_increase_strength_and_intelligence
+            total_increase_attack_power_average = bless_final_increase_attack_power_average
+            save_data = [taiyang_calc_wep, [bless_overview, taiyang_overview, first_awaken_passive_overview, all_score_str, total_increase_strength_and_intelligence, total_increase_attack_power_average],
+                         baibianguai, tuple(noe), bless_huanzhuang.huanzhuang_equip]
 
             # 加入排序
             unique_index = random.random()

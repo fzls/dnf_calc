@@ -1323,7 +1323,7 @@ def show_result(rank_list, job_type, ele_skill):
         res_buf_exs[0] = canvas_res.create_text(123, 247, text="祝福={}".format(rank_buf_exs[2][0][0]), font=guide_font, fill='white')
         res_buf_exs[1] = canvas_res.create_text(20, 275, text="一觉={}".format(rank_buf_exs[2][0][1]), font=guide_font, anchor="w",
                                                 fill='white')
-        taiyang_pass_and_buf_huanzhuang = "一觉被动={}".format(rank_buf_exs[2][0][2])
+        taiyang_pass_and_buf_huanzhuang = "一觉被动={}\n总计: 力智={} 三攻={}".format(rank_buf_exs[2][0][2], rank_buf_exs[2][0][4], rank_buf_exs[2][0][5])
         hz_equip = rank_huanzhuang_equips[2][0]
         if hz_equip != "":
             taiyang_pass_and_buf_huanzhuang += "\n祝福切装={}".format(equip_index_to_realname[hz_equip])
@@ -1485,7 +1485,7 @@ def change_rank(now, job_type):
         rank_changed = rank_bufs[rank_type_index][now]
         rank_buf_ex_changed = rank_buf_exs[rank_type_index]
 
-        taiyang_pass_and_buf_huanzhuang = "一觉被动={}".format(rank_buf_ex_changed[now][2])
+        taiyang_pass_and_buf_huanzhuang = "一觉被动={}\n总计: 力智={} 三攻={}".format(rank_buf_ex_changed[now][2], rank_buf_ex_changed[now][4], rank_buf_ex_changed[now][5])
         hz_equip = rank_huanzhuang_equips[rank_type_index][now]
         if hz_equip != "":
             taiyang_pass_and_buf_huanzhuang += "\n祝福切装={}".format(equip_index_to_realname[hz_equip])
@@ -1541,7 +1541,7 @@ def change_rank_type(in_type):
     rank_changed = rank_bufs[rank_type_index]
     rank_buf_ex_changed = rank_buf_exs[rank_type_index]
 
-    taiyang_pass_and_buf_huanzhuang = "一觉被动={}".format(rank_buf_ex_changed[0][2])
+    taiyang_pass_and_buf_huanzhuang = "一觉被动={}\n总计: 力智={} 三攻={}".format(rank_buf_ex_changed[0][2], rank_buf_ex_changed[0][4], rank_buf_ex_changed[0][5])
     hz_equip = rank_huanzhuang_equips[rank_type_index][0]
     if hz_equip != "":
         taiyang_pass_and_buf_huanzhuang += "\n祝福切装={}".format(equip_index_to_realname[hz_equip])
