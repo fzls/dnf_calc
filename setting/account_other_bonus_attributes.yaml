@@ -559,10 +559,27 @@
     - extra_all_element_strength: 8 # 所有属性强化 +8
     - physical_magical_independent_attack_power: 20 # 独立攻击力+20
 
-#  buf_equip_fixup:
-#    11010:
-#      - index_buf_physical_and_mental_strength: 10
-#      - index_buf_intelligence: -10
-#    11011:
-#      - index_buf_physical_and_mental_strength: 10
-#      - index_buf_intelligence: -10
+  buf_equip_fixup:
+    13150: # 大自然头肩
+      - index_buf_intelligence: -1 # 品级
+    12150: # 大自然裤子
+      - index_buf_intelligence: -1 # 品级
+    12050: # CEO裤子
+      - index_buf_intelligence: -1 # 品级
+    15050: # CEO鞋子
+      - index_buf_intelligence: -2 # 品级
+    14050: # CEO腰带
+      - index_buf_intelligence: -1 # 品级
+    21251: # 时空神话手镯
+      - index_buf_intelligence: -1 # 品级
+      - index_buf_intelligence: 3 # 增幅10神话装备额外加3
+      - index_buf_job_passive_lv15: -1 # 神话第二个词条少一级
+      - index_buf_bless_extra_percent_physical_attack_power: -2 # 神话第四个词条少2%
+      - index_buf_bless_extra_percent_magical_attack_power: -2 # 神话第四个词条少2%
+      - index_buf_bless_extra_percent_independent_attack_power: -2 # 神话第四个词条少2%
+    23180: # 幸运三角戒指
+      - index_buf_intelligence: -1 # 品级
+    31200: # 军神辅助装备
+      - index_buf_intelligence: -4 # 品级
+    33200: # 军神耳环
+      - index_buf_intelligence: -3 # 品级
