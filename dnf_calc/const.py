@@ -388,6 +388,12 @@ entry_name_to_indexes = {
     "extra_percent_attack_damage": {
         "deal": [index_deal_extra_percent_attack_damage],
     },
+    # [天启之珠]、[圣光天启]、[开幕！人偶剧场]力量/智力 +X
+    "extra_taiyang_strength_and_intelligence": {
+        "buf": [
+            index_buf_taiyang_extra_strength_and_intelligence,
+        ]
+    },
 }
 
 entry_name_to_name = {
@@ -424,6 +430,7 @@ entry_name_to_name = {
     "extra_all_job_all_skill_lv_25_30_in_buff_dress_up": "(在buff换装中，且与当前身上穿的不一样)所有职业Lv25~30全部技能Lv+X（特性技能除外）",
     "extra_all_job_all_skill_lv_30_35_in_buff_dress_up": "(在buff换装中，且与当前身上穿的不一样)所有职业Lv30~35全部技能Lv+X（特性技能除外）",
     "extra_percent_attack_damage": "攻击时额外增加X%的伤害增加量",
+    "extra_taiyang_strength_and_intelligence": "[天启之珠]、[圣光天启]、[开幕！人偶剧场]力量/智力 +X",
 }
 
 # 预计算的buff等级最大等级

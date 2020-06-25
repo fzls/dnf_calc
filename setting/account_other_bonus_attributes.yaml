@@ -40,6 +40,7 @@
 # extra_all_job_all_skill_lv_25_30_in_buff_dress_up:(在buff换装中，且与当前身上穿的不一样)所有职业Lv25~30全部技能Lv+X（特性技能除外）
 # extra_all_job_all_skill_lv_30_35_in_buff_dress_up:(在buff换装中，且与当前身上穿的不一样)所有职业Lv30~35全部技能Lv+X（特性技能除外）
 # extra_percent_attack_damage:                      攻击时额外增加X%的伤害增加量
+# extra_taiyang_strength_and_intelligence:          [天启之珠]、[圣光天启]、[开幕！人偶剧场]力量/智力 +X
 
 ## 简单示例如下
 
@@ -362,6 +363,10 @@
     - strength_and_intelligence: 42 # 异次元智力+42
     # 附魔
     - strength_and_intelligence: 75  # 智力+75
+
+    ## 辟邪玉
+    # [天启之珠]、[圣光天启]、[开幕！人偶剧场]力量/智力增加量增加 +34
+    - extra_taiyang_strength_and_intelligence: 34
 
     ## 称号
     # 称号基础属性已在称号表中添加,无需处理
