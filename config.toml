@@ -172,10 +172,13 @@ score_to_damage_rate = "1 / 1095.72 * 8888" # 第二个数字为你当前装备�
 physical_and_mental = "2674 + 50"
 # 啥也不穿的满级奶妈和奶萝的智力
 intelligence = "2400 - 33 + 50"
-# 计算祝福数值时的额外15级转职被动等级（暂时不知道为啥要额外加）
+# 计算祝福数值时的额外15级转职被动等级
 base_job_passive_lv15_bless = 0
-# 计算太阳数值时的额外15级转职被动等级（暂时不知道为啥要额外加）
-base_job_passive_lv15_taiyang = 3
+# 计算太阳数值时的额外15级转职被动等级
+# 看了colg网友的回复，确认了这个的来源，可以干掉变成0啦
+# 原来默认的三级被动来源分别是：称号1级（lv15-20的太阳称号）和白金2级
+# ref: https://bbs.colg.cn/forum.php?mod=viewthread&tid=7905534&page=45#pid117622326
+base_job_passive_lv15_taiyang = 0
 
 # 一些常量
 [const]
