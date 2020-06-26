@@ -11,7 +11,6 @@ from zipfile import BadZipFile
 import PIL
 import PIL.Image
 import PIL.ImageTk
-import numpy as np
 from openpyxl import load_workbook
 
 from dnf_calc import *
@@ -361,6 +360,7 @@ def calc():
     step_data.dont_pruning = dont_pruning
     step_data.set_perfect = set_perfect
     step_data.prefer_god = prefer_god()
+    step_data.prune_cfg = cfg.prune
     # 代码中深度从0开始计算，-1则表示不启用
     step_data.start_parallel_computing_at_depth_n = config().multi_threading.start_parallel_computing_at_depth_n - 1
 

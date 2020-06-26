@@ -20,7 +20,7 @@ from typing import List, Dict, Set
 
 from numpy import ndarray
 
-from .config import ConstConfig
+from .config import ConstConfig, PruneConfig
 
 
 class MinHeap:
@@ -105,6 +105,7 @@ class CalcStepData:
         self.dont_pruning = False
         self.set_perfect = 0
         self.prefer_god = True
+        self.prune_cfg = None  # type: PruneConfig
         self.start_parallel_computing_at_depth_n = 0
 
         # 其他
@@ -170,7 +171,7 @@ class CalcData:
         self.base_job_passive_lv15 = 0
         self.base_naiba_protect_badge_lv25 = 0
         self.enable_buf_huanzhuang_search = True
-        self.exclude_buf_huanzhuang_slot = [] # type: List[str]
+        self.exclude_buf_huanzhuang_slot = []  # type: List[str]
 
         # 回传结果的队列
         self.minheap_queues = None  # type: List[Queue]

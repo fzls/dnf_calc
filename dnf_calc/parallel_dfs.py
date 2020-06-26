@@ -109,14 +109,14 @@ def try_equip(step: CalcStepData, equip):
         pruned = False
         if not step.dont_pruning:
             ub = upper_bound(step.items, step.calc_data.selected_combination, has_god or is_god(equip), current_index + 1, step.prefer_god, step.last_god_slot)
-            if ub < step.local_max_setop - step.set_perfect:
+            if ub < step.local_max_setop - step.set_perfect - step.prune_cfg.delta_between_lower_bound_and_max:
                 # 如果比缓存的历史最高词条数少，则剪枝
                 pruned = True
             else:
                 if step.local_max_setop < step.max_possiable_setopt:
                     # 否则尝试更新最新值，再判断一次
                     step.local_max_setop = step.max_setopt.value
-                    if ub < step.local_max_setop - step.set_perfect:
+                    if ub < step.local_max_setop - step.set_perfect - step.prune_cfg.delta_between_lower_bound_and_max:
                         pruned = True
 
         if not pruned:
@@ -141,12 +141,12 @@ def try_equip(step: CalcStepData, equip):
             setopt_num = sum([floor(x * 0.7) for x in set_val.values()]) + god
 
             # 仅当当前搭配的词条数不低于历史最高值时才视为有效搭配
-            if setopt_num >= step.local_max_setop - step.set_perfect:
+            if setopt_num >= step.local_max_setop - step.set_perfect - step.prune_cfg.delta_between_lower_bound_and_max:
                 # 尝试获取全局历史最高词条数
                 if step.local_max_setop < step.max_possiable_setopt:
                     step.local_max_setop = step.max_setopt.value
                 # 二次对比
-                if setopt_num >= step.local_max_setop - step.set_perfect:
+                if setopt_num >= step.local_max_setop - step.set_perfect - step.prune_cfg.delta_between_lower_bound_and_max:
                     # 尝试更新全局最高词条数和本进程缓存的历史最高词条数
                     if step.local_max_setop <= setopt_num - god * step.set_perfect:
                         max_setopt = setopt_num - god * step.set_perfect

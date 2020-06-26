@@ -127,6 +127,15 @@ class UIConfig(ConfigInterface):
         self.set_equipments_order = SetEquipmentsOrderConfig()
 
 
+class PruneConfig(ConfigInterface):
+    def __init__(self):
+        # 背景知识：目前采用套装的词条数来进行剪枝，在搜索过程中会根据当前确定的搭配部分和后续剩余槽位所能带来的最大套装词条数之和来作为剪枝依据
+        #           假设计算出的预估套装词条数为predict，当前搜索过的最大套装词条数为max，则仅当predict>=max的时候会继续搜索该分支
+        #           也就是predict在[max, inf)区间内才会继续搜索
+        # 继续搜索分支的下限与当前最大套装词条数max的差值，也就是说配置该值后，predict将在[max-delta_between_lower_bound_and_max, inf)的区间内继续搜索
+        self.delta_between_lower_bound_and_max = 0
+
+
 class GifConfig(ConfigInterface):
     def __init__(self):
         # 是否播放gif动画
@@ -264,6 +273,8 @@ class Config(ConfigInterface):
         self.exclude_buf_huanzhuang_slot = [] # type: List[str]
         # ui相关配置
         self.ui = UIConfig()
+        # 剪枝调参
+        self.prune = PruneConfig()
         # 播放gif动画设置
         self.gif = GifConfig()
         # 多线程配置
