@@ -159,7 +159,7 @@ class CalcData:
         # 配置表得到的信息
         self.job_name = ""
         self.const = None  # type: ConstConfig
-        self.huan_zhuang = None # type: HuanZhuangConfig
+        self.huan_zhuang = None  # type: HuanZhuangConfig
         self.opt_buf = {}
         self.opt_buflvl = {}
         self.base_job_passive_lv15_bless = 0
@@ -192,6 +192,12 @@ class CalcData:
             "job_name": self.job_name,
             "const": self.const,
         })
+
+
+class BlessHuanZhuangStep:
+    def __init__(self):
+        self.current_index = 0
+        self.has_god = False
 
 
 class BlessHuanZhuang:

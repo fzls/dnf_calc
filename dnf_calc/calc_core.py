@@ -7,13 +7,15 @@
 # Email     : fzls.zju@gmail.com
 # -------------------------------
 import copy
-import random
-from typing import List
 import itertools
+import random
+from math import floor
+from typing import List
 
-from .data_struct import CalcStepData, BlessHuanZhuang
+from .data_struct import CalcStepData, BlessHuanZhuang, BlessHuanZhuangStep
 from .equipment import *
 from .logic import *
+from .parallel_dfs import max_inc_values, calc_equip_value
 
 
 def process_deal(step: CalcStepData):
@@ -452,8 +454,6 @@ def calc_buf(data, for_calc, is_bless):
            first_awaken_increase_physical_and_mental_strength_or_intelligence, taiyang_final_increase_strength_and_intelligence, bless_final_increase_strength_and_intelligence, bless_final_increase_attack_power_average
 
 
-
-
 def get_bless_huanzhuang_equips_list(step: CalcStepData):
     bless_huanzhuang_equips_list = []  # type: List[BlessHuanZhuang]
 
@@ -524,57 +524,158 @@ def get_bless_huanzhuang_equips_list(step: CalcStepData):
                 continue
 
             # 确认切换进来的部位
-            dfs_huanzhuang(0, replaced_slots, BlessHuanZhuang(step.calc_data.selected_combination.copy(), [], None, [], []), step, bless_huanzhuang_equips_list)
+            init_step = BlessHuanZhuangStep()
+            # 确认非切装部位是否有神话
+            if not step.has_god:
+                init_step.has_god = False
+            else:
+                replaced_has_god = False
+                for replaced_equip in replaced_equips:
+                    if is_god(replaced_equip):
+                        replaced_has_god = True
+                        break
+                if replaced_has_god:
+                    init_step.has_god = False
+                else:
+                    init_step.has_god = True
+            dfs_huanzhuang(init_step, replaced_slots, BlessHuanZhuang(step.calc_data.selected_combination.copy(), [], None, [], []), step, bless_huanzhuang_equips_list)
 
     return bless_huanzhuang_equips_list
 
-def dfs_huanzhuang(idx, replaced_slots, bless_huanzhuang, step, bless_huanzhuang_equips_list):
-    if idx == len(replaced_slots):
-        bless_huanzhuang_equips_list.append(copy.deepcopy(bless_huanzhuang))
-    else:
-        current_index = replaced_slots[idx]
-        current_selected_equip = step.calc_data.selected_combination[current_index]
 
-        # 考虑当前部位的每一件可选装备
-        for equip in step.items[current_index]:
-            try_equip(equip, idx, replaced_slots, bless_huanzhuang, step, bless_huanzhuang_equips_list)
-
-        # 当拥有百变怪，且目前的尝试序列尚未使用到百变怪的时候考虑使用百变怪充当当前部位
-        if step.has_baibianguai and step.calc_data.baibianguai is None and bless_huanzhuang.baibianguai is None:
-            for equip in step.not_select_items[current_index]:
-                bless_huanzhuang.baibianguai = equip
-                try_equip(equip, idx, replaced_slots, bless_huanzhuang, step, bless_huanzhuang_equips_list)
-                bless_huanzhuang.baibianguai = None
-
-        # 若当前部位的工作服尚未拥有，且可升级工作服的次数尚未用完，则尝试本部位升级工作服
-        if not step.has_uniforms[current_index] and len(step.calc_data.upgrade_work_uniforms) < step.can_upgrade_work_unifrom_nums:
-            work_uniform = step.work_uniforms_items[current_index]
-
-            bless_huanzhuang.upgrade_work_uniforms.append(work_uniform)
-            try_equip(work_uniform, idx, replaced_slots, bless_huanzhuang, step, bless_huanzhuang_equips_list)
-            bless_huanzhuang.upgrade_work_uniforms.pop()
-
-        # 当当前部位有可以从选定账号跨界的装备，且已跨界数目未超过设定上限，则考虑跨界该部位的装备
-        if len(step.transfer_slots_equips[current_index]) != 0 and len(step.calc_data.transfered_equips) + len(bless_huanzhuang.transfered) < step.transfer_max_count:
-            for equip_to_transfer in step.transfer_slots_equips[current_index]:
-                bless_huanzhuang.transfered.append(equip_to_transfer)
-                try_equip(equip_to_transfer, idx, replaced_slots, bless_huanzhuang, step, bless_huanzhuang_equips_list)
-                bless_huanzhuang.transfered.pop()
-
-def try_equip(equip, idx, replaced_slots, bless_huanzhuang, step, bless_huanzhuang_equips_list):
-    # undone: 如果性能实在太差，增加剪枝处理，参考正常剪枝的处理
-    current_index = replaced_slots[idx]
+def dfs_huanzhuang(huanzhuang_step, replaced_slots, bless_huanzhuang, step, bless_huanzhuang_equips_list):
+    current_index = replaced_slots[huanzhuang_step.current_index]
     current_selected_equip = step.calc_data.selected_combination[current_index]
+
+    # 考虑当前部位的每一件可选装备
+    for equip in step.items[current_index]:
+        try_equip(equip, huanzhuang_step, replaced_slots, bless_huanzhuang, step, bless_huanzhuang_equips_list)
+
+    # 当拥有百变怪，且目前的尝试序列尚未使用到百变怪的时候考虑使用百变怪充当当前部位
+    if step.has_baibianguai and step.calc_data.baibianguai is None and bless_huanzhuang.baibianguai is None:
+        for equip in step.not_select_items[current_index]:
+            bless_huanzhuang.baibianguai = equip
+            try_equip(equip, huanzhuang_step, replaced_slots, bless_huanzhuang, step, bless_huanzhuang_equips_list)
+            bless_huanzhuang.baibianguai = None
+
+    # 若当前部位的工作服尚未拥有，且可升级工作服的次数尚未用完，则尝试本部位升级工作服
+    if not step.has_uniforms[current_index] and len(step.calc_data.upgrade_work_uniforms) < step.can_upgrade_work_unifrom_nums:
+        work_uniform = step.work_uniforms_items[current_index]
+
+        bless_huanzhuang.upgrade_work_uniforms.append(work_uniform)
+        try_equip(work_uniform, huanzhuang_step, replaced_slots, bless_huanzhuang, step, bless_huanzhuang_equips_list)
+        bless_huanzhuang.upgrade_work_uniforms.pop()
+
+    # 当当前部位有可以从选定账号跨界的装备，且已跨界数目未超过设定上限，则考虑跨界该部位的装备
+    if len(step.transfer_slots_equips[current_index]) != 0 and len(step.calc_data.transfered_equips) + len(bless_huanzhuang.transfered) < step.transfer_max_count:
+        for equip_to_transfer in step.transfer_slots_equips[current_index]:
+            bless_huanzhuang.transfered.append(equip_to_transfer)
+            try_equip(equip_to_transfer, huanzhuang_step, replaced_slots, bless_huanzhuang, step, bless_huanzhuang_equips_list)
+            bless_huanzhuang.transfered.pop()
+
+
+def try_equip(equip, huanzhuang_step, replaced_slots, bless_huanzhuang, step, bless_huanzhuang_equips_list):
+    current_index = huanzhuang_step.current_index
+    current_slot_index = replaced_slots[huanzhuang_step.current_index]
+    current_selected_equip = step.calc_data.selected_combination[current_slot_index]
     if equip == current_selected_equip:
         return
 
-    old_equip = bless_huanzhuang.equips[current_index]
+    # 剪枝条件1：若当前切装序列已经有神话装备（god），且当前这个部位遍历到的仍是一个神话装备，则可以直接跳过
+    if huanzhuang_step.has_god and is_god(equip):
+        return
 
-    bless_huanzhuang.equips[current_index] = equip
+    # 保存回溯状态
+    old_equip = bless_huanzhuang.equips[current_slot_index]
+    has_god = huanzhuang_step.has_god
+
+    # 更新搜索状态
+    bless_huanzhuang.equips[current_slot_index] = equip
     bless_huanzhuang.huanzhuang_equips.append(equip)
-    dfs_huanzhuang(idx + 1, replaced_slots, bless_huanzhuang, step, bless_huanzhuang_equips_list)
+    huanzhuang_step.current_index += 1
+    huanzhuang_step.has_god = huanzhuang_step.has_god or is_god(equip)
+
+    if current_index < len(replaced_slots) - 1:
+        # 未到最后一层，继续迭代
+
+        # 剪枝条件2：预计算出后面切装备部位能够获得的最大价值量，若当前已有价值量与之相加低于已处理的最高价值量，则剪枝
+        pruned = False
+        if not step.dont_pruning:
+            ub = upper_bound(huanzhuang_step, replaced_slots, bless_huanzhuang, step.prefer_god, step.last_god_slot)
+            if ub < step.local_max_setop - step.set_perfect - step.prune_cfg.delta_between_lower_bound_and_max:
+                # 如果比缓存的历史最高词条数少，则剪枝
+                pruned = True
+            else:
+                if step.local_max_setop < step.max_possiable_setopt:
+                    # 否则尝试更新最新值，再判断一次
+                    step.local_max_setop = step.max_setopt.value
+                    if ub < step.local_max_setop - step.set_perfect - step.prune_cfg.delta_between_lower_bound_and_max:
+                        pruned = True
+
+        if not pruned:
+            dfs_huanzhuang(huanzhuang_step, replaced_slots, bless_huanzhuang, step, bless_huanzhuang_equips_list)
+    else:
+        # 最后一层，即形成了一个切装方案
+        if not step.dont_pruning:
+            # 检查是否有神话装备
+            god = 0
+            if step.prefer_god and (has_god or is_god(equip)):
+                god = 1
+            # 计算套装数目
+            set_list = ["1" + str(get_set_name(bless_huanzhuang.equips[x])) for x in range(0, 11)]
+            set_val = Counter(set_list)
+            del set_val['136', '137', '138']
+            # 套装词条数：1件价值量=0，两件=1，三件、四件=2，五件=3，神话额外增加1价值量
+            setopt_num = sum([floor(x * 0.7) for x in set_val.values()]) + god
+
+            # 仅当当前搭配的词条数不低于历史最高值时才视为有效搭配
+            if setopt_num >= step.local_max_setop - step.set_perfect - step.prune_cfg.delta_between_lower_bound_and_max:
+                # 尝试获取全局历史最高词条数
+                if step.local_max_setop < step.max_possiable_setopt:
+                    step.local_max_setop = step.max_setopt.value
+                # 二次对比
+                if setopt_num >= step.local_max_setop - step.set_perfect - step.prune_cfg.delta_between_lower_bound_and_max:
+                    # 尝试更新全局最高词条数和本进程缓存的历史最高词条数
+                    if step.local_max_setop <= setopt_num - god * step.set_perfect:
+                        max_setopt = setopt_num - god * step.set_perfect
+                        step.max_setopt.value = max_setopt
+                        step.local_max_setop = max_setopt
+
+                    # 加入到换装集合中
+                    bless_huanzhuang_equips_list.append(copy.deepcopy(bless_huanzhuang))
+        else:
+            # 不进行任何剪枝操作，切装对比的标准是最终计算出的伤害与奶量倍率
+            bless_huanzhuang_equips_list.append(copy.deepcopy(bless_huanzhuang))
+
+    huanzhuang_step.has_god = has_god
+    huanzhuang_step.current_index -= 1
     bless_huanzhuang.huanzhuang_equips.pop()
-    bless_huanzhuang.equips[current_index] = old_equip
+    bless_huanzhuang.equips[current_slot_index] = old_equip
+
+
+def upper_bound(huanzhuang_step, replaced_slots, bless_huanzhuang, prefer_god, last_god_slot):
+    # 计算至今为止已有的价值量
+    selected_combination = bless_huanzhuang.huanzhuang_equips.copy()
+    for slot, equip in enumerate(bless_huanzhuang.equips):
+        # 加入非切装部位
+        if slot not in replaced_slots:
+            selected_combination.append(equip)
+
+    current_value = calc_equip_value(selected_combination, huanzhuang_step.has_god, prefer_god)
+    # 后续按最大价值量计算，即每个槽位按能产生一个套装词条数计算
+    remaining_max_value = max_inc_values[len(replaced_slots) - huanzhuang_step.current_index]
+    # 获取神话的词条
+    god_value = 0
+    if prefer_god:
+        if huanzhuang_step.has_god:
+            god_value = 1
+        else:
+            for slot in replaced_slots[huanzhuang_step.current_index:]:
+                if slot <= last_god_slot:
+                    god_value = 1
+                    break
+
+    return current_value + remaining_max_value + god_value
 
 
 def list_replace(l: list, old, new):
@@ -585,6 +686,7 @@ def list_replace(l: list, old, new):
 def is_valid_buf_equips(equip, step: CalcStepData):
     return equip in step.calc_data.opt_buf
 
+
 def subset(iterable, min_elements, max_elements):
     """
     subset([1,2,3], 0, 2) --> () (1,) (2,) (3,) (1,2) (1,3) (2,3)
@@ -593,4 +695,4 @@ def subset(iterable, min_elements, max_elements):
     min_elements = max(min_elements, 0)
     max_elements = min(max_elements, len(iterable))
     # note we return an iterator rather than a list
-    return itertools.chain.from_iterable(itertools.combinations(xs,n) for n in range(min_elements, max_elements+1))
+    return itertools.chain.from_iterable(itertools.combinations(xs, n) for n in range(min_elements, max_elements + 1))

@@ -341,15 +341,16 @@ def calc():
     step_data.transfer_max_count = transfer_max_count
     step_data.transfer_slots_equips = transfer_slots_equips
 
-    step_data.last_god_slot = get_last_god_slot(items)
+    last_god_slot = get_last_god_slot(items)
+    step_data.last_god_slot = last_god_slot
 
     step_data.current_index = 0
     step_data.has_god = False
     step_data.local_max_setop = 0
     step_data.max_setopt = max_setopt
     step_data.max_possiable_setopt = 3 + 2 + 2 + 1  # 533 以及神话对应的一个词条
-    if set_perfect or not prefer_god():
-        # 如果神话不优先，则不计入最高历史词条
+    if set_perfect or not prefer_god() or last_god_slot == -1:
+        # 如果神话不优先或者没有神话，则不计入最高历史词条
         step_data.max_possiable_setopt -= 1
 
     calc_data = CalcData()
