@@ -178,7 +178,7 @@ def sort_counter_key(counter_item):
     return -counter_item[1], int(counter_item[0])
 
 
-def get_readable_names(equip_index_to_realname, weapon, equips, huanzhuang_equip=""):
+def get_readable_names(equip_index_to_realname, weapon, equips, huanzhuang_equips=[]):
     readable_names = []
     readable_names.append(equip_index_to_realname[weapon])
 
@@ -202,8 +202,10 @@ def get_readable_names(equip_index_to_realname, weapon, equips, huanzhuang_equip
     for wisdom_index in wisdom_indexs:
         readable_names.append(equip_index_to_realname[wisdom_index])
 
-    if huanzhuang_equip != "":
-        readable_names.append("{}(祝福切装)".format(equip_index_to_realname[huanzhuang_equip]))
+    if len(huanzhuang_equips) != 0:
+        readable_names.append("(之后为祝福切装)")
+        for hz in huanzhuang_equips:
+            readable_names.append(equip_index_to_realname[hz])
 
     return readable_names
 

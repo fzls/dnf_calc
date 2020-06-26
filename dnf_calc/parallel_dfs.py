@@ -61,6 +61,7 @@ def copy_step(step: CalcStepData) -> CalcStepData:
     copied_step.work_uniforms_items = copy.deepcopy(step.work_uniforms_items)
     copied_step.transfer_slots_equips = copy.deepcopy(step.transfer_slots_equips)
     copied_step.owned_set_2_equips_map = copy.deepcopy(step.owned_set_2_equips_map)
+    copied_step.prune_cfg = copy.deepcopy(step.prune_cfg)
 
     data = step.calc_data
 
@@ -74,9 +75,9 @@ def copy_step(step: CalcStepData) -> CalcStepData:
     copied_data.opt_one = copy.deepcopy(data.opt_one)
     copied_data.base_array_with_buf_bonus_attributes = data.base_array_with_buf_bonus_attributes.copy()
     copied_data.const = copy.deepcopy(data.const)
+    copied_data.huan_zhuang = copy.deepcopy(data.huan_zhuang)
     copied_data.opt_buf = copy.deepcopy(data.opt_buf)
     copied_data.opt_buflvl = copy.deepcopy(data.opt_buflvl)
-    copied_data.exclude_buf_huanzhuang_slot = copy.deepcopy(data.exclude_buf_huanzhuang_slot)
 
     copied_step.calc_data = copied_data
 

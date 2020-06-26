@@ -20,7 +20,7 @@ from typing import List, Dict, Set
 
 from numpy import ndarray
 
-from .config import ConstConfig, PruneConfig
+from .config import ConstConfig, PruneConfig, HuanZhuangConfig
 
 
 class MinHeap:
@@ -159,6 +159,7 @@ class CalcData:
         # 配置表得到的信息
         self.job_name = ""
         self.const = None  # type: ConstConfig
+        self.huan_zhuang = None # type: HuanZhuangConfig
         self.opt_buf = {}
         self.opt_buflvl = {}
         self.base_job_passive_lv15_bless = 0
@@ -170,8 +171,6 @@ class CalcData:
         self.base_taiyang_level = 0
         self.base_job_passive_lv15 = 0
         self.base_naiba_protect_badge_lv25 = 0
-        self.enable_buf_huanzhuang_search = True
-        self.exclude_buf_huanzhuang_slot = []  # type: List[str]
 
         # 回传结果的队列
         self.minheap_queues = None  # type: List[Queue]
@@ -196,9 +195,9 @@ class CalcData:
 
 
 class BlessHuanZhuang:
-    def __init__(self, equips, huanzhuang_equip, is_baibianguai, upgrade_work_uniform, is_transfered):
-        self.equips = equips  # 勇气祝福换装装备（最多允许与太阳装备有一个部位不同）
-        self.huanzhuang_equip = huanzhuang_equip  # 与太阳装备不同的那件装备
-        self.is_baibianguai = is_baibianguai  # 切装装备是否是百变怪变过来的
-        self.upgrade_work_uniform = upgrade_work_uniform  # 切装装备是否是额外升级的工作服
-        self.is_transfered = is_transfered  # 切装装备是否是跨界过来的
+    def __init__(self, equips, huanzhuang_equips, baibianguai, upgrade_work_uniforms, transfered):
+        self.equips = equips  # 勇气祝福换装装备
+        self.huanzhuang_equips = huanzhuang_equips  # 与太阳装备不同的装备
+        self.baibianguai = baibianguai  # 百变怪得来的切装装备
+        self.upgrade_work_uniforms = upgrade_work_uniforms  # 额外升级的工作服的切装装备
+        self.transfered = transfered  # 跨界过来的切装装备

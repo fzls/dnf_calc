@@ -21,16 +21,6 @@ readme_page = "https://github.com/fzls/dnf_calc/blob/master/README.md"
 # 是否在点击读取存档按钮时关闭结果窗口（若存在）
 destroy_result_windows_when_click_load_checklist_button = true
 
-# 是否启用奶系的切装（限单件）搜索方案
-enable_buf_huanzhuang_search = true
-# 奶系切装排除的部位，用于将特定部位的切装方案排除，如鞋子上有宝珠的话，换装打造成本太高
-# 装备部位编码
-# 11 上衣  12 裤子   13 头肩 14 腰带 15 鞋子
-# 21 手镯  22 项链   23 戒指
-# 31 辅助装备 32 魔法石 33 耳环
-exclude_buf_huanzhuang_slot = []
-#exclude_buf_huanzhuang_slot = ["13", "15"] # 示例配置，表示不考虑头肩和鞋子的切装方案
-
 #####################################################################
 #                   全局配置和各个子节配置的分隔点                     #
 #####################################################################
@@ -124,6 +114,19 @@ start_parallel_computing_at_depth_n = 2
 #           也就是predict在[max, inf)区间内才会继续搜索
 # 继续搜索分支的下限与当前最大套装词条数max的差值，也就是说配置该值后，predict将在[max-delta_between_lower_bound_and_max, inf)的区间内继续搜索
 delta_between_lower_bound_and_max = 0
+
+[huan_zhuang]
+# 是否启用奶系的切装（限单件）搜索方案
+enable = true
+# 奶系切装排除的部位，用于将特定部位的切装方案排除，如鞋子上有宝珠的话，换装打造成本太高
+# 装备部位编码
+# 11 上衣  12 裤子   13 头肩 14 腰带 15 鞋子
+# 21 手镯  22 项链   23 戒指
+# 31 辅助装备 32 魔法石 33 耳环
+exclude_slot = []
+#exclude_slot = ["13", "15"] # 示例配置，表示不考虑头肩和鞋子的切装方案
+# 最多切多少件
+max_replaced_count = 1
 
 # 播放gif动画设置
 [gif]

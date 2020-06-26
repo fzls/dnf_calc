@@ -538,6 +538,7 @@ def calc():
         calc_data.base_array_with_buf_bonus_attributes = base_array_with_buf_bonus_attributes
         calc_data.job_name = job_name
         calc_data.const = cfg.const
+        calc_data.huan_zhuang = cfg.huan_zhuang
         calc_data.opt_buf = opt_buf
         calc_data.opt_buflvl = opt_buflvl
         calc_data.base_job_passive_lv15_bless = base_job_passive_lv15_bless
@@ -549,8 +550,6 @@ def calc():
         calc_data.base_taiyang_level = base_taiyang_level
         calc_data.base_job_passive_lv15 = base_job_passive_lv15
         calc_data.base_naiba_protect_badge_lv25 = base_naiba_protect_badge_lv25
-        calc_data.enable_buf_huanzhuang_search = cfg.enable_buf_huanzhuang_search
-        calc_data.exclude_buf_huanzhuang_slot = cfg.exclude_buf_huanzhuang_slot
         calc_data.minheap_queues = [mq.minheap_queue for mq in minheap_with_queues]
         step_data.calc_data = calc_data
 
@@ -977,10 +976,10 @@ if __name__ == '__main__':
 
 
 # 用文字方式写成当前搭配，避免每次都得一个个肉眼对比图标来确认是啥装备
-def change_readable_result_area(weapon, equips, is_create, huanzhuang_equip=""):
+def change_readable_result_area(weapon, equips, is_create, huanzhuang_equips=[]):
     global res_txt_readable_result, canvas_res
 
-    readable_names = get_readable_names(equip_index_to_realname, weapon, equips, huanzhuang_equip)
+    readable_names = get_readable_names(equip_index_to_realname, weapon, equips, huanzhuang_equips)
     content = pretty_words(readable_names, 40, ' | ')
     if is_create:
         res_txt_readable_result = canvas_res.create_text(res_txt_readable_result_center_x, res_txt_readable_result_center_y,
@@ -1012,9 +1011,11 @@ def show_name():
 
     if g_current_job != "deal":
         rank_type_index = rank_type_buf - 1
-        hz_equip = rank_huanzhuang_equips[rank_type_index][g_current_rank]
-        if hz_equip != "":
-            readable_names.append("{}(祝福切装)".format(equip_index_to_realname[hz_equip]))
+        hz_equips = rank_huanzhuang_equips[rank_type_index][g_current_rank]
+        if len(hz_equips) != 0:
+            readable_names.append("(之后为祝福切装)")
+            for hz in hz_equips:
+                readable_names.append(equip_index_to_realname[hz])
 
     tkinter.messagebox.showinfo("装备详细信息", pretty_words(readable_names, 30, ' | '), parent=result_window)
 
@@ -1340,12 +1341,21 @@ def show_result(rank_list, job_type, ele_skill):
         res_buf_exs[1] = canvas_res.create_text(20, 275, text="一觉={}".format(rank_buf_exs[2][0][1]), font=guide_font, anchor="w",
                                                 fill='white')
         taiyang_pass_and_buf_huanzhuang = "一觉被动={}\n总计: 力智={} 三攻={}".format(rank_buf_exs[2][0][2], rank_buf_exs[2][0][4], rank_buf_exs[2][0][5])
-        hz_equip = rank_huanzhuang_equips[2][0]
-        if hz_equip != "":
-            taiyang_pass_and_buf_huanzhuang += "\n祝福切装={}".format(equip_index_to_realname[hz_equip])
-            if hz_equip == rank_baibiaoguais[2][0]:
+        hz_equips = rank_huanzhuang_equips[2][0]
+        if len(hz_equips) != 0:
+            taiyang_pass_and_buf_huanzhuang += "\n祝福切装={}".format('/'.join([equip_index_to_realname[hz] for hz in hz_equips]))
+
+            from_baibianguai = False
+            from_transfer_or_upgrade = False
+            for hz in hz_equips:
+                if hz == rank_baibiaoguais[2][0]:
+                    from_baibianguai = True
+                elif hz in rank_not_owned_equipss[2][0]:
+                    from_transfer_or_upgrade = True
+
+            if from_baibianguai:
                 taiyang_pass_and_buf_huanzhuang += "(百变怪)"
-            elif hz_equip in rank_not_owned_equipss[2][0]:
+            if from_transfer_or_upgrade:
                 taiyang_pass_and_buf_huanzhuang += "(跨界/升级)"
         res_buf_exs[2] = canvas_res.create_text(20, 285, text=taiyang_pass_and_buf_huanzhuang, font=guide_font, anchor="nw",
                                                 fill='white')
@@ -1404,7 +1414,7 @@ def show_result(rank_list, job_type, ele_skill):
 
         weapon = rank_settings[2][0][0]
         equips = rank_settings[2][0][1:]
-        change_readable_result_area(weapon, equips, True, hz_equip)
+        change_readable_result_area(weapon, equips, True, hz_equips)
 
         wep_index = weapon
 
@@ -1502,12 +1512,22 @@ def change_rank(now, job_type):
         rank_buf_ex_changed = rank_buf_exs[rank_type_index]
 
         taiyang_pass_and_buf_huanzhuang = "一觉被动={}\n总计: 力智={} 三攻={}".format(rank_buf_ex_changed[now][2], rank_buf_ex_changed[now][4], rank_buf_ex_changed[now][5])
-        hz_equip = rank_huanzhuang_equips[rank_type_index][now]
-        if hz_equip != "":
-            taiyang_pass_and_buf_huanzhuang += "\n祝福切装={}".format(equip_index_to_realname[hz_equip])
-            if hz_equip == rank_baibiaoguais[rank_type_index][now]:
+
+        hz_equips = rank_huanzhuang_equips[rank_type_index][now]
+        if len(hz_equips) != 0:
+            taiyang_pass_and_buf_huanzhuang += "\n祝福切装={}".format('/'.join([equip_index_to_realname[hz] for hz in hz_equips]))
+
+            from_baibianguai = False
+            from_transfer_or_upgrade = False
+            for hz in hz_equips:
+                if hz == rank_baibiaoguais[rank_type_index][now]:
+                    from_baibianguai = True
+                elif hz in rank_not_owned_equipss[rank_type_index][now]:
+                    from_transfer_or_upgrade = True
+
+            if from_baibianguai:
                 taiyang_pass_and_buf_huanzhuang += "(百变怪)"
-            elif hz_equip in rank_not_owned_equipss[rank_type_index][now]:
+            if from_transfer_or_upgrade:
                 taiyang_pass_and_buf_huanzhuang += "(跨界/升级)"
 
         canvas_res.itemconfig(res_buf, text=rank_changed)
@@ -1539,7 +1559,7 @@ def change_rank(now, job_type):
         current_weapon = g_rank_equips[g_current_buff_type][now][0]
         current_equips = g_rank_equips[g_current_buff_type][now][1:]
         canvas_res.itemconfig(res_txt_weapon, text=equip_index_to_realname[current_weapon])
-        change_readable_result_area(current_weapon, current_equips, False, hz_equip)
+        change_readable_result_area(current_weapon, current_equips, False, hz_equips)
 
 
 def change_rank_type(in_type):
@@ -1558,12 +1578,22 @@ def change_rank_type(in_type):
     rank_buf_ex_changed = rank_buf_exs[rank_type_index]
 
     taiyang_pass_and_buf_huanzhuang = "一觉被动={}\n总计: 力智={} 三攻={}".format(rank_buf_ex_changed[0][2], rank_buf_ex_changed[0][4], rank_buf_ex_changed[0][5])
-    hz_equip = rank_huanzhuang_equips[rank_type_index][0]
-    if hz_equip != "":
-        taiyang_pass_and_buf_huanzhuang += "\n祝福切装={}".format(equip_index_to_realname[hz_equip])
-        if hz_equip == rank_baibiaoguais[rank_type_index][0]:
+
+    hz_equips = rank_huanzhuang_equips[rank_type_index][0]
+    if len(hz_equips) != 0:
+        taiyang_pass_and_buf_huanzhuang += "\n祝福切装={}".format('/'.join([equip_index_to_realname[hz] for hz in hz_equips]))
+
+        from_baibianguai = False
+        from_transfer_or_upgrade = False
+        for hz in hz_equips:
+            if hz == rank_baibiaoguais[rank_type_index][0]:
+                from_baibianguai = True
+            elif hz in rank_not_owned_equipss[rank_type_index][0]:
+                from_transfer_or_upgrade = True
+
+        if from_baibianguai:
             taiyang_pass_and_buf_huanzhuang += "(百变怪)"
-        elif hz_equip in rank_not_owned_equipss[rank_type_index][0]:
+        if from_transfer_or_upgrade:
             taiyang_pass_and_buf_huanzhuang += "(跨界/升级)"
 
     if in_type == 1:
@@ -1628,7 +1658,7 @@ def change_rank_type(in_type):
     current_weapon = g_rank_equips[g_current_buff_type][0][0]
     current_equips = g_rank_equips[g_current_buff_type][0][1:]
     canvas_res.itemconfig(res_txt_weapon, text=equip_index_to_realname[current_weapon])
-    change_readable_result_area(current_weapon, current_equips, False, hz_equip)
+    change_readable_result_area(current_weapon, current_equips, False, hz_equips)
 
 
 def costum():

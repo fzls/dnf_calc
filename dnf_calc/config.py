@@ -136,6 +136,20 @@ class PruneConfig(ConfigInterface):
         self.delta_between_lower_bound_and_max = 0
 
 
+class HuanZhuangConfig(ConfigInterface):
+    def __init__(self):
+        # 是否启用奶系的切装（限单件）搜索方案
+        self.enable = True
+        # 奶系切装排除的部位，用于将特定部位的切装方案排除，如鞋子上有宝珠的话，换装打造成本太高
+        # 装备部位编码
+        # 11 上衣  12 裤子   13 头肩 14 腰带 15 鞋子
+        # 21 手镯  22 项链   23 戒指
+        # 31 辅助装备 32 魔法石 33 耳环
+        self.exclude_slot = [] # type: List[str]
+        # 最多切多少件
+        self.max_replaced_count = 1
+
+
 class GifConfig(ConfigInterface):
     def __init__(self):
         # 是否播放gif动画
@@ -263,18 +277,12 @@ class Config(ConfigInterface):
         self.readme_page = "https://github.com/fzls/dnf_calc/blob/master/README.md"
         # 是否在点击读取存档按钮时关闭结果窗口（若存在）
         self.destroy_result_windows_when_click_load_checklist_button = True
-        # 是否启用奶系的切装（限单件）搜索方案
-        self.enable_buf_huanzhuang_search = True
-        # 奶系切装排除的部位，用于将特定部位的切装方案排除，如鞋子上有宝珠的话，换装打造成本太高
-        # 装备部位编码
-        # 11 上衣  12 裤子   13 头肩 14 腰带 15 鞋子
-        # 21 手镯  22 项链   23 戒指
-        # 31 辅助装备 32 魔法石 33 耳环
-        self.exclude_buf_huanzhuang_slot = [] # type: List[str]
         # ui相关配置
         self.ui = UIConfig()
         # 剪枝调参
         self.prune = PruneConfig()
+        # 换装
+        self.huan_zhuang = HuanZhuangConfig()
         # 播放gif动画设置
         self.gif = GifConfig()
         # 多线程配置
