@@ -460,7 +460,6 @@ def get_bless_huanzhuang_equips_list(step: CalcStepData):
             continue
         # 从该三件套中选一件来作为被替换的装备
         for replaced_equip in equips:
-            replaced_is_god = is_god(replaced_equip)
             slot_index = get_slot_index(replaced_equip)
             if slot_index in step.calc_data.exclude_buf_huanzhuang_slot:
                 # 跳过不考虑切装的部位
@@ -473,38 +472,37 @@ def get_bless_huanzhuang_equips_list(step: CalcStepData):
                     # 替换进来的装备仅考虑增加一个部位后会多一个套装磁条的部位，与之前所减少的一个词条抵消
                     continue
 
-                if replaced_is_god:
-                    # 如果被替换的是神话，则目标装备只考虑神话，且来源只能是已拥有装备
-                    target_equip_god = "{}{}1".format(slot_index, target_setcode)
-                    if target_setcode in step.owned_set_2_equips_map and target_equip_god in step.owned_set_2_equips_map[target_setcode]:
-                        # 已拥有神话装备
-                        huanzhuang_equips = list_replace(step.calc_data.selected_combination.copy(), replaced_equip, target_equip_god)
-                        bless_huanzhuang_equips_list.append(BlessHuanZhuang(huanzhuang_equips, target_equip_god, False, False, False))
-                else:
-                    # 确认是否可以获取替换进来的套装Y的该部位普通目标装备，来源包括：已拥有装备、百变怪（若其余部位未使用百变怪或当前部位为百变怪）、升级工作服、跨界
-                    target_equip_normal = "{}{}0".format(slot_index, target_setcode)
-                    if is_valid_buf_equips(target_equip_normal, step):
-                        if target_setcode in step.owned_set_2_equips_map and target_equip_normal in step.owned_set_2_equips_map[target_setcode]:
-                            # 已拥有普通装备
+                # 目标装备为神话，且来源只能是已拥有装备
+                target_equip_god = "{}{}1".format(slot_index, target_setcode)
+                if target_setcode in step.owned_set_2_equips_map and target_equip_god in step.owned_set_2_equips_map[target_setcode]:
+                    # 已拥有神话装备
+                    huanzhuang_equips = list_replace(step.calc_data.selected_combination.copy(), replaced_equip, target_equip_god)
+                    bless_huanzhuang_equips_list.append(BlessHuanZhuang(huanzhuang_equips, target_equip_god, False, False, False))
+
+                # 确认是否可以获取替换进来的套装Y的该部位普通目标装备，来源包括：已拥有装备、百变怪（若其余部位未使用百变怪或当前部位为百变怪）、升级工作服、跨界
+                target_equip_normal = "{}{}0".format(slot_index, target_setcode)
+                if is_valid_buf_equips(target_equip_normal, step):
+                    if target_setcode in step.owned_set_2_equips_map and target_equip_normal in step.owned_set_2_equips_map[target_setcode]:
+                        # 已拥有普通装备
+                        huanzhuang_equips = list_replace(step.calc_data.selected_combination.copy(), replaced_equip, target_equip_normal)
+                        bless_huanzhuang_equips_list.append(BlessHuanZhuang(huanzhuang_equips, target_equip_normal, False, False, False))
+                    else:
+                        # 未拥有的普通装备
+                        if step.has_baibianguai and step.calc_data.baibianguai is None and can_convert_from_baibianguai(target_equip_normal):
+                            # 百变怪（若其余部位未使用百变怪或当前部位为百变怪），且目标部位可以用百变怪转换
                             huanzhuang_equips = list_replace(step.calc_data.selected_combination.copy(), replaced_equip, target_equip_normal)
-                            bless_huanzhuang_equips_list.append(BlessHuanZhuang(huanzhuang_equips, target_equip_normal, False, False, False))
+                            bless_huanzhuang_equips_list.append(BlessHuanZhuang(huanzhuang_equips, target_equip_normal, True, False, False))
+                        elif target_equip_normal in work_uniforms and len(step.calc_data.upgrade_work_uniforms) < step.can_upgrade_work_unifrom_nums:
+                            # 升级工作服：若目标部位是工作服，且目前仍有可以升级的名额
+                            huanzhuang_equips = list_replace(step.calc_data.selected_combination.copy(), replaced_equip, target_equip_normal)
+                            bless_huanzhuang_equips_list.append(BlessHuanZhuang(huanzhuang_equips, target_equip_normal, False, True, False))
+                            pass
                         else:
-                            # 未拥有的普通装备
-                            if step.has_baibianguai and step.calc_data.baibianguai is None and can_convert_from_baibianguai(target_equip_normal):
-                                # 百变怪（若其余部位未使用百变怪或当前部位为百变怪），且目标部位可以用百变怪转换
+                            current_index = step.calc_data.selected_combination.index(replaced_equip)
+                            if target_equip_normal in step.transfer_slots_equips[current_index] and len(step.calc_data.transfered_equips) < step.transfer_max_count:
+                                # 跨界：如果目标装备在对应部位的可跨界装备列表中，且目前仍有可以跨界的名额
                                 huanzhuang_equips = list_replace(step.calc_data.selected_combination.copy(), replaced_equip, target_equip_normal)
-                                bless_huanzhuang_equips_list.append(BlessHuanZhuang(huanzhuang_equips, target_equip_normal, True, False, False))
-                            elif target_equip_normal in work_uniforms and len(step.calc_data.upgrade_work_uniforms) < step.can_upgrade_work_unifrom_nums:
-                                # 升级工作服：若目标部位是工作服，且目前仍有可以升级的名额
-                                huanzhuang_equips = list_replace(step.calc_data.selected_combination.copy(), replaced_equip, target_equip_normal)
-                                bless_huanzhuang_equips_list.append(BlessHuanZhuang(huanzhuang_equips, target_equip_normal, False, True, False))
-                                pass
-                            else:
-                                current_index = step.calc_data.selected_combination.index(replaced_equip)
-                                if target_equip_normal in step.transfer_slots_equips[current_index] and len(step.calc_data.transfered_equips) < step.transfer_max_count:
-                                    # 跨界：如果目标装备在对应部位的可跨界装备列表中，且目前仍有可以跨界的名额
-                                    huanzhuang_equips = list_replace(step.calc_data.selected_combination.copy(), replaced_equip, target_equip_normal)
-                                    bless_huanzhuang_equips_list.append(BlessHuanZhuang(huanzhuang_equips, target_equip_normal, False, False, True))
+                                bless_huanzhuang_equips_list.append(BlessHuanZhuang(huanzhuang_equips, target_equip_normal, False, False, True))
 
     return bless_huanzhuang_equips_list
 
