@@ -489,7 +489,7 @@ def get_bless_huanzhuang_equips_list(step: CalcStepData):
                     else:
                         # 未拥有的普通装备
                         if step.has_baibianguai and step.calc_data.baibianguai is None and can_convert_from_baibianguai(target_equip_normal):
-                            # 百变怪（若其余部位未使用百变怪或当前部位为百变怪），且目标部位可以用百变怪转换
+                            # 百变怪（若其余部位未使用百变怪），且目标部位可以用百变怪转换
                             huanzhuang_equips = list_replace(step.calc_data.selected_combination.copy(), replaced_equip, target_equip_normal)
                             bless_huanzhuang_equips_list.append(BlessHuanZhuang(huanzhuang_equips, target_equip_normal, True, False, False))
                         elif target_equip_normal in work_uniforms and len(step.calc_data.upgrade_work_uniforms) < step.can_upgrade_work_unifrom_nums:
