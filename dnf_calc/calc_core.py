@@ -184,10 +184,17 @@ def process_buf(step: CalcStepData):
             # 加上适用的套装属性列表
             bless_for_calc = tuple(get_set_on(bless_huanzhuang.equips)) + bless_calc_wep
 
+            huanzhuang_slot_fixups = []
+            # 获取换装槽位配置的槽位补正信息
+            for hz in bless_huanzhuang.huanzhuang_equips:
+                slot_index = get_slot_index(hz)
+                if slot_index in step.calc_data.huanzhuang_slot_fixup:
+                    huanzhuang_slot_fixups.append(step.calc_data.huanzhuang_slot_fixup[slot_index])
+
             # 计算buf装的属性
             bless_score, _, _, bless_overview, _, _, \
             _, _, bless_final_increase_strength_and_intelligence, bless_final_increase_attack_power_average \
-                = calc_buf(data, bless_for_calc, True)
+                = calc_buf(data, bless_for_calc, True, huanzhuang_slot_fixups)
 
             # 奶妈/奶萝增加站街预估
             if data.job_name != "(奶系)神思者":
@@ -225,7 +232,7 @@ def process_buf(step: CalcStepData):
             data.minheap_queues[3].put((taiyang_mianban, unique_index, copy.deepcopy(save_data)))
 
 
-def calc_buf(data, for_calc, is_bless):
+def calc_buf(data, for_calc, is_bless, huanzhuang_slot_fixups=None):
     # 拷贝一份加上奶系职业的国服特色数值后的基础数据
     base_array = data.base_array_with_buf_bonus_attributes.copy()
     if is_bless:
@@ -233,6 +240,9 @@ def calc_buf(data, for_calc, is_bless):
         base_array[index_buf_physical_and_mental_strength] += base_array[index_buf_fixup_bless_physical_and_mental_strength]
         base_array[index_buf_intelligence] += base_array[index_buf_fixup_bless_intelligence]
         base_array[index_buf_bless_lv30] += base_array[index_buf_fixup_bless_skill_lv]
+
+        for hz_slot_fixup in huanzhuang_slot_fixups:
+            base_array += hz_slot_fixup
 
     # 获取一些需要乘算的百分比增益初始值
     bless_extra_percent_strength_and_intelligence = base_array[index_buf_bless_extra_percent_strength_and_intelligence]  # [荣誉祝福]、[勇气祝福]、[禁忌诅咒]力量、智力增加量 +X%

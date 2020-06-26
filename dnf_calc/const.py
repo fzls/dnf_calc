@@ -22,6 +22,21 @@ the_product_of_wisdoms = [
     "13390150", "22390240", "23390450", "33390750", "21400340", "31400540", "32410650",
 ]
 
+# 装备槽位编码与名称的映射
+slot_index_to_realname = {
+    "11": "上衣",
+    "12": "裤子",
+    "13": "头肩",
+    "14": "腰带",
+    "15": "鞋子",
+    "21": "手镯",
+    "22": "项链",
+    "23": "戒指",
+    "31": "辅助装备",
+    "32": "魔法石",
+    "33": "耳环",
+}
+
 # 旧版本自定义存档的列定义
 g_old_col_custom_save_key = 14  # 旧版本中，存档项名所在的列
 g_old_col_custom_save_value_begin = 15  # 旧版本中，各个存档的该存档项所在的列的初始列，加上存档index（0-99）后得到其所在列
@@ -134,13 +149,13 @@ index_buf_belief_halo = 17  # 17-T-[信念光环]体力、精神 +X
 index_buf_piety_halo_or_girs_love = 18  # 18-U-[虞诚信念]、[少女的爱]力量/智力 +X
 index_buf_hymn_cool = 19  # 19-V-圣歌冷却减少X% (re: 目前好像没实装)
 index_buf_wisteria_whip_cool = 20  # 20-W-藤鞭冷却减少X% (re: 目前好像没实装)
-index_buf_fixup_bless_intelligence = 21 # 21-X-仅用于自定义特色:祝福补正的智力，用于修正勇气换装与太阳装的差异
-index_buf_fixup_bless_physical_and_mental_strength = 22 # 22-Y-仅用于自定义特色:祝福补正的体精，用于修正勇气换装与太阳装的差异
-index_buf_fixup_bless_skill_lv = 23 # 23-Z-仅用于自定义特色:祝福补正的等级，用于修正勇气换装与太阳装的差异
-index_buf_bless_extra_strength_and_intelligence = 24 # 24-AA-仅用于辟邪玉:[荣誉祝福]、[勇气祝福]、[禁忌诅咒]力量、智力增加量 +X
-index_buf_bless_extra_physical_attack_power = 25 # 25-AB-仅用于辟邪玉:[荣誉祝福]、[勇气祝福]、[禁忌诅咒]物理攻击力增加量 +X
-index_buf_bless_extra_magical_attack_power = 26 # 26-AC-仅用于辟邪玉:[荣誉祝福]、[勇气祝福]、[禁忌诅咒]魔法攻击力增加量 +X
-index_buf_bless_extra_independent_attack_power = 27 # 27-AD-仅用于辟邪玉:[荣誉祝福]、[勇气祝福]、[禁忌诅咒]独立攻击力增加量 +X
+index_buf_fixup_bless_intelligence = 21  # 21-X-仅用于自定义特色:祝福补正的智力，用于修正勇气换装与太阳装的差异
+index_buf_fixup_bless_physical_and_mental_strength = 22  # 22-Y-仅用于自定义特色:祝福补正的体精，用于修正勇气换装与太阳装的差异
+index_buf_fixup_bless_skill_lv = 23  # 23-Z-仅用于自定义特色:祝福补正的等级，用于修正勇气换装与太阳装的差异
+index_buf_bless_extra_strength_and_intelligence = 24  # 24-AA-仅用于辟邪玉:[荣誉祝福]、[勇气祝福]、[禁忌诅咒]力量、智力增加量 +X
+index_buf_bless_extra_physical_attack_power = 25  # 25-AB-仅用于辟邪玉:[荣誉祝福]、[勇气祝福]、[禁忌诅咒]物理攻击力增加量 +X
+index_buf_bless_extra_magical_attack_power = 26  # 26-AC-仅用于辟邪玉:[荣誉祝福]、[勇气祝福]、[禁忌诅咒]魔法攻击力增加量 +X
+index_buf_bless_extra_independent_attack_power = 27  # 27-AD-仅用于辟邪玉:[荣誉祝福]、[勇气祝福]、[禁忌诅咒]独立攻击力增加量 +X
 
 buf_multiply_entry_indexes = [
     index_buf_bless_extra_percent_strength_and_intelligence,

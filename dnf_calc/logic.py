@@ -12,10 +12,11 @@
 #                         逻辑相关函数                     #
 ###########################################################
 
+import numpy as np
+
 # 计算乘算的词条在增加对应比例后新的比率。如原先为增加20%技攻，新的词条额外增加50%技攻，则实际为1.2*1.5-1=80%技攻提升率
 from dnf_calc import config, get_setting, logger
 from .const import *
-import numpy as np
 
 
 def multiply_entry(old_inc_percent, add_inc_percent):
@@ -23,7 +24,7 @@ def multiply_entry(old_inc_percent, add_inc_percent):
 
 
 # 获取国服特殊加成属性, job_type = "buf" or "deal"
-def add_bonus_attributes_to_base_array(job_type, base_array, style, creature, save_name, equip_fixup, equip_index_to_realname):
+def add_bonus_attributes_to_base_array(job_type, base_array, style, creature, save_name, equip_fixup, equip_index_to_realname, huanzhuang_slot_fixup):
     cfg = config()
 
     original_base_array = base_array.copy()
@@ -86,17 +87,17 @@ def add_bonus_attributes_to_base_array(job_type, base_array, style, creature, sa
     diff_base_array = base_array - original_base_array
     logger.info("最终特色加成属性如下:\n{}".format(format_base_array(job_type, diff_base_array)))
 
-    # 读取当前存档的装备补正信息
     save_setting = get_setting("account_other_bonus_attributes", save_name)
-    if setting is not None:
-        logger.info("尝试查找补正信息")
+    if save_setting is not None:
+        # 读取当前存档的装备补正信息
+        logger.info("尝试查找装备补正信息")
         fixup_cfg = {
             "deal": ("deal_equip_fixup", deal_entry_index_to_name),
             "buf": ("buf_equip_fixup", buf_entry_index_to_name)
         }[job_type]
 
-        if fixup_cfg[0] in setting:
-            for equip_index, entries in setting[fixup_cfg[0]].items():
+        if fixup_cfg[0] in save_setting:
+            for equip_index, entries in save_setting[fixup_cfg[0]].items():
                 equip_index = str(equip_index)
                 for entry in entries:
                     for name, value in entry.items():
@@ -111,8 +112,27 @@ def add_bonus_attributes_to_base_array(job_type, base_array, style, creature, sa
         for equip_index, ba in equip_fixup.items():
             logger.info("{}-{}\n{}".format(equip_index, equip_index_to_realname[equip_index], format_base_array(job_type, ba)))
 
+        # 读取当前存档的buff换装槽位补正信息
+        logger.info("尝试查找buff换装槽位补正信息")
 
-def format_base_array(job_type, base_array)->str:
+        if "huanzhuang_slot_fixup" in save_setting:
+            for slot_index, entries in save_setting["huanzhuang_slot_fixup"].items():
+                slot_index = str(slot_index)
+                for entry in entries:
+                    for name, value in entry.items():
+                        entry_index = eval(name)
+                        entry_value = eval(str(value))
+
+                        if slot_index not in huanzhuang_slot_fixup:
+                            huanzhuang_slot_fixup[slot_index] = np.array([0.0 for idx in range(len(buf_entry_index_to_name))])
+                        huanzhuang_slot_fixup[slot_index][entry_index] += entry_value
+
+        logger.info("最终换装槽位补正数据为:\n")
+        for slot_index, ba in huanzhuang_slot_fixup.items():
+            logger.info("{}-{}\n{}".format(slot_index, slot_index_to_realname[slot_index], format_base_array(job_type, ba)))
+
+
+def format_base_array(job_type, base_array) -> str:
     all_attributes_str = []
 
     index_info = job_to_base_array_index_range_and_index_to_name_dict[job_type]

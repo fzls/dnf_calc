@@ -145,7 +145,7 @@ class HuanZhuangConfig(ConfigInterface):
         # 11 上衣  12 裤子   13 头肩 14 腰带 15 鞋子
         # 21 手镯  22 项链   23 戒指
         # 31 辅助装备 32 魔法石 33 耳环
-        self.exclude_slot = [] # type: List[str]
+        self.exclude_slot = []  # type: List[str]
         # 最多切多少件
         self.max_replaced_count = 1
 

@@ -5,8 +5,14 @@
 # 第二层包括三个字段
 # 1. names: 表示存档名称，计算时会尝试从本表中查找当前存档是否存在对应特色配置，若存在，则会将各个词条一一应用
 # 2. entries: 各个词条的列表，具体词条名称和含义对应关系可以参照下面的说明及现有例子
-# 3. deal_equip_fixup: 该存档各个装备的补正信息，具体用法请见注释中现有例子，大体格式为equip_index => list(attr_index=>attr_value)
+# 3. deal_equip_fixup: 该存档各个输出职业装备的补正信息，具体用法请见注释中现有例子，大体格式为equip_index => list(attr_index=>attr_value)
 #                      其中equip_index为data.xlsx中该装备的编码，可查询data.xlsx得知；attr_index为装备属性词条名称，可查询const.py得知，例如index_deal_strength_and_intelligence、index_buf_physical_and_mental_strength
+#                      ps: 该配置项为高阶用法，如果整不明白建议不用，想用的话自己根据例子和提示琢磨- -
+# 4. buf_equip_fixup: 该存档各个奶系职业装备的补正信息，具体用法请见注释中现有例子，大体格式为equip_index => list(attr_index=>attr_value)
+#                      其中equip_index为data.xlsx中该装备的编码，可查询data.xlsx得知；attr_index为装备属性词条名称，可查询const.py得知，例如index_deal_strength_and_intelligence、index_buf_physical_and_mental_strength
+#                      ps: 该配置项为高阶用法，如果整不明白建议不用，想用的话自己根据例子和提示琢磨- -
+# 5. huanzhuang_slot_fixup: 该存档奶系职业各个换装槽位的补正信息，具体用法请见注释中现有例子，大体格式为slot_index => list(attr_index=>attr_value)
+#                      其中slot_index为装备部位编码，参考ui.set_equipments_order中的注释；attr_index为装备属性词条名称，可查询const.py得知，例如index_deal_strength_and_intelligence、index_buf_physical_and_mental_strength
 #                      ps: 该配置项为高阶用法，如果整不明白建议不用，想用的话自己根据例子和提示琢磨- -
 
 # 词条名称及含义
@@ -592,3 +598,10 @@
       - index_buf_intelligence: -4 # 品级
     33200: # 军神耳环
       - index_buf_intelligence: -3 # 品级
+
+  huanzhuang_slot_fixup:
+    12: # 裤子
+      - index_buf_intelligence: -5 # 绿色徽章为10，比太阳换装15少5
+      - index_buf_intelligence: -5 # 绿色徽章为10，比太阳换装15少5
+      - index_buf_intelligence: -11 # 增幅为+8，+33智力，比太阳换装增幅10，+44智力，少11
+      - index_buf_intelligence: -0.5 # 增幅为+8，钝甲精通+61.5，比太阳换装增幅10，钝甲精通+62，少0.5

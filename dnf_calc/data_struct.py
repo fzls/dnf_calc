@@ -160,6 +160,7 @@ class CalcData:
         self.job_name = ""
         self.const = None  # type: ConstConfig
         self.huan_zhuang = None  # type: HuanZhuangConfig
+        self.huanzhuang_slot_fixup = {}  # 当前存档的buff换装槽位补正信息 slot_index => list(attribute_index_str => fixup_value)
         self.opt_buf = {}
         self.opt_buflvl = {}
         self.base_job_passive_lv15_bless = 0
