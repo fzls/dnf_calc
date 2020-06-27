@@ -293,9 +293,9 @@
 
     ### 护石栏
     ## 护石(上)
-    - other_rate_like_extra_percent_skill_attack_power: 0.135 * (17 + 6) # 牛头王的觉醒,dps占比13.5%，技能提升大概23%
+    - other_rate_like_extra_percent_skill_attack_power: 0.108 * 25 # 伊伽贝拉的魂龛,dps占比10.8%，技能提升大概25%
     ## 护石(下)
-    - other_rate_like_extra_percent_skill_attack_power: 0.103 * 12.4 # 愤怒之焰,dps占比10.3%，技能提升大概12.4%
+    - other_rate_like_extra_percent_skill_attack_power: 0.107 * (17 + 6) # 牛头王的觉醒,dps占比10.7%，技能提升大概23%
 
 
     ### 勋章栏
