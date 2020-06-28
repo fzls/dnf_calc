@@ -16,7 +16,7 @@ echo.
 
 
 :: 使用pyinstaller打包
-pyinstaller.exe --hidden-import pkg_resources.py2_warn  --noconsole -F "再度魔改版史诗装备计算器_by风之凌殇.py"
+pyinstaller.exe --hidden-import pkg_resources.py2_warn --exclude-module PySide2 --noconsole -F "再度魔改版史诗装备计算器_by风之凌殇.py"
 
 :: 复制生成的结果后删除临时文件
 COPY /Y "dist\再度魔改版史诗装备计算器_by风之凌殇.exe" "再度魔改版史诗装备计算器_by风之凌殇.exe"
