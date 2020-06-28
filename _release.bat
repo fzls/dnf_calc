@@ -58,6 +58,15 @@ DEL /Q "排行结果.xlsx"
 :: re: 配置工具尚未完成，先不发布
 RMDIR /S /Q "dnf_calc_setting_tool"
 
+:: 移除python版本gui配置工具中的部分多余的东西
+RMDIR /S /Q "dnf_calc_setting_tool_py\fonts"
+RMDIR /S /Q "dnf_calc_setting_tool_py\logs"
+DEL /Q ".gitignore"
+DEL /Q "go.mod"
+DEL /Q "go.sum"
+DEL /Q "LICENSE"
+DEL /Q "main.go"
+
 :: 删除旧版本的这些文件
 cd "使用说明"
 del /Q 提示*.txt 注意*.txt 使用说明.txt _常见问题解答*.docx _手动安装运行环境教程*.docx
