@@ -31,7 +31,7 @@ https://drive.google.com/file/d/1p8ZdzW_NzGKHHOtfPTuZSr1YgSEVtYCj/view
 3. 由于有人从主界面的github按钮来github捣乱，表示有被恶心到，决定移除该按钮。有意沟通代码相关问题的，欢迎使用【友好、平等、以代码和数据为讨论基础、非情绪发泄】的方式来github提issue沟通。
 4. 其他改动及上述功能具体用法，详见README.md
 
-# v3.9.0
+# v3.9.0 2020.6.28
 ## gui配置工具
 1. 将DbArl（天府星）为魔改计算器添加的gui配置工具整合到主界面的存档按钮下方的配置工具按钮，点击即可打开gui配置工具
 2. 调整发布脚本和打包脚本，将配置工具加入到对应流程中
