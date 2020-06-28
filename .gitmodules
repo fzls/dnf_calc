@@ -1,3 +1,6 @@
 [submodule "dnf_calc_setting_tool"]
 	path = dnf_calc_setting_tool
 	url = https://github.com/fzls/dnf_calc_setting_tool.git
+[submodule "dnf_calc_setting_tool_py"]
+	path = dnf_calc_setting_tool_py
+	url = https://github.com/DbArl/dnf_calc_setting_tool
