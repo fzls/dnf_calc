@@ -142,10 +142,10 @@
     - extra_all_job_all_active_skill_lv_1_30: 1 # 所有职业Lv1~30全部主动技能Lv+1（特性技能除外）
 
     ## 武器
-    # 强化+12
-    - physical_magical_independent_attack_power: 849 # 魔法攻击力+849
+    # 强化+13
+    - physical_magical_independent_attack_power: 986 # 魔法攻击力+986
     # 附魔
-    - extra_all_element_strength: 15 # 暗属性强化 +15
+    - extra_all_element_strength: 12 # 暗属性强化 +12
 
     ## 辟邪玉
     # 暗属性攻击
@@ -174,8 +174,8 @@
     - strength_and_intelligence: 25  # 智力+25
     # 红色徽章(下)
     - strength_and_intelligence: 25  # 智力+25
-    # 增幅+8
-    - strength_and_intelligence: 33 # 异次元智力+33
+    # 增幅+10
+    - strength_and_intelligence: 44 # 异次元智力+44
     # 附魔
     - extra_all_element_strength: 25 # 暗属性强化 +25
 
@@ -603,5 +603,3 @@
     12: # 裤子
       - index_buf_intelligence: -5 # 绿色徽章为10，比太阳换装15少5
       - index_buf_intelligence: -5 # 绿色徽章为10，比太阳换装15少5
-      - index_buf_intelligence: -11 # 增幅为+8，+33智力，比太阳换装增幅10，+44智力，少11
-      - index_buf_intelligence: -0.5 # 增幅为+8，钝甲精通+61.5，比太阳换装增幅10，钝甲精通+62，少0.5
