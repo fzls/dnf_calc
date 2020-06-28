@@ -2884,8 +2884,12 @@ def get_gif_frames(gif_path):
     return frames
 
 
-def open_github_page():
-    webbrowser.open('https://github.com/fzls/dnf_calc')
+def open_setting_tool():
+    threading.Thread(target=open_setting_tool_sync, daemon=True).start()
+
+def open_setting_tool_sync():
+    import subprocess
+    subprocess.call("dnf_calc_setting_tool_py/setting_tool.exe", cwd="./dnf_calc_setting_tool_py")
 
 
 if __name__ == '__main__':
@@ -3226,10 +3230,10 @@ if __name__ == '__main__':
                                activebackground=dark_main)
     donate_bt.place(x=625, y=550 - 28)
 
-    open_github_page_image = PhotoImage(file='ext_img/open_github_page.png')
-    open_github_page_url = tkinter.Button(self, image=open_github_page_image, command=open_github_page, borderwidth=0, bg=dark_main,
+    open_setting_tool_image = PhotoImage(file='ext_img/open_setting_tool.png')
+    open_setting_tool_btn = tkinter.Button(self, image=open_setting_tool_image, command=open_setting_tool, borderwidth=0, bg=dark_main,
                                           activebackground=dark_main)
-    open_github_page_url.place(x=500, y=400)
+    open_setting_tool_btn.place(x=500, y=400)
 
     dunfaoff_image = PhotoImage(file='ext_img/dunfaoff.png')
     dunfaoff_url = tkinter.Button(self, image=dunfaoff_image, command=dunfaoff, borderwidth=0, bg=dark_main,
