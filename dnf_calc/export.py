@@ -6,9 +6,28 @@
 # Author    : Chen Ji
 # Email     : fzls.zju@gmail.com
 # -------------------------------
+import sys
 import threading
 import tkinter.messagebox
-from typing import List, Dict, Tuple, Protocol
+from typing import List, Dict, Tuple
+
+if sys.version_info.major >= 3 and sys.version_info.minor >= 8:
+    from typing import Protocol
+
+
+    class ExtractRankColsFunc(Protocol):
+        def __call__(self, ele_skill, job_name, cool, equip_index_to_realname, custom_buf_data, ranking_name, rank, ranking_detail):
+            """
+            @type ele_skill: int
+            @type job_name: str
+            @type cool: str
+            @type equip_index_to_realname: Dict[str, str]
+            @type custom_buf_data: Dict[str, int]
+            @type ranking_name: str
+            @type rank: int
+            @type ranking_detail: list
+            @rtype: list
+            """
 
 from openpyxl import Workbook
 
@@ -65,21 +84,6 @@ def export_result(ele_skill, col_names, job_name, cool, equip_index_to_realname,
         ))
 
     threading.Thread(target=_export_reuslt, daemon=True).start()
-
-
-class ExtractRankColsFunc(Protocol):
-    def __call__(self, ele_skill, job_name, cool, equip_index_to_realname, custom_buf_data, ranking_name, rank, ranking_detail):
-        """
-        @type ele_skill: int
-        @type job_name: str
-        @type cool: str
-        @type equip_index_to_realname: Dict[str, str]
-        @type custom_buf_data: Dict[str, int]
-        @type ranking_name: str
-        @type rank: int
-        @type ranking_detail: list
-        @rtype: list
-        """
 
 
 def extract_deal_rank_cols(ele_skill, job_name, cool, equip_index_to_realname, custom_buf_data, ranking_name, rank, ranking_detail):
