@@ -602,4 +602,3 @@
   huanzhuang_slot_fixup:
     12: # 裤子
       - index_buf_intelligence: -5 # 绿色徽章为10，比太阳换装15少5
-      - index_buf_intelligence: -5 # 绿色徽章为10，比太阳换装15少5
