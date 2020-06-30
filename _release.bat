@@ -79,5 +79,6 @@ xcopy 注意*.txt "使用说明\" /Y/B
 xcopy 使用说明.txt "使用说明\" /Y/B
 xcopy _常见问题解答*.docx "使用说明\" /Y/B
 xcopy _手动安装运行环境教程*.docx "使用说明\" /Y/B
+xcopy 计算器简易使用说明_By_AJOIL.docx "使用说明\" /Y/B
 
 pause
