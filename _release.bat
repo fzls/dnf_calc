@@ -60,14 +60,10 @@ DEL /Q "排行结果.xlsx"
 RMDIR /S /Q "dnf_calc_setting_tool"
 
 :: 移除python版本gui配置工具中的部分多余的东西
-RMDIR /S /Q "dnf_calc_setting_tool_py\fonts"
-RMDIR /S /Q "dnf_calc_setting_tool_py\logs"
 RMDIR /S /Q "dnf_calc_setting_tool_py\__pycache__"
+DEL /Q "dnf_calc_setting_tool_py\UI\.DS_Store"
+DEL /Q "dnf_calc_setting_tool_py\.git"
 DEL /Q "dnf_calc_setting_tool_py\.gitignore"
-DEL /Q "dnf_calc_setting_tool_py\go.mod"
-DEL /Q "dnf_calc_setting_tool_py\go.sum"
-DEL /Q "dnf_calc_setting_tool_py\LICENSE"
-DEL /Q "dnf_calc_setting_tool_py\main.go"
 
 :: 删除旧版本的这些文件
 cd "使用说明"
