@@ -142,10 +142,7 @@
     - extra_all_job_all_active_skill_lv_1_30: 1 # 所有职业Lv1~30全部主动技能Lv+1（特性技能除外）
 
     ## 武器
-    # 强化+13
-    - physical_magical_independent_attack_power: 986 # 魔法攻击力+986
-    # 附魔
-    - extra_all_element_strength: 12 # 暗属性强化 +12
+    # 由于有多把武器，所以将武器的打造改为在对应武器的补正上处理，从而可以处理多个武器打造不同的情况
 
     ## 辟邪玉
     # 暗属性攻击
@@ -321,13 +318,22 @@
     - extra_all_element_strength: 8 # 所有属性强化 +8
     - physical_magical_independent_attack_power: 10 # 魔法攻击力+10
 
-#  deal_equip_fixup:
-#    11010:
-#      - index_deal_strength_and_intelligence: 10
-#      - index_deal_physical_magical_independent_attack_power: -10
-#    11011:
-#      - index_deal_strength_and_intelligence: 10
-#      - index_deal_physical_magical_independent_attack_power: -10
+  deal_equip_fixup:
+    111035: # 魔杖-火焰地狱
+      # 强化+13
+      - index_deal_physical_magical_independent_attack_power: 986 # 魔法攻击力+986
+      # 附魔
+      - index_deal_extra_all_element_strength: 12 # 暗属性强化 +12
+    111036: # 魔杖-魔力之泉：加斯达利亚
+      # 强化+13
+      - index_deal_physical_magical_independent_attack_power: 986 # 魔法攻击力+986
+      # 附魔
+      - index_deal_extra_all_element_strength: 12 # 暗属性强化 +12
+    111034: # 法杖-银月的祝福
+      # 强化+12
+      - index_deal_physical_magical_independent_attack_power: 849 # 魔法攻击力+849
+      # 附魔
+      - index_deal_extra_all_element_strength: 15 # 暗属性强化 +15
 
 
 - names:
