@@ -491,8 +491,13 @@ def get_bless_huanzhuang_equips_list(step: CalcStepData):
                     target_equip_god = "{}{}1".format(slot_index, target_setcode)
                     if target_setcode in step.owned_set_2_equips_map and target_equip_god in step.owned_set_2_equips_map[target_setcode]:
                         # 已拥有神话装备
-                        huanzhuang_equips = list_replace(step.calc_data.selected_combination.copy(), replaced_equip, target_equip_god)
-                        bless_huanzhuang_equips_list.append(BlessHuanZhuang(huanzhuang_equips, [target_equip_god], None, [], []))
+                        replaced_is_god = is_god(replaced_equip)
+                        if not replaced_is_god or step.calc_data.huan_zhuang.include_manual_huanzhuang:
+                            # 若换入的装备为神话，此时只考虑两种情况
+                            # 1. 被替换的部位不是神话
+                            # 2. 被替换的部位是神话，且配置允许祝福和太阳装各有一个不同的神话
+                            huanzhuang_equips = list_replace(step.calc_data.selected_combination.copy(), replaced_equip, target_equip_god)
+                            bless_huanzhuang_equips_list.append(BlessHuanZhuang(huanzhuang_equips, [target_equip_god], None, [], []))
 
                     # 确认是否可以获取替换进来的套装Y的该部位普通目标装备，来源包括：已拥有装备、百变怪（若其余部位未使用百变怪或当前部位为百变怪）、升级工作服、跨界
                     target_equip_normal = "{}{}0".format(slot_index, target_setcode)
@@ -539,14 +544,20 @@ def get_bless_huanzhuang_equips_list(step: CalcStepData):
             if not step.has_god:
                 init_step.has_god = False
             else:
-                replaced_has_god = False
-                for replaced_equip in replaced_equips:
-                    if is_god(replaced_equip):
-                        replaced_has_god = True
-                        break
-                if replaced_has_god:
-                    init_step.has_god = False
+                # 太阳装有神话
+                if step.calc_data.huan_zhuang.include_manual_huanzhuang:
+                    # 考虑进手动切装，也就是允许太阳装和祝福装有不同的神话
+                    replaced_has_god = False
+                    for replaced_equip in replaced_equips:
+                        if is_god(replaced_equip):
+                            replaced_has_god = True
+                            break
+                    if replaced_has_god:
+                        init_step.has_god = False
+                    else:
+                        init_step.has_god = True
                 else:
+                    # 不允许手动切装，因为此时太阳装已有神话，所以不允许祝福装替换部位换入不同的神话
                     init_step.has_god = True
             dfs_huanzhuang(init_step, replaced_slots, BlessHuanZhuang(step.calc_data.selected_combination.copy(), [], None, [], []), step, bless_huanzhuang_equips_list)
 

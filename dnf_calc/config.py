@@ -148,6 +148,8 @@ class HuanZhuangConfig(ConfigInterface):
         self.exclude_slot = []  # type: List[str]
         # 最多切多少件
         self.max_replaced_count = 1
+        # 是否考虑手动切装的方案，也就是祝福装和太阳装各一个神话的情况，因为登记和身上不能各有一个不同的神话装备，这种搭配只能靠手动切装来实现放祝福和太阳分别适用不同的神话对应的搭配
+        self.include_manual_huanzhuang = False
 
 
 class GifConfig(ConfigInterface):
