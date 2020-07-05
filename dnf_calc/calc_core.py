@@ -51,7 +51,7 @@ def process_deal(step: CalcStepData):
         #################################计算各种特殊条件触发的属性#################################
         # 大幽魂系列
         # ps：必须在军神之前处理，因为套装效果可能会影响移速
-        dr = base_array[index_deal_extra_dark_resistance] # 当前总暗抗
+        dr = base_array[index_deal_extra_dark_resistance]  # 当前总暗抗
 
         def get_delta(dark_resistance, dark_resistance_step, attr_step, attr_max):
             """
@@ -171,6 +171,12 @@ def process_deal(step: CalcStepData):
             # 如果拥有吞噬愤怒神话上衣，则疯狂Buff效果会变为1.5倍
             if "11311" in equips:
                 base_array[index_deal_extra_percent_attack_speed] += 5
+                base_array[index_deal_extra_percent_moving_speed] += 5
+
+        # 水果三件套或五件套
+        if "1082" in set_on or "1083" in set_on:
+            # 若同时拥有裤子12080和鞋子15080，则额外加成5 % 移速
+            if "12080" in equips and "15080" in equips:
                 base_array[index_deal_extra_percent_moving_speed] += 5
 
         # 军神系列
