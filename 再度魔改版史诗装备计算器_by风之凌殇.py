@@ -1169,6 +1169,7 @@ def show_result(rank_list, job_type, ele_skill):
         rank_stat2 = [0, 0, 0, 0, 0]
         for rank in range(total_count):
             rank_stat[rank] = (
+                "\n"
                 "增伤={zengsu}%\n"
                 "爆伤={baoshang}%\n"
                 "白字={baizi}%\n"
@@ -1179,7 +1180,6 @@ def show_result(rank_list, job_type, ele_skill):
                 "持续={chixu}%\n"
                 "技攻={jigong}%\n"
                 "特殊={teshu}%\n"
-                "\n"
                 "攻速={gongsu}%\n"
                 "暴击率={baojilv}%\n"
                 "暗抗={dark_resistance}\n"
