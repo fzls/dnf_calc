@@ -166,6 +166,20 @@ def process_deal(step: CalcStepData):
             if '1112' in set_on or '1113' in set_on:
                 base_array[index_deal_cool_correction] += 10
 
+        # 大祭司神话对其他装备的增幅额外+50%
+        if "11011" in equips:
+            # 下装的天之恩宠为增加20全属性抗性
+            if "12010" in equips:
+                base_array[index_deal_extra_dark_resistance] += 10
+            # 鞋的天之恩宠为增加12%移速
+            if "15010" in equips:
+                base_array[index_deal_extra_percent_moving_speed] += 6
+            # 腰带的天之恩宠为增加12%攻速
+            if "14010" in equips:
+                base_array[index_deal_extra_percent_attack_speed] += 6
+
+        ################################大幽魂和军神最后处理，且大幽魂要在前面######################################
+
         # 大幽魂系列
         # ps：必须在军神之前处理，因为套装效果可能会影响移速
         dr = base_array[index_deal_extra_dark_resistance]  # 当前总暗抗
