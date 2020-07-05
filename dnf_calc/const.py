@@ -91,6 +91,8 @@ index_deal_extra_active_skill_lv_60_80 = 24  # 24-AQ-pas2-60_80主动技能
 index_deal_extra_active_skill_lv_85 = 25  # 25-AR-pas3-85主动技能
 index_deal_extra_active_skill_lv_95 = 26  # 26-AS-pas4-95主动技能
 index_deal_extra_active_skill_lv_100 = 27  # 27-AT-pas5-100主动技能
+index_deal_extra_dark_resistance = 28 # 28-AU-dark_resistance-暗抗
+index_deal_extra_percent_moving_speed = 29 # 29-AV-moving_speed-移速
 
 deal_multiply_entry_indexes = [
     index_deal_extra_percent_skill_attack_power
@@ -125,6 +127,8 @@ deal_entry_index_to_name = {
     index_deal_extra_active_skill_lv_85: "25-AR-pas3-85主动技能",
     index_deal_extra_active_skill_lv_95: "26-AS-pas4-95主动技能",
     index_deal_extra_active_skill_lv_100: "27-AT-pas5-100主动技能",
+    index_deal_extra_dark_resistance: "28-AU-dark_resistance-暗抗",
+    index_deal_extra_percent_moving_speed: "29-AV-moving_speed-移速",
 }
 
 # 奶系职业base_array中的各个下标的含义
@@ -199,7 +203,7 @@ buf_entry_index_to_name = {
 job_to_base_array_index_range_and_index_to_name_dict = {
     "deal": {
         "index_begin": index_deal_strength_and_intelligence,
-        "index_end": index_deal_extra_active_skill_lv_100,
+        "index_end": index_deal_extra_percent_moving_speed,
         "index_to_name_dict": deal_entry_index_to_name,
     },
     "buf": {
