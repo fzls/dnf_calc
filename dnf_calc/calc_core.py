@@ -87,7 +87,6 @@ def process_deal(step: CalcStepData):
             # 每30点暗属性抗性，所有职业Lv60~80所有技能Lv +1（特性技能除外，最多叠加2次）
             base_array[index_deal_extra_active_skill_lv_60_80] -= get_delta(dr, 30, 1, 2)
             # 暗属性抗性高于61时，所有职业Lv50、Lv80、Lv100所有技能Lv +1（特性技能除外）
-            # re: 去找资料以及问别人，这里的高于61到底包不包括61
             if dr < 61:
                 base_array[index_deal_extra_active_skill_lv_50] -= 1
                 base_array[index_deal_extra_active_skill_lv_85] -= 1
