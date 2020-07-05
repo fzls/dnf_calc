@@ -380,6 +380,23 @@
       - index_deal_strength_and_intelligence: -1 # 品级
     33330: # 次元-耳环
       - index_deal_strength_and_intelligence: -3 # 品级
+    # 修正大恍惚系列的增幅差异
+    21171: # 破晓-神话手镯
+      # 增幅10
+      - index_deal_extra_percent_skill_attack_power: 10  # 额外增加10%技攻
+      # 全身红十+13武器=123
+      - index_deal_extra_percent_magic_physical_crit_rate: 123 // 6 * 0.5
+      - index_deal_extra_percent_attack_speed: 123 // 6 * 0.8
+      - index_deal_extra_percent_moving_speed: 123 // 6 * 0.8
+    21170: # 破晓-手镯
+      # 增幅10
+      - index_deal_extra_percent_skill_attack_power: 10  # 额外增加10%技攻
+    22170: # 破晓-项链
+      # 增幅10
+      - index_deal_extra_percent_strength_and_intelligence: 10  # 额外增加10%力智
+    23170: # 破晓-戒指
+      # 增幅10
+      - index_deal_extra_percent_attack_damage: 10  # 攻击时，额外增加10%伤害
 
 - names:
     - "奶妈"
