@@ -104,7 +104,7 @@
     # 绿色徽章(上)
     - extra_percent_magic_physical_crit_rate: 3 # 魔法暴击率 +3%
     # 绿色徽章(下)
-    - strength_and_intelligence: 15  # 智力+15
+    - extra_percent_magic_physical_crit_rate: 3 # 魔法暴击率 +3%
     # 增幅+10
     - strength_and_intelligence: 47 # 异次元智力+47
     # 附魔
@@ -241,25 +241,27 @@
     - extra_all_job_all_skill_lv_1_50: 1 # 所有职业Lv1~50全部技能Lv+1（特性技能除外）
 
     ## 头部装扮
-    - strength_and_intelligence: 45 # 智力+45
+    - strength_and_intelligence: 55 # 智力+55
     ## 帽子装扮
-    - strength_and_intelligence: 45 # 智力+45
+    - strength_and_intelligence: 55 # 智力+55
     ## 脸部装扮(无有效属性)
     ## 胸部装扮(无有效属性)
     ## 上衣装扮
     # 直接穿
-    - extra_all_element_strength: 6 # 所有属性强化 +6
     - extra_deal_passive_second_awaken_skill: 1 # 二觉被动技能Lv+X(蚀月附灵)
     ## 腰部装扮(无有效属性)
-    ## 下装装扮
-    - strength_and_intelligence: 20 # 智力+20
+    ## 下装装扮(魔法秀，暂无对应词条)
     ## 鞋装扮(无有效属性)
-    ## 装扮3件套(无有效属性)
+    ## 装扮3件套
+    - strength_and_intelligence: 40  # 四维(力智)+40
+    - physical_and_mental_strength: 40 # 四维(体精)+40
+    - extra_percent_attack_speed: 2 # 三速+2%
     ## 装扮5件套(无有效属性)
     ## 装扮8件套
-    - strength_and_intelligence: 25  # 四维(力智)+25
-    - physical_and_mental_strength: 25 # 四维(体精)+25
+    - strength_and_intelligence: 40  # 四维(力智)+40
+    - physical_and_mental_strength: 40 # 四维(体精)+40
     - extra_percent_attack_speed: 2 # 三速+2%
+    - extra_all_element_strength: 6 # 所有属性强化 +6
     ## 皮肤装扮
     - extra_all_element_strength: 6 # 所有属性强化 +6
     # 红色徽章(上)
@@ -323,18 +325,39 @@
       # 强化+13
       - index_deal_physical_magical_independent_attack_power: 986 # 魔法攻击力+986
       # 附魔
-      - index_deal_extra_all_element_strength: 12 # 暗属性强化 +12
+      - index_deal_extra_all_element_strength: 15 # 暗属性强化 +15
     111036: # 魔杖-魔力之泉：加斯达利亚
       # 强化+13
       - index_deal_physical_magical_independent_attack_power: 986 # 魔法攻击力+986
       # 附魔
-      - index_deal_extra_all_element_strength: 12 # 暗属性强化 +12
+      - index_deal_extra_all_element_strength: 15 # 暗属性强化 +15
+      - index_deal_physical_magical_independent_attack_power: -2 # 品级，魔法攻击力少2
+      - index_deal_strength_and_intelligence: -3 # 品级，智力少3
     111034: # 法杖-银月的祝福
       # 强化+12
       - index_deal_physical_magical_independent_attack_power: 849 # 魔法攻击力+849
       # 附魔
       - index_deal_extra_all_element_strength: 15 # 暗属性强化 +15
-
+      # 满品级（用过黄金调整箱）
+    11311: # 愤怒-神话上衣
+      - index_deal_extra_percent_physical_magical_independent_attack_power: -2 # 百分比三攻词条少2%
+    11061: # 龙血玄黄-神话上衣
+      - index_deal_extra_percent_attack_damage: -1 # 攻击时，额外附加百分比伤害增加量的词条少1%
+      - index_deal_extra_percent_strength_and_intelligence: -4 # 百分比力智词条少4%
+    12080: # 灸炎-裤子
+      - index_deal_strength_and_intelligence: -2 # 品级
+    13080: # 灸炎-头肩
+      - index_deal_strength_and_intelligence: -1 # 品级
+    14080: # 灸炎-腰带
+      - index_deal_strength_and_intelligence: -1 # 品级
+    15080: # 灸炎-鞋子
+      - index_deal_strength_and_intelligence: -1 # 品级
+    21240: # 黑魔法-手镯
+      - index_deal_strength_and_intelligence: -1 # 品级
+    23330: # 次元-戒指
+      - index_deal_strength_and_intelligence: -1 # 品级
+    33330: # 次元-耳环
+      - index_deal_strength_and_intelligence: -3 # 品级
 
 - names:
     - "奶妈"
@@ -515,13 +538,13 @@
     ## 下装装扮(无有效属性)
     ## 鞋装扮(无有效属性)
     ## 装扮3件套
-    - strength_and_intelligence: 30  # 四维(力智)+30
-    - physical_and_mental_strength: 30 # 四维(体精)+30
+    - strength_and_intelligence: 40  # 四维(力智)+40
+    - physical_and_mental_strength: 40 # 四维(体精)+40
     - extra_percent_attack_speed: 2 # 三速+2%
     ## 装扮5件套(无有效属性)
     ## 装扮8件套
-    - strength_and_intelligence: 30  # 四维(力智)+30
-    - physical_and_mental_strength: 30 # 四维(体精)+30
+    - strength_and_intelligence: 40  # 四维(力智)+40
+    - physical_and_mental_strength: 40 # 四维(体精)+40
     - extra_percent_attack_speed: 2 # 三速+2%
     ## 皮肤装扮
     - extra_all_element_strength: 6 # 所有属性强化 +6
