@@ -1181,7 +1181,9 @@ def show_result(rank_list, job_type, ele_skill):
                 "特殊={teshu}%\n"
                 "\n"
                 "攻速={gongsu}%\n"
-                "暴击率={baojilv}%"
+                "暴击率={baojilv}%\n"
+                "暗抗={dark_resistance}\n"
+                "移速={moving_speed}%"
             ).format(
                 zengsu=int(rss[rank][index_deal_extra_percent_attack_damage]),
                 baoshang=int(rss[rank][index_deal_extra_percent_crit_damage]),
@@ -1194,7 +1196,9 @@ def show_result(rank_list, job_type, ele_skill):
                 jigong=int(rss[rank][index_deal_extra_percent_skill_attack_power]),
                 teshu=int(rss[rank][index_deal_extra_percent_special_effect]),
                 gongsu=int(rss[rank][index_deal_extra_percent_attack_speed]),
-                baojilv=int(rss[rank][index_deal_extra_percent_magic_physical_crit_rate])
+                baojilv=int(rss[rank][index_deal_extra_percent_magic_physical_crit_rate]),
+                dark_resistance=int(rss[rank][index_deal_extra_dark_resistance]),
+                moving_speed=int(rss[rank][index_deal_extra_percent_moving_speed]),
             )
             rank_stat2[rank] = (
                 "   <主动>\n"
