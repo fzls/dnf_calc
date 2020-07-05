@@ -49,6 +49,122 @@ def process_deal(step: CalcStepData):
         base_array[index_deal_extra_percent_skill_attack_power] = skiper  # 技能攻击力 +X%
 
         #################################计算各种特殊条件触发的属性#################################
+
+        # 吞噬愤怒二件套或三件套
+        if "1311" in set_on or "1312" in set_on:
+            # 如果拥有吞噬愤怒神话上衣，则疯狂Buff效果会变为1.5倍
+            if "11311" in equips:
+                base_array[index_deal_extra_percent_attack_speed] += 5
+                base_array[index_deal_extra_percent_moving_speed] += 5
+
+        # 水果三件套或五件套
+        if "1082" in set_on or "1083" in set_on:
+            # 若同时拥有裤子12080和鞋子15080，则额外加成5%移速
+            if "12080" in equips and "15080" in equips:
+                base_array[index_deal_extra_percent_moving_speed] += 5
+
+        # 坎坷命运: 神话上衣（11301）、上衣（11300）、项链（22300）、辅助装备（31300）
+        if "1301" in set_on or "1302" in set_on:
+            def reduce_speed():
+                # 攻速-1%
+                base_array[index_deal_extra_percent_attack_speed] -= 1
+                # 移速-1%
+                base_array[index_deal_extra_percent_moving_speed] -= 1
+                # 释放速度-1.5%
+                # 暂不支持该词条
+
+            # 神话上衣
+            if "11301" in equips:
+                # 装备悲痛者项链时
+                if "22300" in equips:
+                    # 三攻-10%
+                    base_array[index_deal_extra_percent_physical_magical_independent_attack_power] -= 10
+                    # 攻击时，附加10%的伤害
+                    base_array[index_deal_extra_percent_addtional_damage] += 10
+                # 装备悲情者遗物时
+                if "31300" in equips:
+                    # 三攻-10%
+                    base_array[index_deal_extra_percent_physical_magical_independent_attack_power] -= 10
+                    # 攻击时，附加10%的伤害
+                    base_array[index_deal_extra_percent_addtional_damage] += 10
+            # 上衣
+            if "11300" in equips:
+                # 装备悲痛者项链时
+                if "22300" in equips:
+                    # 攻速-1%；移速-1%；释放速度-1.5%
+                    reduce_speed()
+                # 装备悲情者遗物时
+                if "31300" in equips:
+                    # 攻速-1%；移速-1%；释放速度-1.5%
+                    reduce_speed()
+            # 项链
+            if "22300" in equips:
+                # 装备地狱边缘上衣时
+                if "11300" in equips:
+                    # 攻速-1%；移速-1%；释放速度-1.5%
+                    reduce_speed()
+                # 装备悲情者遗物时
+                if "31300" in equips:
+                    # 攻速-1%；移速-1%；释放速度-1.5%
+                    reduce_speed()
+            # 辅助装备
+            if "31300" in equips:
+                # 装备地狱边缘上衣时
+                if "11300" in equips:
+                    # 攻速-1%；移速-1%；释放速度-1.5%
+                    reduce_speed()
+                # 装备悲痛者项链时
+                if "22300" in equips:
+                    # 攻速-1%；移速-1%；释放速度-1.5%
+                    reduce_speed()
+            # 二件套
+            if "1301" in set_on or "1302" in set_on:
+                # 装备地狱边缘上衣时
+                if "11300" in equips:
+                    # 攻速-1%；移速-1%；释放速度-1.5%
+                    reduce_speed()
+            # 三件套
+            if "1302" in set_on:
+                # 装备地狱边缘上衣时
+                if "11300" in equips:
+                    # 攻速-1%；移速-1%；释放速度-1.5%
+                    reduce_speed()
+
+        # 能量的主宰装备，若拥有能量耳环或能量神话耳环
+        if '33230' in equips or '33231' in equips:
+            # 若不同时拥有能量辅助装备，则减去10%力智加成
+            if '31230' not in equips:
+                base_array[index_deal_extra_percent_addtional_damage] -= 10
+            # 如不同时拥有能量魔法石，则减去40点全属性属强
+            if '32230' not in equips:
+                base_array[index_deal_extra_all_element_strength] -= 40
+
+        # 特殊处理天命无常套装
+        if '15340' in equips or '23340' in equips or '33340' in equips or '33341' in equips:
+            # 若只有散件
+            if '1341' not in set_on and '1342' not in set_on:
+                # 天命鞋子，在两件套时，点数为双数增加40点属强，期望为20，若为散件则减去该属性
+                if '15340' in equips:
+                    base_array[index_deal_extra_all_element_strength] -= 20
+                # 天命戒指，在两件套时，点数大于2额外增加12%伤害，期望为10%（ps：原作者给，我觉得应该应该是4/6*12=8%?）
+                elif '23340' in equips:  # 天命无常-戒指-命运的捉弄
+                    base_array[index_deal_extra_percent_attack_damage] -= 10
+                # 天命耳环，在两件套时，点数为6时增加30%最终伤害，期望为5%
+                elif '33340' in equips:
+                    base_array[index_deal_extra_percent_final_damage] -= 5  #
+                # 天命神话耳环，在两件套时，点数为6时增加30%最终伤害，其中点数为1时重新投色子，期望为6%
+                else:
+                    base_array[index_deal_extra_all_element_strength] -= 4  # ele=4
+                    base_array[index_deal_extra_percent_attack_damage] -= 2  # damper=2
+                    base_array[index_deal_extra_percent_final_damage] -= 1  # allper=6
+                    base_array[index_deal_extra_percent_strength_and_intelligence] -= 1.93  # staper=15
+
+        # 铁匠神话上衣
+        if '11111' in equips:
+            # 铁匠三件套或铁匠五件套
+            if '1112' in set_on or '1113' in set_on:
+                base_array[index_deal_cool_correction] += 10
+
         # 大幽魂系列
         # ps：必须在军神之前处理，因为套装效果可能会影响移速
         dr = base_array[index_deal_extra_dark_resistance]  # 当前总暗抗
@@ -166,86 +282,6 @@ def process_deal(step: CalcStepData):
             # 每13点暗属性抗性，增加10%的施放速度。（最多增加20%）
             # ps: 暂无对应词条
 
-        # 吞噬愤怒二件套或三件套
-        if "1311" in set_on or "1312" in set_on:
-            # 如果拥有吞噬愤怒神话上衣，则疯狂Buff效果会变为1.5倍
-            if "11311" in equips:
-                base_array[index_deal_extra_percent_attack_speed] += 5
-                base_array[index_deal_extra_percent_moving_speed] += 5
-
-        # 水果三件套或五件套
-        if "1082" in set_on or "1083" in set_on:
-            # 若同时拥有裤子12080和鞋子15080，则额外加成5%移速
-            if "12080" in equips and "15080" in equips:
-                base_array[index_deal_extra_percent_moving_speed] += 5
-
-        # 坎坷命运: 神话上衣（11301）、上衣（11300）、项链（22300）、辅助装备（31300）
-        if "1301" in set_on or "1302" in set_on:
-            def reduce_speed():
-                # 攻速-1%
-                base_array[index_deal_extra_percent_attack_speed] -= 1
-                # 移速-1%
-                base_array[index_deal_extra_percent_moving_speed] -= 1
-                # 释放速度-1.5%
-                # 暂不支持该词条
-
-            # 神话上衣
-            if "11301" in equips:
-                # 装备悲痛者项链时
-                if "22300" in equips:
-                    # 三攻-10%
-                    base_array[index_deal_extra_percent_physical_magical_independent_attack_power] -= 10
-                    # 攻击时，附加10%的伤害
-                    base_array[index_deal_extra_percent_addtional_damage] += 10
-                # 装备悲情者遗物时
-                if "31300" in equips:
-                    # 三攻-10%
-                    base_array[index_deal_extra_percent_physical_magical_independent_attack_power] -= 10
-                    # 攻击时，附加10%的伤害
-                    base_array[index_deal_extra_percent_addtional_damage] += 10
-            # 上衣
-            if "11300" in equips:
-                # 装备悲痛者项链时
-                if "22300" in equips:
-                    # 攻速-1%；移速-1%；释放速度-1.5%
-                    reduce_speed()
-                # 装备悲情者遗物时
-                if "31300" in equips:
-                    # 攻速-1%；移速-1%；释放速度-1.5%
-                    reduce_speed()
-            # 项链
-            if "22300" in equips:
-                # 装备地狱边缘上衣时
-                if "11300" in equips:
-                    # 攻速-1%；移速-1%；释放速度-1.5%
-                    reduce_speed()
-                # 装备悲情者遗物时
-                if "31300" in equips:
-                    # 攻速-1%；移速-1%；释放速度-1.5%
-                    reduce_speed()
-            # 辅助装备
-            if "31300" in equips:
-                # 装备地狱边缘上衣时
-                if "11300" in equips:
-                    # 攻速-1%；移速-1%；释放速度-1.5%
-                    reduce_speed()
-                # 装备悲痛者项链时
-                if "22300" in equips:
-                    # 攻速-1%；移速-1%；释放速度-1.5%
-                    reduce_speed()
-            # 二件套
-            if "1301" in set_on or "1302" in set_on:
-                # 装备地狱边缘上衣时
-                if "11300" in equips:
-                    # 攻速-1%；移速-1%；释放速度-1.5%
-                    reduce_speed()
-            # 三件套
-            if "1302" in set_on:
-                # 装备地狱边缘上衣时
-                if "11300" in equips:
-                    # 攻速-1%；移速-1%；释放速度-1.5%
-                    reduce_speed()
-
         # 军神系列
 
         # 拥有军神耳环，且不拥有军神辅助装备
@@ -289,52 +325,6 @@ def process_deal(step: CalcStepData):
             elif 80 <= moving_speed < 100:
                 delta = 10 - 8
             base_array[index_deal_extra_percent_strength_and_intelligence] -= delta
-
-        # 能量的主宰装备，若拥有能量耳环或能量神话耳环
-        if '33230' in equips or '33231' in equips:
-            # 若不同时拥有能量辅助装备，则减去10%力智加成
-            if '31230' not in equips:
-                base_array[index_deal_extra_percent_addtional_damage] -= 10
-            # 如不同时拥有能量魔法石，则减去40点全属性属强
-            if '32230' not in equips:
-                base_array[index_deal_extra_all_element_strength] -= 40
-
-        # 特殊处理天命无常套装
-        if '15340' in equips or '23340' in equips or '33340' in equips or '33341' in equips:
-            # 若只有散件
-            if '1341' not in set_on and '1342' not in set_on:
-                # 天命鞋子，在两件套时，点数为双数增加40点属强，期望为20，若为散件则减去该属性
-                if '15340' in equips:
-                    base_array[index_deal_extra_all_element_strength] -= 20
-                # 天命戒指，在两件套时，点数大于2额外增加12%伤害，期望为10%（ps：原作者给，我觉得应该应该是4/6*12=8%?）
-                elif '23340' in equips:  # 天命无常-戒指-命运的捉弄
-                    base_array[index_deal_extra_percent_attack_damage] -= 10
-                # 天命耳环，在两件套时，点数为6时增加30%最终伤害，期望为5%
-                elif '33340' in equips:
-                    base_array[index_deal_extra_percent_final_damage] -= 5  #
-                # 天命神话耳环，在两件套时，点数为6时增加30%最终伤害，其中点数为1时重新投色子，期望为6%
-                else:
-                    base_array[index_deal_extra_all_element_strength] -= 4  # ele=4
-                    base_array[index_deal_extra_percent_attack_damage] -= 2  # damper=2
-                    base_array[index_deal_extra_percent_final_damage] -= 1  # allper=6
-                    base_array[index_deal_extra_percent_strength_and_intelligence] -= 1.93  # staper=15
-
-        # 铁匠神话上衣
-        if '11111' in equips:
-            # 铁匠三件套或铁匠五件套
-            if '1112' in set_on or '1113' in set_on:
-                base_array[index_deal_cool_correction] += 10
-
-        # 命运神话上衣
-        if '11301' in equips:
-            # 未拥有命运项链
-            if '22300' not in equips:
-                base_array[index_deal_extra_percent_addtional_damage] -= 10
-                base_array[index_deal_extra_percent_physical_magical_independent_attack_power] += 10
-            # 未拥有命运辅助装备
-            if '31300' not in equips:
-                base_array[index_deal_extra_percent_addtional_damage] -= 10
-                base_array[index_deal_extra_percent_physical_magical_independent_attack_power] += 10
 
         #################################核心计算公式#################################
 
