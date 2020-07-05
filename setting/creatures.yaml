@@ -53,8 +53,8 @@
   entries:
     # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
     - creature_increase_owner_attack_power: 10  # 宠物技能+10%攻击力，持续10s，冷却30s
-    - extra_percent_attack_speed: 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
-    - extra_percent_moving_speed: 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
+    - extra_percent_attack_speed: 5  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
+    - extra_percent_moving_speed: 5  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
     - strength_and_intelligence: 140  # 四维(力智)+140
     - physical_and_mental_strength: 140 # 四维(体精)+140
     - extra_percent_attack_speed: 5  # 三速+5%
@@ -72,10 +72,12 @@
   entries:
     # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
     - creature_increase_owner_attack_power: 10  # 宠物技能+10%攻击力，持续10s，冷却30s
-    - extra_percent_attack_speed: 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
+    - extra_percent_attack_speed: 5  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
+    - extra_percent_moving_speed: 5  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
     - strength_and_intelligence: 150  # 四维(力智)+150
     - physical_and_mental_strength: 150 # 四维(体精)+150
     - extra_percent_attack_speed: 5  # 三速+5%
+    - extra_percent_moving_speed: 5  # 三速+5%
     - extra_all_element_strength: 24  # 所有属强+24
     - extra_percent_magic_physical_crit_rate: 10  # 暴击率+10%
     - extra_all_job_all_skill_lv_1_50: 1 # 所有职业Lv1~50全部技能Lv+1（特性技能除外）
@@ -90,10 +92,12 @@
   entries:
     # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
     - creature_increase_owner_attack_power: 10  # 宠物技能+10%攻击力，持续10s，冷却30s
-    - extra_percent_attack_speed: 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
+    - extra_percent_attack_speed: 5  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
+    - extra_percent_moving_speed: 5  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
     - strength_and_intelligence: 120  # 四维(力智)+120
     - physical_and_mental_strength: 120 # 四维(体精)+120
     - extra_percent_attack_speed: 5  # 三速+5%
+    - extra_percent_moving_speed: 5  # 三速+5%
     - extra_all_element_strength: 24  # 所有属强+24
     - extra_percent_magic_physical_crit_rate: 10  # 暴击率+10%
     - extra_all_job_all_skill_lv_1_50: 1 # 所有职业Lv1~50全部技能Lv+1（特性技能除外）
@@ -106,10 +110,12 @@
   entries:
     # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
     - creature_increase_owner_attack_power: 10  # 宠物技能+10%攻击力，持续10s，冷却30s
-    - extra_percent_attack_speed: 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
+    - extra_percent_attack_speed: 5  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
+    - extra_percent_moving_speed: 5  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
     - strength_and_intelligence: 120  # 四维(力智)+120
     - physical_and_mental_strength: 120 # 四维(体精)+120
     - extra_percent_attack_speed: 5  # 三速+5%
+    - extra_percent_moving_speed: 5  # 三速+5%
     - extra_all_element_strength: 24  # 所有属强+24
     - extra_percent_magic_physical_crit_rate: 10  # 暴击率+10%
     - extra_all_job_all_skill_lv_1_50: 1 # 所有职业Lv1~50全部技能Lv+1（特性技能除外）
@@ -123,10 +129,12 @@
   entries:
     # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
     - creature_increase_owner_attack_power: 10  # 宠物技能+10%攻击力，持续10s，冷却30s
-    - extra_percent_attack_speed: 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
+    - extra_percent_attack_speed: 5  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
+    - extra_percent_moving_speed: 5  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
     - strength_and_intelligence: 120  # 四维(力智)+120
     - physical_and_mental_strength: 120 # 四维(体精)+120
     - extra_percent_attack_speed: 5  # 三速+5%
+    - extra_percent_moving_speed: 5  # 三速+5%
     - extra_all_element_strength: 24  # 所有属强+24
     - extra_percent_magic_physical_crit_rate: 10  # 暴击率+10%
     - extra_all_job_all_skill_lv_1_50: 1 # 所有职业Lv1~50全部技能Lv+1（特性技能除外）
@@ -141,10 +149,12 @@
   entries:
     # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
     - creature_increase_owner_attack_power: 10  # 宠物技能+10%攻击力，持续10s，冷却30s
-    - extra_percent_attack_speed: 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
+    - extra_percent_attack_speed: 5  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
+    - extra_percent_moving_speed: 5  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
     - strength_and_intelligence: 100  # 四维(力智)+100
     - physical_and_mental_strength: 100 # 四维(体精)+100
     - extra_percent_attack_speed: 5  # 三速+5%
+    - extra_percent_moving_speed: 5  # 三速+5%
     - extra_all_element_strength: 20  # 所有属强+20
     - extra_percent_magic_physical_crit_rate: 10  # 暴击率+10%
     - extra_all_job_all_skill_lv_1_50: 1 # 所有职业Lv1~50全部技能Lv+1（特性技能除外）
@@ -157,10 +167,12 @@
   entries:
     # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
     - creature_increase_owner_attack_power: 10  # 宠物技能+10%攻击力，持续10s，冷却30s
-    - extra_percent_attack_speed: 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
+    - extra_percent_attack_speed: 5  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
+    - extra_percent_moving_speed: 5  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
     - strength_and_intelligence: 110  # 四维(力智)+110
     - physical_and_mental_strength: 110 # 四维(体精)+110
     - extra_percent_attack_speed: 5  # 三速+5%
+    - extra_percent_moving_speed: 5  # 三速+5%
     - extra_all_element_strength: 22  # 所有属强+22
     - extra_percent_magic_physical_crit_rate: 10  # 暴击率+10%
     - extra_all_job_all_skill_lv_1_50: 1 # 所有职业Lv1~50全部技能Lv+1（特性技能除外）
@@ -175,6 +187,7 @@
     - creature_increase_owner_attack_power: 10  # 宠物技能+10%攻击力，持续10s，冷却30s
     - physical_magical_independent_attack_power: 35  # 三攻+35
     - extra_percent_attack_speed: 4  # 三速+4%
+    - extra_percent_moving_speed: 4  # 三速+4%
     - extra_all_element_strength: 15  # 所有属强+15
     - extra_percent_magic_physical_crit_rate: 10  # 暴击率+10%
     - extra_all_job_all_skill_lv_1_50: 1 # 所有职业Lv1~50全部技能Lv+1（特性技能除外）
@@ -186,6 +199,7 @@
     - strength_and_intelligence: 45  # 四维(力智)+45
     - physical_and_mental_strength: 45 # 四维(体精)+45
     - extra_percent_attack_speed: 3  # 三速+3%
+    - extra_percent_moving_speed: 3  # 三速+3%
     - extra_all_element_strength: 15  # 所有属强+15
     - extra_percent_magic_physical_crit_rate: 10  # 暴击率+10%
     - extra_all_job_all_skill_lv_1_50: 1 # 所有职业Lv1~50全部技能Lv+1（特性技能除外）
@@ -195,6 +209,7 @@
     - strength_and_intelligence: 100  # 四维(力智)+100
     - physical_and_mental_strength: 100 # 四维(体精)+100
     - extra_percent_attack_speed: 5  # 三速+5%
+    - extra_percent_moving_speed: 5  # 三速+5%
     - extra_all_element_strength: 20  # 所有属强+20
     - extra_percent_magic_physical_crit_rate: 10  # 暴击率+10%
     - extra_all_job_all_skill_lv_1_50: 1 # 所有职业Lv1~50全部技能Lv+1（特性技能除外）
