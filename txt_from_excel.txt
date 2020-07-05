@@ -743,8 +743,8 @@ info,name,stat,att,damper,criper,bonper,elebon,allper,attper,staper,ele,sloper,s
 1242,黑魔法3,0,0,12,0,0,13,0,0,0,0,0,10,0,0,10,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0
 1251,时空2,0,0,0,0,0,0,10,10,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0
 1252,时空3,0,0,0,17,0,0,10,10,0,0,0,13,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0
-1261,呐喊2,0,0,0,0,0,0,0,23,0,0,0,0,0,6,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,12
-1262,呐喊3,0,0,0,0,0,0,0,23,14,0,0,16,0,6,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,12
+1261,呐喊2,0,0,0,0,0,0,0,23,0,0,0,0,0,12,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,12
+1262,呐喊3,0,0,0,0,0,0,0,23,14,0,0,16,0,12,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,12
 1271,狂乱2,0,0,0,0,0,0,0,0,18,25,0,0,0,15,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0
 1272,狂乱3,0,0,0,16,0,0,0,0,18,25,0,15,0,15,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0
 1281,深渊2,0,0,9,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,2,0,0,0,0,0,0,0
