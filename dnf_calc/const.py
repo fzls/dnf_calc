@@ -499,6 +499,18 @@ entry_name_to_indexes = {
             index_buf_taiyang_extra_percent_strength_and_intelligence,
         ]
     },
+    # 暗属性抗性 +X
+    "extra_dark_resistance": {
+        "deal": [
+            index_deal_extra_dark_resistance,
+        ]
+    },
+    # 移动速度 +X%
+    "extra_percent_moving_speed": {
+        "deal": [
+            index_deal_extra_percent_moving_speed,
+        ]
+    }
 }
 
 entry_name_to_name = {
@@ -548,6 +560,8 @@ entry_name_to_name = {
     "extra_bless_percent_independent_attack_power": "[荣誉祝福]、[勇气祝福]、[禁忌诅咒]独立攻击力增加量 +X%",
     "extra_taiyang_strength_and_intelligence": "[天启之珠]、[圣光天启]、[开幕！人偶剧场]力量/智力 +X",
     "extra_taiyang_percent_strength_and_intelligence": "[天启之珠]、[圣光天启]、[开幕！人偶剧场]力量、智力增加量 +X%",
+    "extra_dark_resistance": "暗属性抗性 +X",
+    "extra_percent_moving_speed": "移动速度 +X%",
 }
 
 # 预计算的buff等级最大等级

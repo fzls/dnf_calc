@@ -62,6 +62,8 @@
 # extra_bless_percent_independent_attack_power:     [荣誉祝福]、[勇气祝福]、[禁忌诅咒]独立攻击力增加量 +X%
 # extra_taiyang_strength_and_intelligence:          [天启之珠]、[圣光天启]、[开幕！人偶剧场]力量/智力 +X
 # extra_taiyang_percent_strength_and_intelligence:  [天启之珠]、[圣光天启]、[开幕！人偶剧场]力量、智力增加量 +X%
+# extra_dark_resistance:                            暗属性抗性 +X
+# extra_percent_moving_speed:                       移动速度 +X%
 
 ## 简单示例如下
 
