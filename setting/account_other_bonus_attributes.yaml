@@ -137,6 +137,10 @@
     - extra_all_job_all_active_skill_lv_1_50: 1 # 所有职业Lv1~50全部主动技能Lv+1（特性技能除外）
 
     ## 鞋子
+    # 蓝色徽章(上)
+    - physical_magical_independent_attack_power: 10  # 三攻+10
+    # 蓝色徽章(下)
+    - physical_magical_independent_attack_power: 10  # 三攻+10
     # 增幅+10
     - strength_and_intelligence: 44 # 异次元智力+44
     # 附魔
@@ -157,6 +161,10 @@
     - extra_all_job_all_active_skill_lv_1_50: 1 # 所有职业Lv1~50全部主动技能Lv+1（特性技能除外）
 
     ## 手镯
+    # 蓝色徽章(上)
+    - physical_magical_independent_attack_power: 10  # 三攻+10
+    # 蓝色徽章(下)
+    - physical_magical_independent_attack_power: 10  # 三攻+10
     # 增幅+10
     - strength_and_intelligence: 44 # 异次元智力+44
     # 附魔
@@ -225,8 +233,9 @@
     ## 武器装扮
     # 自带属性
     - extra_percent_attack_speed: 4 # 三速 +4%
+    - extra_percent_moving_speed: 4 # 三速 +4%
     # 红色徽章(上)
-    - strength_and_intelligence: 25  # 智力+25
+    - strength_and_intelligence: 17  # 智力+17
     # 红色徽章(下)
     - strength_and_intelligence: 17  # 智力+17
 
@@ -238,7 +247,7 @@
     # 红色徽章(上)
     - strength_and_intelligence: 25  # 智力+25
     # 红色徽章(下)
-    - strength_and_intelligence: 17  # 智力+17
+    - strength_and_intelligence: 25  # 智力+25
     # 技能词条
     - extra_all_job_all_skill_lv_1_50: 1 # 所有职业Lv1~50全部技能Lv+1（特性技能除外）
 
@@ -252,17 +261,22 @@
     # 直接穿
     - extra_deal_passive_second_awaken_skill: 1 # 二觉被动技能Lv+X(蚀月附灵)
     ## 腰部装扮(无有效属性)
+    - extra_dark_resistance: 35 # 暗抗+35
     ## 下装装扮(魔法秀，暂无对应词条)
     ## 鞋装扮(无有效属性)
+    - extra_percent_moving_speed: 6 # 移速+6%
     ## 装扮3件套
     - strength_and_intelligence: 40  # 四维(力智)+40
     - physical_and_mental_strength: 40 # 四维(体精)+40
     - extra_percent_attack_speed: 2 # 三速+2%
+    - extra_percent_moving_speed: 2 # 三速+2%
     ## 装扮5件套(无有效属性)
     ## 装扮8件套
     - strength_and_intelligence: 40  # 四维(力智)+40
     - physical_and_mental_strength: 40 # 四维(体精)+40
     - extra_percent_attack_speed: 2 # 三速+2%
+    - extra_percent_moving_speed: 2 # 三速+2%
+    - extra_dark_resistance: 15 # 所有属性抗性+15
     - extra_all_element_strength: 6 # 所有属性强化 +6
     ## 皮肤装扮
     - extra_all_element_strength: 6 # 所有属性强化 +6
@@ -271,6 +285,9 @@
     # 红色徽章(下)
     - strength_and_intelligence: 17  # 智力+17
 
+    ## 职业基础
+    - extra_dark_resistance: 23 # 所有装备脱光后的暗抗
+    - extra_percent_moving_speed: 13 # 所有装备脱光后的移速
 
     ### 宠物栏
     ## 宠物
@@ -285,6 +302,7 @@
     - strength_and_intelligence: 20  # 四维(力智)+20
     - physical_and_mental_strength: 20 # 四维(体精)+20
     - extra_percent_attack_speed: 4 # 三速+4%
+    - extra_percent_moving_speed: 4 # 三速+4%
     - extra_percent_magic_physical_crit_rate: 6 # 物理、魔法暴击率 +6%
 
     ## 绿色 宠物装备
@@ -310,6 +328,7 @@
 
     ## 守护珠
     - extra_all_element_strength: 7 # 暗属性强化 +7
+    - extra_percent_moving_speed: 3 # 移速+3%
     - extra_percent_magic_physical_crit_rate: 1.5 # 物理、魔法暴击率 +1.5%
 
 

@@ -114,11 +114,13 @@
     - strength_and_intelligence: 55  # 四维(力智)+55
     - physical_and_mental_strength: 55 # 四维(体精)+55
     - extra_percent_attack_speed: 3  # 攻击速度+3%
+    - extra_percent_moving_speed: 3  # 移动速度+3%
     - extra_all_element_strength: 15  # 所有属性强化+15
     - extra_percent_magic_physical_crit_rate: 10  # 物理、魔法暴击率+10%
     - extra_percent_crit_damage: 15  # 暴击时，额外增加15%的伤害增加量
     - extra_all_element_strength: 10 * 30 / 40  # 攻击时，3%概率增加10点属强，持续30s，冷却40s
     - extra_percent_attack_speed: 3 * 30 / 40  # 攻击时，3%概率增加3%三速，持续30s，冷却40s
+    - extra_percent_moving_speed: 3 * 30 / 40  # 攻击时，3%概率增加3%三速，持续30s，冷却40s
 - names:
     - "兽人守护神"
   entries:

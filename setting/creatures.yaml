@@ -54,9 +54,11 @@
     # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
     - creature_increase_owner_attack_power: 10  # 宠物技能+10%攻击力，持续10s，冷却30s
     - extra_percent_attack_speed: 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
+    - extra_percent_moving_speed: 5 * 10 / 30  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
     - strength_and_intelligence: 140  # 四维(力智)+140
     - physical_and_mental_strength: 140 # 四维(体精)+140
     - extra_percent_attack_speed: 5  # 三速+5%
+    - extra_percent_moving_speed: 5  # 三速+5%
     - extra_all_element_strength: 24  # 所有属强+24
     - extra_percent_magic_physical_crit_rate: 10  # 暴击率+10%
     - extra_all_job_all_skill_lv_1_50: 1 # 所有职业Lv1~50全部技能Lv+1（特性技能除外）
