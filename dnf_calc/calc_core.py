@@ -167,6 +167,13 @@ def process_deal(step: CalcStepData):
             # 每13点暗属性抗性，增加10%的施放速度。（最多增加20%）
             # ps: 暂无对应词条
 
+        # 吞噬愤怒二件套或三件套
+        if "1311" in set_on or "1312" in set_on:
+            # 如果拥有吞噬愤怒神话上衣，则疯狂Buff效果会变为1.5倍
+            if "11311" in equips:
+                base_array[index_deal_extra_percent_attack_speed] += 5
+                base_array[index_deal_extra_percent_moving_speed] += 5
+
         # 军神系列
 
         # 拥有军神耳环，且不拥有军神辅助装备
