@@ -288,6 +288,7 @@
     ## 职业基础
     - extra_dark_resistance: 23 # 所有装备脱光后的暗抗
     - extra_percent_moving_speed: 13 # 所有装备脱光后的移速
+    - extra_percent_moving_speed: 0.6 + 0.9 + 0.75 + 0.3 + 0.45 # 召唤师布甲专精获得的移速，分别是头肩、上衣、下装、腰带、鞋子
 
     ### 宠物栏
     ## 宠物
