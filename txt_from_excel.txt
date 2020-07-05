@@ -700,8 +700,8 @@ info,name,stat,att,damper,criper,bonper,elebon,allper,attper,staper,ele,sloper,s
 1072,沙漠3,0,0,0,0,0,0,0,22,0,60,0,21.9,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0
 1073,沙漠5,0,0,0,0,0,0,0,22,0,60,0,73.098,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0
 1081,灸炎2,0,0,0,18,0,0,0,0,0,40,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0
-1082,灸炎3,0,0,0,18,10,0,0,0,0,40,0,20,0,0,5,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,5
-1083,灸炎5,0,0,0,18,10,0,22,0,0,40,0,20,0,5,5,0,0,0,0,0,0,0,5.25,15,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,5
+1082,灸炎3,0,0,0,18,10,0,0,0,0,40,0,20,0,0,5,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0
+1083,灸炎5,0,0,0,18,10,0,22,0,0,40,0,20,0,5,5,0,0,0,0,0,0,0,5.25,15,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0
 1091,擎天2,0,0,14,14,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0
 1092,擎天3,0,0,14,14,0,0,0,32,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0
 1093,擎天5,0,0,14,14,0,12,0,32,0,0,0,2.5,0,10,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,20
