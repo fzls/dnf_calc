@@ -178,6 +178,14 @@ def process_deal(step: CalcStepData):
             if "14010" in equips:
                 base_array[index_deal_extra_percent_attack_speed] += 6
 
+        # 呐喊神话手镯对二件套的加速效果额外增幅一倍
+        if "1261" in set_on or "1262" in set_on:
+            if "21261" in equips:
+                # 额外增加攻速12%
+                base_array[index_deal_extra_percent_attack_speed] += 12
+                # 额外增加移速12%
+                base_array[index_deal_extra_percent_moving_speed] += 12
+
         ################################大幽魂和军神最后处理，且大幽魂要在前面######################################
 
         # 大幽魂系列
