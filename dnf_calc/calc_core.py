@@ -65,70 +65,71 @@ def process_deal(step: CalcStepData):
 
         # 坎坷命运: 神话上衣（11301）、上衣（11300）、项链（22300）、辅助装备（31300）
         if "1301" in set_on or "1302" in set_on:
-            def reduce_speed():
-                # 攻速-1%
-                base_array[index_deal_extra_percent_attack_speed] -= 1
-                # 移速-1%
-                base_array[index_deal_extra_percent_moving_speed] -= 1
-                # 释放速度-1.5%
+            def giveback_speed():
+                # 默认data表中将对应减速效果都应用了，所以这里判断对应条件是否不成立，然后补回来
+                # 攻速+1%
+                base_array[index_deal_extra_percent_attack_speed] += 1
+                # 移速+1%
+                base_array[index_deal_extra_percent_moving_speed] += 1
+                # 释放速度+1.5%
                 # 暂不支持该词条
 
             # 神话上衣
             if "11301" in equips:
-                # 装备悲痛者项链时
-                if "22300" in equips:
-                    # 三攻-10%
-                    base_array[index_deal_extra_percent_physical_magical_independent_attack_power] -= 10
-                    # 攻击时，附加10%的伤害
-                    base_array[index_deal_extra_percent_addtional_damage] += 10
-                # 装备悲情者遗物时
-                if "31300" in equips:
-                    # 三攻-10%
-                    base_array[index_deal_extra_percent_physical_magical_independent_attack_power] -= 10
-                    # 攻击时，附加10%的伤害
-                    base_array[index_deal_extra_percent_addtional_damage] += 10
+                # 未装备悲痛者项链时
+                if "22300" not in equips:
+                    # 回滚以应用词条：三攻-10%
+                    base_array[index_deal_extra_percent_physical_magical_independent_attack_power] += 10
+                    # 回滚以应用词条：攻击时，附加10%的伤害
+                    base_array[index_deal_extra_percent_addtional_damage] -= 10
+                # 未装备悲情者遗物时
+                if "31300" not in equips:
+                    # 回滚以应用词条：三攻-10%
+                    base_array[index_deal_extra_percent_physical_magical_independent_attack_power] += 10
+                    # 回滚以应用词条：攻击时，附加10%的伤害
+                    base_array[index_deal_extra_percent_addtional_damage] -= 10
             # 上衣
             if "11300" in equips:
-                # 装备悲痛者项链时
-                if "22300" in equips:
-                    # 攻速-1%；移速-1%；释放速度-1.5%
-                    reduce_speed()
-                # 装备悲情者遗物时
-                if "31300" in equips:
-                    # 攻速-1%；移速-1%；释放速度-1.5%
-                    reduce_speed()
+                # 未装备悲痛者项链时
+                if "22300" not in equips:
+                    # 回滚以应用词条：攻速-1%；移速-1%；释放速度-1.5%
+                    giveback_speed()
+                # 未装备悲情者遗物时
+                if "31300" not in equips:
+                    # 回滚以应用词条：攻速-1%；移速-1%；释放速度-1.5%
+                    giveback_speed()
             # 项链
             if "22300" in equips:
-                # 装备地狱边缘上衣时
-                if "11300" in equips:
-                    # 攻速-1%；移速-1%；释放速度-1.5%
-                    reduce_speed()
-                # 装备悲情者遗物时
-                if "31300" in equips:
-                    # 攻速-1%；移速-1%；释放速度-1.5%
-                    reduce_speed()
+                # 未装备地狱边缘上衣时
+                if "11300" not in equips:
+                    # 回滚以应用词条：攻速-1%；移速-1%；释放速度-1.5%
+                    giveback_speed()
+                # 未装备悲情者遗物时
+                if "31300" not in equips:
+                    # 回滚以应用词条：攻速-1%；移速-1%；释放速度-1.5%
+                    giveback_speed()
             # 辅助装备
             if "31300" in equips:
-                # 装备地狱边缘上衣时
-                if "11300" in equips:
-                    # 攻速-1%；移速-1%；释放速度-1.5%
-                    reduce_speed()
-                # 装备悲痛者项链时
-                if "22300" in equips:
-                    # 攻速-1%；移速-1%；释放速度-1.5%
-                    reduce_speed()
+                # 未装备地狱边缘上衣时
+                if "11300" not in equips:
+                    # 回滚以应用词条：攻速-1%；移速-1%；释放速度-1.5%
+                    giveback_speed()
+                # 未装备悲痛者项链时
+                if "22300" not in equips:
+                    # 回滚以应用词条：攻速-1%；移速-1%；释放速度-1.5%
+                    giveback_speed()
             # 二件套
             if "1301" in set_on or "1302" in set_on:
-                # 装备地狱边缘上衣时
-                if "11300" in equips:
-                    # 攻速-1%；移速-1%；释放速度-1.5%
-                    reduce_speed()
+                # 未装备地狱边缘上衣时
+                if "11300" not in equips:
+                    # 回滚以应用词条：攻速-1%；移速-1%；释放速度-1.5%
+                    giveback_speed()
             # 三件套
             if "1302" in set_on:
-                # 装备地狱边缘上衣时
-                if "11300" in equips:
-                    # 攻速-1%；移速-1%；释放速度-1.5%
-                    reduce_speed()
+                # 未装备地狱边缘上衣时
+                if "11300" not in equips:
+                    # 回滚以应用词条：攻速-1%；移速-1%；释放速度-1.5%
+                    giveback_speed()
 
         # 能量的主宰装备，若拥有能量耳环或能量神话耳环
         if '33230' in equips or '33231' in equips:
