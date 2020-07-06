@@ -105,11 +105,13 @@ def fix_base_array_for_equip_or_set_requirement(base_array, equips, set_on):
         if "11311" in equips:
             base_array[index_deal_extra_percent_attack_speed] += 5
             base_array[index_deal_extra_percent_moving_speed] += 5
+
     # 水果三件套或五件套
     if "1082" in set_on or "1083" in set_on:
         # 若同时拥有裤子12080和鞋子15080，则额外加成5%移速
         if "12080" in equips and "15080" in equips:
             base_array[index_deal_extra_percent_moving_speed] += 5
+
     # 坎坷命运: 神话上衣（11301）、上衣（11300）、项链（22300）、辅助装备（31300）
     if "1301" in set_on or "1302" in set_on:
         def giveback_speed():
@@ -177,6 +179,7 @@ def fix_base_array_for_equip_or_set_requirement(base_array, equips, set_on):
             if "11300" not in equips:
                 # 回滚以应用词条：攻速-1%；移速-1%；释放速度-1.5%
                 giveback_speed()
+
     # 能量的主宰装备，若拥有能量耳环或能量神话耳环
     if '33230' in equips or '33231' in equips:
         # 若不同时拥有能量辅助装备，则减去10%力智加成
@@ -185,6 +188,7 @@ def fix_base_array_for_equip_or_set_requirement(base_array, equips, set_on):
         # 如不同时拥有能量魔法石，则减去40点全属性属强
         if '32230' not in equips:
             base_array[index_deal_extra_all_element_strength] -= 40
+
     # 特殊处理天命无常套装
     if '15340' in equips or '23340' in equips or '33340' in equips or '33341' in equips:
         # 若只有散件
@@ -204,11 +208,13 @@ def fix_base_array_for_equip_or_set_requirement(base_array, equips, set_on):
                 base_array[index_deal_extra_percent_attack_damage] -= 2  # damper=2
                 base_array[index_deal_extra_percent_final_damage] -= 1  # allper=6
                 base_array[index_deal_extra_percent_strength_and_intelligence] -= 1.93  # staper=15
+
     # 铁匠神话上衣
     if '11111' in equips:
         # 铁匠三件套或铁匠五件套
         if '1112' in set_on or '1113' in set_on:
             base_array[index_deal_cool_correction] += 10
+
     # 大祭司神话对其他装备的增幅额外+50%
     if "11011" in equips:
         # 下装的天之恩宠为增加20全属性抗性
@@ -220,6 +226,7 @@ def fix_base_array_for_equip_or_set_requirement(base_array, equips, set_on):
         # 腰带的天之恩宠为增加12%攻速
         if "14010" in equips:
             base_array[index_deal_extra_percent_attack_speed] += 6
+
     # 呐喊神话手镯对二件套的加速效果额外增幅一倍
     if "1261" in set_on or "1262" in set_on:
         if "21261" in equips:
@@ -227,7 +234,9 @@ def fix_base_array_for_equip_or_set_requirement(base_array, equips, set_on):
             base_array[index_deal_extra_percent_attack_speed] += 12
             # 额外增加移速12%
             base_array[index_deal_extra_percent_moving_speed] += 12
+
     ################################大幽魂和军神最后处理，且大幽魂要在前面######################################
+
     # 大幽魂系列
     # ps：必须在军神之前处理，因为套装效果可能会影响移速
     dr = base_array[index_deal_extra_dark_resistance]  # 当前总暗抗
@@ -342,6 +351,7 @@ def fix_base_array_for_equip_or_set_requirement(base_array, equips, set_on):
         base_array[index_deal_extra_percent_moving_speed] -= get_delta(dr, 9, 5, 15)
         # 每13点暗属性抗性，增加10%的施放速度。（最多增加20%）
         # ps: 暂无对应词条
+
     # 军神系列
     # 拥有军神耳环，且不拥有军神辅助装备
     if "33200" in equips and "31200" not in equips:
