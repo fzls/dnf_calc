@@ -34,6 +34,7 @@ from openpyxl import Workbook
 from .config import *
 from .equipment import *
 from .export_def import *
+from .const import *
 
 
 def export_result(ele_skill, col_names, job_name, cool, equip_index_to_realname, custom_buf_data, extract_rank_cols_func, rankings):
@@ -108,7 +109,7 @@ def extract_deal_rank_cols(ele_skill, job_name, cool, equip_index_to_realname, c
         bbg = equip_index_to_realname[baibianguai]
     cols.append(bbg)
     cols.append(",".join(equip_index_to_realname[equip_index] for equip_index in not_owned_equips))  # 跨界或升级工作服得来的装备
-    for index_deal in range(28):
+    for index_deal in range(len(deal_entry_index_to_name)):
         cols.append(base_array[index_deal])
     cols.append(cool)  # 冷却补正
     cols.append(ele_skill)  # 技能属强补正
