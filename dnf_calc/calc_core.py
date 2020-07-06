@@ -239,7 +239,7 @@ def fix_base_array_for_equip_or_set_requirement(base_array, equips, set_on, conf
     # 大幽魂系列
     if config.misc.check_dayouhun_dark_resistance:
         # ps：必须在军神之前处理，因为套装效果可能会影响移速
-        dr = base_array[index_deal_extra_dark_resistance]  # 当前总暗抗
+        dr = max(base_array[index_deal_extra_dark_resistance], 0)  # 当前总暗抗，至少为0，做下保底
 
         def get_delta(dark_resistance, dark_resistance_step, attr_step, attr_max):
             """
