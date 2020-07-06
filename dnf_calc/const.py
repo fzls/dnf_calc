@@ -91,8 +91,8 @@ index_deal_extra_active_skill_lv_60_80 = 24  # 24-AQ-pas2-60_80主动技能
 index_deal_extra_active_skill_lv_85 = 25  # 25-AR-pas3-85主动技能
 index_deal_extra_active_skill_lv_95 = 26  # 26-AS-pas4-95主动技能
 index_deal_extra_active_skill_lv_100 = 27  # 27-AT-pas5-100主动技能
-index_deal_extra_dark_resistance = 28 # 28-AU-dark_resistance-暗抗
-index_deal_extra_percent_moving_speed = 29 # 29-AV-moving_speed-移速
+index_deal_extra_dark_resistance = 28  # 28-AU-dark_resistance-暗抗
+index_deal_extra_percent_moving_speed = 29  # 29-AV-moving_speed-移速
 
 deal_multiply_entry_indexes = [
     index_deal_extra_percent_skill_attack_power
