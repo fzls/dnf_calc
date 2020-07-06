@@ -364,6 +364,8 @@ def calc():
     # 代码中深度从0开始计算，-1则表示不启用
     step_data.start_parallel_computing_at_depth_n = config().multi_threading.start_parallel_computing_at_depth_n - 1
 
+    step_data.config = config()
+
     step_data.producer = producer
     producer_data.calc_index += 1
     producer_data.produced_count = 0

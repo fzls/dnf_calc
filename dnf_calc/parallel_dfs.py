@@ -63,6 +63,8 @@ def copy_step(step: CalcStepData) -> CalcStepData:
     copied_step.owned_set_2_equips_map = copy.deepcopy(step.owned_set_2_equips_map)
     copied_step.prune_cfg = copy.deepcopy(step.prune_cfg)
 
+    copied_step.config = copy.deepcopy(step.config)
+
     data = step.calc_data
 
     copied_data = copy.copy(data)

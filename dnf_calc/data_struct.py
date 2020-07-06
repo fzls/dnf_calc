@@ -20,7 +20,7 @@ from typing import List, Dict, Set
 
 from numpy import ndarray
 
-from .config import ConstConfig, PruneConfig, HuanZhuangConfig
+from .config import Config, ConstConfig, PruneConfig, HuanZhuangConfig
 
 
 class MinHeap:
@@ -107,6 +107,9 @@ class CalcStepData:
         self.prefer_god = True
         self.prune_cfg = None  # type: PruneConfig
         self.start_parallel_computing_at_depth_n = 0
+
+        # 配置数据
+        self.config = None # type: Config
 
         # 其他
         self.producer = None

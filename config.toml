@@ -205,3 +205,10 @@ nailuo_sing_song_increase_rate_final_coef = 1.20
 
 # 奶妈、奶萝站街、进图面板差值（估算用）
 naima_nailuo_mianban_delta = 487
+
+# 杂项
+[misc]
+# 是否检查大幽魂的暗抗要求
+check_dayouhun_dark_resistance = true
+# 是否检查军神的移速要求
+check_junshen_moving_speed = true

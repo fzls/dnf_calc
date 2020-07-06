@@ -257,6 +257,14 @@ class ConstConfig(ConfigInterface):
         self.naima_nailuo_mianban_delta = 487
 
 
+class MiscConfig(ConfigInterface):
+    def __init__(self):
+        # 是否检查大幽魂的暗抗要求
+        self.check_dayouhun_dark_resistance = True
+        # 是否检查军神的移速要求
+        self.check_junshen_moving_speed = True
+
+
 class Config(ConfigInterface):
     log_level_map = {
         "debug": logging.DEBUG,
@@ -299,6 +307,8 @@ class Config(ConfigInterface):
         self.initital_data = InititalDataConfig()
         # 一些常量
         self.const = ConstConfig()
+        # 一些杂项
+        self.misc = MiscConfig()
 
     def auto_update_config(self, raw_config: dict):
         super().auto_update_config(raw_config)
