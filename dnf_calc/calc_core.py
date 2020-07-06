@@ -49,305 +49,7 @@ def process_deal(step: CalcStepData):
         base_array[index_deal_extra_percent_skill_attack_power] = skiper  # 技能攻击力 +X%
 
         #################################计算各种特殊条件触发的属性#################################
-
-        # 吞噬愤怒二件套或三件套
-        if "1311" in set_on or "1312" in set_on:
-            # 如果拥有吞噬愤怒神话上衣，则疯狂Buff效果会变为1.5倍
-            if "11311" in equips:
-                base_array[index_deal_extra_percent_attack_speed] += 5
-                base_array[index_deal_extra_percent_moving_speed] += 5
-
-        # 水果三件套或五件套
-        if "1082" in set_on or "1083" in set_on:
-            # 若同时拥有裤子12080和鞋子15080，则额外加成5%移速
-            if "12080" in equips and "15080" in equips:
-                base_array[index_deal_extra_percent_moving_speed] += 5
-
-        # 坎坷命运: 神话上衣（11301）、上衣（11300）、项链（22300）、辅助装备（31300）
-        if "1301" in set_on or "1302" in set_on:
-            def giveback_speed():
-                # 默认data表中将对应减速效果都应用了，所以这里判断对应条件是否不成立，然后补回来
-                # 攻速+1%
-                base_array[index_deal_extra_percent_attack_speed] += 1
-                # 移速+1%
-                base_array[index_deal_extra_percent_moving_speed] += 1
-                # 释放速度+1.5%
-                # 暂不支持该词条
-
-            # 神话上衣
-            if "11301" in equips:
-                # 未装备悲痛者项链时
-                if "22300" not in equips:
-                    # 回滚以应用词条：三攻-10%
-                    base_array[index_deal_extra_percent_physical_magical_independent_attack_power] += 10
-                    # 回滚以应用词条：攻击时，附加10%的伤害
-                    base_array[index_deal_extra_percent_addtional_damage] -= 10
-                # 未装备悲情者遗物时
-                if "31300" not in equips:
-                    # 回滚以应用词条：三攻-10%
-                    base_array[index_deal_extra_percent_physical_magical_independent_attack_power] += 10
-                    # 回滚以应用词条：攻击时，附加10%的伤害
-                    base_array[index_deal_extra_percent_addtional_damage] -= 10
-            # 上衣
-            if "11300" in equips:
-                # 未装备悲痛者项链时
-                if "22300" not in equips:
-                    # 回滚以应用词条：攻速-1%；移速-1%；释放速度-1.5%
-                    giveback_speed()
-                # 未装备悲情者遗物时
-                if "31300" not in equips:
-                    # 回滚以应用词条：攻速-1%；移速-1%；释放速度-1.5%
-                    giveback_speed()
-            # 项链
-            if "22300" in equips:
-                # 未装备地狱边缘上衣时
-                if "11300" not in equips:
-                    # 回滚以应用词条：攻速-1%；移速-1%；释放速度-1.5%
-                    giveback_speed()
-                # 未装备悲情者遗物时
-                if "31300" not in equips:
-                    # 回滚以应用词条：攻速-1%；移速-1%；释放速度-1.5%
-                    giveback_speed()
-            # 辅助装备
-            if "31300" in equips:
-                # 未装备地狱边缘上衣时
-                if "11300" not in equips:
-                    # 回滚以应用词条：攻速-1%；移速-1%；释放速度-1.5%
-                    giveback_speed()
-                # 未装备悲痛者项链时
-                if "22300" not in equips:
-                    # 回滚以应用词条：攻速-1%；移速-1%；释放速度-1.5%
-                    giveback_speed()
-            # 二件套
-            if "1301" in set_on or "1302" in set_on:
-                # 未装备地狱边缘上衣时
-                if "11300" not in equips:
-                    # 回滚以应用词条：攻速-1%；移速-1%；释放速度-1.5%
-                    giveback_speed()
-            # 三件套
-            if "1302" in set_on:
-                # 未装备地狱边缘上衣时
-                if "11300" not in equips:
-                    # 回滚以应用词条：攻速-1%；移速-1%；释放速度-1.5%
-                    giveback_speed()
-
-        # 能量的主宰装备，若拥有能量耳环或能量神话耳环
-        if '33230' in equips or '33231' in equips:
-            # 若不同时拥有能量辅助装备，则减去10%力智加成
-            if '31230' not in equips:
-                base_array[index_deal_extra_percent_addtional_damage] -= 10
-            # 如不同时拥有能量魔法石，则减去40点全属性属强
-            if '32230' not in equips:
-                base_array[index_deal_extra_all_element_strength] -= 40
-
-        # 特殊处理天命无常套装
-        if '15340' in equips or '23340' in equips or '33340' in equips or '33341' in equips:
-            # 若只有散件
-            if '1341' not in set_on and '1342' not in set_on:
-                # 天命鞋子，在两件套时，点数为双数增加40点属强，期望为20，若为散件则减去该属性
-                if '15340' in equips:
-                    base_array[index_deal_extra_all_element_strength] -= 20
-                # 天命戒指，在两件套时，点数大于2额外增加12%伤害，期望为10%（ps：原作者给，我觉得应该应该是4/6*12=8%?）
-                elif '23340' in equips:  # 天命无常-戒指-命运的捉弄
-                    base_array[index_deal_extra_percent_attack_damage] -= 10
-                # 天命耳环，在两件套时，点数为6时增加30%最终伤害，期望为5%
-                elif '33340' in equips:
-                    base_array[index_deal_extra_percent_final_damage] -= 5  #
-                # 天命神话耳环，在两件套时，点数为6时增加30%最终伤害，其中点数为1时重新投色子，期望为6%
-                else:
-                    base_array[index_deal_extra_all_element_strength] -= 4  # ele=4
-                    base_array[index_deal_extra_percent_attack_damage] -= 2  # damper=2
-                    base_array[index_deal_extra_percent_final_damage] -= 1  # allper=6
-                    base_array[index_deal_extra_percent_strength_and_intelligence] -= 1.93  # staper=15
-
-        # 铁匠神话上衣
-        if '11111' in equips:
-            # 铁匠三件套或铁匠五件套
-            if '1112' in set_on or '1113' in set_on:
-                base_array[index_deal_cool_correction] += 10
-
-        # 大祭司神话对其他装备的增幅额外+50%
-        if "11011" in equips:
-            # 下装的天之恩宠为增加20全属性抗性
-            if "12010" in equips:
-                base_array[index_deal_extra_dark_resistance] += 10
-            # 鞋的天之恩宠为增加12%移速
-            if "15010" in equips:
-                base_array[index_deal_extra_percent_moving_speed] += 6
-            # 腰带的天之恩宠为增加12%攻速
-            if "14010" in equips:
-                base_array[index_deal_extra_percent_attack_speed] += 6
-
-        # 呐喊神话手镯对二件套的加速效果额外增幅一倍
-        if "1261" in set_on or "1262" in set_on:
-            if "21261" in equips:
-                # 额外增加攻速12%
-                base_array[index_deal_extra_percent_attack_speed] += 12
-                # 额外增加移速12%
-                base_array[index_deal_extra_percent_moving_speed] += 12
-
-        ################################大幽魂和军神最后处理，且大幽魂要在前面######################################
-
-        # 大幽魂系列
-        # ps：必须在军神之前处理，因为套装效果可能会影响移速
-        dr = base_array[index_deal_extra_dark_resistance]  # 当前总暗抗
-
-        def get_delta(dark_resistance, dark_resistance_step, attr_step, attr_max):
-            """
-            计算当暗抗值为dark_resistance，对于形如【每dark_resistance_step点暗属性抗性，增加attr_step的xxx词条。（最多增加attr_max）】的词条，需要补正（减去）的xxx词条
-            @param dark_resistance: 总暗抗
-            @param dark_resistance_step: 每多少点暗抗计算一次xxx词条
-            @param attr_step: 每次计算多少点xxx词条
-            @param attr_max: 最多计算多少点xxx词条
-            @return:
-            """
-            return attr_max - min(dark_resistance // dark_resistance_step * attr_step, attr_max)
-
-        # 深渊上衣11280、深渊神话上衣11281
-        if "11280" in equips or "11281" in equips:
-            # 每10点暗属性抗性，增加7 % 的最终伤害。（最多增加35 %）
-            base_array[index_deal_extra_percent_final_damage] -= get_delta(dr, 10, 7, 35)
-        # 深渊项链22280
-        if "22280" in equips:
-            # 每13点暗属性抗性，增加10%的力量和智力。（最多增加40%）
-            base_array[index_deal_extra_percent_strength_and_intelligence] -= get_delta(dr, 13, 10, 40)
-        # 深渊辅助装备31280
-        if "31280" in equips:
-            # 每7点暗属性抗性，增加6%的物理、魔法、独立攻击力。（最多增加42%）
-            base_array[index_deal_extra_percent_physical_magical_independent_attack_power] -= get_delta(dr, 7, 6, 42)
-        # 深渊2件套1281
-        if "1281" in set_on or "1282" in set_on:
-            # 每28点暗属性抗性，所有职业lv1~48所有技能Lv+1（特性技能除外；最多叠加2次）
-            base_array[index_deal_extra_passive_transfer_skill] -= get_delta(dr, 28, 1, 2)
-            base_array[index_deal_extra_passive_first_awaken_skill] -= get_delta(dr, 28, 1, 2)
-            base_array[index_deal_extra_active_skill_lv_1_45] -= get_delta(dr, 28, 1, 2)
-        # 深渊3件套1282
-        if "1282" in set_on:
-            # 每30点暗属性抗性，所有职业Lv60~80所有技能Lv +1（特性技能除外，最多叠加2次）
-            base_array[index_deal_extra_active_skill_lv_60_80] -= get_delta(dr, 30, 1, 2)
-            # 暗属性抗性高于61时，所有职业Lv50、Lv80、Lv100所有技能Lv +1（特性技能除外）
-            if dr < 61:
-                base_array[index_deal_extra_active_skill_lv_50] -= 1
-                base_array[index_deal_extra_active_skill_lv_85] -= 1
-                base_array[index_deal_extra_active_skill_lv_100] -= 1
-
-        # 黑魔法下装12240
-        if "12240" in equips:
-            # 每14点暗属性抗性，攻击时额外增加7%的伤害增加量。（最多增加35%）
-            base_array[index_deal_extra_percent_attack_damage] -= get_delta(dr, 14, 7, 35)
-        # 黑魔法手镯21240、黑魔法神话手镯21241
-        if "21240" in equips or "21241" in equips:
-            # 每18点暗属性抗性，增加7%的最终伤害（最多增加28%）
-            base_array[index_deal_extra_percent_final_damage] -= get_delta(dr, 18, 7, 28)
-            # 每18点暗属性抗性，增加10点所有属性强化（最多增加40点）
-            base_array[index_deal_extra_all_element_strength] -= get_delta(dr, 18, 10, 40)
-        # 黑魔法魔法石32240
-        if "32240" in equips:
-            # 每10点暗属性抗性，暴击时额外增加5 % 的伤害增加量。（最多增加35 %）
-            base_array[index_deal_extra_percent_crit_damage] -= get_delta(dr, 10, 5, 35)
-            # 每10点暗属性抗性，增加1 % 的技能攻击力。（最多增加7 %）
-            base_array[index_deal_extra_percent_skill_attack_power] -= get_delta(dr, 10, 1, 7)
-        # 黑魔法2件套1241
-        if "1241" in set_on or "1242" in set_on:
-            # 暗属性抗性高于76时，攻击时额外增加12%的伤害增加量
-            if dr < 76:
-                base_array[index_deal_extra_percent_attack_damage] -= 12
-            # 暗属性抗性高于76时，技能攻击力+10%
-            if dr < 76:
-                base_array[index_deal_extra_percent_skill_attack_power] -= 10
-        # 黑魔法3件套1242
-        if "1242" in set_on:
-            # 每16点暗属性抗性，增加2%的物理、魔法暴击率。（最多增加10%）
-            base_array[index_deal_extra_percent_magic_physical_crit_rate] -= get_delta(dr, 16, 2, 10)
-            # 暗属性抗性高于81时，攻击时附加13%的属性伤害。（以自身攻击属性中最高属性伤害为准）
-            if dr < 81:
-                base_array[index_deal_extra_percent_elemental_damage] -= 13
-
-        # 求道者鞋15320
-        if "15320" in equips:
-            # 每3点暗属性抗性，增加14点所有属性强化。(最多增加70点)
-            base_array[index_deal_extra_all_element_strength] -= get_delta(dr, 3, 14, 70)
-            # 暗属性抗性高于16时，所有职业Lv1-100所有技能Lv+1(特性技能除外、Lv95技能除外)
-            if dr < 16:
-                base_array[index_deal_extra_passive_transfer_skill] -= 1
-                base_array[index_deal_extra_passive_first_awaken_skill] -= 1
-                base_array[index_deal_extra_passive_second_awaken_skill] -= 1
-                base_array[index_deal_extra_active_skill_lv_1_45] -= 1
-                base_array[index_deal_extra_active_skill_lv_50] -= 1
-                base_array[index_deal_extra_active_skill_lv_60_80] -= 1
-                base_array[index_deal_extra_active_skill_lv_85] -= 1
-                base_array[index_deal_extra_active_skill_lv_100] -= 1
-        # 求道者戒指23320
-        if "23320" in equips:
-            # 每4点暗属性抗性，暴击时额外增加10%的伤害增加。（最多增加40%）
-            base_array[index_deal_extra_percent_crit_damage] -= get_delta(dr, 4, 10, 40)
-        # 求道者耳环33320、求道者神话耳环33321
-        if "33320" in equips or "33321" in equips:
-            # 每3点暗属性抗性，增加7%的最终伤害。（最多增加42%）
-            base_array[index_deal_extra_percent_final_damage] -= get_delta(dr, 3, 7, 42)
-        # 求道者2件套1321
-        if "1321" in set_on or "1322" in set_on:
-            # 暗属性抗性高于21点时，增加10%的最终伤害
-            if dr < 21:
-                base_array[index_deal_extra_percent_final_damage] -= 10
-            # 暗属性抗性高于21点时，攻击时附加10%的伤害。
-            if dr < 21:
-                base_array[index_deal_extra_percent_addtional_damage] -= 10
-        # 求道者3件套1322
-        if "1322" in set_on:
-            # 每7点暗属性抗性，增加4%的技能攻击力。（最多增加16%）
-            base_array[index_deal_extra_percent_skill_attack_power] -= get_delta(dr, 7, 4, 16)
-            # 每7点暗属性抗性，增加10点所有属性强化。（最大增加40点）
-            base_array[index_deal_extra_all_element_strength] -= get_delta(dr, 7, 10, 40)
-            # 每9点暗属性抗性，增加5%的攻击速度和移动速度。（最多增加15%）
-            base_array[index_deal_extra_percent_attack_speed] -= get_delta(dr, 9, 5, 15)
-            base_array[index_deal_extra_percent_moving_speed] -= get_delta(dr, 9, 5, 15)
-            # 每13点暗属性抗性，增加10%的施放速度。（最多增加20%）
-            # ps: 暂无对应词条
-
-        # 军神系列
-
-        # 拥有军神耳环，且不拥有军神辅助装备
-        if "33200" in equips and "31200" not in equips:
-            # 减去10%力智加成
-            base_array[index_deal_extra_percent_strength_and_intelligence] -= 10
-            # 减去10%移速
-            base_array[index_deal_extra_percent_moving_speed] -= 10
-
-        # 军神二件套且拥有军神-魔法石-军神的庇护宝石32200，说明遗书31200和古怪耳环33200（心之所念33201）不同时存在，减去5%的爆伤，10%移速，5%攻速
-        if "1201" in set_on and "32200" in equips:
-            base_array[index_deal_extra_percent_crit_damage] -= 5
-            base_array[index_deal_extra_percent_moving_speed] -= 10
-            base_array[index_deal_extra_percent_attack_speed] -= 5
-
-        # 如果拥有军神的遗书31200（辅助装备）和军神的古怪耳环33200（非神话）（耳环），则将与神话的二件套差异补正
-        if "31200" in equips and "33200" in equips:
-            base_array[index_deal_extra_percent_moving_speed] -= 5
-            base_array[index_deal_extra_percent_attack_speed] -= 5
-
-        # 军神3件套-根据角色移动速度，获得以下效果。
-        # - 40%以下-[0,40%)：力量、智力 +2%
-        # - 40%~60%-[40%, 60%)：力量、智力 +4%
-        # - 60%~80%-[60%, 80%)：力量、智力 +6%
-        # - 80%~100%-[80%, 100%)：力量、智力 +8%
-        # - 100%~120%-[100%, 120%)：力量、智力 +10%
-        # - 120%以上-[120%, inf)：力量、智力 +10%；攻击速度 +10%；施放速度 +15%
-        if "1202" in set_on:
-            moving_speed = base_array[index_deal_extra_percent_moving_speed]
-
-            if moving_speed < 120:
-                base_array[index_deal_extra_percent_attack_speed] -= 10
-
-            delta = 0
-            if moving_speed < 40:
-                delta = 10 - 2
-            elif 40 <= moving_speed < 60:
-                delta = 10 - 4
-            elif 60 <= moving_speed < 80:
-                delta = 10 - 6
-            elif 80 <= moving_speed < 100:
-                delta = 10 - 8
-            base_array[index_deal_extra_percent_strength_and_intelligence] -= delta
+        fix_base_array_for_equip_or_set_requirement(base_array, equips, set_on)
 
         #################################核心计算公式#################################
 
@@ -394,6 +96,291 @@ def process_deal(step: CalcStepData):
 
         unique_index = random.random()
         data.minheap_queues[0].put((damage, unique_index, copy.deepcopy(save_data)))
+
+
+def fix_base_array_for_equip_or_set_requirement(base_array, equips, set_on):
+    # 吞噬愤怒二件套或三件套
+    if "1311" in set_on or "1312" in set_on:
+        # 如果拥有吞噬愤怒神话上衣，则疯狂Buff效果会变为1.5倍
+        if "11311" in equips:
+            base_array[index_deal_extra_percent_attack_speed] += 5
+            base_array[index_deal_extra_percent_moving_speed] += 5
+    # 水果三件套或五件套
+    if "1082" in set_on or "1083" in set_on:
+        # 若同时拥有裤子12080和鞋子15080，则额外加成5%移速
+        if "12080" in equips and "15080" in equips:
+            base_array[index_deal_extra_percent_moving_speed] += 5
+    # 坎坷命运: 神话上衣（11301）、上衣（11300）、项链（22300）、辅助装备（31300）
+    if "1301" in set_on or "1302" in set_on:
+        def giveback_speed():
+            # 默认data表中将对应减速效果都应用了，所以这里判断对应条件是否不成立，然后补回来
+            # 攻速+1%
+            base_array[index_deal_extra_percent_attack_speed] += 1
+            # 移速+1%
+            base_array[index_deal_extra_percent_moving_speed] += 1
+            # 释放速度+1.5%
+            # 暂不支持该词条
+
+        # 神话上衣
+        if "11301" in equips:
+            # 未装备悲痛者项链时
+            if "22300" not in equips:
+                # 回滚以应用词条：三攻-10%
+                base_array[index_deal_extra_percent_physical_magical_independent_attack_power] += 10
+                # 回滚以应用词条：攻击时，附加10%的伤害
+                base_array[index_deal_extra_percent_addtional_damage] -= 10
+            # 未装备悲情者遗物时
+            if "31300" not in equips:
+                # 回滚以应用词条：三攻-10%
+                base_array[index_deal_extra_percent_physical_magical_independent_attack_power] += 10
+                # 回滚以应用词条：攻击时，附加10%的伤害
+                base_array[index_deal_extra_percent_addtional_damage] -= 10
+        # 上衣
+        if "11300" in equips:
+            # 未装备悲痛者项链时
+            if "22300" not in equips:
+                # 回滚以应用词条：攻速-1%；移速-1%；释放速度-1.5%
+                giveback_speed()
+            # 未装备悲情者遗物时
+            if "31300" not in equips:
+                # 回滚以应用词条：攻速-1%；移速-1%；释放速度-1.5%
+                giveback_speed()
+        # 项链
+        if "22300" in equips:
+            # 未装备地狱边缘上衣时
+            if "11300" not in equips:
+                # 回滚以应用词条：攻速-1%；移速-1%；释放速度-1.5%
+                giveback_speed()
+            # 未装备悲情者遗物时
+            if "31300" not in equips:
+                # 回滚以应用词条：攻速-1%；移速-1%；释放速度-1.5%
+                giveback_speed()
+        # 辅助装备
+        if "31300" in equips:
+            # 未装备地狱边缘上衣时
+            if "11300" not in equips:
+                # 回滚以应用词条：攻速-1%；移速-1%；释放速度-1.5%
+                giveback_speed()
+            # 未装备悲痛者项链时
+            if "22300" not in equips:
+                # 回滚以应用词条：攻速-1%；移速-1%；释放速度-1.5%
+                giveback_speed()
+        # 二件套
+        if "1301" in set_on or "1302" in set_on:
+            # 未装备地狱边缘上衣时
+            if "11300" not in equips:
+                # 回滚以应用词条：攻速-1%；移速-1%；释放速度-1.5%
+                giveback_speed()
+        # 三件套
+        if "1302" in set_on:
+            # 未装备地狱边缘上衣时
+            if "11300" not in equips:
+                # 回滚以应用词条：攻速-1%；移速-1%；释放速度-1.5%
+                giveback_speed()
+    # 能量的主宰装备，若拥有能量耳环或能量神话耳环
+    if '33230' in equips or '33231' in equips:
+        # 若不同时拥有能量辅助装备，则减去10%力智加成
+        if '31230' not in equips:
+            base_array[index_deal_extra_percent_addtional_damage] -= 10
+        # 如不同时拥有能量魔法石，则减去40点全属性属强
+        if '32230' not in equips:
+            base_array[index_deal_extra_all_element_strength] -= 40
+    # 特殊处理天命无常套装
+    if '15340' in equips or '23340' in equips or '33340' in equips or '33341' in equips:
+        # 若只有散件
+        if '1341' not in set_on and '1342' not in set_on:
+            # 天命鞋子，在两件套时，点数为双数增加40点属强，期望为20，若为散件则减去该属性
+            if '15340' in equips:
+                base_array[index_deal_extra_all_element_strength] -= 20
+            # 天命戒指，在两件套时，点数大于2额外增加12%伤害，期望为10%（ps：原作者给，我觉得应该应该是4/6*12=8%?）
+            elif '23340' in equips:  # 天命无常-戒指-命运的捉弄
+                base_array[index_deal_extra_percent_attack_damage] -= 10
+            # 天命耳环，在两件套时，点数为6时增加30%最终伤害，期望为5%
+            elif '33340' in equips:
+                base_array[index_deal_extra_percent_final_damage] -= 5  #
+            # 天命神话耳环，在两件套时，点数为6时增加30%最终伤害，其中点数为1时重新投色子，期望为6%
+            else:
+                base_array[index_deal_extra_all_element_strength] -= 4  # ele=4
+                base_array[index_deal_extra_percent_attack_damage] -= 2  # damper=2
+                base_array[index_deal_extra_percent_final_damage] -= 1  # allper=6
+                base_array[index_deal_extra_percent_strength_and_intelligence] -= 1.93  # staper=15
+    # 铁匠神话上衣
+    if '11111' in equips:
+        # 铁匠三件套或铁匠五件套
+        if '1112' in set_on or '1113' in set_on:
+            base_array[index_deal_cool_correction] += 10
+    # 大祭司神话对其他装备的增幅额外+50%
+    if "11011" in equips:
+        # 下装的天之恩宠为增加20全属性抗性
+        if "12010" in equips:
+            base_array[index_deal_extra_dark_resistance] += 10
+        # 鞋的天之恩宠为增加12%移速
+        if "15010" in equips:
+            base_array[index_deal_extra_percent_moving_speed] += 6
+        # 腰带的天之恩宠为增加12%攻速
+        if "14010" in equips:
+            base_array[index_deal_extra_percent_attack_speed] += 6
+    # 呐喊神话手镯对二件套的加速效果额外增幅一倍
+    if "1261" in set_on or "1262" in set_on:
+        if "21261" in equips:
+            # 额外增加攻速12%
+            base_array[index_deal_extra_percent_attack_speed] += 12
+            # 额外增加移速12%
+            base_array[index_deal_extra_percent_moving_speed] += 12
+    ################################大幽魂和军神最后处理，且大幽魂要在前面######################################
+    # 大幽魂系列
+    # ps：必须在军神之前处理，因为套装效果可能会影响移速
+    dr = base_array[index_deal_extra_dark_resistance]  # 当前总暗抗
+
+    def get_delta(dark_resistance, dark_resistance_step, attr_step, attr_max):
+        """
+        计算当暗抗值为dark_resistance，对于形如【每dark_resistance_step点暗属性抗性，增加attr_step的xxx词条。（最多增加attr_max）】的词条，需要补正（减去）的xxx词条
+        @param dark_resistance: 总暗抗
+        @param dark_resistance_step: 每多少点暗抗计算一次xxx词条
+        @param attr_step: 每次计算多少点xxx词条
+        @param attr_max: 最多计算多少点xxx词条
+        @return:
+        """
+        return attr_max - min(dark_resistance // dark_resistance_step * attr_step, attr_max)
+
+    # 深渊上衣11280、深渊神话上衣11281
+    if "11280" in equips or "11281" in equips:
+        # 每10点暗属性抗性，增加7 % 的最终伤害。（最多增加35 %）
+        base_array[index_deal_extra_percent_final_damage] -= get_delta(dr, 10, 7, 35)
+    # 深渊项链22280
+    if "22280" in equips:
+        # 每13点暗属性抗性，增加10%的力量和智力。（最多增加40%）
+        base_array[index_deal_extra_percent_strength_and_intelligence] -= get_delta(dr, 13, 10, 40)
+    # 深渊辅助装备31280
+    if "31280" in equips:
+        # 每7点暗属性抗性，增加6%的物理、魔法、独立攻击力。（最多增加42%）
+        base_array[index_deal_extra_percent_physical_magical_independent_attack_power] -= get_delta(dr, 7, 6, 42)
+    # 深渊2件套1281
+    if "1281" in set_on or "1282" in set_on:
+        # 每28点暗属性抗性，所有职业lv1~48所有技能Lv+1（特性技能除外；最多叠加2次）
+        base_array[index_deal_extra_passive_transfer_skill] -= get_delta(dr, 28, 1, 2)
+        base_array[index_deal_extra_passive_first_awaken_skill] -= get_delta(dr, 28, 1, 2)
+        base_array[index_deal_extra_active_skill_lv_1_45] -= get_delta(dr, 28, 1, 2)
+    # 深渊3件套1282
+    if "1282" in set_on:
+        # 每30点暗属性抗性，所有职业Lv60~80所有技能Lv +1（特性技能除外，最多叠加2次）
+        base_array[index_deal_extra_active_skill_lv_60_80] -= get_delta(dr, 30, 1, 2)
+        # 暗属性抗性高于61时，所有职业Lv50、Lv80、Lv100所有技能Lv +1（特性技能除外）
+        if dr < 61:
+            base_array[index_deal_extra_active_skill_lv_50] -= 1
+            base_array[index_deal_extra_active_skill_lv_85] -= 1
+            base_array[index_deal_extra_active_skill_lv_100] -= 1
+    # 黑魔法下装12240
+    if "12240" in equips:
+        # 每14点暗属性抗性，攻击时额外增加7%的伤害增加量。（最多增加35%）
+        base_array[index_deal_extra_percent_attack_damage] -= get_delta(dr, 14, 7, 35)
+    # 黑魔法手镯21240、黑魔法神话手镯21241
+    if "21240" in equips or "21241" in equips:
+        # 每18点暗属性抗性，增加7%的最终伤害（最多增加28%）
+        base_array[index_deal_extra_percent_final_damage] -= get_delta(dr, 18, 7, 28)
+        # 每18点暗属性抗性，增加10点所有属性强化（最多增加40点）
+        base_array[index_deal_extra_all_element_strength] -= get_delta(dr, 18, 10, 40)
+    # 黑魔法魔法石32240
+    if "32240" in equips:
+        # 每10点暗属性抗性，暴击时额外增加5 % 的伤害增加量。（最多增加35 %）
+        base_array[index_deal_extra_percent_crit_damage] -= get_delta(dr, 10, 5, 35)
+        # 每10点暗属性抗性，增加1 % 的技能攻击力。（最多增加7 %）
+        base_array[index_deal_extra_percent_skill_attack_power] -= get_delta(dr, 10, 1, 7)
+    # 黑魔法2件套1241
+    if "1241" in set_on or "1242" in set_on:
+        # 暗属性抗性高于76时，攻击时额外增加12%的伤害增加量
+        if dr < 76:
+            base_array[index_deal_extra_percent_attack_damage] -= 12
+        # 暗属性抗性高于76时，技能攻击力+10%
+        if dr < 76:
+            base_array[index_deal_extra_percent_skill_attack_power] -= 10
+    # 黑魔法3件套1242
+    if "1242" in set_on:
+        # 每16点暗属性抗性，增加2%的物理、魔法暴击率。（最多增加10%）
+        base_array[index_deal_extra_percent_magic_physical_crit_rate] -= get_delta(dr, 16, 2, 10)
+        # 暗属性抗性高于81时，攻击时附加13%的属性伤害。（以自身攻击属性中最高属性伤害为准）
+        if dr < 81:
+            base_array[index_deal_extra_percent_elemental_damage] -= 13
+    # 求道者鞋15320
+    if "15320" in equips:
+        # 每3点暗属性抗性，增加14点所有属性强化。(最多增加70点)
+        base_array[index_deal_extra_all_element_strength] -= get_delta(dr, 3, 14, 70)
+        # 暗属性抗性高于16时，所有职业Lv1-100所有技能Lv+1(特性技能除外、Lv95技能除外)
+        if dr < 16:
+            base_array[index_deal_extra_passive_transfer_skill] -= 1
+            base_array[index_deal_extra_passive_first_awaken_skill] -= 1
+            base_array[index_deal_extra_passive_second_awaken_skill] -= 1
+            base_array[index_deal_extra_active_skill_lv_1_45] -= 1
+            base_array[index_deal_extra_active_skill_lv_50] -= 1
+            base_array[index_deal_extra_active_skill_lv_60_80] -= 1
+            base_array[index_deal_extra_active_skill_lv_85] -= 1
+            base_array[index_deal_extra_active_skill_lv_100] -= 1
+    # 求道者戒指23320
+    if "23320" in equips:
+        # 每4点暗属性抗性，暴击时额外增加10%的伤害增加。（最多增加40%）
+        base_array[index_deal_extra_percent_crit_damage] -= get_delta(dr, 4, 10, 40)
+    # 求道者耳环33320、求道者神话耳环33321
+    if "33320" in equips or "33321" in equips:
+        # 每3点暗属性抗性，增加7%的最终伤害。（最多增加42%）
+        base_array[index_deal_extra_percent_final_damage] -= get_delta(dr, 3, 7, 42)
+    # 求道者2件套1321
+    if "1321" in set_on or "1322" in set_on:
+        # 暗属性抗性高于21点时，增加10%的最终伤害
+        if dr < 21:
+            base_array[index_deal_extra_percent_final_damage] -= 10
+        # 暗属性抗性高于21点时，攻击时附加10%的伤害。
+        if dr < 21:
+            base_array[index_deal_extra_percent_addtional_damage] -= 10
+    # 求道者3件套1322
+    if "1322" in set_on:
+        # 每7点暗属性抗性，增加4%的技能攻击力。（最多增加16%）
+        base_array[index_deal_extra_percent_skill_attack_power] -= get_delta(dr, 7, 4, 16)
+        # 每7点暗属性抗性，增加10点所有属性强化。（最大增加40点）
+        base_array[index_deal_extra_all_element_strength] -= get_delta(dr, 7, 10, 40)
+        # 每9点暗属性抗性，增加5%的攻击速度和移动速度。（最多增加15%）
+        base_array[index_deal_extra_percent_attack_speed] -= get_delta(dr, 9, 5, 15)
+        base_array[index_deal_extra_percent_moving_speed] -= get_delta(dr, 9, 5, 15)
+        # 每13点暗属性抗性，增加10%的施放速度。（最多增加20%）
+        # ps: 暂无对应词条
+    # 军神系列
+    # 拥有军神耳环，且不拥有军神辅助装备
+    if "33200" in equips and "31200" not in equips:
+        # 减去10%力智加成
+        base_array[index_deal_extra_percent_strength_and_intelligence] -= 10
+        # 减去10%移速
+        base_array[index_deal_extra_percent_moving_speed] -= 10
+    # 军神二件套且拥有军神-魔法石-军神的庇护宝石32200，说明遗书31200和古怪耳环33200（心之所念33201）不同时存在，减去5%的爆伤，10%移速，5%攻速
+    if "1201" in set_on and "32200" in equips:
+        base_array[index_deal_extra_percent_crit_damage] -= 5
+        base_array[index_deal_extra_percent_moving_speed] -= 10
+        base_array[index_deal_extra_percent_attack_speed] -= 5
+    # 如果拥有军神的遗书31200（辅助装备）和军神的古怪耳环33200（非神话）（耳环），则将与神话的二件套差异补正
+    if "31200" in equips and "33200" in equips:
+        base_array[index_deal_extra_percent_moving_speed] -= 5
+        base_array[index_deal_extra_percent_attack_speed] -= 5
+    # 军神3件套-根据角色移动速度，获得以下效果。
+    # - 40%以下-[0,40%)：力量、智力 +2%
+    # - 40%~60%-[40%, 60%)：力量、智力 +4%
+    # - 60%~80%-[60%, 80%)：力量、智力 +6%
+    # - 80%~100%-[80%, 100%)：力量、智力 +8%
+    # - 100%~120%-[100%, 120%)：力量、智力 +10%
+    # - 120%以上-[120%, inf)：力量、智力 +10%；攻击速度 +10%；施放速度 +15%
+    if "1202" in set_on:
+        moving_speed = base_array[index_deal_extra_percent_moving_speed]
+
+        if moving_speed < 120:
+            base_array[index_deal_extra_percent_attack_speed] -= 10
+
+        delta = 0
+        if moving_speed < 40:
+            delta = 10 - 2
+        elif 40 <= moving_speed < 60:
+            delta = 10 - 4
+        elif 60 <= moving_speed < 80:
+            delta = 10 - 6
+        elif 80 <= moving_speed < 100:
+            delta = 10 - 8
+        base_array[index_deal_extra_percent_strength_and_intelligence] -= delta
 
 
 def process_buf(step: CalcStepData):
