@@ -218,6 +218,7 @@
 
     ## 快捷栏装备
     - extra_percent_attack_speed: 5 # 攻速+5%
+    - extra_percent_moving_speed: 5 # 快捷栏装备[完美妆粉]增加的5%移速
     - strength_and_intelligence: 30  # 四维(力智)+30, 仅在地下城内生效
 
 
@@ -286,9 +287,13 @@
     - strength_and_intelligence: 17  # 智力+17
 
     ## 职业基础
-    - extra_dark_resistance: 23 # 所有装备脱光后的暗抗
-    - extra_percent_moving_speed: 13 # 所有装备脱光后的移速
+    - extra_dark_resistance: 12 # 所有装备脱光后的暗抗
     - extra_percent_moving_speed: 0.6 + 0.9 + 0.75 + 0.3 + 0.45 # 召唤师布甲专精获得的移速，分别是头肩、上衣、下装、腰带、鞋子
+
+    ## 其他
+    # 技能[唤醒]
+    - extra_percent_moving_speed: 8 # 移速增加8%
+    - extra_dark_resistance: 11 # 所有属性抗性增加11
 
     ### 宠物栏
     ## 宠物
