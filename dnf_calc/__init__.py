@@ -7,6 +7,7 @@
 # Email  : fzls.zju@gmail.com
 # -------------------------------
 import logging
+import multiprocessing
 import pathlib
 import sys
 from datetime import datetime
@@ -32,10 +33,13 @@ except PermissionError as err:
     notify_error(None, "创建日志目录logs失败，请确认是否限制了基础的运行权限")
     sys.exit(-1)
 
-fileHandler = logging.FileHandler("{0}/{1}.log".format(log_directory, datetime.now().strftime('calc_%Y_%m_%d_%H_%M_%S')), encoding="utf-8")
-fileHandler.setFormatter(logFormatter)
-fileHandler.setLevel(logging.DEBUG)
-logger.addHandler(fileHandler)
+process_name = multiprocessing.current_process().name
+if is_debug_mode() or "MainProcess" in process_name:
+    time_str = datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
+    fileHandler = logging.FileHandler("{0}/calc_{1}_{2}.log".format(log_directory, process_name, time_str), encoding="utf-8")
+    fileHandler.setFormatter(logFormatter)
+    fileHandler.setLevel(logging.DEBUG)
+    logger.addHandler(fileHandler)
 
 consoleHandler = logging.StreamHandler()
 consoleHandler.setFormatter(logFormatter)
