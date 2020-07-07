@@ -214,11 +214,11 @@ def calc():
         notify_error(logger, "preset.xlsx的B14、B15、B16、B18、B19均应为整数，请仔细检查，是否填空值了")
         return
 
-    global count_valid, count_invalid, show_number, all_list_num, max_setopt, count_start_time, unique_index
+    global count_valid, count_invalid, show_number, all_list_num, max_setopt, count_start_time, unique_index, multiprocessingManager
     count_valid = 0
     count_invalid = 0
     show_number = 0
-    max_setopt = multiprocessing.Manager().Value('i', 0)
+    max_setopt = multiprocessingManager.Value('i', 0)
 
     if job_name[-4:] == "(奶系)":
         active_eff_one = 15
@@ -325,7 +325,7 @@ def calc():
     if cfg.export_result_as_excel.enable:
         save_top_n = max(save_top_n, cfg.export_result_as_excel.export_rank_count)
 
-    m = multiprocessing.Manager()
+    m = multiprocessingManager
     global minheap_with_queues
     minheap_with_queues = []  # type: List[MinHeapWithQueue]
 
@@ -2493,7 +2493,8 @@ def check_all():
 ###########################################################
 
 if __name__ == '__main__':
-    exit_calc = multiprocessing.Manager().Value('i', 1)
+    multiprocessingManager = multiprocessing.Manager()
+    exit_calc = multiprocessingManager.Value('i', 1)
     count_valid = 0
     unique_index = 0
     count_invalid = 0
