@@ -2910,7 +2910,7 @@ if __name__ == '__main__':
     dark_blue = from_rgb(bg_cfg.blue)
 
     self = tkinter.Tk()
-    self.title("史诗搭配计算器火力全开版-ver" + now_version + " 魔改by风之凌殇 原创by黎明工作室（韩服）dawnclass16")
+    self.title("史诗搭配计算器火力全开Plus版-ver" + now_version + " 魔改by风之凌殇 原创by黎明工作室（韩服）dawnclass16")
     self.geometry("{}x{}+{}+{}".format(main_window_width, main_window_height, main_window_x_offset, main_window_y_offset))
     self.resizable(cfg.main_window_resizable, cfg.main_window_resizable)
     self.configure(bg=dark_main)
