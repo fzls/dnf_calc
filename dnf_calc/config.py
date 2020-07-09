@@ -177,6 +177,18 @@ class MultiThreadingConfig(ConfigInterface):
             self.max_thread = self.default_max_thread
 
 
+class DataTransferConfig(ConfigInterface):
+    def __init__(self):
+        # 批量向主进程传输计算结果（已本地预处理过）的大小
+        self.batch_size = 1000
+        # 倍增阶段的临界批量大小
+        self.batch_stage_double_upper_bound = 8000
+        # 累加阶段每次增加的批量大小
+        self.batch_linear_increase_size = 1000
+        # 预期数据传输队列的最大大小
+        self.expected_qsize = 10
+
+
 class ExportResultAsExcelConfig(ConfigInterface):
     def __init__(self):
         # 启用导出excel功能
@@ -297,6 +309,8 @@ class Config(ConfigInterface):
         self.gif = GifConfig()
         # 多线程配置
         self.multi_threading = MultiThreadingConfig()
+        # 工作进程与主进程的数据传输配置
+        self.data_transfer = DataTransferConfig()
         # 是否需要额外将输出结果导出为excel文件
         self.export_result_as_excel = ExportResultAsExcelConfig()
         # 一些需要特殊补正的数据

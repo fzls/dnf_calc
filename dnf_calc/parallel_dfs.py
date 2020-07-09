@@ -46,6 +46,22 @@ def parallel_dfs(step: CalcStepData):
             try_equip(step, equip_to_transfer)
             step.calc_data.transfered_equips.pop()
 
+    # 如果当前层为当前进程的搜索子节点，则同步数据（若有）回去
+    is_root = False
+    if 0 <= step.start_parallel_computing_at_depth_n <= 9:
+        # 多进程并发搜索的情况时，根节点为开始并发搜索的各个节点
+        is_root = step.current_index == step.start_parallel_computing_at_depth_n + 1
+    else:
+        # 单进程搜索的情况时，根节点为整个搜索树的子节点
+        is_root = step.current_index == 0
+
+    if is_root:
+        for idx, minheap in enumerate(step.calc_data.minheaps):
+            # 同步
+            step.calc_data.minheap_queues[idx].put(copy.deepcopy(minheap))
+            # 重置
+            minheap.reset()
+
 
 def copy_step(step: CalcStepData) -> CalcStepData:
     """
@@ -81,6 +97,8 @@ def copy_step(step: CalcStepData) -> CalcStepData:
     copied_data.huanzhuang_slot_fixup = copy.deepcopy(data.huanzhuang_slot_fixup)
     copied_data.opt_buf = copy.deepcopy(data.opt_buf)
     copied_data.opt_buflvl = copy.deepcopy(data.opt_buflvl)
+
+    copied_data.minheaps = copy.deepcopy(data.minheaps)
 
     copied_step.calc_data = copied_data
 

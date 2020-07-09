@@ -12,7 +12,7 @@ import random
 from math import floor
 from typing import List
 
-from .data_struct import CalcStepData, BlessHuanZhuang, BlessHuanZhuangStep
+from .data_struct import CalcStepData, BlessHuanZhuang, BlessHuanZhuangStep, MinHeap
 from .equipment import *
 from .logic import *
 from .parallel_dfs import max_inc_values, calc_equip_value
@@ -95,7 +95,18 @@ def process_deal(step: CalcStepData):
         save_data = [calc_wep, base_array, data.baibianguai, tuple(not_owned_equips)]
 
         unique_index = random.random()
-        data.minheap_queues[0].put((damage, unique_index, copy.deepcopy(save_data)))
+        data.minheaps[0].add((damage, unique_index, copy.deepcopy(save_data)))
+        data.minheaps[0].processed_result_count+=1
+
+        # 批量同步
+        if data.minheaps[0].processed_result_count >= data.minheaps[0].batch_size:
+            # 动态调整批量大小
+            if data.minheap_queues[0].qsize() > step.config.data_transfer.expected_qsize:
+                data.minheaps[0].update_batch_size(step.config.data_transfer)
+            # 同步
+            data.minheap_queues[0].put(copy.deepcopy(data.minheaps[0]))
+            # 重置
+            data.minheaps[0].reset()
 
 
 def fix_base_array_for_equip_or_set_requirement(base_array, equips, set_on, config):
@@ -469,10 +480,25 @@ def process_buf(step: CalcStepData):
 
             # 加入排序
             unique_index = random.random()
-            data.minheap_queues[0].put((bless_score, unique_index, copy.deepcopy(save_data)))
-            data.minheap_queues[1].put((taiyang_score, unique_index, copy.deepcopy(save_data)))
-            data.minheap_queues[2].put((total_score, unique_index, copy.deepcopy(save_data)))
-            data.minheap_queues[3].put((taiyang_mianban, unique_index, copy.deepcopy(save_data)))
+            res = [
+                (bless_score, unique_index, copy.deepcopy(save_data)),
+                (taiyang_score, unique_index, copy.deepcopy(save_data)),
+                (total_score, unique_index, copy.deepcopy(save_data)),
+                (taiyang_mianban, unique_index, copy.deepcopy(save_data)),
+            ]
+            for idx, rank_data in enumerate(res):
+                data.minheaps[idx].add(rank_data)
+                data.minheaps[idx].processed_result_count += 1
+
+                # 批量同步
+                if data.minheaps[idx].processed_result_count >= data.minheaps[idx].batch_size:
+                    # 动态调整批量大小
+                    if data.minheap_queues[idx].qsize() > step.config.data_transfer.expected_qsize:
+                        data.minheaps[idx].update_batch_size(step.config.data_transfer)
+                    # 同步
+                    data.minheap_queues[idx].put(copy.deepcopy(data.minheaps[idx]))
+                    # 重置
+                    data.minheaps[idx].reset()
 
 
 def calc_buf(data, for_calc, is_bless, huanzhuang_slot_fixups=None):

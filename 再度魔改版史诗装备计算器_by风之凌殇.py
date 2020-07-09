@@ -373,20 +373,21 @@ def calc():
     finished = False
 
     def log_result_queue_info(log_func, msg, mq: MinHeapWithQueue):
-        log_func("calc#{}: {}: {} remaining_qize={} processed_result={}, speed={:.2f}/s estimated_remaining_time={}, totalWork={}".format(
+        log_func("calc#{}: {}: {} remaining_qize={} sync_batch_size={} processed_result={}, speed={:.2f}/s totalWork={}".format(
             producer_data.calc_index,
-            mq.name, msg, mq.minheap_queue.qsize(), mq.processed_result_count, mq.process_results_per_second(), format_time(mq.remaining_time()),
-            producer_data.produced_count,
+            mq.name, msg, mq.minheap_queue.qsize(), mq.minheap.batch_size, mq.minheap.processed_result_count, mq.process_results_per_second(), producer_data.produced_count
         ))
 
     def try_fetch_result(mq: MinHeapWithQueue):
+        idx = 1
         while True:
             try:
-                heap_item = mq.minheap_queue.get(block=False)
-                mq.minheap.add(heap_item)
-                mq.processed_result_count += 1
-                if mq.processed_result_count % 1000 == 0:
+                minheap_to_merge = mq.minheap_queue.get(block=False)
+                mq.minheap.merge(minheap_to_merge)
+
+                if mq.minheap.processed_result_count >= 1000*idx :
                     log_result_queue_info(logger.info, "try_fetch_result periodly report", mq)
+                    idx = mq.minheap.processed_result_count // 1000 + 1
             except queue.Empty as error:
                 break
 
@@ -395,6 +396,8 @@ def calc():
             log_result_queue_info(logger.info, "try_fetch_result_in_background", mq)
             try_fetch_result(mq)
             time.sleep(0.5)
+
+    data_transfer_batch_size = config().data_transfer.batch_size
 
     is_shuchu_job = job_name not in ["(奶系)神思者", "(奶系)炽天使", "(奶系)冥月女神"]
     if is_shuchu_job:
@@ -418,7 +421,7 @@ def calc():
                 opt_one[equip_index] += ba
 
         minheap_with_queues = [
-            MinHeapWithQueue("输出排行", MinHeap(save_top_n), m.Queue()),
+            MinHeapWithQueue("输出排行", MinHeap(save_top_n, data_transfer_batch_size), m.Queue()),
         ]
 
         # 异步排行线程
@@ -444,6 +447,7 @@ def calc():
         calc_data.job_pas3 = job_pas3
         calc_data.cool_on = cool_on
         calc_data.ele_skill = ele_skill
+        calc_data.minheaps = [MinHeap(save_top_n, data_transfer_batch_size) for mq in minheap_with_queues]
         calc_data.minheap_queues = [mq.minheap_queue for mq in minheap_with_queues]
         step_data.calc_data = calc_data
 
@@ -528,10 +532,10 @@ def calc():
                 opt_buf[equip_index] += ba
 
         minheap_with_queues = [
-            MinHeapWithQueue("祝福排行", MinHeap(save_top_n), m.Queue()),
-            MinHeapWithQueue("太阳排行", MinHeap(save_top_n), m.Queue()),
-            MinHeapWithQueue("综合排行", MinHeap(save_top_n), m.Queue()),
-            MinHeapWithQueue("面板排行", MinHeap(save_top_n), m.Queue()),
+            MinHeapWithQueue("祝福排行", MinHeap(save_top_n, data_transfer_batch_size), m.Queue()),
+            MinHeapWithQueue("太阳排行", MinHeap(save_top_n, data_transfer_batch_size), m.Queue()),
+            MinHeapWithQueue("综合排行", MinHeap(save_top_n, data_transfer_batch_size), m.Queue()),
+            MinHeapWithQueue("面板排行", MinHeap(save_top_n, data_transfer_batch_size), m.Queue()),
         ]
 
         for mq in minheap_with_queues:
@@ -555,6 +559,7 @@ def calc():
         calc_data.base_taiyang_level = base_taiyang_level
         calc_data.base_job_passive_lv15 = base_job_passive_lv15
         calc_data.base_naiba_protect_badge_lv25 = base_naiba_protect_badge_lv25
+        calc_data.minheaps = [MinHeap(save_top_n, data_transfer_batch_size) for mq in minheap_with_queues]
         calc_data.minheap_queues = [mq.minheap_queue for mq in minheap_with_queues]
         step_data.calc_data = calc_data
 
@@ -2307,7 +2312,7 @@ def update_count():
     minutes = 0
     seconds = 0
     using_time_str = "0s"
-    remaining_time_str = "0s"
+    processed_count = "0"
     while True:
         try:
             show_str = "{}有效搭配/{}无效".format(count_valid, count_invalid)
@@ -2315,19 +2320,14 @@ def update_count():
                 using_time = time.time() - count_start_time
                 using_time_str = format_time(using_time)
 
-                remaining_times = list(filter(lambda rt: rt > 0, [mq.remaining_time() for mq in minheap_with_queues]))
-                remaining_time = 0
-                if len(remaining_times) != 0:
-                    remaining_time = sum(remaining_times) / len(remaining_times)
-
-                remaining_time_str = format_time(remaining_time)
+                processed_count = sum(mq.minheap.processed_result_count for mq in minheap_with_queues)
 
             showcon(text=(
                 "用时={}\n"
-                "剩余={}"
+                "已计算有效搭配={}"
             ).format(
                 using_time_str,
-                remaining_time_str,
+                processed_count,
             ))
             time.sleep(0.1)
         except Exception as e:

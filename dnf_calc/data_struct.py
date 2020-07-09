@@ -20,13 +20,18 @@ from typing import List, Dict, Set
 
 from numpy import ndarray
 
-from .config import Config, ConstConfig, PruneConfig, HuanZhuangConfig
+from .config import Config, ConstConfig, PruneConfig, HuanZhuangConfig, DataTransferConfig
 
 
 class MinHeap:
-    def __init__(self, top_n):
+    def __init__(self, top_n, batch_size):
         self.h = []
         self.length = top_n
+
+        self.processed_result_count = 0
+
+        self.batch_size = batch_size
+
         heapify(self.h)
 
     def add(self, element):
@@ -38,6 +43,29 @@ class MinHeap:
     def getTop(self):
         return sorted(self.h, reverse=True)
 
+    def merge(self, other):
+        """
+        合并另一个堆
+        @type other MinHeap
+        """
+        for elem in other.h:
+            self.add(elem)
+        self.processed_result_count += other.processed_result_count
+        self.batch_size = other.batch_size
+
+    def reset(self):
+        self.h = []
+
+        self.processed_result_count = 0
+
+        heapify(self.h)
+
+    def update_batch_size(self, data_transfer_cfg: DataTransferConfig):
+        if self.batch_size < data_transfer_cfg.batch_stage_double_upper_bound:
+            self.batch_size *= 2
+        else:
+            self.batch_size += data_transfer_cfg.batch_linear_increase_size
+
 
 class MinHeapWithQueue:
     def __init__(self, name: str, minheap: MinHeap, minheap_queue: Queue):
@@ -46,21 +74,9 @@ class MinHeapWithQueue:
         self.minheap_queue = minheap_queue
 
         self.start_time = time.time()
-        self.processed_result_count = 0
 
     def process_results_per_second(self) -> float:
-        return float(self.processed_result_count) / (time.time() - self.start_time + 1e-6)
-
-    def remaining_time(self) -> float:
-        rt = 0.0
-        if self.processed_result_count == 0:
-            # 啥都没处理的时候，预估剩余一天时间
-            rt = 86400.0
-        else:
-            # 否则预估剩余时间=当前已处理速度*当前结果队列大小
-            rt = (time.time() - self.start_time) / float(self.processed_result_count) * self.minheap_queue.qsize()
-
-        return rt
+        return float(self.minheap.processed_result_count) / (time.time() - self.start_time + 1e-6)
 
 
 class UpdateInfo:
@@ -109,7 +125,7 @@ class CalcStepData:
         self.start_parallel_computing_at_depth_n = 0
 
         # 配置数据
-        self.config = None # type: Config
+        self.config = None  # type: Config
 
         # 其他
         self.producer = None
@@ -176,6 +192,8 @@ class CalcData:
         self.base_job_passive_lv15 = 0
         self.base_naiba_protect_badge_lv25 = 0
 
+        # 本地排行用的最小堆
+        self.minheaps = None  # type: List[MinHeap]
         # 回传结果的队列
         self.minheap_queues = None  # type: List[Queue]
         # 用于判定是否提前停止计算的变量 re: 这个等下测试性能时先干掉，然后后面通过消息、事件之类的实现。比如calc开始时通知各个工作线程进入工作状态，stop或计算完成时通知各个工作线程进行停止状态
