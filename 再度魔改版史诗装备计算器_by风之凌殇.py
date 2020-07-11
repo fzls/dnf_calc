@@ -406,7 +406,8 @@ def calc():
 
         base_array_with_deal_bonus_attributes = np.array([0.0 for idx in range(len(deal_entry_index_to_name))])
         # 加上基础数据
-        base_array_with_deal_bonus_attributes[index_deal_extra_percent_skill_attack_power] = 1
+        # re：韩服作者加的这个默认的额外1%技攻是啥？在没有弄清楚前暂时先注释掉了= =
+        # base_array_with_deal_bonus_attributes[index_deal_extra_percent_skill_attack_power] = 1
         base_array_with_deal_bonus_attributes[index_deal_extra_all_element_strength] += ele_in
 
         # 当前存档的装备补正信息 equip_index => list(attribute_index_str => fixup_value)
