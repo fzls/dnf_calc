@@ -29,7 +29,8 @@ https://drive.google.com/file/d/1p8ZdzW_NzGKHHOtfPTuZSr1YgSEVtYCj/view
 1. 调整大幽魂暗抗开关的判定范围，改为仅控制伤害相关词条的调整
 2. 军神移速开关仅影响三件套的力智词条，其余判定不影响
 3. 新增暗抗、移速相关faq
-4. 其他改动及上述功能具体用法，详见README.md
+4. 调整发布脚本，使发布的目录结构更清晰
+5. 其他改动及上述功能具体用法，详见README.md
 
 # v3.11.1 2020.7.11
 ## 大幽魂军神开关调整
@@ -38,6 +39,9 @@ https://drive.google.com/file/d/1p8ZdzW_NzGKHHOtfPTuZSr1YgSEVtYCj/view
 
 ## 文档更新
 1. 新增暗抗、移速相关faq
+
+## 脚本调整
+1. 调整发布脚本，使发布的目录结构更清晰
 
 # v3.11.0 2020.7.10
 ## 优化计算结果在进程间的传输效率
