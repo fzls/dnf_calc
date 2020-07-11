@@ -248,21 +248,21 @@ def fix_base_array_for_equip_or_set_requirement(base_array, equips, set_on, conf
 
     ################################大幽魂和军神最后处理，且大幽魂要在前面######################################
     # 大幽魂系列
+    def get_delta(dark_resistance, dark_resistance_step, attr_step, attr_max):
+        """
+        计算当暗抗值为dark_resistance，对于形如【每dark_resistance_step点暗属性抗性，增加attr_step的xxx词条。（最多增加attr_max）】的词条，需要补正（减去）的xxx词条
+        @param dark_resistance: 总暗抗
+        @param dark_resistance_step: 每多少点暗抗计算一次xxx词条
+        @param attr_step: 每次计算多少点xxx词条
+        @param attr_max: 最多计算多少点xxx词条
+        @return:
+        """
+        return attr_max - min(dark_resistance // dark_resistance_step * attr_step, attr_max)
+
+    # ps：必须在军神之前处理，因为套装效果可能会影响移速
+    dr = max(base_array[index_deal_extra_dark_resistance], 0)  # 当前总暗抗，至少为0，做下保底
+
     if config.misc.check_dayouhun_dark_resistance:
-        # ps：必须在军神之前处理，因为套装效果可能会影响移速
-        dr = max(base_array[index_deal_extra_dark_resistance], 0)  # 当前总暗抗，至少为0，做下保底
-
-        def get_delta(dark_resistance, dark_resistance_step, attr_step, attr_max):
-            """
-            计算当暗抗值为dark_resistance，对于形如【每dark_resistance_step点暗属性抗性，增加attr_step的xxx词条。（最多增加attr_max）】的词条，需要补正（减去）的xxx词条
-            @param dark_resistance: 总暗抗
-            @param dark_resistance_step: 每多少点暗抗计算一次xxx词条
-            @param attr_step: 每次计算多少点xxx词条
-            @param attr_max: 最多计算多少点xxx词条
-            @return:
-            """
-            return attr_max - min(dark_resistance // dark_resistance_step * attr_step, attr_max)
-
         # 深渊上衣11280、深渊神话上衣11281
         if "11280" in equips or "11281" in equips:
             # 每10点暗属性抗性，增加7 % 的最终伤害。（最多增加35 %）
@@ -357,42 +357,46 @@ def fix_base_array_for_equip_or_set_requirement(base_array, equips, set_on, conf
             base_array[index_deal_extra_percent_skill_attack_power] -= get_delta(dr, 7, 4, 16)
             # 每7点暗属性抗性，增加10点所有属性强化。（最大增加40点）
             base_array[index_deal_extra_all_element_strength] -= get_delta(dr, 7, 10, 40)
-            # 每9点暗属性抗性，增加5%的攻击速度和移动速度。（最多增加15%）
-            base_array[index_deal_extra_percent_attack_speed] -= get_delta(dr, 9, 5, 15)
-            base_array[index_deal_extra_percent_moving_speed] -= get_delta(dr, 9, 5, 15)
-            # 每13点暗属性抗性，增加10%的施放速度。（最多增加20%）
-            # ps: 暂无对应词条
+
+    # 求道者3件套1322（不影响伤害的部分）
+    if "1322" in set_on:
+        # 每9点暗属性抗性，增加5%的攻击速度和移动速度。（最多增加15%）
+        base_array[index_deal_extra_percent_attack_speed] -= get_delta(dr, 9, 5, 15)
+        base_array[index_deal_extra_percent_moving_speed] -= get_delta(dr, 9, 5, 15)
+        # 每13点暗属性抗性，增加10%的施放速度。（最多增加20%）
+        # ps: 暂无对应词条
 
     # 军神系列
-    if config.misc.check_junshen_moving_speed:
-        # 拥有军神耳环，且不拥有军神辅助装备
-        if "33200" in equips and "31200" not in equips:
-            # 减去10%力智加成
-            base_array[index_deal_extra_percent_strength_and_intelligence] -= 10
-            # 减去10%移速
-            base_array[index_deal_extra_percent_moving_speed] -= 10
-        # 军神二件套且拥有军神-魔法石-军神的庇护宝石32200，说明遗书31200和古怪耳环33200（心之所念33201）不同时存在，减去5%的爆伤，10%移速，5%攻速
-        if "1201" in set_on and "32200" in equips:
-            base_array[index_deal_extra_percent_crit_damage] -= 5
-            base_array[index_deal_extra_percent_moving_speed] -= 10
-            base_array[index_deal_extra_percent_attack_speed] -= 5
-        # 如果拥有军神的遗书31200（辅助装备）和军神的古怪耳环33200（非神话）（耳环），则将与神话的二件套差异补正
-        if "31200" in equips and "33200" in equips:
-            base_array[index_deal_extra_percent_moving_speed] -= 5
-            base_array[index_deal_extra_percent_attack_speed] -= 5
-        # 军神3件套-根据角色移动速度，获得以下效果。
-        # - 40%以下-[0,40%)：力量、智力 +2%
-        # - 40%~60%-[40%, 60%)：力量、智力 +4%
-        # - 60%~80%-[60%, 80%)：力量、智力 +6%
-        # - 80%~100%-[80%, 100%)：力量、智力 +8%
-        # - 100%~120%-[100%, 120%)：力量、智力 +10%
-        # - 120%以上-[120%, inf)：力量、智力 +10%；攻击速度 +10%；施放速度 +15%
-        if "1202" in set_on:
-            moving_speed = base_array[index_deal_extra_percent_moving_speed]
+    # 军神耳环词条：拥有军神耳环，且不拥有军神辅助装备
+    if "33200" in equips and "31200" not in equips:
+        # 减去10%力智加成
+        base_array[index_deal_extra_percent_strength_and_intelligence] -= 10
+        # 减去10%移速
+        base_array[index_deal_extra_percent_moving_speed] -= 10
+    # 军神二件套词条：拥有军神-魔法石-军神的庇护宝石32200，说明遗书31200和古怪耳环33200（心之所念33201）不同时存在，减去5%的爆伤，10%移速，5%攻速
+    if "1201" in set_on and "32200" in equips:
+        base_array[index_deal_extra_percent_crit_damage] -= 5
+        base_array[index_deal_extra_percent_moving_speed] -= 10
+        base_array[index_deal_extra_percent_attack_speed] -= 5
+    # 如果拥有军神的遗书31200（辅助装备）和军神的古怪耳环33200（非神话）（耳环），则将与神话的二件套差异补正
+    if "31200" in equips and "33200" in equips:
+        base_array[index_deal_extra_percent_moving_speed] -= 5
+        base_array[index_deal_extra_percent_attack_speed] -= 5
+    # 军神3件套-根据角色移动速度，获得以下效果。
+    # - 40%以下-[0,40%)：力量、智力 +2%
+    # - 40%~60%-[40%, 60%)：力量、智力 +4%
+    # - 60%~80%-[60%, 80%)：力量、智力 +6%
+    # - 80%~100%-[80%, 100%)：力量、智力 +8%
+    # - 100%~120%-[100%, 120%)：力量、智力 +10%
+    # - 120%以上-[120%, inf)：力量、智力 +10%；攻击速度 +10%；施放速度 +15%
+    if "1202" in set_on:
+        moving_speed = base_array[index_deal_extra_percent_moving_speed]
 
-            if moving_speed < 120:
-                base_array[index_deal_extra_percent_attack_speed] -= 10
+        if moving_speed < 120:
+            base_array[index_deal_extra_percent_attack_speed] -= 10
 
+        # 若启用军神移速判定，则根据移速调整力智词条
+        if config.misc.check_junshen_moving_speed:
             delta = 0
             if moving_speed < 40:
                 delta = 10 - 2
