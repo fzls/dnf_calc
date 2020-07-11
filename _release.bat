@@ -39,43 +39,56 @@ XCOPY ".\*.*" "%target_dir%" /S /E /Y
 :: 跳转到目标目录
 cd "%target_dir%"
 
-:: 移除一些无需发布的文件，以及初始化相关存档
+:: 初始化相关存档
 xcopy preset_clear.XLSX preset.XLSX /Y/B
 xcopy run_env_release.py dnf_calc\run_env.py /Y/B
-
-RMDIR /S /Q ".git"
-RMDIR /S /Q ".idea"
-RMDIR /S /Q "logs"
-RMDIR /S /Q "dnf_calc\__pycache__"
-RMDIR /S /Q "dnf_calc\logs"
-RMDIR /S /Q "robot"
-RMDIR /S /Q "test"
-
-DEL /Q "preset_clear.XLSX"
-DEL /Q "run_env_release.py"
-DEL /Q "test.py"
-DEL /Q "排行结果.xlsx"
-
-:: re: 配置工具尚未完成，先不发布
-RMDIR /S /Q "dnf_calc_setting_tool"
-
-:: 移除python版本gui配置工具中的部分多余的东西
-RMDIR /S /Q "dnf_calc_setting_tool_py\__pycache__"
-DEL /Q "dnf_calc_setting_tool_py\UI\.DS_Store"
-DEL /Q "dnf_calc_setting_tool_py\.git"
-DEL /Q "dnf_calc_setting_tool_py\.gitignore"
+echo f | xcopy README.md "更新日志.txt" /Y/B
 
 :: 删除旧版本的这些文件
 cd "使用说明"
-del /Q 提示*.txt 注意*.txt 使用说明.txt _常见问题解答*.docx _手动安装运行环境教程*.docx 计算器简易使用说明*_By_AJOIL.docx 《使用说明：从入门到入土》*_by真的超级傻.docx
+del /Q 提示*.txt 注意*.txt 使用说明.txt 更新日志.txt _常见问题解答*.docx _手动安装运行环境教程*.docx 计算器简易使用说明*_By_AJOIL.docx 《使用说明：从入门到入土》*_by真的超级傻.docx
 cd ..
 
 xcopy 提示*.txt "使用说明\" /Y/B
 xcopy 注意*.txt "使用说明\" /Y/B
 xcopy 使用说明.txt "使用说明\" /Y/B
+xcopy 更新日志.txt "使用说明\" /Y/B
 xcopy _常见问题解答*.docx "使用说明\" /Y/B
 xcopy _手动安装运行环境教程*.docx "使用说明\" /Y/B
 xcopy 计算器简易使用说明*_By_AJOIL.docx "使用说明\" /Y/B
 xcopy 《使用说明：从入门到入土》*_by真的超级傻.docx "使用说明\" /Y/B
+
+:: 清理目录结构，使目录更加清爽
+RMDIR /S /Q ".git"
+RMDIR /S /Q ".idea"
+RMDIR /S /Q "dnf_calc\__pycache__"
+RMDIR /S /Q "dnf_calc\logs"
+RMDIR /S /Q "dnf_calc_setting_tool"
+RMDIR /S /Q "dnf_calc_setting_tool_py\__pycache__"
+DEL /Q "dnf_calc_setting_tool_py\UI\.DS_Store"
+DEL /Q "dnf_calc_setting_tool_py\.git"
+DEL /Q "dnf_calc_setting_tool_py\.gitignore"
+RMDIR /S /Q "logs"
+RMDIR /S /Q "robot"
+RMDIR /S /Q "test"
+DEL /Q ".gitignore"
+DEL /Q ".gitmodules"
+DEL /Q "_git_push_remote.bat"
+DEL /Q "_git_update_submodule.bat"
+DEL /Q "_release.bat"
+DEL /Q _常见问题解答*.docx
+DEL /Q _手动安装运行环境教程*.docx
+DEL /Q 《使用说明：从入门到入土》*_by真的超级傻.docx
+DEL /Q "preset_clear.XLSX"
+DEL /Q "preset_test_set.XLSX"
+DEL /Q "README.md"
+DEL /Q "run_env_release.py"
+DEL /Q "test.py"
+DEL /Q "txt_from_excel.txt"
+DEL /Q 计算器简易使用说明*_By_AJOIL.docx
+DEL /Q "排行结果.xlsx"
+DEL /Q "使用说明.txt"
+DEL /Q 提示*.txt
+DEL /Q 注意*.txt
 
 pause
