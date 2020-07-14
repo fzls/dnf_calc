@@ -118,7 +118,7 @@ echo.
 echo [提示]: 创建增量更新补丁
 echo.
 
-call _create_patch.bat v%version%
+call _create_patch.py v%version%
 
 echo 打包完毕
 echo 开始时间：%run_start_time%
