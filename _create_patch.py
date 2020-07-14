@@ -83,6 +83,7 @@ for idx, version_info in enumerate(old_version_infos):
     version = version_str(version_info.version)
     patch_file = "{}/{}.patch".format(patches_dir, version)
 
+    print("-"*80)
     print("[{}/{}] 创建从v{}升级到v{}的补丁{}".format(idx+1, len(old_version_infos), version, latest_version_str, patch_file))
 
     version_dir = "再度魔改版史诗装备计算器_v{}_by风之凌殇".format(version)
