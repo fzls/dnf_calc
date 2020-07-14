@@ -79,11 +79,11 @@ latest_version_str = version_str(latest_version)
 target_version_dir = "再度魔改版史诗装备计算器_v{}_by风之凌殇".format(latest_version_str)
 print(target_version_dir)
 
-for version_info in old_version_infos:
+for idx, version_info in enumerate(old_version_infos):
     version = version_str(version_info.version)
     patch_file = "{}/{}.patch".format(patches_dir, version)
 
-    print("创建从v{}升级到v{}的补丁{}".format(version, latest_version_str, patch_file))
+    print("[{}/{}] 创建从v{}升级到v{}的补丁{}".format(idx+1, len(old_version_infos), version, latest_version_str, patch_file))
 
     version_dir = "再度魔改版史诗装备计算器_v{}_by风之凌殇".format(version)
     os.system("hdiffz.exe {} {} {}".format(version_dir, target_version_dir, patch_file))
