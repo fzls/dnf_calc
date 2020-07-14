@@ -83,8 +83,8 @@ for idx, version_info in enumerate(old_version_infos):
     version = version_str(version_info.version)
     patch_file = "{}/{}.patch".format(patches_dir, version)
 
-    print("-"*80)
-    print("[{}/{}] 创建从v{}升级到v{}的补丁{}".format(idx+1, len(old_version_infos), version, latest_version_str, patch_file))
+    print("-" * 80)
+    print("[{}/{}] 创建从v{}升级到v{}的补丁{}".format(idx + 1, len(old_version_infos), version, latest_version_str, patch_file))
 
     version_dir = "再度魔改版史诗装备计算器_v{}_by风之凌殇".format(version)
     os.system("hdiffz.exe {} {} {}".format(version_dir, target_version_dir, patch_file))
@@ -92,6 +92,5 @@ for idx, version_info in enumerate(old_version_infos):
 # 压缩打包
 patch_oldest_version = version_str(old_version_infos[0].version)
 patch_newest_version = version_str(old_version_infos[-1].version)
-os.system('bc c -y -r -aoa -fmt:7z -l:9 "再度魔改版史诗装备计算器_v{}_by风之凌殇_增量更新文件_v{}_to_v{}.7z" "{}"'.format(
-    latest_version_str, patch_oldest_version, patch_newest_version, patches_dir
-))
+patch_7z_file = "再度魔改版史诗装备计算器_v{}_by风之凌殇_增量更新文件_v{}_to_v{}.7z".format(latest_version_str, patch_oldest_version, patch_newest_version)
+os.system('bc c -y -r -aoa -fmt:7z -l:9 "{}" "{}" "_apply_patch.bat" "hpatchz.exe"'.format(patch_7z_file, patches_dir))
