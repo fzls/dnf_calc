@@ -147,3 +147,5 @@ cython_debug/
 test.py
 /test
 /robot
+!hdiffz.exe
+!hpatchz.exe
