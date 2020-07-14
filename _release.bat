@@ -54,7 +54,7 @@ echo f | xcopy README.md "更新日志.txt" /Y/B
 
 :: 删除旧版本的这些文件
 cd "使用说明"
-del /Q 提示*.txt 注意*.txt 使用说明.txt 更新日志.txt _常见问题解答*.docx _手动安装运行环境教程*.docx 计算器简易使用说明*_By_AJOIL.docx 《使用说明：从入门到入土》*_by真的超级傻.pdf
+del /Q 提示*.txt 注意*.txt 使用说明.txt 更新日志.txt _常见问题解答*.docx _手动安装运行环境教程*.docx 计算器简易使用说明*_By_AJOIL.docx 《使用说明：从入门到入土》*_by真的超级傻.pdf 增量更新教程*.docx
 cd ..
 
 xcopy 提示*.txt "使用说明\" /Y/B
@@ -65,6 +65,8 @@ xcopy _常见问题解答*.docx "使用说明\" /Y/B
 xcopy _手动安装运行环境教程*.docx "使用说明\" /Y/B
 xcopy 计算器简易使用说明*_By_AJOIL.docx "使用说明\" /Y/B
 xcopy 《使用说明：从入门到入土》*_by真的超级傻.pdf "使用说明\" /Y/B
+xcopy 增量更新教程*.docx "使用说明\" /Y/B
+
 
 :: 清理目录结构，使目录更加清爽
 cd "%target_dir%"
