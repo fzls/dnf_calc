@@ -26,8 +26,8 @@ echo [提示]: 构建完成，将结果复制到发布目录
 echo.
 
 :: 设置目标目录
-set parent_dir=D:\downloads\(发布魔改计算器
-set target_dir=D:\downloads\(发布魔改计算器\再度魔改版史诗装备计算器_v%version%_by风之凌殇
+set parent_dir="D:\downloads\(发布魔改计算器"
+set target_dir="D:\downloads\(发布魔改计算器\再度魔改版史诗装备计算器_v%version%_by风之凌殇"
 
 echo copy to "%target_dir%"
 
