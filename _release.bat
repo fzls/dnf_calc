@@ -39,7 +39,7 @@ MKDIR %target_dir%
 XCOPY ".\*.*" "%target_dir%" /S /Y
 
 :: 复制增量更新相关文件
-XCOPY _create_patch.bat "%parent_dir%" /S /Y
+XCOPY _create_patch.py "%parent_dir%" /S /Y
 XCOPY hdiffz.exe "%parent_dir%" /S /Y
 XCOPY _apply_patch.bat "%parent_dir%" /S /Y
 XCOPY hpatchz.exe "%parent_dir%" /S /Y
@@ -99,7 +99,7 @@ DEL /Q "排行结果.xlsx"
 DEL /Q "使用说明.txt"
 DEL /Q 提示*.txt
 DEL /Q 注意*.txt
-DEL /Q _create_patch.bat
+DEL /Q _create_patch.py
 DEL /Q hdiffz.exe
 DEL /Q _apply_patch.bat
 DEL /Q hpatchz.exe
