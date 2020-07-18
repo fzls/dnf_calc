@@ -20,6 +20,8 @@ def notify_error(logger, message):
         win32api.MessageBox(0, message, "出错啦", win32con.MB_ICONWARNING)
 
 
+encoding_error_str = "Found invalid character in key name: '#'. Try quoting the key name. (line 1 column 2 char 1)"
+
 ###########################################################
 #                         工具函数                        #
 ###########################################################

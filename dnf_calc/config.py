@@ -14,7 +14,7 @@ from typing import List
 
 import toml
 
-from dnf_calc import notify_error, logger, consoleHandler
+from dnf_calc import notify_error, logger, consoleHandler, encoding_error_str
 
 
 # 如果配置的值是dict，可以用ConfigInterface自行实现对应结构，将会自动解析
@@ -357,6 +357,10 @@ def load_config(config_path="config.toml"):
         notify_error(logger, "{}的编码格式有问题，应为utf-8，如果使用系统自带记事本的话，请下载vscode或notepad++等文本编辑器\n错误信息：{}\n".format(config_path, error))
         sys.exit(0)
     except Exception as error:
+        if encoding_error_str in str(error):
+            notify_error(logger, "{}的编码格式有问题，应为utf-8，如果使用系统自带记事本的话，请下载vscode或notepad++等文本编辑器\n错误信息：{}\n".format(config_path, error))
+            sys.exit(0)
+
         notify_error(logger, "读取{}文件出错，是否直接在压缩包中打开了？\n具体出错为：{}".format(config_path, error))
         sys.exit(-1)
 
