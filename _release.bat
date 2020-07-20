@@ -72,6 +72,7 @@ xcopy 增量更新教程*.docx "使用说明\" /Y/B
 cd "%target_dir%"
 RMDIR /S /Q ".git"
 RMDIR /S /Q ".idea"
+RMDIR /S /Q "等待添加的装备图片"
 RMDIR /S /Q "dnf_calc\__pycache__"
 RMDIR /S /Q "dnf_calc\logs"
 RMDIR /S /Q "dnf_calc_setting_tool"
