@@ -2871,6 +2871,8 @@ def on_weapon_change():
 
     # 清空原有武器
     for sel_wep in wep_select_img:
+        if sel_wep in gif_buttons:
+            gif_buttons.remove(sel_wep)
         sel_wep.configure(image=empty_weapon_image)
 
     # 设置新的武器
