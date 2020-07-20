@@ -1137,9 +1137,10 @@ def show_result(rank_list, job_type, ele_skill):
     gif_image_ids.clear()
 
     global image_list, image_list2
-    global res_img11, res_img12, res_img13, res_img14, res_img15, res_img21, res_img22, res_img23, res_img31, res_img32, res_img33, res_txtbbgs, res_imgbbgs, wep_combopicker, jobup_select, res_txt_weapon
+    global res_img_weapon, res_img11, res_img12, res_img13, res_img14, res_img15, res_img21, res_img22, res_img23, res_img31, res_img32, res_img33, res_txtbbgs, res_imgbbgs, wep_combopicker, jobup_select, res_txt_weapon
 
     wep_index = ""
+    wep_image = None
     length = 0
 
     if job_type == 'deal':  ###########################
@@ -1169,6 +1170,8 @@ def show_result(rank_list, job_type, ele_skill):
                                 result_image_on[rank][str(equip_slot_index)] = image_list2[equip_index]
             if rank_baibiaoguai[rank] is not None:
                 result_image_on[rank]["bbg"] = image_list[rank_baibiaoguai[rank]]
+            weapon_index = rank_setting[rank][0] # 装备列表的第一个是武器的编号
+            result_image_on[rank]["weapon"] = image_list[weapon_index]
 
         # 0추스탯 1추공 2증 3크 4추
         # 6모 7공 8스탯 9속강 10지속 11스증 12특수
@@ -1274,17 +1277,20 @@ def show_result(rank_list, job_type, ele_skill):
                 res_img = canvas_res.create_image(268 + cn1 * 29, 67 + 78 * rank, image=result_image_on[rank][str(equip_slot_index)])
                 gif_image_ids.append(res_img)
                 cn1 = cn1 + 1
+            res_img = canvas_res.create_image(268 + 1 * 29 + 4, 37 + 78 * rank, image=result_image_on[rank]['weapon'])
+            gif_image_ids.append(res_img)
             if 'bbg' in result_image_on[rank]:
                 # res_txtbbgs[j] = canvas_res.create_text(268 + 5 * 29 + 14, 38 + 78 * j, text="百变怪=>", font=guide_font, fill='white')
-                res_imgbbgs[rank] = canvas_res.create_image(268 + 7 * 29, 37 + 78 * rank, image=result_image_on[rank]['bbg'])
+                res_imgbbgs[rank] = canvas_res.create_image(268 + 7 * 29 + 40, 37 + 78 * rank, image=result_image_on[rank]['bbg'])
             cn1 = 0
-            canvas_res.create_text(366, 34 + 78 * rank, text=rank_dam[rank], font=mid_font, fill='white')
+            canvas_res.create_text(366 + 44, 34 + 78 * rank, text=rank_dam[rank], font=mid_font, fill='white')
 
         weapon = rank_setting[0][0]
         equips = rank_setting[0][1:]
         change_readable_result_area(weapon, equips, True)
 
         wep_index = weapon
+        wep_image = result_image_on[0]['weapon']
 
         g_rank_equips = {}
         for rank in range(total_count):
@@ -1340,6 +1346,8 @@ def show_result(rank_list, job_type, ele_skill):
                                     result_image_ons[rank_type_index][rank][str(equip_slot_index)] = image_list2[equip_index]
                 if rank_baibiaoguais[rank_type_index][rank] is not None:
                     result_image_ons[rank_type_index][rank]["bbg"] = image_list[rank_baibiaoguais[rank_type_index][rank]]
+                weapon_index = rank_settings[rank_type_index][rank][0]  # 装备列表的第一个是武器的编号
+                result_image_ons[rank_type_index][rank]["weapon"] = image_list[weapon_index]
 
         canvas_res.create_text(122, 193, font=guide_font, fill='white', text=(
             "自定义 祝福+{}级 / 自定义 一觉+{}级\n"
@@ -1403,11 +1411,14 @@ def show_result(rank_list, job_type, ele_skill):
                 res_img_list[str(rank) + str(equip_slot_index)] = temp_res
                 gif_image_ids.append(temp_res)
                 cn1 = cn1 + 1
+            temp_res = canvas_res.create_image(268 + 1 * 29 + 4, 37 + 78 * rank, image=result_image_ons[2][rank]['weapon'])
+            res_img_list[str(rank) + 'weapon'] = temp_res
+            gif_image_ids.append(temp_res)
             if 'bbg' in result_image_ons[2][rank]:
-                res_txtbbgs[rank] = canvas_res.create_text(268 + 5 * 29 + 14, 38 + 78 * rank, text="百变怪=>", font=guide_font, fill='white')
-                res_imgbbgs[rank] = canvas_res.create_image(268 + 7 * 29, 37 + 78 * rank, image=result_image_ons[2][rank]['bbg'])
+                res_txtbbgs[rank] = canvas_res.create_text(268 + 5 * 29 + 14 + 40, 38 + 78 * rank, text="百变怪=>", font=guide_font, fill='white')
+                res_imgbbgs[rank] = canvas_res.create_image(268 + 7 * 29 + 40, 37 + 78 * rank, image=result_image_ons[2][rank]['bbg'])
             cn1 = 0
-            temp_buf = canvas_res.create_text(346, 34 + 78 * rank, text=rank_bufs[2][rank], font=mid_font, fill='white')
+            temp_buf = canvas_res.create_text(346 + 22, 34 + 78 * rank, text=rank_bufs[2][rank], font=mid_font, fill='white')
             res_buf_list[rank] = temp_buf
         length = len(rank_list[2])
         type1_img = tkinter.PhotoImage(file='ext_img/type_bless.png')
@@ -1432,6 +1443,7 @@ def show_result(rank_list, job_type, ele_skill):
         change_readable_result_area(weapon, equips, True, hz_equips)
 
         wep_index = weapon
+        wep_image = result_image_ons[2][0]['weapon']
 
         g_rank_equips = {}
         g_current_buff_type = "综合"
@@ -1444,6 +1456,8 @@ def show_result(rank_list, job_type, ele_skill):
     wep_name = equip_index_to_realname[wep_index]
     job_name = jobup_select.get()
     res_txt_weapon = canvas_res.create_text(122, 20, text=wep_name, font=guide_font, fill='white')
+    res_img_weapon = canvas_res.create_image(219, 27, image=wep_image)  # 武器
+    gif_image_ids.append(res_img_weapon)
     canvas_res.create_text(122, 50, text="<职业>", font=guide_font, fill='white')
     canvas_res.create_text(122, 87, text=job_name, font=guide_font, fill='white')
 
@@ -1456,7 +1470,7 @@ def show_result(rank_list, job_type, ele_skill):
 
     res_bt1 = tkinter.Button(result_window, command=lambda: change_rank(0, job_type), image=show_detail_img,
                              bg=dark_blue, borderwidth=0, activebackground=dark_blue);
-    res_bt1.place(x=486, y=20 + 78 * 0)
+    res_bt1.place(x=486 + 42, y=20 + 78 * 0)
     res_bt2 = tkinter.Button(result_window, command=lambda: change_rank(1, job_type), image=show_detail_img,
                              bg=dark_blue, borderwidth=0, activebackground=dark_blue)
     res_bt3 = tkinter.Button(result_window, command=lambda: change_rank(2, job_type), image=show_detail_img,
@@ -1466,13 +1480,13 @@ def show_result(rank_list, job_type, ele_skill):
     res_bt5 = tkinter.Button(result_window, command=lambda: change_rank(4, job_type), image=show_detail_img,
                              bg=dark_blue, borderwidth=0, activebackground=dark_blue)
     if length > 1:
-        res_bt2.place(x=486, y=20 + 78 * 1)
+        res_bt2.place(x=486 + 42, y=20 + 78 * 1)
     if length > 2:
-        res_bt3.place(x=486, y=20 + 78 * 2)
+        res_bt3.place(x=486 + 42, y=20 + 78 * 2)
     if length > 3:
-        res_bt4.place(x=486, y=20 + 78 * 3)
+        res_bt4.place(x=486 + 42, y=20 + 78 * 3)
     if length > 4:
-        res_bt5.place(x=486, y=20 + 78 * 4)
+        res_bt5.place(x=486 + 42, y=20 + 78 * 4)
 
     canvas_res.image = result_bg
     res_bt1.image = show_detail_img
@@ -1483,7 +1497,7 @@ def change_rank(now, job_type):
     global g_current_rank
     g_current_rank = now
 
-    global image_list, canvas_res, res_img11, res_img12, res_img13, res_img14, res_img15, res_img21, res_img22, res_img23, res_img31, res_img32, res_img33, res_txtbbgs, res_imgbbgs
+    global image_list, canvas_res, res_img_weapon, res_img11, res_img12, res_img13, res_img14, res_img15, res_img21, res_img22, res_img23, res_img31, res_img32, res_img33, res_txtbbgs, res_imgbbgs
     if job_type == 'deal':
         global res_dam, res_stat, res_stat2, rank_stat, rank_stat2, result_image_on
         image_changed = result_image_on[now]
@@ -1515,6 +1529,7 @@ def change_rank(now, job_type):
         current_weapon = g_rank_equips[now][0]
         current_equips = g_rank_equips[now][1:]
         canvas_res.itemconfig(res_txt_weapon, text=equip_index_to_realname[current_weapon])
+        canvas_res.itemconfig(res_img_weapon, image=image_changed['weapon'])
         change_readable_result_area(current_weapon, current_equips, False)
 
     elif job_type == 'buf':
@@ -1574,6 +1589,7 @@ def change_rank(now, job_type):
         current_weapon = g_rank_equips[g_current_buff_type][now][0]
         current_equips = g_rank_equips[g_current_buff_type][now][1:]
         canvas_res.itemconfig(res_txt_weapon, text=equip_index_to_realname[current_weapon])
+        canvas_res.itemconfig(res_img_weapon, image=image_changed['weapon'])
         change_readable_result_area(current_weapon, current_equips, False, hz_equips)
 
 
@@ -1581,7 +1597,7 @@ def change_rank_type(in_type):
     global g_current_rank
     g_current_rank = 0
     global g_current_buff_type
-    global image_list, canvas_res, res_img11, res_img12, res_img13, res_img14, res_img15, res_img21, res_img22, res_img23, res_img31, res_img32, res_img33, res_txtbbgs, res_imgbbgs
+    global image_list, canvas_res, res_img_weapon, res_img11, res_img12, res_img13, res_img14, res_img15, res_img21, res_img22, res_img23, res_img31, res_img32, res_img33, res_txtbbgs, res_imgbbgs
     global result_image_ons, rank_bufs, rank_type_buf, res_img_list, res_buf_list, res_buf_exs, rank_buf_exs, res_buf_type_what, rank_huanzhuang_equips, rank_not_owned_equipss, rank_baibiaoguais
 
     rank_type_index = in_type - 1
@@ -1655,14 +1671,15 @@ def change_rank_type(in_type):
         for equip_slot_index in [11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33]:
             canvas_res.itemconfig(res_img_list[str(rank) + str(equip_slot_index)], image=image_changed_all[rank][str(equip_slot_index)])
             cn2 = cn2 + 2
+        canvas_res.itemconfig(res_img_list[str(rank) + 'weapon'], image=image_changed_all[rank]['weapon'])
 
         if res_txtbbgs[rank] is not None:
             canvas_res.delete(res_txtbbgs[rank])
         if res_imgbbgs[rank] is not None:
             canvas_res.delete(res_imgbbgs[rank])
         if 'bbg' in image_changed_all[rank]:
-            res_txtbbgs[rank] = canvas_res.create_text(268 + 5 * 29 + 14, 38 + 78 * rank, text="百变怪=>", font=guide_font, fill='white')
-            res_imgbbgs[rank] = canvas_res.create_image(268 + 7 * 29, 37 + 78 * rank, image=image_changed_all[rank]['bbg'])
+            res_txtbbgs[rank] = canvas_res.create_text(268 + 5 * 29 + 14 + 40, 38 + 78 * rank, text="百变怪=>", font=guide_font, fill='white')
+            res_imgbbgs[rank] = canvas_res.create_image(268 + 7 * 29 + 40, 37 + 78 * rank, image=image_changed_all[rank]['bbg'])
         else:
             res_txtbbgs[rank] = None
             res_imgbbgs[rank] = None
@@ -1673,6 +1690,7 @@ def change_rank_type(in_type):
     current_weapon = g_rank_equips[g_current_buff_type][0][0]
     current_equips = g_rank_equips[g_current_buff_type][0][1:]
     canvas_res.itemconfig(res_txt_weapon, text=equip_index_to_realname[current_weapon])
+    canvas_res.itemconfig(res_img_weapon, image=image_changed['weapon'])
     change_readable_result_area(current_weapon, current_equips, False, hz_equips)
 
 
