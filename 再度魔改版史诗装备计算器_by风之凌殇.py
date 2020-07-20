@@ -2865,8 +2865,22 @@ if __name__ == '__main__':
 
 
 def on_weapon_change():
-    global job_selected_weapons
-    job_selected_weapons[jobup_select.get()] = wep_combopicker.get_selected_entrys()
+    global job_selected_weapons, wep_select_img, empty_weapon_image
+    weapons = wep_combopicker.get_selected_entrys()
+    job_selected_weapons[jobup_select.get()] = weapons
+
+    # 清空原有武器
+    for sel_wep in wep_select_img:
+        sel_wep.configure(image=empty_weapon_image)
+
+    # 设置新的武器
+    for i, weapon_name in enumerate(weapons):
+        try:
+            wep_select_img[i].configure(image=image_list[wep_name_to_index[weapon_name]])
+            if wep_select_img[i] not in gif_buttons:
+                gif_buttons.append(wep_select_img[i])
+        except:
+            pass
 
 
 # 职业选择
@@ -3003,12 +3017,12 @@ if __name__ == '__main__':
     bg_wall.place(x=0, y=0)
 
     select_speed = tkinter.ttk.Combobox(self, values=speeds, width=15)
-    select_speed.place(x=145, y=11)
+    select_speed.place(x=145, y=11-4)
     select_speed.set(speed_middle)
 
     show_usage_img = PhotoImage(file="ext_img/show_usage.png")
     tkinter.Button(self, command=show_usage, image=show_usage_img, borderwidth=0, activebackground=dark_main,
-                   bg=dark_main).place(x=29, y=7)
+                   bg=dark_main).place(x=29, y=7-4)
 
     reset_img = PhotoImage(file="ext_img/reset.png")
     tkinter.Button(self, command=reset, image=reset_img, borderwidth=0, activebackground=dark_main, bg=dark_main).place(
@@ -3035,10 +3049,16 @@ if __name__ == '__main__':
     # 武器选择
     wep_image = PhotoImage(file="ext_img/wep.png")
     wep_g = tkinter.Label(self, image=wep_image, borderwidth=0, activebackground=dark_main, bg=dark_main)
-    wep_g.place(x=29, y=55)
+    wep_g.place(x=29, y=55-12-4)
     wep_combopicker = Combopicker(self, entrywidth=30)
     wep_combopicker.on_change = on_weapon_change
-    wep_combopicker.place(x=110, y=60)
+    wep_combopicker.place(x=110, y=60-12-4)
+
+    wep_select_img = [0 for i in range(15)]
+    empty_weapon_image = PhotoImage(file="ext_img/empty_wep.png")
+    for i in range(len(wep_select_img)):
+        wep_select_img[i] = tkinter.Label(self, bg=dark_main, bd=0, image=empty_weapon_image)
+        wep_select_img[i].place(x=32 + 31 * i, y=70)
 
     jobup_select = tkinter.ttk.Combobox(self, width=13, values=jobs)
     jobup_select.set(jobs[0])
@@ -3075,7 +3095,7 @@ if __name__ == '__main__':
     # 更多国服特色
     reload_config_and_setting_img = PhotoImage(file="ext_img/reload_config_and_setting.png")
     select_all = tkinter.Button(self, image=reload_config_and_setting_img, borderwidth=0, activebackground=dark_main, command=reload_config_and_setting, bg=dark_main)
-    select_all.place(x=275, y=10)
+    select_all.place(x=275, y=10-4)
 
     custom_img = PhotoImage(file="ext_img/custom.png")
     select_custom2 = tkinter.Button(self, image=custom_img, borderwidth=0, activebackground=dark_main, command=costum,
