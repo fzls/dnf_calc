@@ -1179,6 +1179,12 @@ def show_result(rank_list, job_type, ele_skill):
         rank_stat = [0, 0, 0, 0, 0]
         rank_stat2 = [0, 0, 0, 0, 0]
         for rank in range(total_count):
+            dark_resistance = int(rss[rank][index_deal_extra_dark_resistance])
+            if dark_resistance < 81:
+                dark_resistance = "{}(低于81)".format(dark_resistance)
+            moving_speed = int(rss[rank][index_deal_extra_percent_moving_speed])
+            if moving_speed < 100:
+                moving_speed = "{}(低于100)".format(moving_speed)
             rank_stat[rank] = (
                 "\n"
                 "增伤={zengsu}%\n"
@@ -1208,8 +1214,8 @@ def show_result(rank_list, job_type, ele_skill):
                 teshu=int(rss[rank][index_deal_extra_percent_special_effect]),
                 gongsu=int(rss[rank][index_deal_extra_percent_attack_speed]),
                 baojilv=int(rss[rank][index_deal_extra_percent_magic_physical_crit_rate]),
-                dark_resistance=int(rss[rank][index_deal_extra_dark_resistance]),
-                moving_speed=int(rss[rank][index_deal_extra_percent_moving_speed]),
+                dark_resistance=dark_resistance,
+                moving_speed=moving_speed,
             )
             rank_stat2[rank] = (
                 "   <主动>\n"
