@@ -104,6 +104,10 @@ def add_bonus_attributes_to_base_array(job_type, base_array, style, creature, sa
                         entry_index = eval(name)
                         entry_value = eval(str(value))
 
+                        if entry_value < 0 and not cfg.misc.use_negative_equip_fixup_setting:
+                            # 如果这个补正数据是用来矫正与满属性装备的差距的，且设置了不使用负数的修正数据，则跳过
+                            continue
+
                         if equip_index not in equip_fixup:
                             equip_fixup[equip_index] = np.array([0.0 for idx in range(len(fixup_cfg[1]))])
                         equip_fixup[equip_index][entry_index] += entry_value
@@ -112,24 +116,25 @@ def add_bonus_attributes_to_base_array(job_type, base_array, style, creature, sa
         for equip_index, ba in equip_fixup.items():
             logger.info("{}-{}\n{}".format(equip_index, equip_index_to_realname[equip_index], format_base_array(job_type, ba)))
 
-        # 读取当前存档的buff换装槽位补正信息
-        logger.info("尝试查找buff换装槽位补正信息")
+        if cfg.misc.use_huanzhuang_slot_fixup:
+            # 读取当前存档的buff换装槽位补正信息
+            logger.info("尝试查找buff换装槽位补正信息")
 
-        if "huanzhuang_slot_fixup" in save_setting:
-            for slot_index, entries in save_setting["huanzhuang_slot_fixup"].items():
-                slot_index = str(slot_index)
-                for entry in entries:
-                    for name, value in entry.items():
-                        entry_index = eval(name)
-                        entry_value = eval(str(value))
+            if "huanzhuang_slot_fixup" in save_setting:
+                for slot_index, entries in save_setting["huanzhuang_slot_fixup"].items():
+                    slot_index = str(slot_index)
+                    for entry in entries:
+                        for name, value in entry.items():
+                            entry_index = eval(name)
+                            entry_value = eval(str(value))
 
-                        if slot_index not in huanzhuang_slot_fixup:
-                            huanzhuang_slot_fixup[slot_index] = np.array([0.0 for idx in range(len(buf_entry_index_to_name))])
-                        huanzhuang_slot_fixup[slot_index][entry_index] += entry_value
+                            if slot_index not in huanzhuang_slot_fixup:
+                                huanzhuang_slot_fixup[slot_index] = np.array([0.0 for idx in range(len(buf_entry_index_to_name))])
+                            huanzhuang_slot_fixup[slot_index][entry_index] += entry_value
 
-        logger.info("最终换装槽位补正数据为:\n")
-        for slot_index, ba in huanzhuang_slot_fixup.items():
-            logger.info("{}-{}\n{}".format(slot_index, slot_index_to_realname[slot_index], format_base_array(job_type, ba)))
+            logger.info("最终换装槽位补正数据为:\n")
+            for slot_index, ba in huanzhuang_slot_fixup.items():
+                logger.info("{}-{}\n{}".format(slot_index, slot_index_to_realname[slot_index], format_base_array(job_type, ba)))
 
 
 def format_base_array(job_type, base_array) -> str:
