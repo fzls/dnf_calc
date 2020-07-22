@@ -221,6 +221,6 @@ naima_nailuo_mianban_delta = 487
 # 杂项
 [misc]
 # 是否检查大幽魂的暗抗要求
-check_dayouhun_dark_resistance = true
+check_dayouhun_dark_resistance = false
 # 是否检查军神的移速要求
-check_junshen_moving_speed = true
+check_junshen_moving_speed = false
