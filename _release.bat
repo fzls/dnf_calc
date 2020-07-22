@@ -91,6 +91,7 @@ DEL /Q "_release.bat"
 DEL /Q _常见问题解答*.docx
 DEL /Q _手动安装运行环境教程*.docx
 DEL /Q 《使用说明：从入门到入土》*_by真的超级傻.pdf
+DEL /Q 增量更新教程*.docx
 DEL /Q "preset_clear.XLSX"
 DEL /Q "preset_test_set.XLSX"
 DEL /Q "README.md"
