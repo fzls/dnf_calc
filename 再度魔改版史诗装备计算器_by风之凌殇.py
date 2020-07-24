@@ -2494,23 +2494,26 @@ def check_all():
     # 点亮各个套装
     for set_code in range(101, 135 + 1):
         click_set(set_code)
+
     # 点亮各个智慧产物
     click_set(666)
+
     # 点亮各个神话装备
-    god_list = [
-        # set_start set_end god_slot
-        (1, 15, 11),  # 防具五件套
-        (16, 19, 21),  # 首饰
-        (20, 23, 33),  # 特殊装备
-        (24, 27, 21),  # 散件（中）
-        (28, 31, 11),  # 散件（左）
-        (32, 35, 33),  # 散件（右）
-    ]
-    for set_start, set_end, god_slot in god_list:
-        for set in range(set_start, set_end + 1):
-            equip_index = "{:02}{:02}1".format(god_slot, set)
-            eval('select_' + equip_index)['image'] = image_list[equip_index]  # 修改装备图片
-            select_item['tg' + equip_index] = 1  # 修改装备状态
+    if config().ui.check_all.including_god:
+        god_list = [
+            # set_start set_end god_slot
+            (1, 15, 11),  # 防具五件套
+            (16, 19, 21),  # 首饰
+            (20, 23, 33),  # 特殊装备
+            (24, 27, 21),  # 散件（中）
+            (28, 31, 11),  # 散件（左）
+            (32, 35, 33),  # 散件（右）
+        ]
+        for set_start, set_end, god_slot in god_list:
+            for set in range(set_start, set_end + 1):
+                equip_index = "{:02}{:02}1".format(god_slot, set)
+                eval('select_' + equip_index)['image'] = image_list[equip_index]  # 修改装备图片
+                select_item['tg' + equip_index] = 1  # 修改装备状态
 
 
 ###########################################################
@@ -3151,9 +3154,9 @@ if __name__ == '__main__':
     req_cool.place(x=390 - 17, y=310 + 52)
 
     calc_img = PhotoImage(file="ext_img/calc.png")
-    select_all = tkinter.Button(self, image=calc_img, borderwidth=0, activebackground=dark_main, command=calc_thread,
+    calc_btn = tkinter.Button(self, image=calc_img, borderwidth=0, activebackground=dark_main, command=calc_thread,
                                 bg=dark_main)
-    select_all.place(x=390 - 35, y=7)
+    calc_btn.place(x=390 - 35, y=7)
     stop_img = PhotoImage(file="ext_img/stop.png")
     tkinter.Button(self, image=stop_img, borderwidth=0, activebackground=dark_main, command=stop_calc, bg=dark_main).place(
         x=390 - 35, y=62)

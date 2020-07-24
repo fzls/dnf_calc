@@ -104,6 +104,11 @@ spare_parts_right = "[(33, 1), (15, 0), (23, 0), (33, 0)]"
 # 是否启用
 enable = true
 
+# 点亮全部
+[ui.check_all]
+# 是否包含神话
+including_god = true
+
 # 多线程配置
 [multi_threading]
 # 设置最大工作线程数，当为0时默认为min(2*逻辑线程数, 32)

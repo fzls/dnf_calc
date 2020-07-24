@@ -123,6 +123,12 @@ class ShowEquipTipsConfig(ConfigInterface):
         self.enable = True
 
 
+class CheckAllConfig(ConfigInterface):
+    def __init__(self):
+        # 是否包含神话
+        self.including_god = True
+
+
 class UIConfig(ConfigInterface):
     def __init__(self):
         # 字体配置
@@ -133,6 +139,8 @@ class UIConfig(ConfigInterface):
         self.set_equipments_order = SetEquipmentsOrderConfig()
         # 是否显示装备提示
         self.show_equip_tips = ShowEquipTipsConfig()
+        # 点亮全部
+        self.check_all = CheckAllConfig()
 
 
 class PruneConfig(ConfigInterface):
