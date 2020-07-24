@@ -2880,8 +2880,7 @@ def on_weapon_change():
         if sel_wep in gif_buttons:
             gif_buttons.remove(sel_wep)
         sel_wep.configure(image=empty_weapon_image)
-        wep_select_img[i].unbind("<Enter>")
-        wep_select_img[i].unbind("<Leave>")
+        unbind_tip(wep_select_img[i])
 
     # 设置新的武器
     for i, weapon_name in enumerate(weapons):
@@ -2890,9 +2889,7 @@ def on_weapon_change():
             if wep_select_img[i] not in gif_buttons:
                 gif_buttons.append(wep_select_img[i])
 
-            # 设置tip
-            wep_select_img[i].bind("<Enter>", show_equip_name_tip(weapon_name, 32 + 31 * i, 70, 28, -28))
-            wep_select_img[i].bind("<Leave>", hide_equip_name_tip)
+            bind_tip(wep_select_img[i], weapon_name, 32 + 31 * i, 70, 28, -28)
         except:
             pass
 
@@ -2967,6 +2964,60 @@ if __name__ == '__main__':
     ###########################################################
     #                      拼接ui的琐碎代码                    #
     ###########################################################
+    # 鼠标在装备图标上时弹tip
+    tips_image = tkinter.PhotoImage(file='ext_img/tips.png')
+    canvas_tips = Canvas(self, width=78, height=20, bd=0, bg=dark_main)
+    canvas_tips.create_image(0, 0, image=tips_image, anchor='nw')
+    canvas_tips.place(x=-200, y=-200)
+
+
+    def bind_tip(btn, tip, x=0, y=0, x_offset=0, y_offset=0, auto_position=False):
+        if auto_position:
+            btn.master.update()
+            if x == 0:
+                x = btn.winfo_rootx()
+            if y == 0:
+                y = btn.winfo_rooty()
+            if x_offset == 0:
+                x_offset = btn.winfo_width()
+            if y_offset == 0:
+                y_offset = -btn.winfo_height()
+
+        btn.bind("<Enter>", show_equip_name_tip(tip, x, y, x_offset, y_offset))
+        btn.bind("<Leave>", hide_equip_name_tip)
+
+
+    def unbind_tip(btn):
+        btn.unbind("<Enter>")
+        btn.unbind("<Leave>")
+
+
+    def show_equip_name_tip(tip, x, y, x_offset, y_offset):
+        def _show_equip_name_tip(event):
+            if not cfg.ui.show_equip_tips.enable:
+                return
+
+            lines = tip.split("\n")
+            height = 20 * len(lines)
+            width = 15
+            for line in lines:
+                width = max(width, 15 * len(line))
+
+            canvas_tips.config(width=width, height=height)
+            canvas_tips.create_text(width / 2, height / 2, text=tip, tags=('mouse_overlap'), font=guide_font, fill='white')
+            _x = x + x_offset + 5
+            _y = y + y_offset
+            if _x + width >= main_window_width:
+                _x = x - width - 5
+            canvas_tips.place(x=_x, y=_y)
+
+        return _show_equip_name_tip
+
+
+    def hide_equip_name_tip(event):
+        canvas_tips.delete("mouse_overlap")
+        canvas_tips.place(x=-200, y=-200)
+
 
     font_cfg = cfg.ui.fonts
 
@@ -3109,8 +3160,9 @@ if __name__ == '__main__':
 
     # 更多国服特色
     reload_config_and_setting_img = PhotoImage(file="ext_img/reload_config_and_setting.png")
-    select_all = tkinter.Button(self, image=reload_config_and_setting_img, borderwidth=0, activebackground=dark_main, command=reload_config_and_setting, bg=dark_main)
-    select_all.place(x=275, y=10 - 4)
+    reload_config_btn = tkinter.Button(self, image=reload_config_and_setting_img, borderwidth=0, activebackground=dark_main, command=reload_config_and_setting, bg=dark_main)
+    reload_config_btn.place(x=275, y=10 - 4)
+    bind_tip(reload_config_btn, "修改配置表或配置文件后\n需要点击该按钮方可生效", auto_position=True)
 
     custom_img = PhotoImage(file="ext_img/custom.png")
     select_custom2 = tkinter.Button(self, image=custom_img, borderwidth=0, activebackground=dark_main, command=costum,
@@ -3177,35 +3229,6 @@ if __name__ == '__main__':
     display_realtime_counting_info_label.place(x=430, y=480)
     showcon2 = display_realtime_counting_info_label.configure
 
-    # 鼠标在装备图标上时弹tip
-    tips_image = tkinter.PhotoImage(file='ext_img/tips.png')
-    canvas_tips_height = 20
-    canvas_tips = Canvas(self, width=78, height=canvas_tips_height, bd=0, bg=dark_main)
-    canvas_tips.create_image(0, 0, image=tips_image, anchor='nw')
-    canvas_tips.place(x=-200, y=-200)
-
-
-    def show_equip_name_tip(tip, x, y, x_offset, y_offset):
-        def _show_equip_name_tip(event):
-            if not cfg.ui.show_equip_tips.enable:
-                return
-
-            width = 15 * len(tip)
-            canvas_tips.config(width=width)
-            canvas_tips.create_text(width / 2, canvas_tips_height / 2, text=tip, tags=('mouse_overlap'), font=guide_font, fill='white')
-            _x = x + x_offset + 5
-            _y = y + y_offset
-            if _x + width >= main_window_width:
-                _x = x - width - 5
-            canvas_tips.place(x=_x, y=_y)
-
-        return _show_equip_name_tip
-
-
-    def hide_equip_name_tip(event):
-        canvas_tips.delete("mouse_overlap")
-        canvas_tips.place(x=-200, y=-200)
-
 
     # 套装名称图标坐标
     def get_x_y_for_set(set_code):
@@ -3263,8 +3286,7 @@ if __name__ == '__main__':
         exec("""select_{0}.place(x={1}, y={2})""".format(know_equip_index, x, y))
 
         # 设置tip
-        exec("""select_{0}.bind("<Enter>", show_equip_name_tip("{1}", {2}, {3}, {4}, {5}))""".format(know_equip_index, equip_index_to_realname[know_equip_index], x, y, 28, -28))
-        exec("""select_{0}.bind("<Leave>", hide_equip_name_tip)""".format(know_equip_index))
+        exec("""bind_tip(select_{0}, "{1}", {2}, {3}, {4}, {5})""".format(know_equip_index, equip_index_to_realname[know_equip_index], x, y, 28, -28))
 
 
     # 装备图标坐标
@@ -3323,8 +3345,7 @@ if __name__ == '__main__':
                     exec("""gif_buttons.append(select_{0})""".format(equip_index))
 
                 # 设置tip
-                exec("""select_{0}.bind("<Enter>", show_equip_name_tip("{1}", {2}, {3}, {4}, {5}))""".format(equip_index, equip_index_to_realname[equip_index], x, y, 28, -28))
-                exec("""select_{0}.bind("<Leave>", hide_equip_name_tip)""".format(equip_index))
+                exec("""bind_tip(select_{0}, "{1}", {2}, {3}, {4}, {5})""".format(equip_index, equip_index_to_realname[equip_index], x, y, 28, -28))
 
     donate_image = PhotoImage(file='ext_img/donate.png')
     donate_bt = tkinter.Button(self, image=donate_image, command=donate, borderwidth=0, bg=dark_main,
@@ -3335,6 +3356,7 @@ if __name__ == '__main__':
     open_setting_tool_btn = tkinter.Button(self, image=open_setting_tool_image, command=open_setting_tool, borderwidth=0, bg=dark_main,
                                            activebackground=dark_main)
     open_setting_tool_btn.place(x=500, y=400)
+    bind_tip(open_setting_tool_btn, "点击即可打开配置工具\n设置相关内容", 500, 400, -40, -64)
 
     dunfaoff_image = PhotoImage(file='ext_img/dunfaoff.png')
     dunfaoff_url = tkinter.Button(self, image=dunfaoff_image, command=dunfaoff, borderwidth=0, bg=dark_main,
