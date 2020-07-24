@@ -385,7 +385,7 @@ def calc():
                 minheap_to_merge = mq.minheap_queue.get(block=False)
                 mq.minheap.merge(minheap_to_merge)
 
-                if mq.minheap.processed_result_count >= 1000*idx :
+                if mq.minheap.processed_result_count >= 1000 * idx:
                     log_result_queue_info(logger.info, "try_fetch_result periodly report", mq)
                     idx = mq.minheap.processed_result_count // 1000 + 1
             except queue.Empty as error:
@@ -1170,7 +1170,7 @@ def show_result(rank_list, job_type, ele_skill):
                                 result_image_on[rank][str(equip_slot_index)] = image_list2[equip_index]
             if rank_baibiaoguai[rank] is not None:
                 result_image_on[rank]["bbg"] = image_list[rank_baibiaoguai[rank]]
-            weapon_index = rank_setting[rank][0] # 装备列表的第一个是武器的编号
+            weapon_index = rank_setting[rank][0]  # 装备列表的第一个是武器的编号
             result_image_on[rank]["weapon"] = image_list[weapon_index]
 
         # 0추스탯 1추공 2증 3크 4추
@@ -2876,10 +2876,12 @@ def on_weapon_change():
     job_selected_weapons[jobup_select.get()] = weapons
 
     # 清空原有武器
-    for sel_wep in wep_select_img:
+    for i, sel_wep in enumerate(wep_select_img):
         if sel_wep in gif_buttons:
             gif_buttons.remove(sel_wep)
         sel_wep.configure(image=empty_weapon_image)
+        wep_select_img[i].unbind("<Enter>")
+        wep_select_img[i].unbind("<Leave>")
 
     # 设置新的武器
     for i, weapon_name in enumerate(weapons):
@@ -2887,6 +2889,10 @@ def on_weapon_change():
             wep_select_img[i].configure(image=image_list[wep_name_to_index[weapon_name]])
             if wep_select_img[i] not in gif_buttons:
                 gif_buttons.append(wep_select_img[i])
+
+            # 设置tip
+            wep_select_img[i].bind("<Enter>", show_equip_name_tip(weapon_name, 32 + 31 * i, 70, 28, -28))
+            wep_select_img[i].bind("<Leave>", hide_equip_name_tip)
         except:
             pass
 
@@ -2934,6 +2940,7 @@ def get_gif_frames(gif_path):
 
 def open_setting_tool():
     threading.Thread(target=open_setting_tool_sync, daemon=True).start()
+
 
 def open_setting_tool_sync():
     import subprocess
@@ -3025,12 +3032,12 @@ if __name__ == '__main__':
     bg_wall.place(x=0, y=0)
 
     select_speed = tkinter.ttk.Combobox(self, values=speeds, width=15)
-    select_speed.place(x=145, y=11-4)
+    select_speed.place(x=145, y=11 - 4)
     select_speed.set(speed_middle)
 
     show_usage_img = PhotoImage(file="ext_img/show_usage.png")
     tkinter.Button(self, command=show_usage, image=show_usage_img, borderwidth=0, activebackground=dark_main,
-                   bg=dark_main).place(x=29, y=7-4)
+                   bg=dark_main).place(x=29, y=7 - 4)
 
     reset_img = PhotoImage(file="ext_img/reset.png")
     tkinter.Button(self, command=reset, image=reset_img, borderwidth=0, activebackground=dark_main, bg=dark_main).place(
@@ -3057,10 +3064,10 @@ if __name__ == '__main__':
     # 武器选择
     wep_image = PhotoImage(file="ext_img/wep.png")
     wep_g = tkinter.Label(self, image=wep_image, borderwidth=0, activebackground=dark_main, bg=dark_main)
-    wep_g.place(x=29, y=55-12-4)
+    wep_g.place(x=29, y=55 - 12 - 4)
     wep_combopicker = Combopicker(self, entrywidth=30)
     wep_combopicker.on_change = on_weapon_change
-    wep_combopicker.place(x=110, y=60-12-4)
+    wep_combopicker.place(x=110, y=60 - 12 - 4)
 
     wep_select_img = [0 for i in range(15)]
     empty_weapon_image = PhotoImage(file="ext_img/empty_wep.png")
@@ -3103,7 +3110,7 @@ if __name__ == '__main__':
     # 更多国服特色
     reload_config_and_setting_img = PhotoImage(file="ext_img/reload_config_and_setting.png")
     select_all = tkinter.Button(self, image=reload_config_and_setting_img, borderwidth=0, activebackground=dark_main, command=reload_config_and_setting, bg=dark_main)
-    select_all.place(x=275, y=10-4)
+    select_all.place(x=275, y=10 - 4)
 
     custom_img = PhotoImage(file="ext_img/custom.png")
     select_custom2 = tkinter.Button(self, image=custom_img, borderwidth=0, activebackground=dark_main, command=costum,
@@ -3170,6 +3177,35 @@ if __name__ == '__main__':
     display_realtime_counting_info_label.place(x=430, y=480)
     showcon2 = display_realtime_counting_info_label.configure
 
+    # 鼠标在装备图标上时弹tip
+    tips_image = tkinter.PhotoImage(file='ext_img/tips.png')
+    canvas_tips_height = 20
+    canvas_tips = Canvas(self, width=78, height=canvas_tips_height, bd=0, bg=dark_main)
+    canvas_tips.create_image(0, 0, image=tips_image, anchor='nw')
+    canvas_tips.place(x=-200, y=-200)
+
+
+    def show_equip_name_tip(tip, x, y, x_offset, y_offset):
+        def _show_equip_name_tip(event):
+            if not cfg.ui.show_equip_tips.enable:
+                return
+
+            width = 15 * len(tip)
+            canvas_tips.config(width=width)
+            canvas_tips.create_text(width / 2, canvas_tips_height / 2, text=tip, tags=('mouse_overlap'), font=guide_font, fill='white')
+            _x = x + x_offset + 5
+            _y = y + y_offset
+            if _x + width >= main_window_width:
+                _x = x - width - 5
+            canvas_tips.place(x=_x, y=_y)
+
+        return _show_equip_name_tip
+
+
+    def hide_equip_name_tip(event):
+        canvas_tips.delete("mouse_overlap")
+        canvas_tips.place(x=-200, y=-200)
+
 
     # 套装名称图标坐标
     def get_x_y_for_set(set_code):
@@ -3219,9 +3255,16 @@ if __name__ == '__main__':
     know_item_list = [13390150, 22390240, 23390450, 33390750, 21400340, 31400540, 32410650]
 
     for idx, know_equip_index in enumerate(know_item_list):
+        know_equip_index = str(know_equip_index)
         exec("""select_item['tg{0}'] = 0""".format(know_equip_index))
         exec("""select_{0} = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main, image=image_list2['{0}'], command=lambda: click_equipment({0}))""".format(know_equip_index))
-        exec("""select_{0}.place(x=403+30*({1}), y=520)""".format(know_equip_index, idx))
+        x = 403 + 30 * idx
+        y = 520
+        exec("""select_{0}.place(x={1}, y={2})""".format(know_equip_index, x, y))
+
+        # 设置tip
+        exec("""select_{0}.bind("<Enter>", show_equip_name_tip("{1}", {2}, {3}, {4}, {5}))""".format(know_equip_index, equip_index_to_realname[know_equip_index], x, y, 28, -28))
+        exec("""select_{0}.bind("<Leave>", hide_equip_name_tip)""".format(know_equip_index))
 
 
     # 装备图标坐标
@@ -3279,6 +3322,10 @@ if __name__ == '__main__':
                 if god == 1:
                     exec("""gif_buttons.append(select_{0})""".format(equip_index))
 
+                # 设置tip
+                exec("""select_{0}.bind("<Enter>", show_equip_name_tip("{1}", {2}, {3}, {4}, {5}))""".format(equip_index, equip_index_to_realname[equip_index], x, y, 28, -28))
+                exec("""select_{0}.bind("<Leave>", hide_equip_name_tip)""".format(equip_index))
+
     donate_image = PhotoImage(file='ext_img/donate.png')
     donate_bt = tkinter.Button(self, image=donate_image, command=donate, borderwidth=0, bg=dark_main,
                                activebackground=dark_main)
@@ -3286,7 +3333,7 @@ if __name__ == '__main__':
 
     open_setting_tool_image = PhotoImage(file='ext_img/open_setting_tool.png')
     open_setting_tool_btn = tkinter.Button(self, image=open_setting_tool_image, command=open_setting_tool, borderwidth=0, bg=dark_main,
-                                          activebackground=dark_main)
+                                           activebackground=dark_main)
     open_setting_tool_btn.place(x=500, y=400)
 
     dunfaoff_image = PhotoImage(file='ext_img/dunfaoff.png')
@@ -3326,6 +3373,8 @@ if __name__ == "__main__":
         workers.append(p)
 
     logger.info("已启动{}个工作进程".format(max_thread))
+
+    tkinter.Misc.lift(canvas_tips)
 
     # 启动主进程的一些后台线程
     update_thread()

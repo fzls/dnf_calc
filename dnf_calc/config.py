@@ -117,6 +117,12 @@ class SetEquipmentsOrderConfig(ConfigInterface):
         self.spare_parts_right = "[(33, 1), (15, 0), (23, 0), (33, 0)]"
 
 
+class ShowEquipTipsConfig(ConfigInterface):
+    def __init__(self):
+        # 是否启用
+        self.enable = True
+
+
 class UIConfig(ConfigInterface):
     def __init__(self):
         # 字体配置
@@ -125,6 +131,8 @@ class UIConfig(ConfigInterface):
         self.background = BackgroundConfig()
         # ui装备套装内顺序配置
         self.set_equipments_order = SetEquipmentsOrderConfig()
+        # 是否显示装备提示
+        self.show_equip_tips = ShowEquipTipsConfig()
 
 
 class PruneConfig(ConfigInterface):
