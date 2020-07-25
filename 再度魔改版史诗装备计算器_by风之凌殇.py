@@ -2416,9 +2416,11 @@ def reset():
     baibianguai_select.set(txt_no_baibianguai)
     can_upgrade_work_unifrom_nums_select.set(txt_can_upgrade_work_unifrom_nums[0])
 
-    wep_combopicker.set(get_job_allowed_weapons(jobup_select.get())[:1])
     transfer_equip_combopicker.set(None)
     can_transfer_nums_select.set(txt_can_transfer_nums[0])
+
+    if config().ui.batch_op.reset_including_weapon:
+        wep_combopicker.set(get_job_allowed_weapons(jobup_select.get())[:1])
 
 
 def check_all():
@@ -2427,6 +2429,9 @@ def check_all():
     # 点亮各个套装
     for set_code in set_index_2_equip_indexes:
         click_set(set_code)
+
+    if config().ui.batch_op.check_all_including_weapon:
+        wep_combopicker.set(get_job_allowed_weapons(jobup_select.get()))
 
 
 ###########################################################

@@ -194,6 +194,11 @@ class BatchOpConfig(ConfigInterface):
         # 重置是否包含神话
         self.reset_including_god = True
 
+        # 全选是否包含武器
+        self.check_all_including_weapon = True
+        # 重置是否包含武器
+        self.reset_including_weapon = True
+
 
 class UIConfig(ConfigInterface):
     def __init__(self):

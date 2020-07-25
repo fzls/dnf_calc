@@ -278,6 +278,11 @@ check_all_including_god = true
 # 重置是否包含神话
 reset_including_god = true
 
+# 全选是否包含武器
+check_all_including_weapon = true
+# 重置是否包含武器
+reset_including_weapon = true
+
 # 多线程配置
 [multi_threading]
 # 设置最大工作线程数，当为0时默认为min(2*逻辑线程数, 32)
