@@ -101,22 +101,6 @@ class BackgroundConfig(ConfigInterface):
 # 36 传说防具
 # 37 普雷首饰
 # 38 普雷特殊
-class SetEquipmentsOrderConfig(ConfigInterface):
-    def __init__(self):
-        # 防具五件套（1-15） 上衣（神话）、上衣、头肩、下装、鞋、腰带
-        self.armor = "[(11, 1), (11, 0), (13, 0), (12, 0), (15, 0), (14, 0)]"
-        # 首饰（16-19） 手镯（神话）、项链、手镯、戒指
-        self.jewelry = "[(21, 1), (22, 0), (21, 0), (23, 0)]"
-        # 特殊装备（20-23） 耳环（神话）、辅助装备、魔法石、耳环
-        self.special_equipment = "[(33, 1), (31, 0), (32, 0), (33, 0)]"
-        # 散件（中）（24-27） 手镯（神话）、下装、手镯、魔法石
-        self.spare_parts_mid = "[(21, 1), (12, 0), (21, 0), (32, 0)]"
-        # 散件（左）（28-31） 上衣（神话）、上衣、项链、辅助装备
-        self.spare_parts_left = "[(11, 1), (11, 0), (22, 0), (31, 0)]"
-        # 散件（右）（32-35） 耳环（神话）、鞋、戒指、耳环
-        self.spare_parts_right = "[(33, 1), (15, 0), (23, 0), (33, 0)]"
-
-
 class LayoutConfig(ConfigInterface):
     def __init__(self):
         # 界面标题
@@ -215,9 +199,6 @@ class UIConfig(ConfigInterface):
         self.fonts = FontsConfig()
         # 背景色配置
         self.background = BackgroundConfig()
-        # re: 干掉下面这个顺序，改用更通用的layout来实现
-        # ui装备套装内顺序配置
-        self.set_equipments_order = SetEquipmentsOrderConfig()
         # ui布局配置
         self.layout = LayoutConfig()
         # 是否显示装备提示

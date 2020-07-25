@@ -2457,36 +2457,31 @@ def update_thread():
     threading.Thread(target=gif_ticker, daemon=True).start()
     threading.Thread(target=process_async_bind_tips, daemon=True).start()
 
+def reset_equips(layout_cfg):
+    """
+    :type layout_cfg: LayoutConfig
+    """
+    for block_info in layout_cfg.equip_block_infos:
+        if block_info.type == EquipBlockType_Set:
+            for set_code in range(block_info.set_code_start, block_info.set_code_end + 1):
+                for idx, val in enumerate(block_info.slot_orders):
+                    slot, god = val
+                    equip_index = "{0:02}{1:02}{2:1}".format(slot, set_code, god)
+                    equip_btn_index = 'tg{0}'.format(equip_index)
+                    select_item[equip_btn_index] = 0
+        elif block_info.type == EquipBlockType_Single:
+            for idx, equip_index in enumerate(block_info.equips):
+                equip_index = str(equip_index)
+                equip_btn_index = 'tg{0}'.format(equip_index)
+                select_item[equip_btn_index] = 0
+        elif block_info.type == EquipBlockType_Nested:
+            reset_equips(block_info.nested_block)
+        else:
+            notify_error(logger, "ui布局配置有误，不支持类型为{}的block".format(block_info.type))
+            sys.exit(0)
 
 def reset_all_equips():
-    # 重置装备
-    # 11 上衣  12 裤子   13 头肩 14 腰带 15 鞋子
-    # 21 手镯  22 项链   23 戒指
-    # 31 辅助装备 32 魔法石 33 耳环
-    order_cfg = config().ui.set_equipments_order
-    set_slots = [
-        (1, 15, eval(order_cfg.armor)),  # 防具五件套
-        (16, 19, eval(order_cfg.jewelry)),  # 首饰
-        (20, 23, eval(order_cfg.special_equipment)),  # 特殊装备
-        (24, 27, eval(order_cfg.spare_parts_mid)),  # 散件（中）
-        (28, 31, eval(order_cfg.spare_parts_left)),  # 散件（左）
-        (32, 35, eval(order_cfg.spare_parts_right)),  # 散件（右）
-    ]
-
-    for set_slot in set_slots:
-        set_code_start = set_slot[0]
-        set_code_end = set_slot[1]
-        set_slot_info = set_slot[2]
-        for set_code in range(set_code_start, set_code_end + 1):
-            for idx, val in enumerate(set_slot_info):
-                slot, god = val
-                equip_index = "{0:02}{1:02}{2:1}".format(slot, set_code, god)
-
-                select_item['tg{0}'.format(equip_index)] = 0
-
-    # 重置智慧产物
-    for the_product_of_wisdom_equip_index in ['13390150', '22390240', '23390450', '33390750', '21400340', '31400540', '32410650']:
-        select_item['tg{}'.format(the_product_of_wisdom_equip_index)] = 0
+    reset_equips(layout_cfg)
 
     # 状态检查
     check_equipment()
