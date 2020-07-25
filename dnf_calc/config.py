@@ -188,7 +188,7 @@ class EquipBlockInfoConfig(ConfigInterface):
         # 套装图标的编码
         self.set_index = "136" # 示例为136-传说
         # 嵌套ui界面相关配置
-        self.nested_block = None # type: UIConfig
+        self.nested_block = LayoutConfig()
 
     def auto_update_config(self, raw_config: dict):
         super().auto_update_config(raw_config)

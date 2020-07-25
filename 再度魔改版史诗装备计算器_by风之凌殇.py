@@ -2651,7 +2651,7 @@ def check_equipment():
                 eval('select_{}'.format(the_product_of_wisdom_equip_index))['image'] = image_list2[str(the_product_of_wisdom_equip_index)]
             elif eval("select_item['tg{}']".format(the_product_of_wisdom_equip_index)) == 1:
                 eval('select_{}'.format(the_product_of_wisdom_equip_index))['image'] = image_list[str(the_product_of_wisdom_equip_index)]
-        except KeyError as error:
+        except Exception as error:
             c = 1
 
 
@@ -2661,24 +2661,38 @@ def click_set(code):
     # 暂时特殊处理智慧的产物
     if code == 666:
         global equip_list
-        exec("""global equip_list; equip_list = single_equip_list_{0}""".format(code))
+        try:
+            exec("""global equip_list; equip_list = single_equip_list_{0}""".format(code))
+        except:
+            return
         set_checked = 0
         for know_equip_index in equip_list:
             if select_item['tg{0}'.format(know_equip_index)] == 1:
                 set_checked += 1
         if set_checked == len(equip_list):
             for know_equip_index in equip_list:
-                exec("""select_{0}["image"] = image_list2['{0}']""".format(know_equip_index))
+                try:
+                    exec("""select_{0}["image"] = image_list2['{0}']""".format(know_equip_index))
+                except:
+                    pass
                 select_item['tg{0}'.format(know_equip_index)] = 0
 
-            exec("""set{}["image"] = image_list_set2[str(code)]""".format(code))
+            try:
+                exec("""set{}["image"] = image_list_set2[str(code)]""".format(code))
+            except:
+                pass
 
         else:
             for know_equip_index in equip_list:
-                exec("""select_{0}["image"] = image_list['{0}']""".format(know_equip_index))
+                try:
+                    exec("""select_{0}["image"] = image_list['{0}']""".format(know_equip_index))
+                except:
+                    pass
                 select_item['tg{0}'.format(know_equip_index)] = 1
-
-            exec("""set{}["image"] = image_list_set[str(code)]""".format(code))
+            try:
+                exec("""set{}["image"] = image_list_set[str(code)]""".format(code))
+            except:
+                pass
         return
 
     code_add = code - 100
@@ -2770,18 +2784,25 @@ def click_set(code):
 
 
 def check_set(code):
+    code = int(code)
     # 暂时特殊处理智慧的产物
     if code == 666:
         global equip_list
-        exec("""global equip_list; equip_list = single_equip_list_{0}""".format(code))
+        try:
+            exec("""global equip_list; equip_list = single_equip_list_{0}""".format(code))
+        except:
+            return
         set_checked = 0
         for know_equip_index in equip_list:
             if select_item['tg{0}'.format(know_equip_index)] == 1:
                 set_checked += 1
-        if set_checked == len(equip_list):
-            exec("""set{}["image"] = image_list_set[str(code)]""".format(code))
-        else:
-            exec("""set{}["image"] = image_list_set2[str(code)]""".format(code))
+        try:
+            if set_checked == len(equip_list):
+                exec("""set{}["image"] = image_list_set[str(code)]""".format(code))
+            else:
+                exec("""set{}["image"] = image_list_set2[str(code)]""".format(code))
+        except:
+            pass
         return
 
     code_str = str(code)[1:3]
@@ -3304,18 +3325,26 @@ if __name__ == '__main__':
 
                         x = block_info.topleft_x + block_info.set_icon_width + block_info.equip_icon_width * idx
 
-                        select_item['tg{0}'.format(equip_index)] = 0
-                        select_btn = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main, image=image_list2[equip_index],
+                        equip_btn_index = 'tg{0}'.format(equip_index)
+                        if equip_btn_index not in select_item:
+                            select_item[equip_btn_index] = 0
+                        if select_item[equip_btn_index] == 1:
+                            _image_list = image_list
+                        else:
+                            _image_list = image_list2
+                        select_btn = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main, image=_image_list[equip_index],
                                                     command=lambda equip_index=equip_index: click_equipment(equip_index))
                         select_btn.place(x=x, y=y)
 
-                        if god == 1:
-                            gif_buttons.append(select_btn)
+                        if god == 1 and select_btn not in gif_buttons:
+                                gif_buttons.append(select_btn)
 
                         # 设置tip
                         bind_tip(select_btn, equip_index_to_realname[equip_index], x, y, 28, -28)
 
                         exec("""global select_{0}; select_{0} = select_btn""".format(equip_index))
+
+                    check_set(set_index)
 
             elif block_info.type == EquipBlockType_Single:
                 exec("""global single_equip_list_{0}; single_equip_list_{0} = copy.deepcopy(block_info.equips);""".format(block_info.set_index))
@@ -3333,8 +3362,14 @@ if __name__ == '__main__':
                     y = block_info.topleft_y
 
                     # 创建按钮
-                    select_item['tg{0}'.format(equip_index)] = 0
-                    select_btn = tkinter.Button(master, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main, image=image_list2[equip_index],
+                    equip_btn_index = 'tg{0}'.format(equip_index)
+                    if equip_btn_index not in select_item:
+                        select_item[equip_btn_index] = 0
+                    if select_item[equip_btn_index] == 1:
+                        _image_list = image_list
+                    else:
+                        _image_list = image_list2
+                    select_btn = tkinter.Button(master, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main, image=_image_list[equip_index],
                                                 command=lambda equip_index=equip_index: click_equipment(equip_index))
                     select_btn.place(x=x, y=y)
 
@@ -3342,18 +3377,44 @@ if __name__ == '__main__':
                     bind_tip(select_btn, equip_index_to_realname[equip_index], x, y, 28, -28)
 
                     exec("""global select_{0}; select_{0} = select_btn""".format(equip_index))
+
+                check_set(block_info.set_index)
+
             elif block_info.type == EquipBlockType_Nested:
-                image = PhotoImage(file="set_name/{}.png".format(block_info.set_index))
-                nested_btn = tkinter.Button(self, bg=dark_main, borderwidth=0, activebackground=dark_main, image=image, command=lambda: open_nested_block(master, block_info))
+                nested_btn = tkinter.Button(self, bg=dark_main, borderwidth=0, activebackground=dark_main, image=image_list_set2[block_info.set_index],
+                                            command=lambda master=master, block_info=block_info: open_nested_block(master, block_info))
                 nested_btn.place(x=block_info.topleft_x, y=block_info.topleft_y)
-                exec("""btn_{} = nested_btn""".format(block_info.set_index))
+                exec("""global nested_btn_{0}; nested_btn_{0} = nested_btn""".format(block_info.set_index))
+                open_nested_block(master, block_info)
             else:
                 notify_error(logger, "ui布局配置有误，不支持类型为{}的block".format(block_info.type))
                 sys.exit(0)
 
 
     def open_nested_block(master, block_info):
-        pass
+        """
+        创建一个新的窗口，并绘制对应装备
+        :type block_info: EquipBlockInfoConfig
+        """
+        try:
+            global old_nested_window
+            exec("""global old_nested_window;old_nested_window = nested_window_{0};""".format(block_info.set_index))
+            old_nested_window.destroy()
+        except Exception as error:
+            pass
+
+        nested_block = block_info.nested_block
+        nested_window = tkinter.Toplevel(master)
+        nested_window.title(nested_block.title)
+        nested_window.geometry("{}x{}+{}+{}".format(nested_block.window_width, nested_block.window_height, nested_block.window_x_offset, nested_block.window_y_offset))
+        nested_window.resizable(nested_block.window_width_resizable, nested_block.window_height_resizable)
+        nested_window.attributes("-topmost", True)
+        nested_window.focus_force()
+        nested_window.configure(bg=dark_main)
+
+        exec("""global nested_window_{0};nested_window_{0} = nested_window;""".format(block_info.set_index))
+
+        create_ui_layout(nested_window, nested_block)
 
 
     create_ui_layout(self, layout_cfg)
