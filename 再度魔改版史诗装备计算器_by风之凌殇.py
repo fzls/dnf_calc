@@ -2376,11 +2376,15 @@ def reset_equips(layout_cfg):
     """
     :type layout_cfg: LayoutConfig
     """
+    including_god = config().ui.batch_op.reset_including_god
+
     for block_info in layout_cfg.equip_block_infos:
         if block_info.type == EquipBlockType_Set:
             for set_code in range(block_info.set_code_start, block_info.set_code_end + 1):
                 for idx, val in enumerate(block_info.slot_orders):
                     slot, god = val
+                    if god == 1 and not including_god:
+                        continue
                     equip_index = "{0:02}{1:02}{2:1}".format(slot, set_code, god)
                     equip_btn_index = 'tg{0}'.format(equip_index)
                     select_item[equip_btn_index] = 0
@@ -2427,23 +2431,6 @@ def check_all():
 
     # 点亮各个智慧产物
     click_set(666)
-
-    # 点亮各个神话装备
-    if config().ui.check_all.including_god:
-        god_list = [
-            # set_start set_end god_slot
-            (1, 15, 11),  # 防具五件套
-            (16, 19, 21),  # 首饰
-            (20, 23, 33),  # 特殊装备
-            (24, 27, 21),  # 散件（中）
-            (28, 31, 11),  # 散件（左）
-            (32, 35, 33),  # 散件（右）
-        ]
-        for set_start, set_end, god_slot in god_list:
-            for set in range(set_start, set_end + 1):
-                equip_index = "{:02}{:02}1".format(god_slot, set)
-                eval('select_' + equip_index)['image'] = image_list[equip_index]  # 修改装备图片
-                select_item['tg' + equip_index] = 1  # 修改装备状态
 
 
 ###########################################################
@@ -2583,18 +2570,21 @@ def click_set(code):
         return
 
     equips = set_index_2_equip_indexes[code]
+    including_god = config().ui.batch_op.check_all_including_god
 
     # 统计套装内当前被选择的数目
     set_checked = 0
+    total = 0
     for equip_index in equips:
+        if is_god(equip_index) and not including_god:
+            continue
         equip_btn_index = 'tg{}'.format(equip_index)
+        total += 1
         if select_item[equip_btn_index] == 1:
             set_checked += 1
 
     # 若未满，则全选，否则反之
-    check = set_checked != len(equips)
-
-    if check:
+    if set_checked < total:
         _image_list = image_list
         _image_list_set = image_list_set
         select_result = 1
@@ -2604,6 +2594,8 @@ def click_set(code):
         select_result = 0
 
     for equip_index in equips:
+        if is_god(equip_index) and not including_god:
+            continue
         equip_btn_index = 'tg{}'.format(equip_index)
         btn = eval('select_{}'.format(equip_index))
 

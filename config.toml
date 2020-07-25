@@ -271,10 +271,12 @@ slot_orders = "[(33, 1), (15, 0), (23, 0), (33, 0)]"
 # 是否启用
 enable = true
 
-# 点亮全部
-[ui.check_all]
-# 是否包含神话
-including_god = true
+# 批量操作配置
+[ui.batch_op]
+# 全选是否包含神话
+check_all_including_god = true
+# 重置是否包含神话
+reset_including_god = true
 
 # 多线程配置
 [multi_threading]

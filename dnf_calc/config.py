@@ -187,10 +187,12 @@ class ShowEquipTipsConfig(ConfigInterface):
         self.enable = True
 
 
-class CheckAllConfig(ConfigInterface):
+class BatchOpConfig(ConfigInterface):
     def __init__(self):
-        # 是否包含神话
-        self.including_god = True
+        # 全选是否包含神话
+        self.check_all_including_god = True
+        # 重置是否包含神话
+        self.reset_including_god = True
 
 
 class UIConfig(ConfigInterface):
@@ -203,8 +205,8 @@ class UIConfig(ConfigInterface):
         self.layout = LayoutConfig()
         # 是否显示装备提示
         self.show_equip_tips = ShowEquipTipsConfig()
-        # 点亮全部
-        self.check_all = CheckAllConfig()
+        # 批量操作配置
+        self.batch_op = BatchOpConfig()
 
 
 class PruneConfig(ConfigInterface):
