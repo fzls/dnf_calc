@@ -2928,11 +2928,8 @@ if __name__ == '__main__':
     ###########################################################
     # 鼠标在装备图标上时弹tip
     tips_image = tkinter.PhotoImage(file='ext_img/tips.png')
-    canvas_tips = Canvas(self, width=78, height=20, bd=0, bg=dark_main)
-    canvas_tips.create_image(0, 0, image=tips_image, anchor='nw')
-    canvas_tips.place(x=-200, y=-200)
     async_bind_tips = []
-
+    toplevel_2_canvas_tips_dict = {}
 
     def bind_tip(btn, tip, x=0, y=0, x_offset=0, y_offset=0, auto_position=False, sync=False):
         if sync:
@@ -2942,10 +2939,16 @@ if __name__ == '__main__':
 
 
     def process_async_bind_tips():
-        for async_bind_tip in async_bind_tips:
-            bind_tip_sync(*async_bind_tip)
+        while True:
+            try:
+                if len(async_bind_tips) != 0:
+                    for async_bind_tip in async_bind_tips:
+                        bind_tip_sync(*async_bind_tip)
 
-        async_bind_tips.clear()
+                    async_bind_tips.clear()
+                time.sleep(1)
+            except Exception as err:
+                logger.error("process_async_bind_tips err={}".format(err))
 
 
     def bind_tip_sync(btn, tip, x=0, y=0, x_offset=0, y_offset=0, auto_position=False):
@@ -2959,16 +2962,26 @@ if __name__ == '__main__':
                 x_offset = btn.winfo_width()
             if y_offset == 0:
                 y_offset = -btn.winfo_height()
-        btn.bind("<Enter>", show_equip_name_tip(tip, x, y, x_offset, y_offset))
-        btn.bind("<Leave>", hide_equip_name_tip)
+        btn.bind("<Enter>", show_equip_name_tip(btn, tip, x, y, x_offset, y_offset))
+        btn.bind("<Leave>", hide_equip_name_tip(btn))
 
 
     def unbind_tip(btn):
         btn.unbind("<Enter>")
         btn.unbind("<Leave>")
 
+    def get_canvas_tips(btn):
+        root_window = btn.winfo_toplevel()
+        if root_window not in toplevel_2_canvas_tips_dict:
+            canvas_tips = Canvas(root_window, width=78, height=20, bd=0, bg=dark_main)
+            canvas_tips.create_image(0, 0, image=tips_image, anchor='nw')
+            canvas_tips.place(x=-200, y=-200)
+            tkinter.Misc.lift(canvas_tips)
+            toplevel_2_canvas_tips_dict[root_window] = canvas_tips
 
-    def show_equip_name_tip(tip, x, y, x_offset, y_offset):
+        return toplevel_2_canvas_tips_dict[root_window]
+
+    def show_equip_name_tip(btn, tip, x, y, x_offset, y_offset):
         def _show_equip_name_tip(event):
             if not cfg.ui.show_equip_tips.enable:
                 return
@@ -2979,20 +2992,27 @@ if __name__ == '__main__':
             for line in lines:
                 width = max(width, 15 * len(line))
 
+            canvas_tips = get_canvas_tips(btn)
             canvas_tips.config(width=width, height=height)
             canvas_tips.create_text(width / 2, height / 2, text=tip, tags=('mouse_overlap'), font=guide_font, fill='white')
             _x = x + x_offset + 5
             _y = y + y_offset
-            if _x + width >= cfg.ui.layout.window_width:
+            if _x + width >= btn.winfo_toplevel().winfo_width():
                 _x = x - width - 5
+            if _y + height <= 0:
+                _y = y
             canvas_tips.place(x=_x, y=_y)
 
         return _show_equip_name_tip
 
 
-    def hide_equip_name_tip(event):
-        canvas_tips.delete("mouse_overlap")
-        canvas_tips.place(x=-200, y=-200)
+    def hide_equip_name_tip(btn):
+        def _hide_equip_name_tip(event):
+            canvas_tips = get_canvas_tips(btn)
+            canvas_tips.delete("mouse_overlap")
+            canvas_tips.place(x=-200, y=-200)
+
+        return _hide_equip_name_tip
 
 
     font_cfg = cfg.ui.fonts
@@ -3390,8 +3410,6 @@ if __name__ == "__main__":
         workers.append(p)
 
     logger.info("已启动{}个工作进程".format(max_thread))
-
-    tkinter.Misc.lift(canvas_tips)
 
     # 启动主进程的一些后台线程
     update_thread()
