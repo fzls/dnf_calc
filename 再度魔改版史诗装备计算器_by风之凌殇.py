@@ -3312,7 +3312,7 @@ if __name__ == '__main__':
                     x = block_info.topleft_x
                     y = block_info.topleft_y + block_info.set_equip_icon_height * (set_code - block_info.set_code_start)
 
-                    set_btn = tkinter.Button(self, bg=dark_main, borderwidth=0, activebackground=dark_main, image=image_list_set2[set_index],
+                    set_btn = tkinter.Button(master, bg=dark_main, borderwidth=0, activebackground=dark_main, image=image_list_set2[set_index],
                                              command=lambda set_index=set_index: click_set(set_index))
                     set_btn.place(x=x, y=y)
 
@@ -3332,12 +3332,12 @@ if __name__ == '__main__':
                             _image_list = image_list
                         else:
                             _image_list = image_list2
-                        select_btn = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main, image=_image_list[equip_index],
+                        select_btn = tkinter.Button(master, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main, image=_image_list[equip_index],
                                                     command=lambda equip_index=equip_index: click_equipment(equip_index))
                         select_btn.place(x=x, y=y)
 
                         if god == 1 and select_btn not in gif_buttons:
-                                gif_buttons.append(select_btn)
+                            gif_buttons.append(select_btn)
 
                         # 设置tip
                         bind_tip(select_btn, equip_index_to_realname[equip_index], x, y, 28, -28)
@@ -3381,30 +3381,30 @@ if __name__ == '__main__':
                 check_set(block_info.set_index)
 
             elif block_info.type == EquipBlockType_Nested:
-                nested_btn = tkinter.Button(self, bg=dark_main, borderwidth=0, activebackground=dark_main, image=image_list_set2[block_info.set_index],
-                                            command=lambda master=master, block_info=block_info: open_nested_block(master, block_info))
+                nested_btn = tkinter.Button(master, bg=dark_main, borderwidth=0, activebackground=dark_main, image=image_list_set2[block_info.set_index],
+                                            command=lambda block_info=block_info: open_nested_block(block_info))
                 nested_btn.place(x=block_info.topleft_x, y=block_info.topleft_y)
                 exec("""global nested_btn_{0}; nested_btn_{0} = nested_btn""".format(block_info.set_index))
-                open_nested_block(master, block_info)
+                open_nested_block(block_info)
             else:
                 notify_error(logger, "ui布局配置有误，不支持类型为{}的block".format(block_info.type))
                 sys.exit(0)
 
 
-    def open_nested_block(master, block_info):
+    def open_nested_block(block_info):
         """
         创建一个新的窗口，并绘制对应装备
         :type block_info: EquipBlockInfoConfig
         """
         try:
             global old_nested_window
-            exec("""global old_nested_window;old_nested_window = nested_window_{0};""".format(block_info.set_index))
+            exec("""global old_nested_window;old_nested_window = nested_window_{0};""".format(block_info.name))
             old_nested_window.destroy()
         except Exception as error:
             pass
 
         nested_block = block_info.nested_block
-        nested_window = tkinter.Toplevel(master)
+        nested_window = tkinter.Toplevel(self)
         nested_window.title(nested_block.title)
         nested_window.geometry("{}x{}+{}+{}".format(nested_block.window_width, nested_block.window_height, nested_block.window_x_offset, nested_block.window_y_offset))
         nested_window.resizable(nested_block.window_width_resizable, nested_block.window_height_resizable)
@@ -3412,7 +3412,7 @@ if __name__ == '__main__':
         nested_window.focus_force()
         nested_window.configure(bg=dark_main)
 
-        exec("""global nested_window_{0};nested_window_{0} = nested_window;""".format(block_info.set_index))
+        exec("""global nested_window_{0};nested_window_{0} = nested_window;""".format(block_info.name))
 
         create_ui_layout(nested_window, nested_block)
 
