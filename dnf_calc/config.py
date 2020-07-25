@@ -117,6 +117,86 @@ class SetEquipmentsOrderConfig(ConfigInterface):
         self.spare_parts_right = "[(33, 1), (15, 0), (23, 0), (33, 0)]"
 
 
+class LayoutConfig(ConfigInterface):
+    def __init__(self):
+        # 界面标题
+        self.title = "史诗搭配计算器火力全开Plus版-ver$version$ 魔改by风之凌殇 原创by黎明工作室（韩服）dawnclass16"
+        # 界面宽度
+        self.window_width = 710
+        # 界面高度
+        self.window_height = 720
+        # 界面左上角与主屏幕左上角的偏移x
+        self.window_x_offset = 0
+        # 界面左上角与主屏幕左上角的偏移y
+        self.window_y_offset = 0
+        # 界面是否可以拉伸
+        self.window_width_resizable = False
+        self.window_height_resizable = False
+
+        # 装备区域相关配置
+        self.equip_block_infos = []  # type: List[EquipBlockInfoConfig]
+
+    def auto_update_config(self, raw_config: dict):
+        super().auto_update_config(raw_config)
+        if "equip_block_infos" in raw_config:
+            self.equip_block_infos = []  # type: List[EquipBlockInfoConfig]
+            for cfg in raw_config["equip_block_infos"]:
+                equip_block_info_config = EquipBlockInfoConfig()
+                equip_block_info_config.auto_update_config(cfg)
+                self.equip_block_infos.append(equip_block_info_config)
+
+
+EquipBlockType_Set = "set_block"  # 套装区域
+EquipBlockType_Single = "single_block"  # 散件区域
+EquipBlockType_Nested = "nested_block"  # 嵌套区域
+
+
+class EquipBlockInfoConfig(ConfigInterface):
+    def __init__(self):
+        # 区域名称，仅用来方便理解
+        self.name = "防具五件套"
+        # 装备区域类型，目前支持三类，1. set_block 套装区域 2. single_block 散件区域 3. nested_block 嵌套区域
+        self.type = EquipBlockType_Set
+
+        # --------------通用配置--------------
+        # 左上角的坐标
+        self.topleft_x = 0
+        self.topleft_y = 0
+        # 套装图标的宽度，为0时表示无套装图标
+        self.set_icon_width = 70
+        # 套装及装备图标的高度
+        self.set_equip_icon_height = 30
+
+        # --------------套装区域相关配置--------------
+        # 装备图标的宽度
+        self.equip_icon_width = 31
+        # 适用套装范围（两侧均包含）
+        self.set_code_start = 1
+        self.set_code_end = 15
+        # 装备顺序信息
+        self.slot_orders = "[(11, 1), (11, 0), (13, 0), (12, 0), (15, 0), (14, 0)]"
+
+        # --------------散件区域相关配置--------------
+        # 装备图标的宽度
+        self.equip_icon_width = 31
+        # 套装图标的编码
+        self.set_index = "know_name"
+        # 装备列表
+        self.equips = "[13390150, 22390240, 23390450, 33390750, 21400340, 31400540, 32410650]"
+
+        # --------------嵌套区域相关配置--------------
+        # 套装图标的编码
+        self.set_index = "136" # 示例为136-传说
+        # 嵌套ui界面相关配置
+        self.nested_block = None # type: UIConfig
+
+    def auto_update_config(self, raw_config: dict):
+        super().auto_update_config(raw_config)
+        self.slot_orders = eval(self.slot_orders)
+        self.equips = eval(self.equips)
+
+
+
 class ShowEquipTipsConfig(ConfigInterface):
     def __init__(self):
         # 是否启用
@@ -135,8 +215,11 @@ class UIConfig(ConfigInterface):
         self.fonts = FontsConfig()
         # 背景色配置
         self.background = BackgroundConfig()
+        # re: 干掉下面这个顺序，改用更通用的layout来实现
         # ui装备套装内顺序配置
         self.set_equipments_order = SetEquipmentsOrderConfig()
+        # ui布局配置
+        self.layout = LayoutConfig()
         # 是否显示装备提示
         self.show_equip_tips = ShowEquipTipsConfig()
         # 点亮全部

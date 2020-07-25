@@ -2631,7 +2631,7 @@ def click_equipment(code):
     if len(str(code)) == 5:
         check_set(int('1' + get_set_name(str(code))))
     # 暂时处理智慧产物
-    if len(str(code)) == 8:
+    elif len(str(code)) == 8:
         check_set(666)
 
 
@@ -2656,22 +2656,29 @@ def check_equipment():
 
 
 def click_set(code):
+    code = int(code)
+
     # 暂时特殊处理智慧的产物
     if code == 666:
+        global equip_list
+        exec("""global equip_list; equip_list = single_equip_list_{0}""".format(code))
         set_checked = 0
-        for know_equip_index in know_item_list:
+        for know_equip_index in equip_list:
             if select_item['tg{0}'.format(know_equip_index)] == 1:
                 set_checked += 1
-        if set_checked == 7:
-            for know_equip_index in know_item_list:
+        if set_checked == len(equip_list):
+            for know_equip_index in equip_list:
                 exec("""select_{0}["image"] = image_list2['{0}']""".format(know_equip_index))
                 select_item['tg{0}'.format(know_equip_index)] = 0
-            set_know["image"] = know_image_off
+
+            exec("""set{}["image"] = image_list_set2[str(code)]""".format(code))
+
         else:
-            for know_equip_index in know_item_list:
+            for know_equip_index in equip_list:
                 exec("""select_{0}["image"] = image_list['{0}']""".format(know_equip_index))
                 select_item['tg{0}'.format(know_equip_index)] = 1
-            set_know["image"] = know_image_on
+
+            exec("""set{}["image"] = image_list_set[str(code)]""".format(code))
         return
 
     code_add = code - 100
@@ -2765,14 +2772,16 @@ def click_set(code):
 def check_set(code):
     # 暂时特殊处理智慧的产物
     if code == 666:
+        global equip_list
+        exec("""global equip_list; equip_list = single_equip_list_{0}""".format(code))
         set_checked = 0
-        for know_equip_index in know_item_list:
+        for know_equip_index in equip_list:
             if select_item['tg{0}'.format(know_equip_index)] == 1:
                 set_checked += 1
-        if set_checked == 7:
-            set_know["image"] = know_image_on
+        if set_checked == len(equip_list):
+            exec("""set{}["image"] = image_list_set[str(code)]""".format(code))
         else:
-            set_know["image"] = know_image_off
+            exec("""set{}["image"] = image_list_set2[str(code)]""".format(code))
         return
 
     code_str = str(code)[1:3]
@@ -2948,20 +2957,25 @@ def open_setting_tool_sync():
     subprocess.call("dnf_calc_setting_tool_py/setting_tool.exe", cwd="./dnf_calc_setting_tool_py")
 
 
+def format_title(title: str):
+    return title.replace("$version$", now_version)
+
+
 if __name__ == '__main__':
     ###########################################################
     #                        tkinter初始化                    #
     ###########################################################
     cfg = config()
     bg_cfg = cfg.ui.background
+    layout_cfg = cfg.ui.layout
     dark_main = from_rgb(bg_cfg.main)
     dark_sub = from_rgb(bg_cfg.sub)
     dark_blue = from_rgb(bg_cfg.blue)
 
     self = tkinter.Tk()
-    self.title("史诗搭配计算器火力全开Plus版-ver" + now_version + " 魔改by风之凌殇 原创by黎明工作室（韩服）dawnclass16")
-    self.geometry("{}x{}+{}+{}".format(main_window_width, main_window_height, main_window_x_offset, main_window_y_offset))
-    self.resizable(cfg.main_window_resizable, cfg.main_window_resizable)
+    self.title(format_title(layout_cfg.title))
+    self.geometry("{}x{}+{}+{}".format(layout_cfg.window_width, layout_cfg.window_height, layout_cfg.window_x_offset, layout_cfg.window_y_offset))
+    self.resizable(layout_cfg.window_width_resizable, layout_cfg.window_height_resizable)
     self.configure(bg=dark_main)
     self.iconbitmap(r'ext_img/icon.ico')
 
@@ -3064,8 +3078,7 @@ if __name__ == '__main__':
 
     # 读取装备图片
     # 通过遍历文件夹来实现加载所需的图片，而不是穷举所有可能，最后导致启动时要卡顿两秒，根据测试，目前读取图片共使用0:00:01.780298秒, 总共尝试加载6749个， 有效的加载为351个
-    image_directory = "image"
-    for filename in os.listdir(image_directory):
+    for filename in os.listdir("image"):
         # 目前只处理图片目录中的gif和png文件
         is_image = filename.endswith(".gif") or filename.endswith(".png")
         if not is_image:
@@ -3092,9 +3105,25 @@ if __name__ == '__main__':
                 tkimage_name_2_filename[str(frame)] = filename
 
     # 读取套装图片
-    for set_code in range(1, 36):
-        image_list_set[str(100 + set_code)] = eval('PhotoImage(file="set_name/{}.png")'.format(set_code + 100))
-        image_list_set2[str(100 + set_code)] = eval('PhotoImage(file="set_name/{}f.png")'.format(set_code + 100))
+    for filename in os.listdir("set_name"):
+        # 目前只处理图片目录中的gif和png文件
+        is_image = filename.endswith(".png")
+        if not is_image:
+            continue
+
+        # 示例文件：22390240f.png
+        if filename.endswith("f.png"):
+            is_light = False
+            index = filename[:-5]
+        else:
+            is_light = True
+            index = filename[:-4]
+        file_path = "set_name/{}".format(filename)
+        newImage = PhotoImage(file=file_path, name=filename)  #
+        if is_light:
+            image_list_set[index] = newImage
+        else:
+            image_list_set2[index] = newImage
 
     bg_img = PhotoImage(file="ext_img/bg_img.png")
     bg_wall = tkinter.Label(self, image=bg_img)
@@ -3248,122 +3277,86 @@ if __name__ == '__main__':
     showcon2 = display_realtime_counting_info_label.configure
 
 
-    # 套装名称图标坐标
-    def get_x_y_for_set(set_code):
-        if set_code in range(1, 15 + 1):
-            # 防具五件套
-            return 29, 100 + 30 * (set_code - 1)
-        elif set_code in range(16, 19 + 1):
-            # 首饰
-            return 320 - 33, 100 + 30 * (set_code - 16)
-        elif set_code in range(20, 23 + 1):
-            # 特殊装备
-            return 500 - 17, 100 + 30 * (set_code - 20)
-        elif set_code in range(24, 27 + 1):
-            # 散件（中）
-            return 225, 570 + 30 * (set_code - 24)
-        elif set_code in range(28, 31 + 1):
-            # 散件（左）
-            return 29, 570 + 30 * (set_code - 28)
-        elif set_code in range(32, 35 + 1):
-            # 散件（右）
-            return 421, 570 + 30 * (set_code - 32)
-        else:
-            raise Exception()
+    def create_ui_layout(master, layout_cfg):
+        """
+        根据布局配置创建ui配置
+        :type master: Tk
+        :type layout_cfg: LayoutConfig
+        """
+        for block_info in layout_cfg.equip_block_infos:
+            if block_info.type == EquipBlockType_Set:
+                for set_code in range(block_info.set_code_start, block_info.set_code_end + 1):
+                    # 设置套装图标
+                    set_index = '1{0:02}'.format(set_code)
+                    x = block_info.topleft_x
+                    y = block_info.topleft_y + block_info.set_equip_icon_height * (set_code - block_info.set_code_start)
+
+                    set_btn = tkinter.Button(self, bg=dark_main, borderwidth=0, activebackground=dark_main, image=image_list_set2[set_index],
+                                             command=lambda set_index=set_index: click_set(set_index))
+                    set_btn.place(x=x, y=y)
+
+                    exec("""global set{0}; set{0} = set_btn;""".format(set_index))
+
+                    # 设置各个装备图标
+                    for idx, val in enumerate(block_info.slot_orders):
+                        slot, god = val
+                        equip_index = "{0:02}{1:02}{2:1}".format(slot, set_code, god)
+
+                        x = block_info.topleft_x + block_info.set_icon_width + block_info.equip_icon_width * idx
+
+                        select_item['tg{0}'.format(equip_index)] = 0
+                        select_btn = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main, image=image_list2[equip_index],
+                                                    command=lambda equip_index=equip_index: click_equipment(equip_index))
+                        select_btn.place(x=x, y=y)
+
+                        if god == 1:
+                            gif_buttons.append(select_btn)
+
+                        # 设置tip
+                        bind_tip(select_btn, equip_index_to_realname[equip_index], x, y, 28, -28)
+
+                        exec("""global select_{0}; select_{0} = select_btn""".format(equip_index))
+
+            elif block_info.type == EquipBlockType_Single:
+                exec("""global single_equip_list_{0}; single_equip_list_{0} = copy.deepcopy(block_info.equips);""".format(block_info.set_index))
+
+                if block_info.set_icon_width != 0:
+                    set_btn = tkinter.Button(master, bg=dark_main, borderwidth=0, activebackground=dark_main, image=image_list_set2[block_info.set_index],
+                                             command=lambda set_index=block_info.set_index: click_set(set_index))
+                    set_btn.place(x=block_info.topleft_x, y=block_info.topleft_y)
+
+                    exec("""global set{0}; set{0} = set_btn;""".format(block_info.set_index))
+
+                for idx, equip_index in enumerate(block_info.equips):
+                    equip_index = str(equip_index)
+                    x = block_info.topleft_x + block_info.set_icon_width + block_info.equip_icon_width * idx
+                    y = block_info.topleft_y
+
+                    # 创建按钮
+                    select_item['tg{0}'.format(equip_index)] = 0
+                    select_btn = tkinter.Button(master, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main, image=image_list2[equip_index],
+                                                command=lambda equip_index=equip_index: click_equipment(equip_index))
+                    select_btn.place(x=x, y=y)
+
+                    # 设置tip
+                    bind_tip(select_btn, equip_index_to_realname[equip_index], x, y, 28, -28)
+
+                    exec("""global select_{0}; select_{0} = select_btn""".format(equip_index))
+            elif block_info.type == EquipBlockType_Nested:
+                image = PhotoImage(file="set_name/{}.png".format(block_info.set_index))
+                nested_btn = tkinter.Button(self, bg=dark_main, borderwidth=0, activebackground=dark_main, image=image, command=lambda: open_nested_block(master, block_info))
+                nested_btn.place(x=block_info.topleft_x, y=block_info.topleft_y)
+                exec("""btn_{} = nested_btn""".format(block_info.set_index))
+            else:
+                notify_error(logger, "ui布局配置有误，不支持类型为{}的block".format(block_info.type))
+                sys.exit(0)
 
 
-    # 套装编码
-    # 1 大祭司 2 魔法师 3 舞姬 4 阴影 5 裁决者 6 龙血玄黄 7 沙漠 8 灸炎 9 擎天 10 地狱 11 铁匠 12 荆棘 13 不息 14 歧路 15 大自然
-    # 16 尘封术式 17 破晓 18 三角 19 权能
-    # 20 军神 21 灵宝 22 时间 23 能量
-    # 24 黑魔法 25 时空 26 呐喊 27 狂乱
-    # 28 深渊 29 圣者 30 命运 31 愤怒
-    # 32 求道者 33 次元 34 天命 35 悲剧
-    # 36 传说防具
-    # 37 普雷首饰
-    # 38 普雷特殊
-    for set_code in range(1, 35 + 1):
-        exec("""set1{0:02} = tkinter.Button(self, bg=dark_main, borderwidth=0, activebackground=dark_main, image=image_list_set2['1{0:02}'],command=lambda: click_set(1{0:02}))""".format(set_code))
-        x, y = get_x_y_for_set(set_code)
-        exec("""set1{0:02}.place(x={1}, y={2})""".format(set_code, x, y))
-
-    ##智慧产物
-    know_image_off = PhotoImage(file="set_name/know_namef.png")
-    know_image_on = PhotoImage(file="set_name/know_name.png")
-    set_know = tkinter.Button(self, bg=dark_main, borderwidth=0, activebackground=dark_main, image=know_image_off, command=lambda: click_set(666))
-    set_know.place(x=302, y=520)
-
-    know_item_list = [13390150, 22390240, 23390450, 33390750, 21400340, 31400540, 32410650]
-
-    for idx, know_equip_index in enumerate(know_item_list):
-        know_equip_index = str(know_equip_index)
-        exec("""select_item['tg{0}'] = 0""".format(know_equip_index))
-        exec("""select_{0} = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main, image=image_list2['{0}'], command=lambda: click_equipment({0}))""".format(know_equip_index))
-        x = 403 + 30 * idx
-        y = 520
-        exec("""select_{0}.place(x={1}, y={2})""".format(know_equip_index, x, y))
-
-        # 设置tip
-        exec("""bind_tip(select_{0}, "{1}", {2}, {3}, {4}, {5})""".format(know_equip_index, equip_index_to_realname[know_equip_index], x, y, 28, -28))
+    def open_nested_block(master, block_info):
+        pass
 
 
-    # 装备图标坐标
-    def get_x_y_for_equip_in_set_idx_pos(set_code, idx):
-        if set_code in range(1, 15 + 1):
-            # 防具五件套
-            return 100 + 31 * (idx), 100 + 30 * (set_code - 1)
-        elif set_code in range(16, 19 + 1):
-            # 首饰
-            return 370 - 12 + 31 * (idx), 100 + 30 * (set_code - 16)
-        elif set_code in range(20, 23 + 1):
-            # 特殊装备
-            return 554 + 31 * (idx), 100 + 30 * (set_code - 20)
-        elif set_code in range(24, 27 + 1):
-            # 散件（中）
-            return 296 + 31 * (idx), 570 + 30 * (set_code - 24)
-        elif set_code in range(28, 31 + 1):
-            # 散件（左）
-            return 100 + 31 * (idx), 570 + 30 * (set_code - 28)
-        elif set_code in range(32, 35 + 1):
-            # 散件（右）
-            return 492 + 31 * (idx), 570 + 30 * (set_code - 32)
-        else:
-            raise Exception()
-
-
-    ##装备
-    # 11 上衣  12 裤子   13 头肩 14 腰带 15 鞋子
-    # 21 手镯  22 项链   23 戒指
-    # 31 辅助装备 32 魔法石 33 耳环
-    order_cfg = cfg.ui.set_equipments_order
-    set_slots = [
-        (1, 15, eval(order_cfg.armor)),  # 防具五件套
-        (16, 19, eval(order_cfg.jewelry)),  # 首饰
-        (20, 23, eval(order_cfg.special_equipment)),  # 特殊装备
-        (24, 27, eval(order_cfg.spare_parts_mid)),  # 散件（中）
-        (28, 31, eval(order_cfg.spare_parts_left)),  # 散件（左）
-        (32, 35, eval(order_cfg.spare_parts_right)),  # 散件（右）
-    ]
-
-    for set_slot in set_slots:
-        set_code_start = set_slot[0]
-        set_code_end = set_slot[1]
-        set_slot_info = set_slot[2]
-        for set_code in range(set_code_start, set_code_end + 1):
-            for idx, val in enumerate(set_slot_info):
-                slot, god = val
-                equip_index = "{0:02}{1:02}{2:1}".format(slot, set_code, god)
-                x, y = get_x_y_for_equip_in_set_idx_pos(set_code, idx)
-
-                exec("""select_item['tg{0}'] = 0""".format(equip_index))
-                exec("""select_{0} = tkinter.Button(self, relief='flat', borderwidth=0, activebackground=dark_main, bg=dark_main, image=image_list2['{0}'], command=lambda: click_equipment({0}))""".format(equip_index))
-                exec("""select_{0}.place(x={1}, y={2})""".format(equip_index, x, y))
-
-                if god == 1:
-                    exec("""gif_buttons.append(select_{0})""".format(equip_index))
-
-                # 设置tip
-                exec("""bind_tip(select_{0}, "{1}", {2}, {3}, {4}, {5})""".format(equip_index, equip_index_to_realname[equip_index], x, y, 28, -28))
+    create_ui_layout(self, layout_cfg)
 
     donate_image = PhotoImage(file='ext_img/donate.png')
     donate_bt = tkinter.Button(self, image=donate_image, command=donate, borderwidth=0, bg=dark_main,
