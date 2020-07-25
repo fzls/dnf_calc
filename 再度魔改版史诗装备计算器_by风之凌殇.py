@@ -2567,23 +2567,13 @@ def click_equipment(code):
 
 
 def check_equipment():
-    know_list2 = ['13390150', '22390240', '23390450', '33390750', '21400340', '31400540', '32410650']
-    for equip_index in range(11010, 33352):
-        try:
-            if eval("select_item['tg{}']".format(equip_index)) == 0:
-                eval('select_{}'.format(equip_index))['image'] = image_list2[str(equip_index)]
-            elif eval("select_item['tg{}']".format(equip_index)) == 1:
-                eval('select_{}'.format(equip_index))['image'] = image_list[str(equip_index)]
-        except KeyError as error:
-            c = 1
-    for the_product_of_wisdom_equip_index in know_list2:
-        try:
-            if eval("select_item['tg{}']".format(the_product_of_wisdom_equip_index)) == 0:
-                eval('select_{}'.format(the_product_of_wisdom_equip_index))['image'] = image_list2[str(the_product_of_wisdom_equip_index)]
-            elif eval("select_item['tg{}']".format(the_product_of_wisdom_equip_index)) == 1:
-                eval('select_{}'.format(the_product_of_wisdom_equip_index))['image'] = image_list[str(the_product_of_wisdom_equip_index)]
-        except Exception as error:
-            c = 1
+    for equip_index, set_index in equip_index_2_set_index.items():
+        equip_btn_index = 'tg{}'.format(equip_index)
+        btn = eval('select_{}'.format(equip_index))
+        if select_item[equip_btn_index] == 1:
+            btn['image'] = image_list[equip_index]
+        else:
+            btn['image'] = image_list2[equip_index]
 
 
 def click_set(code):
