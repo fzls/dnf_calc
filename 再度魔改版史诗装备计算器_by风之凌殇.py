@@ -2437,6 +2437,7 @@ def update_thread():
     threading.Thread(target=load_checklist_on_start, daemon=True).start()
     threading.Thread(target=check_update_on_start, daemon=True).start()
     threading.Thread(target=gif_ticker, daemon=True).start()
+    threading.Thread(target=process_async_bind_tips, daemon=True).start()
 
 
 def reset_all_equips():
@@ -2892,7 +2893,7 @@ def on_weapon_change():
             if wep_select_img[i] not in gif_buttons:
                 gif_buttons.append(wep_select_img[i])
 
-            bind_tip(wep_select_img[i], weapon_name, 32 + 31 * i, 70, 28, -28)
+            bind_tip(wep_select_img[i], weapon_name, 32 + 31 * i, 70, 28, -28, sync=True)
         except:
             pass
 
@@ -2972,9 +2973,24 @@ if __name__ == '__main__':
     canvas_tips = Canvas(self, width=78, height=20, bd=0, bg=dark_main)
     canvas_tips.create_image(0, 0, image=tips_image, anchor='nw')
     canvas_tips.place(x=-200, y=-200)
+    async_bind_tips = []
 
 
-    def bind_tip(btn, tip, x=0, y=0, x_offset=0, y_offset=0, auto_position=False):
+    def bind_tip(btn, tip, x=0, y=0, x_offset=0, y_offset=0, auto_position=False, sync=False):
+        if sync:
+            bind_tip_sync(btn, tip, x, y, x_offset, y_offset, auto_position)
+        else:
+            async_bind_tips.append((btn, tip, x, y, x_offset, y_offset, auto_position))
+
+
+    def process_async_bind_tips():
+        for async_bind_tip in async_bind_tips:
+            bind_tip_sync(*async_bind_tip)
+
+        async_bind_tips.clear()
+
+
+    def bind_tip_sync(btn, tip, x=0, y=0, x_offset=0, y_offset=0, auto_position=False):
         if auto_position:
             btn.master.update()
             if x == 0:
@@ -2985,7 +3001,6 @@ if __name__ == '__main__':
                 x_offset = btn.winfo_width()
             if y_offset == 0:
                 y_offset = -btn.winfo_height()
-
         btn.bind("<Enter>", show_equip_name_tip(tip, x, y, x_offset, y_offset))
         btn.bind("<Leave>", hide_equip_name_tip)
 
@@ -3155,7 +3170,7 @@ if __name__ == '__main__':
 
     calc_img = PhotoImage(file="ext_img/calc.png")
     calc_btn = tkinter.Button(self, image=calc_img, borderwidth=0, activebackground=dark_main, command=calc_thread,
-                                bg=dark_main)
+                              bg=dark_main)
     calc_btn.place(x=390 - 35, y=7)
     stop_img = PhotoImage(file="ext_img/stop.png")
     tkinter.Button(self, image=stop_img, borderwidth=0, activebackground=dark_main, command=stop_calc, bg=dark_main).place(
