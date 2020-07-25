@@ -856,9 +856,11 @@ def get_transfer_slots_equips(items, sheet):
             continue
 
         # 读取各个装备的点亮情况
-        for i in range(1, 264):
+        for i in range(1, max_save_equips + 1):
             has_equip = sheet.cell(i, 2 + account_index).value == 1
             equip_index = sheet.cell(i, 1).value
+            if equip_index is None:
+                continue
             if len(equip_index) == 6:
                 # 六位为武器，过滤掉武器
                 continue
@@ -1962,8 +1964,10 @@ def load_checklist_noconfirm(account_index):
 
         # 读取各个装备的点亮情况
         # 1-263行为各个装备在各个存档下的点亮情况
-        for row in range(1, 264):
+        for row in range(1, max_save_equips + 1):
             equip_index = load_cell(row, 1).value
+            if equip_index is None:
+                continue
             if load_cell(row, account_column).value == 1:
                 try:
                     select_item['tg{}'.format(equip_index)] = 1
@@ -2170,8 +2174,11 @@ def save_checklist():
             # 保存装备按钮的点亮情况
             # 1-263行为各个装备在各个存档下的点亮情况
             opt_save = {}  # 装备按钮的index => 对应的行号（1-263）
-            for i in range(1, 264):
-                opt_save[save_cell(i, 1).value] = i
+            for i in range(1, max_save_equips + 1):
+                equip_index = save_cell(i, 1).value
+                if equip_index is None:
+                    continue
+                opt_save[equip_index] = i
 
             for code in opt_save.keys():
                 try:
@@ -2462,6 +2469,7 @@ if __name__ == '__main__':
     name_one = {}
     equip_index_to_realname = {}
     equip_index_to_row_index = {}
+    need_save_equip_indexes = set([])
     for row in db_one.rows:
         row_value = [cell.value for cell in row]
         if len(row_value) == 0 or row_value[0] is None:
@@ -2469,9 +2477,12 @@ if __name__ == '__main__':
 
         index = row_value[0]
         realname = row_value[1]
+        need_save = row_value[-1] == 1
 
         name_one[index] = row_value
         equip_index_to_realname[index] = realname
+        if need_save:
+            need_save_equip_indexes.add(index)
         if len(row) != 0:
             try:
                 equip_index_to_row_index[index] = row[0].row
@@ -2507,7 +2518,7 @@ if __name__ == '__main__':
 
     load_excel1.close()
 
-    load_preset0 = load_workbook("preset.xlsx", read_only=True, data_only=True)
+    load_preset0 = load_workbook("preset.xlsx", data_only=True)
     db_custom = load_preset0["custom"]
 
     save_name_list = []
@@ -2515,6 +2526,36 @@ if __name__ == '__main__':
         save_name = db_custom.cell(save_index + 1, 5).value
         save_name_list.append(save_name or "存档{}".format(save_index + 1))
 
+    changed = False
+
+    # 检查是否有新增的存盘项
+    sheet_one = load_preset0["one"]
+    current_save_equips = set([])
+    for i in range(1, max_save_equips + 1):
+        equip_index = sheet_one.cell(i, 1).value
+        if equip_index is None:
+            continue
+        if len(equip_index) == 6:
+            # 六位为武器，武器通过其他方式存储，空出位置给其他装备
+            sheet_one.cell(i, 1).value = None
+            changed = True
+            continue
+        current_save_equips.add(equip_index)
+
+    add_save_set = need_save_equip_indexes.difference(current_save_equips)
+    if len(add_save_set) != 0:
+        for i in range(1, max_save_equips + 1):
+            equip_index = sheet_one.cell(i, 1).value
+            if equip_index is not None:
+                continue
+            add_save = add_save_set.pop()
+            sheet_one.cell(i, 1).value = add_save
+            changed = True
+            if len(add_save_set) == 0:
+                break
+
+    if changed:
+        load_preset0.save("preset.xlsx")
     load_preset0.close()
 
 ###########################################################

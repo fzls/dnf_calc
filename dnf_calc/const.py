@@ -37,6 +37,8 @@ slot_index_to_realname = {
     "33": "耳环",
 }
 
+max_save_equips = 300
+
 # 旧版本自定义存档的列定义
 g_old_col_custom_save_key = 14  # 旧版本中，存档项名所在的列
 g_old_col_custom_save_value_begin = 15  # 旧版本中，各个存档的该存档项所在的列的初始列，加上存档index（0-99）后得到其所在列
