@@ -2419,18 +2419,14 @@ def reset():
     wep_combopicker.set(get_job_allowed_weapons(jobup_select.get())[:1])
     transfer_equip_combopicker.set(None)
     can_transfer_nums_select.set(txt_can_transfer_nums[0])
-    logger.info("reset")
 
 
 def check_all():
     reset_all_equips()
 
     # 点亮各个套装
-    for set_code in range(101, 135 + 1):
+    for set_code in set_index_2_equip_indexes:
         click_set(set_code)
-
-    # 点亮各个智慧产物
-    click_set(666)
 
 
 ###########################################################
