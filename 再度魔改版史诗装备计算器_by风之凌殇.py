@@ -677,13 +677,13 @@ def get_equips():
                         equip_btn_index = 'tg{0}'.format(equip_index)
 
                         if select_item[equip_btn_index] == 1:
-                            ls = eval("list{}".format(slot), local_vals) # type: list
+                            ls = eval("list{}".format(slot), local_vals)  # type: list
                             ls.append(equip_index)
                             list_setcode.append(str(set_code))
                             if god == 1:
                                 set_has_god[str(set_code)] = True
                         elif can_convert_from_baibianguai(equip_index):
-                            ls = eval("listns{}".format(slot), local_vals) # type: list
+                            ls = eval("listns{}".format(slot), local_vals)  # type: list
                             ls.append(equip_index)
             elif block_info.type == EquipBlockType_Single:
                 for idx, equip_index in enumerate(block_info.equips):
@@ -717,55 +717,59 @@ def get_equips():
                 except ValueError as error:
                     c = 1
 
+    def append_if_not_in(ls, equip_index):
+        if equip_index not in ls:
+            ls.append(equip_index)
+
     if use_pulei_legend_by_default():
-        list11.append('11360')
-        list12.append('12360')
-        list13.append('13360')
-        list14.append('14360')
-        list15.append('15360')
+        append_if_not_in(list11,'11360')
+        append_if_not_in(list12,'12360')
+        append_if_not_in(list13,'13360')
+        append_if_not_in(list14,'14360')
+        append_if_not_in(list15,'15360')
 
-        list21.append('21370')
-        list22.append('22370')
-        list23.append('23370')
+        append_if_not_in(list21,'21370')
+        append_if_not_in(list22,'22370')
+        append_if_not_in(list23,'23370')
 
-        list31.append('31380')
-        list32.append('32380')
-        list33.append('33380')
+        append_if_not_in(list31,'31380')
+        append_if_not_in(list32,'32380')
+        append_if_not_in(list33,'33380')
     else:
         # 如果不默认使用普雷传说，则仅在对应槽位没有其他任何可选装备的时候才加入
         # 防具任意部位不存在可选装备时将所有传说防具加入备选池
         if len(list11) == 0 or len(list12) == 0 or len(list13) == 0 or len(list14) == 0 or len(list15) == 0:
-            list11.append('11360')
-            list12.append('12360')
-            list13.append('13360')
-            list14.append('14360')
-            list15.append('15360')
+            append_if_not_in(list11,'11360')
+            append_if_not_in(list12,'12360')
+            append_if_not_in(list13,'13360')
+            append_if_not_in(list14,'14360')
+            append_if_not_in(list15,'15360')
 
         # 如果首饰至少两个部位不存在可选装备，则将所有普雷首饰加入备选池
         if len(list21) == 0 and len(list22) == 0 or len(list22) == 0 and len(list23) == 0 or len(list23) == 0 and len(list21) == 0:
-            list21.append('21370')
-            list22.append('22370')
-            list23.append('23370')
+            append_if_not_in(list21,'21370')
+            append_if_not_in(list22,'22370')
+            append_if_not_in(list23,'23370')
 
         # 如果特殊装备至少两个部位不存在可选装备，则将所有普雷特殊装备加入备选池
         if len(list31) == 0 and len(list32) == 0 or len(list32) == 0 and len(list33) == 0 or len(list33) == 0 and len(list31) == 0:
-            list31.append('31380')
-            list32.append('32380')
-            list33.append('33380')
+            append_if_not_in(list31,'31380')
+            append_if_not_in(list32,'32380')
+            append_if_not_in(list33,'33380')
 
         # 若首饰特殊某个部位不存在可选装备，则将对应槽位的普雷装备加入备选池
         if len(list21) == 0:
-            list21.append('21370')
+            append_if_not_in(list21,'21370')
         if len(list22) == 0:
-            list22.append('22370')
+            append_if_not_in(list22,'22370')
         if len(list23) == 0:
-            list23.append('23370')
+            append_if_not_in(list23,'23370')
         if len(list31) == 0:
-            list31.append('31380')
+            append_if_not_in(list31,'31380')
         if len(list32) == 0:
-            list32.append('32380')
+            append_if_not_in(list32,'32380')
         if len(list33) == 0:
-            list33.append('33380')
+            append_if_not_in(list33,'33380')
 
     # 所有已选装备
     items = [list11, list12, list13, list14, list15, list21, list22, list23, list31, list32, list33]
@@ -2367,6 +2371,7 @@ def update_thread():
     threading.Thread(target=gif_ticker, daemon=True).start()
     threading.Thread(target=process_async_bind_tips, daemon=True).start()
 
+
 def reset_equips(layout_cfg):
     """
     :type layout_cfg: LayoutConfig
@@ -2389,6 +2394,7 @@ def reset_equips(layout_cfg):
         else:
             notify_error(logger, "ui布局配置有误，不支持类型为{}的block".format(block_info.type))
             sys.exit(0)
+
 
 def reset_all_equips():
     reset_equips(layout_cfg)
@@ -2931,6 +2937,7 @@ if __name__ == '__main__':
     async_bind_tips = []
     toplevel_2_canvas_tips_dict = {}
 
+
     def bind_tip(btn, tip, x=0, y=0, x_offset=0, y_offset=0, auto_position=False, sync=False):
         if sync:
             bind_tip_sync(btn, tip, x, y, x_offset, y_offset, auto_position)
@@ -2970,6 +2977,7 @@ if __name__ == '__main__':
         btn.unbind("<Enter>")
         btn.unbind("<Leave>")
 
+
     def get_canvas_tips(btn):
         root_window = btn.winfo_toplevel()
         if root_window not in toplevel_2_canvas_tips_dict:
@@ -2980,6 +2988,7 @@ if __name__ == '__main__':
             toplevel_2_canvas_tips_dict[root_window] = canvas_tips
 
         return toplevel_2_canvas_tips_dict[root_window]
+
 
     def show_equip_name_tip(btn, tip, x, y, x_offset, y_offset):
         def _show_equip_name_tip(event):
