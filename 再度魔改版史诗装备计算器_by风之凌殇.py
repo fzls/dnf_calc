@@ -722,54 +722,54 @@ def get_equips():
             ls.append(equip_index)
 
     if use_pulei_legend_by_default():
-        append_if_not_in(list11,'11360')
-        append_if_not_in(list12,'12360')
-        append_if_not_in(list13,'13360')
-        append_if_not_in(list14,'14360')
-        append_if_not_in(list15,'15360')
+        append_if_not_in(list11, '11360')
+        append_if_not_in(list12, '12360')
+        append_if_not_in(list13, '13360')
+        append_if_not_in(list14, '14360')
+        append_if_not_in(list15, '15360')
 
-        append_if_not_in(list21,'21370')
-        append_if_not_in(list22,'22370')
-        append_if_not_in(list23,'23370')
+        append_if_not_in(list21, '21370')
+        append_if_not_in(list22, '22370')
+        append_if_not_in(list23, '23370')
 
-        append_if_not_in(list31,'31380')
-        append_if_not_in(list32,'32380')
-        append_if_not_in(list33,'33380')
+        append_if_not_in(list31, '31380')
+        append_if_not_in(list32, '32380')
+        append_if_not_in(list33, '33380')
     else:
         # 如果不默认使用普雷传说，则仅在对应槽位没有其他任何可选装备的时候才加入
         # 防具任意部位不存在可选装备时将所有传说防具加入备选池
         if len(list11) == 0 or len(list12) == 0 or len(list13) == 0 or len(list14) == 0 or len(list15) == 0:
-            append_if_not_in(list11,'11360')
-            append_if_not_in(list12,'12360')
-            append_if_not_in(list13,'13360')
-            append_if_not_in(list14,'14360')
-            append_if_not_in(list15,'15360')
+            append_if_not_in(list11, '11360')
+            append_if_not_in(list12, '12360')
+            append_if_not_in(list13, '13360')
+            append_if_not_in(list14, '14360')
+            append_if_not_in(list15, '15360')
 
         # 如果首饰至少两个部位不存在可选装备，则将所有普雷首饰加入备选池
         if len(list21) == 0 and len(list22) == 0 or len(list22) == 0 and len(list23) == 0 or len(list23) == 0 and len(list21) == 0:
-            append_if_not_in(list21,'21370')
-            append_if_not_in(list22,'22370')
-            append_if_not_in(list23,'23370')
+            append_if_not_in(list21, '21370')
+            append_if_not_in(list22, '22370')
+            append_if_not_in(list23, '23370')
 
         # 如果特殊装备至少两个部位不存在可选装备，则将所有普雷特殊装备加入备选池
         if len(list31) == 0 and len(list32) == 0 or len(list32) == 0 and len(list33) == 0 or len(list33) == 0 and len(list31) == 0:
-            append_if_not_in(list31,'31380')
-            append_if_not_in(list32,'32380')
-            append_if_not_in(list33,'33380')
+            append_if_not_in(list31, '31380')
+            append_if_not_in(list32, '32380')
+            append_if_not_in(list33, '33380')
 
         # 若首饰特殊某个部位不存在可选装备，则将对应槽位的普雷装备加入备选池
         if len(list21) == 0:
-            append_if_not_in(list21,'21370')
+            append_if_not_in(list21, '21370')
         if len(list22) == 0:
-            append_if_not_in(list22,'22370')
+            append_if_not_in(list22, '22370')
         if len(list23) == 0:
-            append_if_not_in(list23,'23370')
+            append_if_not_in(list23, '23370')
         if len(list31) == 0:
-            append_if_not_in(list31,'31380')
+            append_if_not_in(list31, '31380')
         if len(list32) == 0:
-            append_if_not_in(list32,'32380')
+            append_if_not_in(list32, '32380')
         if len(list33) == 0:
-            append_if_not_in(list33,'33380')
+            append_if_not_in(list33, '33380')
 
     # 所有已选装备
     items = [list11, list12, list13, list14, list15, list21, list22, list23, list31, list32, list33]
@@ -2551,21 +2551,19 @@ def guide_speed():
 
 
 def click_equipment(code):
+    code = str(code)
     equip_btn_index = 'tg{}'.format(code)
     btn = eval('select_{}'.format(code))
 
     if select_item[equip_btn_index] == 0:
-        btn['image'] = image_list[str(code)]
+        btn['image'] = image_list[code]
         select_item[equip_btn_index] = 1
     elif select_item[equip_btn_index] == 1:
-        btn['image'] = image_list2[str(code)]
+        btn['image'] = image_list2[code]
         select_item[equip_btn_index] = 0
 
-    if len(str(code)) == 5:
-        check_set(int('1' + get_set_name(str(code))))
-    # 暂时处理智慧产物
-    elif len(str(code)) == 8:
-        check_set(666)
+    if code in equip_index_2_set_index:
+        check_set(equip_index_2_set_index[code])
 
 
 def check_equipment():
@@ -3253,6 +3251,8 @@ if __name__ == '__main__':
     display_realtime_counting_info_label.place(x=430, y=480)
     showcon2 = display_realtime_counting_info_label.configure
 
+    equip_index_2_set_index = {}
+
 
     def create_ui_layout(master, layout_cfg):
         """
@@ -3300,6 +3300,8 @@ if __name__ == '__main__':
 
                         exec("""global select_{0}; select_{0} = select_btn""".format(equip_index))
 
+                        equip_index_2_set_index[equip_index] = set_index
+
                     check_set(set_index)
 
             elif block_info.type == EquipBlockType_Single:
@@ -3333,6 +3335,8 @@ if __name__ == '__main__':
                     bind_tip(select_btn, equip_index_to_realname[equip_index], x, y, 28, -28)
 
                     exec("""global select_{0}; select_{0} = select_btn""".format(equip_index))
+
+                    equip_index_2_set_index[equip_index] = block_info.set_index
 
                 check_set(block_info.set_index)
 
