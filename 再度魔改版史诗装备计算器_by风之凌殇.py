@@ -2577,131 +2577,40 @@ def check_equipment():
 
 
 def click_set(code):
-    code = int(code)
-
-    # 暂时特殊处理智慧的产物
-    if code == 666:
-        global equip_list
-        try:
-            exec("""global equip_list; equip_list = single_equip_list_{0}""".format(code))
-        except:
-            return
-        set_checked = 0
-        for know_equip_index in equip_list:
-            if select_item['tg{0}'.format(know_equip_index)] == 1:
-                set_checked += 1
-        if set_checked == len(equip_list):
-            for know_equip_index in equip_list:
-                try:
-                    exec("""select_{0}["image"] = image_list2['{0}']""".format(know_equip_index))
-                except:
-                    pass
-                select_item['tg{0}'.format(know_equip_index)] = 0
-
-            try:
-                exec("""set{}["image"] = image_list_set2[str(code)]""".format(code))
-            except:
-                pass
-
-        else:
-            for know_equip_index in equip_list:
-                try:
-                    exec("""select_{0}["image"] = image_list['{0}']""".format(know_equip_index))
-                except:
-                    pass
-                select_item['tg{0}'.format(know_equip_index)] = 1
-            try:
-                exec("""set{}["image"] = image_list_set[str(code)]""".format(code))
-            except:
-                pass
+    code = str(code)
+    if code not in set_index_2_equip_indexes:
+        logger.error("无法找到套装{}相关的信息".format(code))
         return
 
-    code_add = code - 100
-    code_str = str(code)[1:3]
+    equips = set_index_2_equip_indexes[code]
+
+    # 统计套装内当前被选择的数目
     set_checked = 0
-    if code >= 116:  ##악세/특장/스까면
-        if 116 <= code <= 119:
-            for i in range(21, 24):  ## 악세부위에서
-                try:
-                    if select_item['tg' + str(i) + code_str + '0'] == 1:  ##채택된 숫자를 찾는다
-                        set_checked = set_checked + 1  ##그럼 변수에 +1을 더함
-                except KeyError as error:
-                    c = 1
-        elif 123 >= code >= 120:
-            for i in range(31, 34):  ## 특장부위에서
-                try:
-                    if select_item['tg' + str(i) + code_str + '0'] == 1:  ##채택된 숫자를 찾는다
-                        set_checked = set_checked + 1  ##그럼 변수에 +1을 더함
-                except KeyError as error:
-                    c = 1
-        elif 131 >= code >= 128:
-            for i in [11, 22, 31]:  ## 상목보부위에서
-                try:
-                    if select_item['tg' + str(i) + code_str + '0'] == 1:  ##채택된 숫자를 찾는다
-                        set_checked = set_checked + 1  ##그럼 변수에 +1을 더함
-                except KeyError as error:
-                    c = 1
-        elif 127 >= code >= 124:
-            for i in [12, 21, 32]:  ## 하팔법부위에서
-                try:
-                    if select_item['tg' + str(i) + code_str + '0'] == 1:  ##채택된 숫자를 찾는다
-                        set_checked = set_checked + 1  ##그럼 변수에 +1을 더함
-                except KeyError as error:
-                    c = 1
-        elif 135 >= code >= 132:
-            for i in [15, 23, 33]:  ## 신반귀부위에서
-                try:
-                    if select_item['tg' + str(i) + code_str + '0'] == 1:  ##채택된 숫자를 찾는다
-                        set_checked = set_checked + 1  ##그럼 변수에 +1을 더함
-                except KeyError as error:
-                    c = 1
-        if set_checked == 3:  ## 채택 숫자가 3이면
-            for i in range(11, 36):  ##모든 부위에서
-                try:
-                    eval('select_' + str(i) + code_str + '0')['image'] = image_list2[
-                        str(i) + code_str + '0']  ##이미지도 오프로 바꿈
-                    select_item['tg' + str(i) + code_str + '0'] = 0  ##모든 체크를 0으로 만듬
-                except KeyError as error:
-                    c = 1
-            eval('set' + str(code))['image'] = image_list_set2[str(code)]  ##세트이미지도 오프로 바꿈
-        else:  ## 채택 숫자가 3미만이면
-            for i in range(11, 36):  ##모든 부위에서
-                try:
-                    eval('select_' + str(i) + code_str + '0')['image'] = image_list[
-                        str(i) + code_str + '0']  ##이미지도 온으로 바꿈
-                    select_item['tg' + str(i) + code_str + '0'] = 1  ##모든 체크를 1으로 만듬
-                except KeyError as error:
-                    c = 1
-            eval('set' + str(code))['image'] = image_list_set[str(code)]  ##세트이미지도 온으로 바꿈
+    for equip_index in equips:
+        equip_btn_index = 'tg{}'.format(equip_index)
+        if select_item[equip_btn_index] == 1:
+            set_checked+=1
 
+    # 若未满，则全选，否则反之
+    check = set_checked != len(equips)
 
+    if check:
+        _image_list = image_list
+        _image_list_set = image_list_set
+        select_result = 1
     else:
-        for i in range(11, 16):  ## 방어구 부위에서
-            try:
-                if select_item['tg' + str(i) + code_str + '0'] == 1:  ##채택된 숫자를 찾는다
-                    set_checked = set_checked + 1  ##그럼 변수에 +1을 더함
-            except KeyError as error:
-                c = 1
+        _image_list = image_list2
+        _image_list_set = image_list_set2
+        select_result = 0
 
-        if set_checked == 5:  ## 채택 숫자가 5이면
-            for i in range(11, 16):  ## 방어구 부위에서
-                try:
-                    eval('select_' + str(i) + code_str + '0')['image'] = image_list2[
-                        str(i) + code_str + '0']  ##이미지도 오프로 바꿈
-                    select_item['tg' + str(i) + code_str + '0'] = 0  ##모든 체크를 0으로 만듬
-                except KeyError as error:
-                    c = 1
-            eval('set' + str(code))['image'] = image_list_set2[str(code)]  ##세트이미지도 오프로 바꿈
+    for equip_index in equips:
+        equip_btn_index = 'tg{}'.format(equip_index)
+        btn = eval('select_{}'.format(equip_index))
 
-        else:  ## 채택 숫자가 5미만이면
-            for i in range(11, 16):  ## 방어구 부위에서
-                try:
-                    eval('select_' + str(i) + code_str + '0')['image'] = image_list[
-                        str(i) + code_str + '0']  ##이미지도 온으로 바꿈
-                    select_item['tg' + str(i) + code_str + '0'] = 1  ##모든 체크를 1으로 만듬
-                except KeyError as error:
-                    c = 1
-            eval('set' + str(code))['image'] = image_list_set[str(code)]  ##세트이미지도 온으로 바꿈
+        btn["image"] = _image_list[equip_index]
+        select_item[equip_btn_index] = select_result
+    set_btn = eval('set{}'.format(code))
+    set_btn["image"] = _image_list_set[code]
 
 
 def check_set(code):
@@ -3242,7 +3151,7 @@ if __name__ == '__main__':
     showcon2 = display_realtime_counting_info_label.configure
 
     equip_index_2_set_index = {}
-
+    set_index_2_equip_indexes = {}
 
     def create_ui_layout(master, layout_cfg):
         """
@@ -3291,6 +3200,9 @@ if __name__ == '__main__':
                         exec("""global select_{0}; select_{0} = select_btn""".format(equip_index))
 
                         equip_index_2_set_index[equip_index] = set_index
+                        if set_index not in set_index_2_equip_indexes:
+                            set_index_2_equip_indexes[set_index] = []
+                        set_index_2_equip_indexes[set_index].append(equip_index)
 
                     check_set(set_index)
 
@@ -3327,6 +3239,9 @@ if __name__ == '__main__':
                     exec("""global select_{0}; select_{0} = select_btn""".format(equip_index))
 
                     equip_index_2_set_index[equip_index] = block_info.set_index
+                    if block_info.set_index not in set_index_2_equip_indexes:
+                        set_index_2_equip_indexes[block_info.set_index] = []
+                    set_index_2_equip_indexes[block_info.set_index].append(equip_index)
 
                 check_set(block_info.set_index)
 
