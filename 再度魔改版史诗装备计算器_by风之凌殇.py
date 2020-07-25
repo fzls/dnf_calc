@@ -23,6 +23,24 @@ if __name__ == '__main__':
     load_config()
     load_settings()
 
+    # 设置一些常量
+    layout_cfg = config().ui.layout
+    other_window_x_offset = layout_cfg.window_x_offset + layout_cfg.window_width + 10
+
+    result_window_width = 585
+    result_window_readable_result_area_height = 18 * 3
+    result_window_height = 402 + result_window_readable_result_area_height
+    result_window_x_offset = other_window_x_offset
+    result_window_y_offset = layout_cfg.window_y_offset + (layout_cfg.window_height - result_window_height) // 2
+
+    custom_window_width = 620
+    custom_window_height = 400
+    custom_window_x_offset = other_window_x_offset
+    custom_window_y_offset = layout_cfg.window_y_offset + (layout_cfg.window_height - custom_window_height) // 2
+
+    res_txt_readable_result_center_x = result_window_width // 2
+    res_txt_readable_result_center_y = result_window_height - result_window_readable_result_area_height // 2
+
 
 def hide_result_window_if_exists():
     global result_window
@@ -3060,7 +3078,7 @@ if __name__ == '__main__':
             canvas_tips.create_text(width / 2, height / 2, text=tip, tags=('mouse_overlap'), font=guide_font, fill='white')
             _x = x + x_offset + 5
             _y = y + y_offset
-            if _x + width >= main_window_width:
+            if _x + width >= cfg.ui.layout.window_width:
                 _x = x - width - 5
             canvas_tips.place(x=_x, y=_y)
 
