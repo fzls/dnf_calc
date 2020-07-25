@@ -2551,12 +2551,16 @@ def guide_speed():
 
 
 def click_equipment(code):
-    if eval("select_item['tg{}']".format(code)) == 0:
-        eval('select_{}'.format(code))['image'] = image_list[str(code)]
-        select_item['tg' + str('{}'.format(code))] = 1
-    elif eval("select_item['tg{}']".format(code)) == 1:
-        eval('select_{}'.format(code))['image'] = image_list2[str(code)]
-        select_item['tg' + str('{}'.format(code))] = 0
+    equip_btn_index = 'tg{}'.format(code)
+    btn = eval('select_{}'.format(code))
+
+    if select_item[equip_btn_index] == 0:
+        btn['image'] = image_list[str(code)]
+        select_item[equip_btn_index] = 1
+    elif select_item[equip_btn_index] == 1:
+        btn['image'] = image_list2[str(code)]
+        select_item[equip_btn_index] = 0
+
     if len(str(code)) == 5:
         check_set(int('1' + get_set_name(str(code))))
     # 暂时处理智慧产物
