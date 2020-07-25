@@ -2589,7 +2589,7 @@ def click_set(code):
     for equip_index in equips:
         equip_btn_index = 'tg{}'.format(equip_index)
         if select_item[equip_btn_index] == 1:
-            set_checked+=1
+            set_checked += 1
 
     # 若未满，则全选，否则反之
     check = set_checked != len(equips)
@@ -2614,76 +2614,35 @@ def click_set(code):
 
 
 def check_set(code):
-    code = int(code)
-    # 暂时特殊处理智慧的产物
-    if code == 666:
-        global equip_list
-        try:
-            exec("""global equip_list; equip_list = single_equip_list_{0}""".format(code))
-        except:
-            return
-        set_checked = 0
-        for know_equip_index in equip_list:
-            if select_item['tg{0}'.format(know_equip_index)] == 1:
-                set_checked += 1
-        try:
-            if set_checked == len(equip_list):
-                exec("""set{}["image"] = image_list_set[str(code)]""".format(code))
-            else:
-                exec("""set{}["image"] = image_list_set2[str(code)]""".format(code))
-        except:
-            pass
+    code = str(code)
+    if code not in set_index_2_equip_indexes:
+        logger.error("无法找到套装{}相关的信息".format(code))
         return
 
-    code_str = str(code)[1:3]
-    slot_set = set([])
-    if code < 116:
-        for i in [11, 12, 13, 14, 15]:
-            if select_item['tg' + str(i) + code_str + '0'] == 1:
-                slot_set.add(i)
-            if i == 11 and select_item['tg' + str(i) + code_str + '1'] == 1:
-                slot_set.add(11)
-    elif code < 120:
-        for i in [21, 22, 23]:
-            if select_item['tg' + str(i) + code_str + '0'] == 1:
-                slot_set.add(i)
-            if i == 21 and select_item['tg' + str(i) + code_str + '1'] == 1:
-                slot_set.add(21)
-    elif code < 124:
-        for i in [31, 32, 33]:
-            if select_item['tg' + str(i) + code_str + '0'] == 1:
-                slot_set.add(i)
-            if i == 33 and select_item['tg' + str(i) + code_str + '1'] == 1:
-                slot_set.add(33)
-    elif code < 128:
-        for i in [12, 21, 32]:
-            if select_item['tg' + str(i) + code_str + '0'] == 1:
-                slot_set.add(i)
-            if i == 21 and select_item['tg' + str(i) + code_str + '1'] == 1:
-                slot_set.add(21)
-    elif code < 132:
-        for i in [11, 22, 31]:
-            if select_item['tg' + str(i) + code_str + '0'] == 1:
-                slot_set.add(i)
-            if i == 11 and select_item['tg' + str(i) + code_str + '1'] == 1:
-                slot_set.add(11)
-    elif code < 136:
-        for i in [15, 23, 33]:
-            if select_item['tg' + str(i) + code_str + '0'] == 1:
-                slot_set.add(i)
-            if i == 33 and select_item['tg' + str(i) + code_str + '1'] == 1:
-                slot_set.add(33)
+    equips = set_index_2_equip_indexes[code]
 
-    if code < 116:
-        if len(slot_set) == 5:
-            eval('set' + str(code))['image'] = image_list_set[str(code)]
-        else:
-            eval('set' + str(code))['image'] = image_list_set2[str(code)]
+    # 统计套装内当前被选择的数目
+    slot_set = set([])
+    selected_equips = []
+    has_god = False
+    for equip_index in equips:
+        equip_btn_index = 'tg{}'.format(equip_index)
+        if select_item[equip_btn_index] == 1:
+            slot_set.add(get_slot_index(equip_index))
+            selected_equips.append(equip_index)
+        if is_god(equip_index):
+            has_god = True
+
+    if has_god:
+        all_checked = len(slot_set) == len(equips) - 1
     else:
-        if len(slot_set) == 3:
-            eval('set' + str(code))['image'] = image_list_set[str(code)]
-        else:
-            eval('set' + str(code))['image'] = image_list_set2[str(code)]
+        all_checked = len(selected_equips) == len(equips)
+
+    set_btn = eval('set{}'.format(code))
+    if all_checked:
+        set_btn["image"] = image_list_set[code]
+    else:
+        set_btn["image"] = image_list_set2[code]
 
 
 def donate():
@@ -3152,6 +3111,7 @@ if __name__ == '__main__':
 
     equip_index_2_set_index = {}
     set_index_2_equip_indexes = {}
+
 
     def create_ui_layout(master, layout_cfg):
         """
