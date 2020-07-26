@@ -2054,8 +2054,8 @@ def load_checklist_noconfirm(account_index):
 
         load_preset3.close()
         check_equipment()
-        for row in range(101, 136):
-            check_set(row)
+        for set_code in set_index_2_equip_indexes:
+            check_set(set_code)
 
         # 读档成功时更新上次存读档的存档名
         g_save_name_index_on_last_load_or_save = account_index
