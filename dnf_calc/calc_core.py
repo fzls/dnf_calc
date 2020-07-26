@@ -317,6 +317,21 @@ def fix_base_array_for_equip_or_set_requirement(base_array, equips, set_on, conf
         """
         return attr_max - min(dark_resistance // dark_resistance_step * attr_step, attr_max)
 
+    # 无念的仪服
+    if "11390850" in equips:
+        # 穿戴时，浑身充满蕴藏在仪服中的无念气息。
+        #  - 暗属性抗性 +35
+        #  - 火属性抗性 -35
+        #  - 冰属性抗性 -35
+        #  - 光属性抗性 -35
+        base_array[index_deal_extra_dark_resistance] += 35
+        # 每15点暗属性抗性，增加3%的攻击速度、移动速度（最多12%）
+        dr = max(base_array[index_deal_extra_dark_resistance], 0)
+        base_array[index_deal_extra_percent_attack_speed] -= get_delta(dr, 15, 3, 12)
+        base_array[index_deal_extra_percent_moving_speed] -= get_delta(dr, 15, 3, 12)
+        # 每15点暗属性抗性，增加4.5%的施放速度（最多18%）
+        # 暂无该词条
+
     # ps：必须在军神之前处理，因为套装效果可能会影响移速
     dr = max(base_array[index_deal_extra_dark_resistance], 0)  # 当前总暗抗，至少为0，做下保底
 
