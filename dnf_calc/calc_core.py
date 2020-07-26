@@ -39,6 +39,8 @@ def process_deal(step: CalcStepData):
         for idx in range(len(for_calc)):
             # 获取装备属性
             cut = data.opt_one.get(for_calc[idx])
+            if cut is None:
+                continue
             # 加算
             base_array = base_array + cut
             # 乘算部分
@@ -288,9 +290,6 @@ def fix_base_array_for_equip_or_set_requirement(base_array, equips, set_on, conf
 
     if not has_any(['11410100', '11410110', '11410120', '11410130', '11410140', '11410150']):
         if '1412' in set_on:
-            #原来：8暴击率，7附加
-            #轮回：200力智，7三攻，5最终
-
             # 扣除三件套多增加的属性
             # 扣除多加的200力智
             base_array[index_deal_strength_and_intelligence] -= 200
@@ -302,7 +301,6 @@ def fix_base_array_for_equip_or_set_requirement(base_array, equips, set_on, conf
             base_array[index_deal_extra_percent_magic_physical_crit_rate] += 8
             # 补回少掉的7%攻击时附加伤害
             base_array[index_deal_extra_percent_addtional_damage] += 7
-
 
     ################################大幽魂和军神最后处理，且大幽魂要在前面######################################
     # 大幽魂系列
