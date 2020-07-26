@@ -2310,7 +2310,7 @@ def display_realtime_counting_info():
                         # 过滤掉100传说、普雷首饰、普雷特殊装备
                         continue
                     current_equips += 1
-            total_equips = 177
+            total_equips = len(equip_index_2_set_index)
             percent = current_equips / total_equips * 100
 
             show_txt = "{}/{}({:.2f}%) N={}".format(current_equips, total_equips, percent, int(all_list_num))
@@ -2412,7 +2412,7 @@ def reset_all_equips():
 
     # 状态检查
     check_equipment()
-    for set_code in range(101, 136):
+    for set_code in set_index_2_equip_indexes:
         check_set(set_code)
 
 
@@ -3184,7 +3184,8 @@ if __name__ == '__main__':
                                                     command=lambda equip_index=equip_index: click_equipment(equip_index))
                         select_btn.place(x=x, y=y)
 
-                        if god == 1 and select_btn not in gif_buttons:
+                        image_filename = tkimage_name_2_filename[image_list[equip_index].name]
+                        if image_filename.endswith(".gif") and select_btn not in gif_buttons:
                             gif_buttons.append(select_btn)
 
                         # 设置tip
