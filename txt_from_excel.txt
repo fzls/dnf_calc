@@ -592,7 +592,7 @@ hol_pas1_out,17,33,50,68,86,105,124,143,163,183,203,225,245,268,289,313,336,359,
 111074,重剑-爆烈红焰,0,0,0,0,17,20,15,0,0,0,0,28,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,홍염폭검,982c50a64f61a2fc218603c569804871,0,0,0,0,0,0,0,0,0
 111075,源力剑-远古御神战剑,0,0,0,0,24,0,20,0,23,0,0,33,0,15,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,베투스 코르,e7e15309cc92736e4efc70422d3efc2d,0,0,0,0,0,0,0,15,0
 111076,源力剑-谍影：超级核心,0,0,0,20,0,0,20,22,0,0,0,35.00000000000001,0,0,0,0,1.5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,프로젝트 : 오버코어,75e8cf3862a5842225d79429c71355ed,0,0,0,0,0,0,0,0,0
-111077,原初之梦武器（输出改5/奶系改3）,0,0,0,0,50,0,0,0,20,0,0,35,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,0,0,0,0,0,0,None,None,None
+111077,原初之梦武器（输出改5/奶系改3）,0,0,0,0,50,0,0,0,20,0,0,35,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,0,0,0,0,0,0,None,None,0
 11010,大祭司-上衣,0,0,0,0,0,0,12,10,10,0,0,0,0,0,0,0,0,0,0,0,0,101,0,0,1,0,0,0,0,0,0,0,0,1,0,None,고대 제사장의 로브,34797b92fcbc66fcb86d490934ae1303,0,0,0,0,0,0,0,0,1
 11011,大祭司-神话上衣,0,0,0,0,10,0,12,21,20,0,0,0,0,6,0,0,0,0,0,0,1,101,0,0,0,0,0,0,0,0,0,0,0,0,0,None,대제사장의 예복,081d9219035a3fe5912c4e3735508142,0,0,0,0,0,0,0,0,1
 11020,魔法师-上衣,0,0,0,0,0,0,12,10,5,0,0,0,0,0,0,0,1,0,0,0,0,102,0,0,1,0,0,0,0,0,0,0,0,0,0,None,마법사 [???]의 로브,9354e9b70817f5315f0d42501b463f60,1,0,0,0,0,0,0,0,1
@@ -878,38 +878,38 @@ info,name,stat,att,damper,criper,bonper,elebon,allper,attper,staper,ele,sloper,s
 32390650,+5 赤鬼的次元石（魔法石）,0,0,14,20,0,0,0,18,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,0,0,1
 33390750,+5 窥视未来耳环（耳环）,0,200,40,0,0,0,0,0,0,40,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,0,0,1
 1401,赤鬼与青面或噙毒二件套,0,0,0,0,7,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,0,0,0
-22400150,逝魔之痕（项链）,-27,550,30,10,0,0,35,27,58,20,0,51.03999999999999,0,25,20,0,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,2,2,2,2,0,2,None,None,None
-22400250,杀戮之决（项链）,320,303,30,34,35,0,20,38,25,70,0,42,0,30,10,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,3,0,3,0,1,None,None,None
-22400350,天御万物（项链）,-27,370,18,18,45,25,35,32,28,138,0,20,0,28,15,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,None
-22400450,百变千蛛（项链）,608,0,10,38,18,0,40,22,45,119,0,30,0,0,10,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,None
-22400550,全能霸域（项链）,468,500,22,0,40,0,10,40,82,50,0,28,0,35,17,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,2,2,2,0,2,None,None,None
-21400640,天衍万物（手镯）,-8,0,12,20,13,0,22,25,37,110,0,32,0,10,5,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,1,1,1,1,0,0,None,None,None
-31400750,全元素水晶（辅助装备）,225.8459214501511,0,0,20,0,35,36,0,40,92,0,29.80000000000001,0,0,5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,None
-31400850,战术之王的战术指挥棒（辅助装备）,548.8761329305131,80,0,0,55,0,32,40,0,20,0,32,0,30,12,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,3,0,0,0,None,None,None
-31400950,最佳球手之球（辅助装备）,396,287,34,35,65,0,45,40,35,0,0,20,0,20,15,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,None
-31401050,禁断契约书（辅助装备）,333.4229607250755,454,14,50,25,0,42,35,50,14,0,20,0,5,15,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,None
-31401150,巨魔漩涡（辅助装备）,61,0,0,0,70,0,18,18,33,0,0,68.00000000000003,0,47,0,0,0,2,2,0,0,0,32,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,1.5,2,2,2,0,0,None,None,None
-32401240,冰雪公主结晶（魔法石）,-62,0,25,8,18,0,86,0,22,132,0,14.99999999999999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,None
-32401340,扭曲的异界魔石（魔法石）,-7,0,21,22,20,0,20,40,0,75,0,7,0,0,12,0,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,2,2,2,2,0,2,None,None,None
-32401440,江山如故（魔法石）,-53,0,14,28,20,0,29,56,18,48,0,29.80000000000001,0,15,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,None
-11410100,+0 轮回·黑暗幽灵紫衫胸甲,0,0,11,0,0,0,0,15,8,0,0,0,0,0,0,0,0,0,0,0,0,141,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,0,0,0,0,0,0,None,None,None
-11410110,+1 轮回·黑暗幽灵紫衫胸甲,25,0,11,0,0,0,0,15,8,0,0,2,0,0,0,0,0,0,0,0,0,141,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,0,0,0,0,0,0,None,None,None
-11410120,+2 轮回·黑暗幽灵紫衫胸甲,50,0,11,0,0,0,0,15,8,0,0,4,0,0,0,0,0,0,0,0,0,141,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,0,0,0,0,0,0,None,None,None
-11410130,+3 轮回·黑暗幽灵紫衫胸甲,75,0,11,0,0,0,0,15,8,0,0,6,0,0,0,0,0,0,0,0,0,141,0,0,0,0,0,0,0,0,0,0,0,0,0,0,진 : 검게 타락하는 경갑 상의,None,0,0,0,0,0,0,None,None,None
-11410140,+4 轮回·黑暗幽灵紫衫胸甲,100,0,11,0,0,0,0,15,8,0,0,8,0,0,0,0,0,0,0,0,0,141,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,None
-11410150,+5 轮回·黑暗幽灵紫衫胸甲,125,0,11,0,0,0,0,15,8,0,0,10,0,0,0,0,0,0,0,0,0,141,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,None
-21420100,+0 轮回·维度冲击臂环,0,0,0,0,0,0,0,0,12,28,0,16,0,0,0,0,0,0,0,0,0,142,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,None
-21420110,+1 轮回·维度冲击臂环,25,0,0,2,0,0,0,0,12,28,0,16,0,0,0,0,0,0,0,0,0,142,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,None
-21420120,+2 轮回·维度冲击臂环,50,0,0,4,0,0,0,0,12,28,0,16,0,0,0,0,0,0,0,0,0,142,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,None
-21420130,+3 轮回·维度冲击臂环,75,0,0,6,0,0,0,0,12,28,0,16,0,0,0,0,0,0,0,0,0,142,0,0,0,0,0,0,0,0,0,0,0,0,0,None,진 : 디멘션 쇼크 암릿,None,0,0,0,0,0,0,None,None,None
-21420140,+4 轮回·维度冲击臂环,100,0,0,8,0,0,0,0,12,28,0,16,0,0,0,0,0,0,0,0,0,142,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,None
-21420150,+5 轮回·维度冲击臂环,125,0,0,10,0,0,0,0,12,28,0,16,0,0,0,0,0,0,0,0,0,142,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,None
-33430100,+0 轮回·腐蚀之黑色十字耳环,0,0,20,0,20,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,143,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,None
-33430110,+1 轮回·腐蚀之黑色十字耳环,25,0,20,0,20,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,143,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,None
-33430120,+2 轮回·腐蚀之黑色十字耳环,50,0,20,0,20,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,143,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,None
-33430130,+3 轮回·腐蚀之黑色十字耳环,75,0,20,0,20,0,0,0,6,0,0,0,0,0,0,0,0,0,0,0,0,143,0,0,0,0,0,0,0,0,0,0,0,0,0,None,진 : 침식된 검은 십자 귀걸이,None,0,0,0,0,0,0,None,None,None
-33430140,+4 轮回·腐蚀之黑色十字耳环,100,0,20,0,20,0,0,0,8,0,0,0,0,0,0,0,0,0,0,0,0,143,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,None
-33430150,+5 轮回·腐蚀之黑色十字耳环,125,0,20,0,20,0,0,0,10,0,0,0,0,0,0,0,0,0,0,0,0,143,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,None
+22400150,逝魔之痕（项链）,-27,550,30,10,0,0,35,27,58,20,0,51.03999999999999,0,25,20,0,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,2,2,2,2,0,2,None,None,1
+22400250,杀戮之决（项链）,320,303,30,34,35,0,20,38,25,70,0,42,0,30,10,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,3,0,3,0,1,None,None,1
+22400350,天御万物（项链）,-27,370,18,18,45,25,35,32,28,138,0,20,0,28,15,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,1
+22400450,百变千蛛（项链）,608,0,10,38,18,0,40,22,45,119,0,30,0,0,10,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,1
+22400550,全能霸域（项链）,468,500,22,0,40,0,10,40,82,50,0,28,0,35,17,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,2,2,2,0,2,None,None,1
+21400640,天衍万物（手镯）,-8,0,12,20,13,0,22,25,37,110,0,32,0,10,5,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,1,1,1,1,0,0,None,None,1
+31400750,全元素水晶（辅助装备）,225.8459214501511,0,0,20,0,35,36,0,40,92,0,29.80000000000001,0,0,5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,1
+31400850,战术之王的战术指挥棒（辅助装备）,548.8761329305131,80,0,0,55,0,32,40,0,20,0,32,0,30,12,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,3,0,0,0,None,None,1
+31400950,最佳球手之球（辅助装备）,396,287,34,35,65,0,45,40,35,0,0,20,0,20,15,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,1
+31401050,禁断契约书（辅助装备）,333.4229607250755,454,14,50,25,0,42,35,50,14,0,20,0,5,15,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,1
+31401150,巨魔漩涡（辅助装备）,61,0,0,0,70,0,18,18,33,0,0,68.00000000000003,0,47,0,0,0,2,2,0,0,0,32,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,1.5,2,2,2,0,0,None,None,1
+32401240,冰雪公主结晶（魔法石）,-62,0,25,8,18,0,86,0,22,132,0,14.99999999999999,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,1
+32401340,扭曲的异界魔石（魔法石）,-7,0,21,22,20,0,20,40,0,75,0,7,0,0,12,0,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,2,2,2,2,0,2,None,None,1
+32401440,江山如故（魔法石）,-53,0,14,28,20,0,29,56,18,48,0,29.80000000000001,0,15,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,1
+11410100,+0 轮回·黑暗幽灵紫衫胸甲,0,0,11,0,0,0,0,15,8,0,0,0,0,0,0,0,0,0,0,0,0,141,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,0,0,0,0,0,0,None,None,1
+11410110,+1 轮回·黑暗幽灵紫衫胸甲,25,0,11,0,0,0,0,15,8,0,0,2,0,0,0,0,0,0,0,0,0,141,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,0,0,0,0,0,0,None,None,1
+11410120,+2 轮回·黑暗幽灵紫衫胸甲,50,0,11,0,0,0,0,15,8,0,0,4,0,0,0,0,0,0,0,0,0,141,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,0,0,0,0,0,0,None,None,1
+11410130,+3 轮回·黑暗幽灵紫衫胸甲,75,0,11,0,0,0,0,15,8,0,0,6,0,0,0,0,0,0,0,0,0,141,0,0,0,0,0,0,0,0,0,0,0,0,0,0,진 : 검게 타락하는 경갑 상의,None,0,0,0,0,0,0,None,None,1
+11410140,+4 轮回·黑暗幽灵紫衫胸甲,100,0,11,0,0,0,0,15,8,0,0,8,0,0,0,0,0,0,0,0,0,141,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,1
+11410150,+5 轮回·黑暗幽灵紫衫胸甲,125,0,11,0,0,0,0,15,8,0,0,10,0,0,0,0,0,0,0,0,0,141,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,1
+21420100,+0 轮回·维度冲击臂环,0,0,0,0,0,0,0,0,12,28,0,16,0,0,0,0,0,0,0,0,0,142,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,1
+21420110,+1 轮回·维度冲击臂环,25,0,0,2,0,0,0,0,12,28,0,16,0,0,0,0,0,0,0,0,0,142,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,1
+21420120,+2 轮回·维度冲击臂环,50,0,0,4,0,0,0,0,12,28,0,16,0,0,0,0,0,0,0,0,0,142,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,1
+21420130,+3 轮回·维度冲击臂环,75,0,0,6,0,0,0,0,12,28,0,16,0,0,0,0,0,0,0,0,0,142,0,0,0,0,0,0,0,0,0,0,0,0,0,None,진 : 디멘션 쇼크 암릿,None,0,0,0,0,0,0,None,None,1
+21420140,+4 轮回·维度冲击臂环,100,0,0,8,0,0,0,0,12,28,0,16,0,0,0,0,0,0,0,0,0,142,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,1
+21420150,+5 轮回·维度冲击臂环,125,0,0,10,0,0,0,0,12,28,0,16,0,0,0,0,0,0,0,0,0,142,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,1
+33430100,+0 轮回·腐蚀之黑色十字耳环,0,0,20,0,20,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,143,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,1
+33430110,+1 轮回·腐蚀之黑色十字耳环,25,0,20,0,20,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,143,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,1
+33430120,+2 轮回·腐蚀之黑色十字耳环,50,0,20,0,20,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,143,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,1
+33430130,+3 轮回·腐蚀之黑色十字耳环,75,0,20,0,20,0,0,0,6,0,0,0,0,0,0,0,0,0,0,0,0,143,0,0,0,0,0,0,0,0,0,0,0,0,0,None,진 : 침식된 검은 십자 귀걸이,None,0,0,0,0,0,0,None,None,1
+33430140,+4 轮回·腐蚀之黑色十字耳环,100,0,20,0,20,0,0,0,8,0,0,0,0,0,0,0,0,0,0,0,0,143,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,1
+33430150,+5 轮回·腐蚀之黑色十字耳环,125,0,20,0,20,0,0,0,10,0,0,0,0,0,0,0,0,0,0,0,0,143,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,1
 1411, 轮回·堕落的黑暗之力轻甲2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,0,0,0,0,0,0,None,None,None
 1412, 轮回·堕落的黑暗之力轻甲3,200,0,10,10,0,0,5,12,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,None,None,None
 1413, 轮回·堕落的黑暗之力轻甲5,400,0,10,10,20,0,25,12,0,0,0,16,0,0,8,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,None,None,None
@@ -917,25 +917,25 @@ info,name,stat,att,damper,criper,bonper,elebon,allper,attper,staper,ele,sloper,s
 1422, 轮回·维度崩坏3,200,0,0,10,10,0,0,13,15,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,None,None,None
 1431, 轮回·暗之腐蚀2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,None,None,None
 1432, 轮回·暗之腐蚀3,200,0,0,23,16,0,0,0,5,0,0,5,0,0,4,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,None,None,None
-12410,黑暗幽灵紫衫护腿,-100,0,0,0,0,0,0,15,8,22,0,0,0,0,0,0,0,0,0,0,0,136,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,None
-13410,黑暗幽灵紫衫护肩,-100,0,0,12,0,0,0,0,10,24,0,0,0,0,0,0,0,0,0,0,0,136,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,None
-14410,黑暗幽灵紫衫腰带,-100,0,0,12,0,0,0,0,10,24,0,0,0,0,0,0,0,0,0,0,0,136,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,None
-15410,黑暗幽灵紫衫长靴,-100,0,8,0,5,0,0,0,10,24,0,0,0,0,0,0,0,0,0,0,0,136,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,None
-22420,维度定位项链,-100,0,0,0,0,0,0,22,0,28,0,0,0,0,0,0,0,0,0,0,0,137,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,None
-23420,维度粉碎戒指,-100,0,0,0,5,0,0,0,0,28,0,16,0,0,0,0,0,0,0,0,0,137,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,None
-31430,腐蚀之黑色面具,-100,0,15,0,0,0,0,0,0,0,0,13,0,0,0,0,0,0,0,0,0,138,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,None
-32430,腐蚀之黑色尖角,-100,0,0,13,0,0,0,0,0,0,0,15,0,0,0,0,0,0,0,0,0,138,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,None
-11440,时空·黑暗幽灵紫衫胸甲,-100,0,6,0,0,0,0,15,8,0,0,0,0,0,0,0,0,0,0,0,0,144,0,0,0,0,0,0,0,0,0,0,0,0,0,None,차원 : 검게 타락하는 경갑 상의,None,0,0,0,0,0,0,None,None,None
-12440,黑暗幽灵紫衫护腿,-100,0,0,0,0,0,0,15,8,22,0,0,0,0,0,0,0,0,0,0,0,144,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,None
-13440,黑暗幽灵紫衫护肩,-100,0,0,12,0,0,0,0,10,24,0,0,0,0,0,0,0,0,0,0,0,144,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,None
-14440,黑暗幽灵紫衫腰带,-100,0,0,12,0,0,0,0,10,24,0,0,0,0,0,0,0,0,0,0,0,144,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,None
-15440,黑暗幽灵紫衫长靴,-100,0,8,0,5,0,0,0,10,24,0,0,0,0,0,0,0,0,0,0,0,144,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,None
-21450,时空·维度冲击臂环,-100,0,0,0,0,0,0,0,10,0,0,16,0,0,0,0,0,0,0,0,0,145,0,0,0,0,0,0,0,0,0,0,0,0,0,None,차원 : 디멘션 쇼크 암릿,None,0,0,0,0,0,0,None,None,None
-22450,维度定位项链,-100,0,0,0,0,0,0,22,0,28,0,0,0,0,0,0,0,0,0,0,0,145,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,None
-23450,维度粉碎戒指,-100,0,0,0,5,0,0,0,0,28,0,16,0,0,0,0,0,0,0,0,0,145,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,None
-31460,腐蚀之黑色面具,-100,0,15,0,0,0,0,0,0,0,0,13,0,0,0,0,0,0,0,0,0,146,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,None
-32460,腐蚀之黑色尖角,-100,0,0,13,0,0,0,0,0,0,0,15,0,0,0,0,0,0,0,0,0,146,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,None
-33460,时空·暗之腐蚀,-100,0,17,0,17,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,146,0,0,0,0,0,0,0,0,0,0,0,0,0,None,차원 : 침식된 검은 십자 귀걸이,None,0,0,0,0,0,0,None,None,None
+12410,黑暗幽灵紫衫护腿,-100,0,0,0,0,0,0,15,8,22,0,0,0,0,0,0,0,0,0,0,0,136,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,1
+13410,黑暗幽灵紫衫护肩,-100,0,0,12,0,0,0,0,10,24,0,0,0,0,0,0,0,0,0,0,0,136,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,1
+14410,黑暗幽灵紫衫腰带,-100,0,0,12,0,0,0,0,10,24,0,0,0,0,0,0,0,0,0,0,0,136,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,1
+15410,黑暗幽灵紫衫长靴,-100,0,8,0,5,0,0,0,10,24,0,0,0,0,0,0,0,0,0,0,0,136,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,1
+22420,维度定位项链,-100,0,0,0,0,0,0,22,0,28,0,0,0,0,0,0,0,0,0,0,0,137,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,1
+23420,维度粉碎戒指,-100,0,0,0,5,0,0,0,0,28,0,16,0,0,0,0,0,0,0,0,0,137,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,1
+31430,腐蚀之黑色面具,-100,0,15,0,0,0,0,0,0,0,0,13,0,0,0,0,0,0,0,0,0,138,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,1
+32430,腐蚀之黑色尖角,-100,0,0,13,0,0,0,0,0,0,0,15,0,0,0,0,0,0,0,0,0,138,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,1
+11440,时空·黑暗幽灵紫衫胸甲,-100,0,6,0,0,0,0,15,8,0,0,0,0,0,0,0,0,0,0,0,0,144,0,0,0,0,0,0,0,0,0,0,0,0,0,None,차원 : 검게 타락하는 경갑 상의,None,0,0,0,0,0,0,None,None,1
+12440,黑暗幽灵紫衫护腿,-100,0,0,0,0,0,0,15,8,22,0,0,0,0,0,0,0,0,0,0,0,144,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,1
+13440,黑暗幽灵紫衫护肩,-100,0,0,12,0,0,0,0,10,24,0,0,0,0,0,0,0,0,0,0,0,144,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,1
+14440,黑暗幽灵紫衫腰带,-100,0,0,12,0,0,0,0,10,24,0,0,0,0,0,0,0,0,0,0,0,144,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,1
+15440,黑暗幽灵紫衫长靴,-100,0,8,0,5,0,0,0,10,24,0,0,0,0,0,0,0,0,0,0,0,144,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,1
+21450,时空·维度冲击臂环,-100,0,0,0,0,0,0,0,10,0,0,16,0,0,0,0,0,0,0,0,0,145,0,0,0,0,0,0,0,0,0,0,0,0,0,None,차원 : 디멘션 쇼크 암릿,None,0,0,0,0,0,0,None,None,1
+22450,维度定位项链,-100,0,0,0,0,0,0,22,0,28,0,0,0,0,0,0,0,0,0,0,0,145,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,1
+23450,维度粉碎戒指,-100,0,0,0,5,0,0,0,0,28,0,16,0,0,0,0,0,0,0,0,0,145,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,1
+31460,腐蚀之黑色面具,-100,0,15,0,0,0,0,0,0,0,0,13,0,0,0,0,0,0,0,0,0,146,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,1
+32460,腐蚀之黑色尖角,-100,0,0,13,0,0,0,0,0,0,0,15,0,0,0,0,0,0,0,0,0,146,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,1
+33460,时空·暗之腐蚀,-100,0,17,0,17,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,146,0,0,0,0,0,0,0,0,0,0,0,0,0,None,차원 : 침식된 검은 십자 귀걸이,None,0,0,0,0,0,0,None,None,1
 1441, 时空·堕落的黑暗之力轻甲2,0,0,0,0,13,0,5,0,0,0,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,None
 1442, 时空·堕落的黑暗之力轻甲3,0,0,10,10,13,0,5,8,0,0,0,0,0,0,4,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,None,None,None
 1443, 时空·堕落的黑暗之力轻甲5,0,0,10,10,20,0,25,8,0,0,0,10,0,0,8,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,None,None,None
@@ -943,17 +943,17 @@ info,name,stat,att,damper,criper,bonper,elebon,allper,attper,staper,ele,sloper,s
 1452, 时空·维度崩坏3,0,0,0,15,10,0,0,0,10,0,0,8,0,0,3,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,None,None,None
 1461, 时空·暗之腐蚀2,0,0,0,5,0,0,0,0,10,0,0,0,0,0,4,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,None,None,None
 1462, 时空·暗之腐蚀3,0,0,0,10,13,0,0,0,10,0,0,5,0,0,4,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,None,None,None
-11470,超界板甲上衣,-100,0,0,18,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,147,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,None,None,None
-12470,超界板甲裤子,-100,0,0,0,0,0,0,17,0,0,0,0,0,0,0,0,0,0,0,0,0,147,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,None,None,None
-13470,超界板甲头肩,-100,0,0,0,0,0,0,0,0,20,0,17,0,0,0,0,0,0,0,0,0,147,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,None,None,None
-14470,超界板甲腰带,-100,0,0,0,0,0,0,0,18,20,0,0,0,0,0,0,0,0,0,0,0,147,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,None,None,None
-15470,超界板甲鞋子,-100,0,0,0,18,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,147,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,None,None,None
-21480,普雷手镯,-100,0,0,0,0,0,0,0,0,28,0,18,0,0,0,0,0,0,0,0,0,148,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,None,None,None
-22480,普雷项链,-100,0,0,0,0,0,0,22,0,24,0,0,0,0,0,0,0,0,0,0,0,148,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,None,None,None
-23480,普雷戒指,-100,0,0,0,0,0,0,0,0,34,0,16,0,0,0,0,0,0,0,0,0,148,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,None,None,None
-31490,普雷辅助装备,-100,0,15,0,0,0,0,0,0,0,0,8,0,0,0,0,0,0,0,0,0,149,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,None,None,None
-32490,普雷魔法石,-100,0,0,15,0,0,0,0,0,0,0,15,0,0,0,0,0,0,0,0,0,149,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,None,None,None
-33490,普雷耳环,-100,0,16,0,16,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,149,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,None,None,None
+11470,超界板甲上衣,-100,0,0,18,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,147,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,None,None,1
+12470,超界板甲裤子,-100,0,0,0,0,0,0,17,0,0,0,0,0,0,0,0,0,0,0,0,0,147,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,None,None,1
+13470,超界板甲头肩,-100,0,0,0,0,0,0,0,0,20,0,17,0,0,0,0,0,0,0,0,0,147,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,None,None,1
+14470,超界板甲腰带,-100,0,0,0,0,0,0,0,18,20,0,0,0,0,0,0,0,0,0,0,0,147,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,None,None,1
+15470,超界板甲鞋子,-100,0,0,0,18,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,147,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,None,None,1
+21480,普雷手镯,-100,0,0,0,0,0,0,0,0,28,0,18,0,0,0,0,0,0,0,0,0,148,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,None,None,1
+22480,普雷项链,-100,0,0,0,0,0,0,22,0,24,0,0,0,0,0,0,0,0,0,0,0,148,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,None,None,1
+23480,普雷戒指,-100,0,0,0,0,0,0,0,0,34,0,16,0,0,0,0,0,0,0,0,0,148,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,None,None,1
+31490,普雷辅助装备,-100,0,15,0,0,0,0,0,0,0,0,8,0,0,0,0,0,0,0,0,0,149,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,None,None,1
+32490,普雷魔法石,-100,0,0,15,0,0,0,0,0,0,0,15,0,0,0,0,0,0,0,0,0,149,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,None,None,1
+33490,普雷耳环,-100,0,16,0,16,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,149,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,None,None,1
 1471,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,None
 1472,超界板甲3,0,0,0,0,0,0,25,0,0,25,0,0,0,0,10,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,None
 1473,超界板甲5,0,0,0,0,0,35,25,0,0,25,0,0,0,10,10,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,None
@@ -961,11 +961,11 @@ info,name,stat,att,damper,criper,bonper,elebon,allper,attper,staper,ele,sloper,s
 1482,普雷首饰3,0,0,0,0,12,0,0,0,12,0,0,8,0,5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,None
 1491,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,None
 1492,普雷特殊3,0,0,0,10,0,0,0,0,8,0,0,15,0,5,5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,None,None,None
-11390850,+5 无念的仪服（上衣）,0,0,30,0,0,4,0,0,0,0,0,0,0,12,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,무념의 의복,None,0,2,0,2,0,2,None,None,None
-12390950,+5 无形的贞节（裤子）,0,0,0,35,0,0,0,0,0,30,0,0,0,0,0,0,0,0,1,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,무형의 절개,None,0,1,1,1,0,1,None,None,None
-13391050,+5 无意识的花（头肩）,0,0,7,0,0,0,0,0,0,0,0,36.27,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,무의식의 꽃,None,0,0,0,0,0,0,None,None,None
-14391150,+5 无我之轮（腰带）,0,0,0,0,10,0,10,31,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,무아의 고리,None,0,0,0,0,0,0,None,None,None
-15391250,+5 无言的罪恶（鞋）,0,0,0,0,0,0,30,0,22,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,무언의 죄악,None,0,0,0,0,0,0,None,None,None
+11390850,+5 无念的仪服（上衣）,0,0,30,0,0,4,0,0,0,0,0,0,0,12,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,무념의 의복,None,0,2,0,2,0,2,None,None,1
+12390950,+5 无形的贞节（裤子）,0,0,0,35,0,0,0,0,0,30,0,0,0,0,0,0,0,0,1,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,무형의 절개,None,0,1,1,1,0,1,None,None,1
+13391050,+5 无意识的花（头肩）,0,0,7,0,0,0,0,0,0,0,0,36.27,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,무의식의 꽃,None,0,0,0,0,0,0,None,None,1
+14391150,+5 无我之轮（腰带）,0,0,0,0,10,0,10,31,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,무아의 고리,None,0,0,0,0,0,0,None,None,1
+15391250,+5 无言的罪恶（鞋）,0,0,0,0,0,0,30,0,22,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,무언의 죄악,None,0,0,0,0,0,0,None,None,1
 套装编号,套装名称,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None
 101,大祭司,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None
 102,魔法师,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None
@@ -1273,76 +1273,76 @@ None,None,None,None,None,None,None,None,None,None,None
 None,None,None,None,None,None,None,None,None,None,None
 None,None,None,None,None,None,None,None,None,None,None
 ------------------------------sheet: one------------------------------
-None,0,0,0,0,0,0,0,0,0,0,0,None,0,0,0,0,0,0,0,0,0,0,0
-None,0,0,0,0,0,0,0,0,0,0,0,None,0,0,0,0,0,0,0,0,0,0,0
-None,0,0,0,0,0,0,0,0,0,0,0,None,0,0,0,0,0,0,0,0,0,0,0
-None,0,0,0,0,0,0,0,0,0,0,0,None,0,0,0,0,0,0,0,0,0,0,0
-None,0,0,0,0,0,0,0,0,0,0,0,None,0,0,0,0,0,0,0,0,0,0,0
-None,0,0,0,0,0,0,0,0,0,0,0,None,0,0,0,0,0,0,0,0,0,0,0
-None,0,0,0,0,0,0,0,0,0,0,0,None,0,0,0,0,0,0,0,0,0,0,0
-None,0,0,0,0,0,0,0,0,0,0,0,None,0,0,0,0,0,0,0,0,0,0,0
-None,0,0,0,0,0,0,0,0,0,0,0,None,0,0,0,0,0,0,0,0,0,0,0
-None,0,0,0,0,0,0,0,0,0,0,0,None,0,0,0,0,0,0,0,0,0,0,0
-None,0,0,0,0,0,0,0,0,0,0,0,None,0,0,0,0,0,0,0,0,0,0,0
-None,0,0,0,0,0,0,0,0,0,0,0,None,0,0,0,0,0,0,0,0,0,0,0
-None,0,0,0,0,0,0,0,0,0,0,0,None,0,0,0,0,0,0,0,0,0,0,0
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
-None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+33430140,0,0,0,0,0,0,0,0,0,0,0,None,0,0,0,0,0,0,0,0,0,0,0
+21420110,0,0,0,0,0,0,0,0,0,0,0,None,0,0,0,0,0,0,0,0,0,0,0
+15391250,0,0,0,0,0,0,0,0,0,0,0,None,0,0,0,0,0,0,0,0,0,0,0
+33430100,0,0,0,0,0,0,0,0,0,0,0,None,0,0,0,0,0,0,0,0,0,0,0
+11440,0,0,0,0,0,0,0,0,0,0,0,None,0,0,0,0,0,0,0,0,0,0,0
+32390650,0,0,0,0,0,0,0,0,0,0,0,None,0,0,0,0,0,0,0,0,0,0,0
+33460,0,0,0,0,0,0,0,0,0,0,0,None,0,0,0,0,0,0,0,0,0,0,0
+22420,0,0,0,0,0,0,0,0,0,0,0,None,0,0,0,0,0,0,0,0,0,0,0
+14470,0,0,0,0,0,0,0,0,0,0,0,None,0,0,0,0,0,0,0,0,0,0,0
+11410110,0,0,0,0,0,0,0,0,0,0,0,None,0,0,0,0,0,0,0,0,0,0,0
+31490,0,0,0,0,0,0,0,0,0,0,0,None,0,0,0,0,0,0,0,0,0,0,0
+11470,0,0,0,0,0,0,0,0,0,0,0,None,0,0,0,0,0,0,0,0,0,0,0
+22450,0,0,0,0,0,0,0,0,0,0,0,None,0,0,0,0,0,0,0,0,0,0,0
+21450,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+21420100,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+31430,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+22400550,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+31400850,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+15470,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+33430110,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+22400250,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+32401440,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+13410,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+11410100,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+33430150,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+33490,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+11410150,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+23420,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+11410120,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+12390950,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+22400450,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+31400950,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+22400150,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+22400350,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+12470,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+31401150,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+32430,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+11390850,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+31400750,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+13391050,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+14440,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+23480,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+14391150,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+33430120,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+13470,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+31401050,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+21420150,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+12410,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+22480,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+32490,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+21420130,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+12440,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+21420140,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+32401340,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+13440,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+21400640,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+31460,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+15410,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+31390540,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+32401240,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+21420120,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+21480,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+15440,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+14410,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+33430130,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+11410130,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+11410140,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+23450,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+21390340,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
+32460,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
 None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
 None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
 None,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,None,None
