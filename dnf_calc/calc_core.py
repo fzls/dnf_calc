@@ -9,10 +9,9 @@
 import copy
 import itertools
 import random
-from math import floor
 from typing import List
 
-from .data_struct import CalcStepData, BlessHuanZhuang, BlessHuanZhuangStep, MinHeap
+from .data_struct import CalcStepData, BlessHuanZhuang, BlessHuanZhuangStep
 from .equipment import *
 from .logic import *
 from .parallel_dfs import max_inc_values, calc_equip_value
@@ -96,7 +95,7 @@ def process_deal(step: CalcStepData):
 
         unique_index = random.random()
         data.minheaps[0].add((damage, unique_index, copy.deepcopy(save_data)))
-        data.minheaps[0].processed_result_count+=1
+        data.minheaps[0].processed_result_count += 1
 
         # 批量同步
         if data.minheaps[0].processed_result_count >= data.minheaps[0].batch_size:
@@ -245,6 +244,65 @@ def fix_base_array_for_equip_or_set_requirement(base_array, equips, set_on, conf
             base_array[index_deal_extra_percent_attack_speed] += 12
             # 额外增加移速12%
             base_array[index_deal_extra_percent_moving_speed] += 12
+
+    # 时空系列
+    # 若时空部位实际不在
+    if '11440' not in equips:
+        if '1441' in set_on:
+            # 扣除二件套多增加的属性
+            # 扣除多加的5%最终伤害
+            base_array[index_deal_extra_percent_final_damage] -= 5
+            # 补回少掉的5%三攻
+            base_array[index_deal_extra_percent_physical_magical_independent_attack_power] += 5
+        elif '1442' in set_on:
+            # 扣除三件套多增加的属性
+            # 扣除多加的5%最终伤害
+            base_array[index_deal_extra_percent_final_damage] -= 5
+            # 扣除多加的3%三攻
+            base_array[index_deal_extra_percent_physical_magical_independent_attack_power] -= 3
+
+    if '21450' not in equips:
+        if '1451' in set_on:
+            # 扣除二件套多增加的属性
+            # 扣除多加的6%力智
+            base_array[index_deal_extra_percent_strength_and_intelligence] -= 6
+            # 扣除多加的1%附加伤害
+            base_array[index_deal_extra_percent_addtional_damage] -= 1
+
+    if '33460' not in equips:
+        if '1461' in set_on:
+            # 扣除二件套多增加的属性
+            # 扣除多加的10%力智
+            base_array[index_deal_extra_percent_strength_and_intelligence] -= 10
+            # 补回少掉的5%爆伤
+            base_array[index_deal_extra_percent_crit_damage] += 5
+
+    # 轮回系列
+    # 若轮回部位实际不在
+    def has_any(list_of_equips):
+        for equip_index in list_of_equips:
+            if equip_index in equips:
+                return True
+
+        return False
+
+    if not has_any(['11410100', '11410110', '11410120', '11410130', '11410140', '11410150']):
+        if '1412' in set_on:
+            #原来：8暴击率，7附加
+            #轮回：200力智，7三攻，5最终
+
+            # 扣除三件套多增加的属性
+            # 扣除多加的200力智
+            base_array[index_deal_strength_and_intelligence] -= 200
+            # 扣除多加的7%三攻
+            base_array[index_deal_extra_percent_physical_magical_independent_attack_power] -= 7
+            # 扣除多加的5%最终伤害
+            base_array[index_deal_extra_percent_final_damage] -= 5
+            # 补回少掉的8%暴击率
+            base_array[index_deal_extra_percent_magic_physical_crit_rate] += 8
+            # 补回少掉的7%攻击时附加伤害
+            base_array[index_deal_extra_percent_addtional_damage] += 7
+
 
     ################################大幽魂和军神最后处理，且大幽魂要在前面######################################
     # 大幽魂系列
@@ -918,7 +976,8 @@ def try_equip(equip, huanzhuang_step, replaced_slots, bless_huanzhuang, step, bl
             # 计算套装数目
             set_list = ["1" + str(get_set_name(bless_huanzhuang.equips[x])) for x in range(0, 11)]
             set_val = Counter(set_list)
-            del set_val['136', '137', '138']
+            for exclude_set in not_set_list:
+                del set_val[exclude_set]
             # 套装词条数：1件价值量=0，两件=1，三件、四件=2，五件=3，神话额外增加1价值量
             setopt_num = sum([floor(x * 0.7) for x in set_val.values()]) + god
 

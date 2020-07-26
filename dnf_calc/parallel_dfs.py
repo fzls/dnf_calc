@@ -10,7 +10,7 @@ import copy
 from collections import Counter
 from math import floor
 
-from dnf_calc import CalcStepData, is_god, get_set_name
+from dnf_calc import CalcStepData, is_god, get_set_name, not_set_list
 
 
 # 带剪枝的dfs搜索装备搭配过程
@@ -158,7 +158,8 @@ def try_equip(step: CalcStepData, equip):
             # 计算套装数目
             set_list = ["1" + str(get_set_name(step.calc_data.selected_combination[x])) for x in range(0, 11)]
             set_val = Counter(set_list)
-            del set_val['136', '137', '138']
+            for exclude_set in not_set_list:
+                del set_val[exclude_set]
             # 套装词条数：1件价值量=0，两件=1，三件、四件=2，五件=3，神话额外增加1价值量
             setopt_num = sum([floor(x * 0.7) for x in set_val.values()]) + god
 
@@ -241,7 +242,8 @@ def upper_bound_2(items, selected_combination, selected_has_god, remaining_start
 def calc_equip_value(selected_combination, selected_has_god, prefer_god):
     set_list = ["1" + str(get_set_name(selected_combination[x])) for x in range(0, len(selected_combination))]
     set_val = Counter(set_list)
-    del set_val['136', '137', '138']
+    for exclude_set in not_set_list:
+        del set_val[exclude_set]
     # 1件词条数=0，两件=1，三件、四件=2，五件=3
     setopt_num = sum([floor(x * 0.7) for x in set_val.values()])
 

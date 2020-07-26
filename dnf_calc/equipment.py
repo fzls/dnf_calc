@@ -8,6 +8,7 @@
 # -------------------------------
 import collections
 from collections import Counter
+from math import floor
 
 from .const import *
 
@@ -95,8 +96,12 @@ def can_convert_from_baibianguai(equip):
     # 百变怪不能转化为工作服
     if equip in work_uniforms:
         return False
+    set_code = int(get_set_name(equip))
+    # 百变怪只能转化为1-35的套装内的装备
+    if set_code > 35:
+        return False
     # 百变怪不能转化为智慧产物
-    if equip in the_product_of_wisdoms:
+    if len(equip) == 8:
         return False
     # 百变怪不能转化为传说、普雷
     if is_legend(equip) or is_pulei(equip):
@@ -134,41 +139,24 @@ def is_god(equip):
     return int(equip[-1]) == 1
 
 
+not_set_list=['136','137','138','144','145','146','147','148','149']
+
+
 def get_set_on(equips):
     """
     计算各个套装的装备数目
     @param equips: 装备搭配列表
-    @type equips: List[string]
+    @type equips: list[str]
     @return: 形成的套装数目列表
     """
     set_on = []
 
     set_counter = Counter(["1" + str(get_set_name(equips[x])) for x in range(0, 11)])
     for set_code, cnt in set_counter.items():
-        n_set_code = int(set_code)
-        if 101 <= n_set_code <= 135:
-            # 计算100史诗装备的套装数目
-            if cnt <= 1:
-                continue
-            elif cnt == 2:
-                set_on.append(set_code + "1")
-            elif 3 <= cnt <= 4:
-                set_on.append(set_code + "2")
-            elif cnt == 5:
-                set_on.append(set_code + "3")
-        elif 136 <= n_set_code <= 138:
-            # 计算100传说、普雷特殊、首饰的套装数目
-            if cnt <= 1:
-                continue
-            elif cnt == 2:
-                set_on.append(set_code + "0")
-            elif 3 <= cnt <= 4:
-                set_on.append(set_code + "1")
-            elif cnt == 5:
-                set_on.append(set_code + "2")
-        elif n_set_code == 141:
-            if set_counter.get("140", 0) >= 1:
-                set_on.append('1401')
+        if cnt >1:
+            set_on.append(set_code + str(floor(cnt*0.7)))
+        if set_code == "141" and ('21390340' in equips or '31390540' in equips):
+            set_on.append('1401')
 
     return set_on
 
@@ -183,22 +171,22 @@ def get_readable_names(equip_index_to_realname, weapon, equips, huanzhuang_equip
     readable_names.append(equip_index_to_realname[weapon])
 
     # 智慧产物以外的套装信息
-    set_list = ["1" + str(get_set_name(equips[x])) for x in range(0, 11) if len(equips[x]) < 8]
+    set_list = ["1" + str(get_set_name(equips[x])) for x in range(0, 11) if get_set_name(equips[x]) not in not_set_list]
     for set_index, count in sorted(collections.Counter(set_list).most_common(), key=sort_counter_key):
         readable_names.append("{}-{}".format(equip_index_to_realname[set_index], count))
 
     # 智慧产物单独列出
     wisdom_indexs = [equips[x] for x in range(0, 11) if len(equips[x]) == 8]
     # 赤鬼的次元石改造五阶段词条：装备[青面修罗的面具]、[噙毒手套]中1种以上时，释放疯魔索伦之力。 - 攻击时，附加7%的伤害。
-    if wisdom_indexs.count('32410650') == 1:
-        if wisdom_indexs.count('21400340'):
+    if wisdom_indexs.count('32390650') == 1:
+        if wisdom_indexs.count('21390340'):
             readable_names.append(equip_index_to_realname["1401"])
-            wisdom_indexs.remove('32410650')
-            wisdom_indexs.remove('21400340')
-        elif wisdom_indexs.count('31400540') == 1:
+            wisdom_indexs.remove('32390650')
+            wisdom_indexs.remove('21390340')
+        elif wisdom_indexs.count('31390540') == 1:
             readable_names.append(equip_index_to_realname["1401"])
-            wisdom_indexs.remove('32410650')
-            wisdom_indexs.remove('31400540')
+            wisdom_indexs.remove('32390650')
+            wisdom_indexs.remove('31390540')
     for wisdom_index in wisdom_indexs:
         readable_names.append(equip_index_to_realname[wisdom_index])
 

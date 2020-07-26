@@ -2930,7 +2930,6 @@ if __name__ == '__main__':
     big_font = tkinter.font.Font(family=big_font_cfg.family, size=big_font_cfg.size, weight=big_font_cfg.weight)
 
     ## 내부 구조 ##
-    know_list = ['13390150', '22390240', '23390450', '33390750', '21400340', '31400540', '32410650']
     image_list = {}
     image_list2 = {}
     image_list_set = {}
