@@ -302,6 +302,418 @@ def fix_base_array_for_equip_or_set_requirement(base_array, equips, set_on, conf
             # 补回少掉的7%攻击时附加伤害
             base_array[index_deal_extra_percent_addtional_damage] += 7
 
+    ################################85ss对应的智慧产物当对应套装不存在时则移除对应效果######################################
+    # 22400150	逝魔之痕（项链）                    1513	逝魔之力5
+    if '22400150' in equips and '1513' not in set_on:
+        # 五件装备的力智各+100
+        base_array[index_deal_strength_and_intelligence] -= 500
+        # 改五增加10%暴击额外伤害
+        base_array[index_deal_extra_percent_crit_damage] -= 10
+
+        # 一阶段
+        # 力智增加40%
+        base_array[index_deal_extra_percent_strength_and_intelligence] -= 40
+
+        # 三阶段
+        # 攻击时，额外增加30%的伤害增加量
+        base_array[index_deal_extra_percent_attack_damage] -= 30
+        # 技能攻击力+28
+        base_array[index_deal_extra_percent_skill_attack_power] -= 28
+        # 所有属性强化+42
+        base_array[index_deal_extra_all_element_strength] -= 42
+
+        # 五阶段
+        # 所有职业1-85所有技能lv+2
+        base_array[index_deal_extra_passive_transfer_skill] -= 2
+        base_array[index_deal_extra_passive_first_awaken_skill] -= 2
+        base_array[index_deal_extra_passive_second_awaken_skill] -= 2
+        base_array[index_deal_extra_active_skill_lv_1_45] -= 2
+        base_array[index_deal_extra_active_skill_lv_50] -= 2
+        base_array[index_deal_extra_active_skill_lv_60_80] -= 2
+        base_array[index_deal_extra_active_skill_lv_85] -= 2
+        # 所有职业100所有技能lv+2
+        base_array[index_deal_extra_active_skill_lv_100] -= 2
+        # 技能攻击力+18%
+        base_array[index_deal_extra_percent_skill_attack_power] -= 18
+
+    # 22400250	杀戮之决（项链）                    1523	杀意决5
+    if '22400250' in equips and '1523' not in set_on:
+        # 五件装备的力智各+100
+        base_array[index_deal_strength_and_intelligence] -= 500
+        # 改五增加10%最终伤害
+        base_array[index_deal_extra_percent_final_damage] -= 10
+
+        # 一阶段
+        # 所有职业50所有技能lv+3
+        base_array[index_deal_extra_passive_first_awaken_skill] -= 3
+        base_array[index_deal_extra_active_skill_lv_50] -= 3
+        # 所有职业85所有技能lv+3
+        base_array[index_deal_extra_active_skill_lv_85] -= 3
+        # 所有职业100所有技能lv+3
+        base_array[index_deal_extra_active_skill_lv_100] -= 3
+        # 所有属性强化+50
+        base_array[index_deal_extra_all_element_strength] -= 50
+
+        # 三阶段
+        # 力智增加13%
+        base_array[index_deal_extra_percent_strength_and_intelligence] -= 13
+        # 暴击时，额外增加30%的伤害增加量
+        base_array[index_deal_extra_percent_crit_damage] -= 30
+        # 攻击时，额外增加30%的伤害增加量
+        base_array[index_deal_extra_percent_attack_damage] -= 30
+
+        # 五阶段
+        # 技能攻击力+42%
+        base_array[index_deal_extra_percent_skill_attack_power] -= 42
+        # 增加10%最终伤害
+        base_array[index_deal_extra_percent_final_damage] -= 10
+
+    # 22400350	天御万物（项链）                    1533	天御之灾5
+    if '22400350' in equips and '1533' not in set_on:
+        # 五件装备的力智各+100
+        base_array[index_deal_strength_and_intelligence] -= 500
+        # 改五增加10%最终伤害
+        base_array[index_deal_extra_percent_final_damage] -= 10
+
+        # 一阶段
+        # 力智增加28%
+        base_array[index_deal_extra_percent_strength_and_intelligence] -= 28
+
+        # 三阶段
+        # 所有属性强化+50
+        base_array[index_deal_extra_all_element_strength] -= 50
+        # 技能攻击力+20%
+        base_array[index_deal_extra_percent_skill_attack_power] -= 20
+        # 三攻+32%
+        base_array[index_deal_extra_percent_physical_magical_independent_attack_power] -= 32
+
+        # 五阶段
+        # 增加17%最终伤害
+        base_array[index_deal_extra_percent_final_damage] -= 17
+        # 攻击时，额外增加25%的属性伤害
+        base_array[index_deal_extra_percent_elemental_damage] -= 25
+
+    # 22400450	百变千蛛（项链）                    1543	千蛛碎影5
+    if '22400450' in equips and '1543' not in set_on:
+        # 五件装备的力智各+100
+        base_array[index_deal_strength_and_intelligence] -= 500
+        # 改五：攻击时额外增加10%的伤害增加量
+        base_array[index_deal_extra_percent_attack_damage] -= 10
+
+        # 一阶段
+        # 攻击时，附加18%的伤害
+        base_array[index_deal_extra_percent_addtional_damage] -= 18
+        # 增加40%最终伤害
+        base_array[index_deal_extra_percent_final_damage] -= 40
+
+        # 三阶段
+        # 技能攻击力+30%
+        base_array[index_deal_extra_percent_skill_attack_power] -= 30
+        # 暴击时，额外增加38%的伤害增加量
+        base_array[index_deal_extra_percent_crit_damage] -= 38
+
+        # 五阶段
+        # 三攻+10%
+        base_array[index_deal_extra_percent_physical_magical_independent_attack_power] -= 10
+        # 力智增加45%
+        base_array[index_deal_extra_percent_strength_and_intelligence] -= 45
+
+    # 22400550	全能霸域（项链）                    1553	霸域英豪5
+    if '22400550' in equips and '1553' not in set_on:
+        # 五件装备的力智各+100
+        base_array[index_deal_strength_and_intelligence] -= 500
+        # 改五：增加10%最终伤害
+        base_array[index_deal_extra_percent_final_damage] -= 10
+
+        # 一阶段
+        # 所有属性强化+50
+        base_array[index_deal_extra_all_element_strength] -= 50
+        # 所有职业50-85所有技能lv+2
+        base_array[index_deal_extra_passive_first_awaken_skill] -= 2
+        base_array[index_deal_extra_passive_second_awaken_skill] -= 2
+        base_array[index_deal_extra_active_skill_lv_50] -= 2
+        base_array[index_deal_extra_active_skill_lv_60_80] -= 2
+        base_array[index_deal_extra_active_skill_lv_85] -= 2
+        # 所有职业100所有技能lv+2
+        base_array[index_deal_extra_active_skill_lv_100] -= 2
+
+        # 三阶段
+        # 力智增加19%
+        base_array[index_deal_extra_percent_strength_and_intelligence] -= 19
+        # 攻击时额外增加22%的伤害增加量
+        base_array[index_deal_extra_percent_attack_damage] -= 22
+        # 技能攻击力+28%
+        base_array[index_deal_extra_percent_skill_attack_power] -= 28
+
+        # 五阶段
+        # 力智增加63%
+        base_array[index_deal_extra_percent_strength_and_intelligence] -= 63
+
+    # 21400640	天衍万物（手镯）                    1562	万物的生灭3
+    if '21400640' in equips and '1562' not in set_on:
+        # 五件装备的力智各+100
+        base_array[index_deal_strength_and_intelligence] -= 300
+        # 改四：暴击时，额外增加8%的伤害增加量
+        base_array[index_deal_extra_percent_crit_damage] -= 8
+
+        # 三阶段
+        # 攻击时，附加13%的伤害
+        base_array[index_deal_extra_percent_addtional_damage] -= 13
+        # 三攻+25%
+        base_array[index_deal_extra_percent_physical_magical_independent_attack_power] -= 25
+
+        # 四阶段
+        # 所有属性强化+60
+        base_array[index_deal_extra_all_element_strength] -= 60
+        # 力智增加37%
+        base_array[index_deal_extra_percent_strength_and_intelligence] -= 37
+
+    # 31400750	全元素水晶（辅助装备）              1573	天劫5
+    if '31400750' in equips and '1573' not in set_on:
+        # 五件装备的力智各+100
+        base_array[index_deal_strength_and_intelligence] -= 500
+        # 改五：增加10%最终伤害
+        base_array[index_deal_extra_percent_final_damage] -= 10
+
+        # 一阶段
+        # 力智增加15%
+        base_array[index_deal_extra_percent_strength_and_intelligence] -= 15
+        # 攻击时，额外增加35%的属性伤害
+        base_array[index_deal_extra_percent_elemental_damage] -= 35
+
+        # 三阶段
+        # 暴击时，额外增加20%的伤害增加量
+        base_array[index_deal_extra_percent_crit_damage] -= 20
+        # 增加26%最终伤害
+        base_array[index_deal_extra_percent_final_damage] -= 26
+
+        # 五阶段
+        # 技能攻击力+10%
+        base_array[index_deal_extra_percent_skill_attack_power] -= 10
+
+    # 31400850	战术之王的战术指挥棒（辅助装备）     1583	 战术之王的御敌5
+    if '31400850' in equips and '1583' not in set_on:
+        # 五件装备的力智各+100
+        base_array[index_deal_strength_and_intelligence] -= 500
+        # 改五：三攻+10%
+        base_array[index_deal_extra_percent_physical_magical_independent_attack_power] -= 10
+
+        # 一阶段
+        # 增加32%最终伤害
+        base_array[index_deal_extra_percent_final_damage] -= 32
+        # 所有职业60-80所有技能lv+3
+        base_array[index_deal_extra_passive_second_awaken_skill] -= 3
+        base_array[index_deal_extra_active_skill_lv_60_80] -= 3
+
+        # 三阶段
+        # 三攻+30%
+        base_array[index_deal_extra_percent_physical_magical_independent_attack_power] -= 30
+        # 技能攻击力+20%
+        base_array[index_deal_extra_percent_skill_attack_power] -= 20
+
+        # 五阶段
+        # 技能攻击力+10%
+        base_array[index_deal_extra_percent_skill_attack_power] -= 10
+
+    if '31400850' not in equips:
+        # 当没有对应智慧产物时，由于对应的提升15级效果没有，所以85的一些光环效果不能生效
+        if '11580' in equips:
+            # 三攻增加80
+            base_array[index_deal_physical_magical_independent_attack_power] -= 80
+        if '12580' in equips:
+            # 暴击率增加12%
+            base_array[index_deal_extra_percent_magic_physical_crit_rate] -= 12
+        if '13580' in equips:
+            # 攻速、移速增加10%
+            base_array[index_deal_extra_percent_attack_speed] -= 10
+            base_array[index_deal_extra_percent_moving_speed] -= 10
+        if '14580' in equips:
+            # 所有属性强化增加20
+            base_array[index_deal_extra_all_element_strength] -= 20
+        if '15580' in equips:
+            # 力智增加120
+            base_array[index_deal_strength_and_intelligence] -= 120
+        if '1583' in set_on:
+            # 力智增加620
+            base_array[index_deal_strength_and_intelligence] -= 620
+            # 攻速、移速增加20%
+            base_array[index_deal_extra_percent_attack_speed] -= 20
+            base_array[index_deal_extra_percent_moving_speed] -= 20
+            # 攻击时，附加40%的伤害
+            base_array[index_deal_extra_percent_addtional_damage] -= 40
+
+    # 31400950	最佳球手之球（辅助装备）            1593	最佳球手的绝杀5
+    if '31400950' in equips and '1593' not in set_on:
+        # 五件装备的力智各+100
+        base_array[index_deal_strength_and_intelligence] -= 500
+        # 改五：力智增加10%
+        base_array[index_deal_extra_percent_strength_and_intelligence] -= 10
+
+        # 一阶段
+        # 暴击时，额外增加35%的伤害增加量
+        base_array[index_deal_extra_percent_crit_damage] -= 35
+        # 攻击时额外增加20%的伤害增加量
+        base_array[index_deal_extra_percent_attack_damage] -= 20
+
+        # 三阶段
+        # 力智增加20%
+        base_array[index_deal_extra_percent_strength_and_intelligence] -= 20
+        # 技能攻击力+20%
+        base_array[index_deal_extra_percent_skill_attack_power] -= 20
+        # 攻击时额外增加10%的伤害增加量
+        base_array[index_deal_extra_percent_attack_damage] -= 10
+
+        # 五阶段
+        # 攻击时，附加65%的伤害
+        base_array[index_deal_extra_percent_addtional_damage] -= 65
+
+    # 31401050	禁断契约书（辅助装备）              1603	誓血之盟5
+    if '31401050' in equips and '1603' not in set_on:
+        # 五件装备的力智各+100
+        base_array[index_deal_strength_and_intelligence] -= 500
+        # 改五：增加10%最终伤害
+        base_array[index_deal_extra_percent_final_damage] -= 10
+
+        # 一阶段
+        # 攻击时额外增加10%的伤害增加量
+        base_array[index_deal_extra_percent_attack_damage] -= 10
+        # 力智增加35%
+        base_array[index_deal_extra_percent_strength_and_intelligence] -= 35
+
+        # 三阶段
+        # 增加5%最终伤害
+        base_array[index_deal_extra_percent_final_damage] -= 5
+        # 力智增加15%
+        base_array[index_deal_extra_percent_strength_and_intelligence] -= 15
+        # 技能攻击力+20%
+        base_array[index_deal_extra_percent_skill_attack_power] -= 20
+        # 攻击时，附加25%的伤害
+        base_array[index_deal_extra_percent_addtional_damage] -= 25
+
+        # 五阶段
+        # 增加27%最终伤害
+        base_array[index_deal_extra_percent_final_damage] -= 27
+        # 暴击时，额外增加50%的伤害增加量
+        base_array[index_deal_extra_percent_crit_damage] -= 50
+
+    # 31401150	聚魔漩涡（辅助装备）                1613	魔战无双5
+    if '31401150' in equips and '1613' not in set_on:
+        # 五件装备的力智各+100
+        base_array[index_deal_strength_and_intelligence] -= 500
+        # 改五：增加10%最终伤害
+        base_array[index_deal_extra_percent_final_damage] -= 10
+
+        # 一阶段
+        # 暴击时，额外增加40%的伤害增加量
+        base_array[index_deal_extra_percent_crit_damage] -= 40
+
+        # 三阶段
+        # 三攻+10%
+        base_array[index_deal_extra_percent_physical_magical_independent_attack_power] -= 10
+        # 技能攻击力+20%
+        base_array[index_deal_extra_percent_skill_attack_power] -= 20
+        # 力智增加33%
+        base_array[index_deal_extra_percent_strength_and_intelligence] -= 33
+
+        # 五阶段
+        # 技能攻击力+40%
+        base_array[index_deal_extra_percent_skill_attack_power] -= 40
+        # 增加8%最终伤害
+        base_array[index_deal_extra_percent_final_damage] -= 8
+
+    if '31401150' not in equips:
+        # 当没有对应智慧产物时，由于对应的提升15级效果没有，所以85的一些效果不能生效
+        if '11610' in equips:
+            # 技能冷却效果-12%
+            base_array[index_deal_cool_correction] += 12 * 0.35
+        if '12610' in equips:
+            # 技能冷却效果-10%
+            base_array[index_deal_cool_correction] += 10 * 0.35
+        # if '13610' in equips:
+        #     pass
+        if '14610' in equips:
+            # 技能冷却效果-10%
+            base_array[index_deal_cool_correction] += 10 * 0.35
+        # if '15610' in equips:
+        #     pass
+        # if '1613' in set_on:
+        #     pass
+
+    # 32401240	冰雪公主结晶（魔法石）              1622	冰雪公主的霜语3
+    if '32401240' in equips and '1622' not in set_on:
+        # 五件装备的力智各+100
+        base_array[index_deal_strength_and_intelligence] -= 300
+        # 改四：暴击时，额外增加8%的伤害增加量
+        base_array[index_deal_extra_percent_crit_damage] -= 8
+
+        # 一阶段
+        # 攻击时额外增加25%的伤害增加量
+        base_array[index_deal_extra_percent_attack_damage] -= 25
+
+        # 三阶段
+        # 技能攻击力+15%
+        base_array[index_deal_extra_percent_skill_attack_power] -= 15
+        # 力智增加22%
+        base_array[index_deal_extra_percent_strength_and_intelligence] -= 22
+        # 增加28%最终伤害
+        base_array[index_deal_extra_percent_final_damage] -= 28
+
+        # 四阶段
+        # 增加58%最终伤害
+        base_array[index_deal_extra_percent_final_damage] -= 58
+
+    # 32401340	扭曲的异界魔石（魔法石）            1632	精炼的异界魔石3
+    if '32401340' in equips and '1632' not in set_on:
+        # 五件装备的力智各+100
+        base_array[index_deal_strength_and_intelligence] -= 300
+        # 改四：攻击时额外增加8%的伤害增加量
+        base_array[index_deal_extra_percent_attack_damage] -= 8
+
+        # 一阶段
+        # 暴击时，额外增加22%的伤害增加量
+        base_array[index_deal_extra_percent_crit_damage] -= 22
+
+        # 三阶段
+        # 攻击时额外增加13%的伤害增加量
+        base_array[index_deal_extra_percent_attack_damage] -= 13
+        # 三攻+40%
+        base_array[index_deal_extra_percent_physical_magical_independent_attack_power] -= 40
+        # 增加20%最终伤害
+        base_array[index_deal_extra_percent_final_damage] -= 20
+
+        # 四阶段
+        # 所有属性强化+57
+        base_array[index_deal_extra_all_element_strength] -= 57
+        # 所有职业1-85所有技能lv+2
+        base_array[index_deal_extra_passive_transfer_skill] -= 2
+        base_array[index_deal_extra_passive_first_awaken_skill] -= 2
+        base_array[index_deal_extra_passive_second_awaken_skill] -= 2
+        base_array[index_deal_extra_active_skill_lv_1_45] -= 2
+        base_array[index_deal_extra_active_skill_lv_50] -= 2
+        base_array[index_deal_extra_active_skill_lv_60_80] -= 2
+        base_array[index_deal_extra_active_skill_lv_85] -= 2
+        # 所有职业100所有技能lv+2
+        base_array[index_deal_extra_active_skill_lv_100] -= 2
+
+    # 32401440	江山如故（魔法石）                  1642	江山如画3
+    if '32401440' in equips and '1642' not in set_on:
+        # 五件装备的力智各+100
+        base_array[index_deal_strength_and_intelligence] -= 300
+        # 改四：增加8%最终伤害
+        base_array[index_deal_extra_percent_final_damage] -= 8
+
+        # 三阶段
+        # 攻击时额外增加14%的伤害增加量
+        base_array[index_deal_extra_percent_attack_damage] -= 14
+        # 暴击时，额外增加28%的伤害增加量
+        base_array[index_deal_extra_percent_crit_damage] -= 28
+
+        # 四阶段
+        # 增加21%最终伤害
+        base_array[index_deal_extra_percent_final_damage] -= 21
+        # 三攻+38%
+        base_array[index_deal_extra_percent_physical_magical_independent_attack_power] -= 38
+
     ################################大幽魂和军神最后处理，且大幽魂要在前面######################################
     # 大幽魂系列
     def get_delta(dark_resistance, dark_resistance_step, attr_step, attr_max):
