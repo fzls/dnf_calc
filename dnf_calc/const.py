@@ -33,19 +33,21 @@ slot_index_to_realname = {
     "33": "耳环",
 }
 
-max_save_equips = 300
+max_save_equips = 1300
 
 # 旧版本自定义存档的列定义
 g_old_col_custom_save_key = 14  # 旧版本中，存档项名所在的列
 g_old_col_custom_save_value_begin = 15  # 旧版本中，各个存档的该存档项所在的列的初始列，加上存档index（0-99）后得到其所在列
 g_old_row_custom_save_start = 0  # 旧版本中，下面的各个行加上这个后得到该存档项最终所在行数
 
+g_old_row_custom_save_start_ver2 = 300  # 第二个旧版本中，下面的各个行加上这个后得到该存档项最终所在行数
+
 # 自定义存档的列定义
 g_col_custom_save_key = 1  # 存档项名所在的列
 g_col_custom_save_value_begin = 2  # 各个存档的该存档项所在的列的初始列，加上存档index（0-99）后得到其所在列
 
 # 自定义存档的行定义
-g_row_custom_save_start = 300  # 各个自定义列对应的存档名所在的那一行，下面的各个行加上这个后得到该存档项最终所在行数
+g_row_custom_save_start = 1300  # 各个自定义列对应的存档名所在的那一行，下面的各个行加上这个后得到该存档项最终所在行数
 g_row_custom_save_save_name = 1  # 存档名
 g_row_custom_save_weapon = 2  # 武器
 g_row_custom_save_job = 3  # 职业选择

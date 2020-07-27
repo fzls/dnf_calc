@@ -1808,30 +1808,30 @@ def save_custom(ele_type, cool_con, cus1, cus2, cus3, cus4, cus6, cus7, cus8, cu
             # 工作服头肩在火属性攻击时会增加火属性属强24点
             db_save_one["L" + get_row("13150")] = 24  # 工作服头肩
             # 天劫裤子增加火属性强化12点
-            db_save_one["L" + get_row("12570")] = 12 # 天劫裤子
+            db_save_one["L" + get_row("12570")] = 12  # 天劫裤子
             # 天御之灾裤子增加火属性强化24点
-            db_save_one["L" + get_row("12530")] = 24 # 天御之灾裤子
+            db_save_one["L" + get_row("12530")] = 24  # 天御之灾裤子
         elif ele_type == '冰':
             # 工作服腰带在冰属性攻击时会增加冰属性属强24点
             db_save_one["L" + get_row("14150")] = 24  # 工作服腰带
             # 天劫上衣增加冰属性强化12点
-            db_save_one["L" + get_row("11570")] = 12 # 天劫上衣
+            db_save_one["L" + get_row("11570")] = 12  # 天劫上衣
             # 天御之灾腰带在冰属性攻击时会增加冰属性属强24点
             db_save_one["L" + get_row("14530")] = 24  # 天御之灾腰带
         elif ele_type == '光':
             # 工作服鞋子在光属性攻击时会增加光属性属强24点
             db_save_one["L" + get_row("15150")] = 24  # 工作服鞋子
             # 天劫头肩增加光属性强化12点
-            db_save_one["L" + get_row("13570")] = 12 # 天劫头肩
+            db_save_one["L" + get_row("13570")] = 12  # 天劫头肩
             # 天御之灾上衣增加光属性强化24点
-            db_save_one["L" + get_row("11530")] = 24 # 天御之灾上衣
+            db_save_one["L" + get_row("11530")] = 24  # 天御之灾上衣
         elif ele_type == '暗':
             # 工作服裤子在暗属性攻击时会增加暗属性属强24点
             db_save_one["L" + get_row("12150")] = 24  # 工作服裤子
             # 天劫腰带增加暗属性强化12点
-            db_save_one["L" + get_row("14570")] = 12 # 天劫腰带
+            db_save_one["L" + get_row("14570")] = 12  # 天劫腰带
             # 天御之灾头肩增加暗属性强化24点
-            db_save_one["L" + get_row("13530")] = 24 # 天御之灾头肩
+            db_save_one["L" + get_row("13530")] = 24  # 天御之灾头肩
 
         # 冷却补正比例
         db_custom1['B2'] = float(cool_con)
@@ -2164,7 +2164,85 @@ def transfer_old_custom_save(sheet_one):
     # 也就是cell(g_old_row_custom_save_start+g_row_custom_save_save_name, g_old_col_custom_save_key)到cell(g_old_row_custom_save_start+g_row_custom_save_save_name+12, g_old_col_custom_save_key+10)
     for row in range(g_old_row_custom_save_start + g_row_custom_save_save_name, g_old_row_custom_save_start + g_row_custom_save_save_name + 12 + 1):
         for col in range(g_old_col_custom_save_key, g_old_col_custom_save_key + 10 + 1):
-            sheet_one.cell(row, col).value = "0"
+            sheet_one.cell(row, col).value = ""
+
+
+def transfer_old_custom_save_ver2(sheet_one):
+    # 第二代旧版本共有config().max_save_count（默认为61）个存档，其自定义存档数据保存在A301到BJ313区域，
+    max_save_count = config().max_save_count
+    for account_index in range(0, max_save_count):
+        ####################################### 读取历史存档的数据 #######################################
+        col_old_custom_save_value = g_col_custom_save_value_begin + account_index
+        # 武器
+        weapons = sheet_one.cell(g_old_row_custom_save_start_ver2 + g_row_custom_save_weapon, col_old_custom_save_value).value or ""
+
+        # 职业
+        job_name = sheet_one.cell(g_old_row_custom_save_start_ver2 + g_row_custom_save_job, col_old_custom_save_value).value
+        if job_name is not None:
+            # 调整名称后，为保证兼容之前的存档，需要替换存档中的名称为新的名字
+            job_name = job_name.replace("(奶系)奶妈", "(奶系)炽天使").replace("(奶系)奶萝", "(奶系)冥月女神").replace("(奶系)奶爸", "(奶系)神思者") \
+                .replace("剑神", "极诣·剑魂").replace("黑暗君主", "极诣·鬼泣").replace("帝血弑天", "极诣·狂战士").replace("天帝", "极诣·阿修罗").replace("夜见罗刹", "极诣·剑影") \
+                .replace("剑皇", "极诣·驭剑士").replace("裁决女神", "极诣·暗殿骑士").replace("弑神者", "极诣·契魔者").replace("剑帝", "极诣·流浪武士") \
+                .replace("铁血教父", "铁血统帅")
+        job_name = job_name or "职业选择"
+
+        # 输出时间
+        shuchu_time = sheet_one.cell(g_old_row_custom_save_start_ver2 + g_row_custom_save_fight_time, col_old_custom_save_value).value or '20秒(觉醒占比↑)'
+
+        # 称号
+        style = sheet_one.cell(g_old_row_custom_save_start_ver2 + g_row_custom_save_title, col_old_custom_save_value).value
+        # 由于调整了国服特色的实现，若找不到之前版本存档的称号，则换为第一个称号
+        if style not in styles():
+            style = styles()[0]
+
+        # 宠物
+        creature = sheet_one.cell(g_old_row_custom_save_start_ver2 + g_row_custom_save_pet, col_old_custom_save_value).value
+        # 由于调整了国服特色的实现，若找不到之前版本存档的称号，则换为第一个称号
+        if creature not in creatures():
+            creature = creatures()[0]
+
+        # 冷却补正
+        cool = sheet_one.cell(g_old_row_custom_save_start_ver2 + g_row_custom_save_cd, col_old_custom_save_value).value or 'X(纯伤害)'
+
+        # 速度设置
+        speed = sheet_one.cell(g_old_row_custom_save_start_ver2 + g_row_custom_save_speed, col_old_custom_save_value).value or '中速'
+
+        # 是否拥有百变怪
+        baibianguai = sheet_one.cell(g_old_row_custom_save_start_ver2 + g_row_custom_save_has_baibianguai, col_old_custom_save_value).value or 'No(没有百变怪)'
+
+        # 可升级的工作服数目
+        can_upgrade_work_unifrom_nums = sheet_one.cell(g_old_row_custom_save_start_ver2 + g_row_custom_save_can_upgrade_work_uniforms_nums, col_old_custom_save_value).value or '材料够升级零件'
+
+        # 跨界的来源账号（存档）列表
+        transfer_equip = sheet_one.cell(g_old_row_custom_save_start_ver2 + g_row_custom_save_transfer_from, col_old_custom_save_value).value or ""
+
+        # 最大可跨界的数目
+        can_transfer_nums = sheet_one.cell(g_old_row_custom_save_start_ver2 + g_row_custom_save_max_transfer_count, col_old_custom_save_value).value or '0'
+
+        # 是否默认将普雷传说加入备选池
+        use_pulei_legend_by_default = sheet_one.cell(g_old_row_custom_save_start_ver2 + g_row_custom_save_use_pulei_legend_by_default, col_old_custom_save_value).value or "不加入备选池"
+
+        ####################################### 保存到新的存档区域 #######################################
+        col_custom_save_value = g_col_custom_save_value_begin + account_index
+        save_my_custom(sheet_one.cell, g_row_custom_save_start + g_row_custom_save_save_name, col_custom_save_value, "存档名", save_name_list[account_index])
+        save_my_custom(sheet_one.cell, g_row_custom_save_start + g_row_custom_save_weapon, col_custom_save_value, "武器", weapons)
+        save_my_custom(sheet_one.cell, g_row_custom_save_start + g_row_custom_save_job, col_custom_save_value, "职业选择", job_name)
+        save_my_custom(sheet_one.cell, g_row_custom_save_start + g_row_custom_save_fight_time, col_custom_save_value, "输出时间", shuchu_time)
+        save_my_custom(sheet_one.cell, g_row_custom_save_start + g_row_custom_save_title, col_custom_save_value, "称号选择", style)
+        save_my_custom(sheet_one.cell, g_row_custom_save_start + g_row_custom_save_pet, col_custom_save_value, "宠物选择", creature)
+        save_my_custom(sheet_one.cell, g_row_custom_save_start + g_row_custom_save_cd, col_custom_save_value, "冷却补正", cool)
+        save_my_custom(sheet_one.cell, g_row_custom_save_start + g_row_custom_save_speed, col_custom_save_value, "选择速度", speed)
+        save_my_custom(sheet_one.cell, g_row_custom_save_start + g_row_custom_save_has_baibianguai, col_custom_save_value, "是否拥有百变怪", baibianguai)
+        save_my_custom(sheet_one.cell, g_row_custom_save_start + g_row_custom_save_can_upgrade_work_uniforms_nums, col_custom_save_value, "材料够升级的工作服数目", can_upgrade_work_unifrom_nums)
+        save_my_custom(sheet_one.cell, g_row_custom_save_start + g_row_custom_save_transfer_from, col_custom_save_value, "跨界来源账户列表", transfer_equip)
+        save_my_custom(sheet_one.cell, g_row_custom_save_start + g_row_custom_save_max_transfer_count, col_custom_save_value, "最大跨界数目", can_transfer_nums)
+        save_my_custom(sheet_one.cell, g_row_custom_save_start + g_row_custom_save_use_pulei_legend_by_default, col_custom_save_value, "是否默认将普雷传说装备加入备选池", use_pulei_legend_by_default)
+
+    ####################################### 清空历史存档区域 #######################################
+    # 也就是cell(g_old_row_custom_save_start_ver2+g_row_custom_save_save_name, g_col_custom_save_key)到cell(g_old_row_custom_save_start_ver2+g_row_custom_save_use_pulei_legend_by_default, g_col_custom_save_key+61)
+    for row in range(g_old_row_custom_save_start_ver2 + g_row_custom_save_save_name, g_old_row_custom_save_start_ver2 + g_row_custom_save_use_pulei_legend_by_default + 1):
+        for col in range(g_col_custom_save_key, g_col_custom_save_key + max_save_count + 1):
+            sheet_one.cell(row, col).value = ""
 
 
 # save_idx为存档的下标，从0到9
@@ -2200,7 +2278,7 @@ def save_checklist():
             opt_save = {}  # 装备按钮的index => 对应的行号（1-263）
             for i in range(1, max_save_equips + 1):
                 equip_index = save_cell(i, 1).value
-                if equip_index is None:
+                if equip_index is None or equip_index == "":
                     continue
                 opt_save[equip_index] = i
 
@@ -2552,8 +2630,18 @@ if __name__ == '__main__':
 
     changed = False
 
-    # 检查是否有新增的存盘项
     sheet_one = load_preset0["one"]
+
+    # 检查存档是否为旧版，若是则平移到新的位置
+
+    # 301行开始为自定义存档内容
+    # 如果存在老版本自定义内容(通过判断N2各自内容是否为 武器 )，先转为新版存档格式
+    if sheet_one.cell(g_old_row_custom_save_start_ver2 + g_row_custom_save_weapon, g_col_custom_save_key).value == "武器":
+        # 转换老存档格式为新存档格式
+        transfer_old_custom_save_ver2(sheet_one)
+        changed = True
+
+    # 检查是否有新增的存盘项
     current_save_equips = set([])
     for i in range(1, max_save_equips + 1):
         equip_index = sheet_one.cell(i, 1).value
@@ -2570,7 +2658,7 @@ if __name__ == '__main__':
     if len(add_save_set) != 0:
         for i in range(1, max_save_equips + 1):
             equip_index = sheet_one.cell(i, 1).value
-            if equip_index is not None:
+            if equip_index is not None and equip_index != "":
                 continue
             add_save = add_save_set.pop()
             sheet_one.cell(i, 1).value = add_save
