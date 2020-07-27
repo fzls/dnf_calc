@@ -78,7 +78,7 @@ def process_deal(step: CalcStepData):
                   (base_array[index_deal_extra_percent_strength_and_intelligence] / 100 + 1) *  # 力智+X%
                   (base_array[index_deal_extra_all_element_strength] * 0.0045 + 1.05) *  # 所有属性强化+X
                   (base_array[index_deal_extra_percent_continued_damage] / 100 + 1) *  # 发生持续伤害5秒，伤害量为对敌人造成伤害的X%
-                  (skiper / 100 + 1) *  # 技能攻击力 +X%
+                  (base_array[index_deal_extra_percent_skill_attack_power] / 100 + 1) *  # 技能攻击力 +X%
                   (base_array[index_deal_extra_percent_special_effect] / 100 + 1) *  # 特殊词条，作者为每个特殊词条打了相应的强度百分比分，如一叶障目对忍者一些技能的特殊改变被认为可以强化9%，守护的抉择（歧路鞋）的护石增强词条被认为可以增强21%
                   actlvl * paslvl *  # 主动技能与被动技能的影响
                   ((54500 + 3.31 * base_array[index_deal_strength_and_intelligence]) / 54500) *  # 力智
