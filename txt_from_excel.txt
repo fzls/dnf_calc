@@ -995,7 +995,7 @@ info,name,stat,att,damper,criper,bonper,elebon,allper,attper,staper,ele,sloper,s
 13550,霸域英豪-头肩,-105,0,0,0,0,0,0,0,0,0,0,0,0,0,7,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1
 14550,霸域英豪-腰带,60,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1
 15550,霸域英豪-鞋子,-105,0,0,0,0,0,0,0,0,0,0,0,0,32,10,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,36,1
-1543,霸域英豪5,220,300,0,0,40,0,0,0,0,0,0,0,0,5,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,5,0
+1553,霸域英豪5,220,300,0,0,40,0,0,0,0,0,0,0,0,5,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,5,0
 31560,万物的生灭-辅助装备,-102,0,0,0,0,0,10,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,1,1,1,1,0,0,0,0,1
 32560,万物的生灭-魔法石,-103,0,0,0,0,0,0,0,0,50,0,10,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1
 33560,万物的生灭-耳环,-103,0,12,12,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1
