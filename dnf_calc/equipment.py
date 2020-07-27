@@ -139,7 +139,8 @@ def is_god(equip):
     return int(equip[-1]) == 1
 
 
-not_set_list=['136','137','138','144','145','146','147','148','149']
+# not_set_list = ['136', '137', '138', '139', '140', '144', '145', '146', '147', '148', '149']
+not_set_list = ['139', '140']
 
 
 def get_set_on(equips):
@@ -153,8 +154,8 @@ def get_set_on(equips):
 
     set_counter = Counter(["1" + str(get_set_name(equips[x])) for x in range(0, 11)])
     for set_code, cnt in set_counter.items():
-        if cnt >1:
-            set_on.append(set_code + str(floor(cnt*0.7)))
+        if cnt > 1:
+            set_on.append(set_code + str(floor(cnt * 0.7)))
         if set_code == "141" and ('21390340' in equips or '31390540' in equips):
             set_on.append('1401')
 
@@ -171,7 +172,7 @@ def get_readable_names(equip_index_to_realname, weapon, equips, huanzhuang_equip
     readable_names.append(equip_index_to_realname[weapon])
 
     # 智慧产物以外的套装信息
-    set_list = ["1" + str(get_set_name(equips[x])) for x in range(0, 11) if get_set_name(equips[x]) not in not_set_list]
+    set_list = ["1" + str(get_set_name(equips[x])) for x in range(0, 11) if "1" + get_set_name(equips[x]) not in not_set_list]
     for set_index, count in sorted(collections.Counter(set_list).most_common(), key=sort_counter_key):
         readable_names.append("{}-{}".format(equip_index_to_realname[set_index], count))
 
