@@ -910,13 +910,13 @@ info,name,stat,att,damper,criper,bonper,elebon,allper,attper,staper,ele,sloper,s
 33430130,+3 轮回·腐蚀之黑色十字耳环,75,0,20,0,20,0,0,0,6,0,0,0,0,0,0,0,0,0,0,0,0,143,0,0,0,0,0,0,0,0,0,0,0,0,0,None,진 : 침식된 검은 십자 귀걸이,None,0,0,0,0,0,0,0,0,1
 33430140,+4 轮回·腐蚀之黑色十字耳环,100,0,20,0,20,0,0,0,8,0,0,0,0,0,0,0,0,0,0,0,0,143,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,0,0,1
 33430150,+5 轮回·腐蚀之黑色十字耳环,125,0,20,0,20,0,0,0,10,0,0,0,0,0,0,0,0,0,0,0,0,143,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,0,0,1
-1411, 轮回·堕落的黑暗之力轻甲2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,0,0,0,0,0,0,0,0,None
-1412, 轮回·堕落的黑暗之力轻甲3,200,0,10,10,0,0,5,12,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,None
-1413, 轮回·堕落的黑暗之力轻甲5,400,0,10,10,20,0,25,12,0,0,0,16,0,0,8,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,None
-1421, 轮回·维度崩坏2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,0,0,0,0,0,0,0,0,None
-1422, 轮回·维度崩坏3,200,0,0,10,10,0,0,13,15,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,None
-1431, 轮回·暗之腐蚀2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,None
-1432, 轮回·暗之腐蚀3,200,0,0,23,16,0,0,0,5,0,0,5,0,0,4,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,None
+1411, 轮回·堕落的黑暗之力轻甲2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,0,0,0,0,0,0,0,0,0
+1412, 轮回·堕落的黑暗之力轻甲3,200,0,10,10,0,0,5,12,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,0
+1413, 轮回·堕落的黑暗之力轻甲5,400,0,10,10,20,0,25,12,0,0,0,16,0,0,8,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,0
+1421, 轮回·维度崩坏2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,0,0,0,0,0,0,0,0,0
+1422, 轮回·维度崩坏3,200,0,0,10,10,0,0,13,15,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,0
+1431, 轮回·暗之腐蚀2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,0
+1432, 轮回·暗之腐蚀3,200,0,0,23,16,0,0,0,5,0,0,5,0,0,4,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,0
 12410,黑暗幽灵紫衫护腿,-100,0,0,0,0,0,0,15,8,22,0,0,0,0,0,0,0,0,0,0,0,136,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,0,0,1
 13410,黑暗幽灵紫衫护肩,-100,0,0,12,0,0,0,0,10,24,0,0,0,0,0,0,0,0,0,0,0,136,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,0,0,1
 14410,黑暗幽灵紫衫腰带,-100,0,0,12,0,0,0,0,10,24,0,0,0,0,0,0,0,0,0,0,0,136,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,0,0,1
@@ -936,13 +936,13 @@ info,name,stat,att,damper,criper,bonper,elebon,allper,attper,staper,ele,sloper,s
 31460,腐蚀之黑色面具,-100,0,15,0,0,0,0,0,0,0,0,13,0,0,0,0,0,0,0,0,0,146,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,0,0,1
 32460,腐蚀之黑色尖角,-100,0,0,13,0,0,0,0,0,0,0,15,0,0,0,0,0,0,0,0,0,146,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,0,0,1
 33460,时空·暗之腐蚀,-100,0,17,0,17,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,146,0,0,0,0,0,0,0,0,0,0,0,0,0,None,차원 : 침식된 검은 십자 귀걸이,None,0,0,0,0,0,0,0,0,1
-1441, 时空·堕落的黑暗之力轻甲2,0,0,0,0,13,0,5,0,0,0,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,0,0,None
-1442, 时空·堕落的黑暗之力轻甲3,0,0,10,10,13,0,5,8,0,0,0,0,0,0,4,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,None
-1443, 时空·堕落的黑暗之力轻甲5,0,0,10,10,20,0,25,8,0,0,0,10,0,0,8,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,None
-1451, 时空·维度崩坏2,0,0,0,0,5,0,0,0,10,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,None
-1452, 时空·维度崩坏3,0,0,0,15,10,0,0,0,10,0,0,8,0,0,3,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,None
-1461, 时空·暗之腐蚀2,0,0,0,5,0,0,0,0,10,0,0,0,0,0,4,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,None
-1462, 时空·暗之腐蚀3,0,0,0,10,13,0,0,0,10,0,0,5,0,0,4,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,None
+1441, 时空·堕落的黑暗之力轻甲2,0,0,0,0,13,0,5,0,0,0,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,0,0,0
+1442, 时空·堕落的黑暗之力轻甲3,0,0,10,10,13,0,5,8,0,0,0,0,0,0,4,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,0
+1443, 时空·堕落的黑暗之力轻甲5,0,0,10,10,20,0,25,8,0,0,0,10,0,0,8,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,0
+1451, 时空·维度崩坏2,0,0,0,0,5,0,0,0,10,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,0
+1452, 时空·维度崩坏3,0,0,0,15,10,0,0,0,10,0,0,8,0,0,3,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,0
+1461, 时空·暗之腐蚀2,0,0,0,5,0,0,0,0,10,0,0,0,0,0,4,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,0
+1462, 时空·暗之腐蚀3,0,0,0,10,13,0,0,0,10,0,0,5,0,0,4,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,0
 11470,超界板甲上衣,-100,0,0,18,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,147,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1
 12470,超界板甲裤子,-100,0,0,0,0,0,0,17,0,0,0,0,0,0,0,0,0,0,0,0,0,147,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1
 13470,超界板甲头肩,-100,0,0,0,0,0,0,0,0,20,0,17,0,0,0,0,0,0,0,0,0,147,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1
@@ -954,18 +954,94 @@ info,name,stat,att,damper,criper,bonper,elebon,allper,attper,staper,ele,sloper,s
 31490,普雷辅助装备,-100,0,15,0,0,0,0,0,0,0,0,8,0,0,0,0,0,0,0,0,0,149,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1
 32490,普雷魔法石,-100,0,0,15,0,0,0,0,0,0,0,15,0,0,0,0,0,0,0,0,0,149,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1
 33490,普雷耳环,-100,0,16,0,16,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,149,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1
-1471,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,0,0,None
-1472,超界板甲3,0,0,0,0,0,0,25,0,0,25,0,0,0,0,10,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,0,0,None
-1473,超界板甲5,0,0,0,0,0,35,25,0,0,25,0,0,0,10,10,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,0,10,None
-1481,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,0,0,None
-1482,普雷首饰3,0,0,0,0,12,0,0,0,12,0,0,8,0,5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,0,5,None
-1491,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,0,0,None
-1492,普雷特殊3,0,0,0,10,0,0,0,0,8,0,0,15,0,5,5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,0,5,None
+1471,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,0,0,0
+1472,超界板甲3,0,0,0,0,0,0,25,0,0,25,0,0,0,0,10,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,0,0,0
+1473,超界板甲5,0,0,0,0,0,35,25,0,0,25,0,0,0,10,10,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,0,10,0
+1481,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,0,0,0
+1482,普雷首饰3,0,0,0,0,12,0,0,0,12,0,0,8,0,5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,0,5,0
+1491,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,0,0,0
+1492,普雷特殊3,0,0,0,10,0,0,0,0,8,0,0,15,0,5,5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,0,5,0
 11390850,+5 无念的仪服（上衣）,0,0,30,0,0,4,0,0,0,0,0,0,0,12,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,무념의 의복,None,0,2,0,2,0,2,0,12,1
 12390950,+5 无形的贞节（裤子）,0,0,0,35,0,0,0,0,0,30,0,0,0,0,0,0,0,0,1,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,무형의 절개,None,0,1,1,1,0,1,0,0,1
 13391050,+5 无意识的花（头肩）,0,0,7,0,0,0,0,0,0,0,0,36.27,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,무의식의 꽃,None,0,0,0,0,0,0,0,0,1
 14391150,+5 无我之轮（腰带）,0,0,0,0,10,0,10,31,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,무아의 고리,None,0,0,0,0,0,0,0,5,1
 15391250,+5 无言的罪恶（鞋）,0,0,0,0,0,0,30,0,22,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,무언의 죄악,None,0,0,0,0,0,0,0,24,1
+11510,逝魔之力-上衣,51,0,0,0,0,0,0,15,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1
+12510,逝魔之力-裤子,51,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1
+13510,逝魔之力-头肩,41,0,0,0,0,0,0,12,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1
+14510,逝魔之力-腰带,31,0,0,0,0,0,0,0,0,0,0,0,0,0,20,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1
+15510,逝魔之力-鞋子,31,0,0,0,0,0,0,0,0,20,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,16,1
+1513,逝魔之力5,0,550,0,0,0,0,0,0,18,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,0
+11520,杀意决-上衣,92,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1
+12520,杀意决-裤子,92,121,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1
+13520,杀意决-头肩,67,66,0,0,0,0,0,0,0,0,0,0,0,15,10,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1
+14520,杀意决-腰带,58,116,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1
+15520,杀意决-鞋子,58,0,0,0,0,0,0,0,0,20,0,0,0,15,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,22,1
+1523,杀意决5,150,0,0,0,35,0,0,0,12,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,0
+11530,天御之灾-上衣,51,74,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1
+12530,天御之灾-裤子,51,74,0,0,0,0,0,0,0,24,0,0,0,0,3,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1
+13530,天御之灾-头肩,41,74,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1
+14530,天御之灾-腰带,31,74,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1
+15530,天御之灾-鞋子,31,74,0,0,0,0,0,0,0,14,0,0,0,8,3,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,12,1
+1533,天御之灾5,0,0,0,0,9,20,0,0,0,40,0,0,0,4,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,4,0
+11540,千蛛碎影-上衣,200,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1
+12540,千蛛碎影-裤子,200,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1
+13540,千蛛碎影-头肩,147,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,1,0,0,0,0,0,0,1
+14540,千蛛碎影-腰带,138,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,1,0,0,0,0,0,0,1
+15540,千蛛碎影-鞋子,138,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,1,0,0,0,0,0,6,1
+1543,千蛛碎影5,0,0,0,0,0,0,0,12,0,0,0,0,0,0,10,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,0
+11550,霸域英豪-上衣,98,100,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1
+12550,霸域英豪-裤子,98,100,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1
+13550,霸域英豪-头肩,34,0,0,0,0,0,0,0,0,0,0,0,0,0,7,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1
+14550,霸域英豪-腰带,190,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1
+15550,霸域英豪-鞋子,25,0,0,0,0,0,0,0,0,0,0,0,0,32,10,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,36,1
+1543,霸域英豪5,220,300,0,0,40,0,0,0,0,0,0,0,0,5,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,5,0
+31560,万物的生灭-辅助装备,44,0,0,0,0,0,10,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,1,1,1,1,0,0,0,0,1
+32560,万物的生灭-魔法石,66,0,0,0,0,0,0,0,0,50,0,10,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1
+33560,万物的生灭-耳环,66,0,12,12,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1
+1562,万物的生灭3,0,0,0,0,0,0,12,0,0,0,0,20,0,0,5,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,0
+11570,天劫-上衣,51,0,0,0,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1
+12570,天劫-裤子,51,0,0,0,0,0,0,0,0,12,0,0,0,0,5,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1
+13570,天劫-头肩,85,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1
+14570,天劫-腰带,75,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1
+15570,天劫-鞋子,75,0,0,0,0,0,0,0,0,30,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,6,1
+1573,天劫5,400,0,0,0,0,0,0,0,0,50,0,18,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,0
+11580,战术之王的御敌-上衣,76,80,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1
+12580,战术之王的御敌-裤子,76,0,0,0,0,0,0,0,0,0,0,0,0,0,12,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1
+13580,战术之王的御敌-头肩,67,0,0,0,0,0,0,0,0,0,0,0,0,10,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,10,1
+14580,战术之王的御敌-腰带,58,0,0,0,0,0,0,0,0,20,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1
+15580,战术之王的御敌-鞋子,178,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,4,1
+1583,战术之王的御敌5,620,0,0,0,55,0,0,0,0,0,0,0,0,20,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,20,0
+11590,最佳球手的绝杀-上衣,144,149,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1
+12590,最佳球手的绝杀-裤子,51,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1
+13590,最佳球手的绝杀-头肩,371,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1
+14590,最佳球手的绝杀-腰带,31,138,0,0,0,0,0,0,0,0,0,0,0,0,15,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1
+15590,最佳球手的绝杀-鞋子,31,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,106,1
+1593,最佳球手的绝杀5,0,0,0,0,0,0,0,40,5,0,0,0,0,30,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,30,0
+11600,誓血之盟-上衣,466,0,0,0,0,0,0,0,0,0,0,0,0,14,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1
+12600,誓血之盟-裤子,46,138,4,0,0,0,0,0,0,0,0,0,0,0,15,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1
+13600,誓血之盟-头肩,120,116,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1
+14600,誓血之盟-腰带,28,100,0,0,0,0,0,5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1
+15600,誓血之盟-鞋子,28,100,0,0,0,0,0,0,0,14,0,0,0,5,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,9,1
+1603,誓血之盟5,0,0,0,0,0,0,0,30,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,0
+11610,魔战无双-上衣,43,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4.199999999999999,12,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1
+12610,魔战无双-裤子,43,0,0,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,0,0,0,0,3.5,10,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,1,0,0,0,5,1
+13610,魔战无双-头肩,34,0,0,0,0,0,0,0,0,0,0,0,0,12,0,0,0,1,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,2,0,0,0,0,0,0,12,1
+14610,魔战无双-腰带,25,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,3.5,10,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,2,0,0,0,0,0,1
+15610,魔战无双-鞋子,113,0,0,0,0,0,0,8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,6,1
+1613,魔战无双5,0,0,0,0,35,0,0,0,0,0,0,20,0,30,0,0,0,0,2,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,1,0,0,0,30,0
+21620,冰雪公主的霜语-手镯,41,0,0,0,0,0,0,0,0,30,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1
+22620,冰雪公主的霜语-项链,41,0,0,0,0,0,0,0,0,22,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1
+23620,冰雪公主的霜语-戒指,62,0,0,0,0,0,0,0,0,30,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1
+1622,冰雪公主的霜语3,0,0,0,0,18,0,0,0,0,50,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,0
+21630,精炼的异界魔石-手镯,96,0,0,0,0,0,0,0,0,0,0,7,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1
+22630,精炼的异界魔石-项链,41,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1
+23630,精炼的异界魔石-戒指,62,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1
+1632,精炼的异界魔石3,0,0,0,0,20,0,0,0,0,18,0,0,0,0,12,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,-23,0,0
+21640,江山如画-手镯,45,0,0,0,0,0,0,0,18,16,0,0,0,5,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,5,1
+22640,江山如画-项链,45,0,0,0,0,0,0,0,0,16,0,18,0,5,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,5,1
+23640,江山如画-戒指,67,0,0,0,0,0,0,18,0,16,0,0,0,5,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,5,1
+1642,江山如画3,0,0,0,0,20,0,0,0,0,0,0,10,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,15,0,0
 套装编号,套装名称,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None
 101,大祭司,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None
 102,魔法师,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None

@@ -1790,24 +1790,48 @@ def save_custom(ele_type, cool_con, cus1, cus2, cus3, cus4, cus6, cus7, cus8, cu
 
         # 属性攻击
         db_custom1['B1'] = ele_type
-        # 大自然防具会根据属性不同部位有不同的属强加成
+        # 大自然防具、天劫套装、天御之灾套装会根据属性不同部位有不同的属强加成
         db_save_one["L" + get_row("12150")] = 0  # 工作服裤子
         db_save_one["L" + get_row("13150")] = 0  # 工作服头肩
         db_save_one["L" + get_row("14150")] = 0  # 工作服腰带
         db_save_one["L" + get_row("15150")] = 0  # 工作服鞋子
+        db_save_one["L" + get_row("11570")] = 0  # 天劫上衣
+        db_save_one["L" + get_row("12570")] = 0  # 天劫裤子
+        db_save_one["L" + get_row("13570")] = 0  # 天劫头肩
+        db_save_one["L" + get_row("14570")] = 0  # 天劫腰带
+        db_save_one["L" + get_row("11530")] = 0  # 天御之灾上衣
+        db_save_one["L" + get_row("12530")] = 0  # 天御之灾裤子
+        db_save_one["L" + get_row("13530")] = 0  # 天御之灾头肩
+        db_save_one["L" + get_row("14530")] = 0  # 天御之灾腰带
 
         if ele_type == '火':
             # 工作服头肩在火属性攻击时会增加火属性属强24点
             db_save_one["L" + get_row("13150")] = 24  # 工作服头肩
+            # 天劫裤子增加火属性强化12点
+            db_save_one["L" + get_row("12570")] = 12 # 天劫裤子
+            # 天御之灾裤子增加火属性强化24点
+            db_save_one["L" + get_row("12530")] = 24 # 天御之灾裤子
         elif ele_type == '冰':
             # 工作服腰带在冰属性攻击时会增加冰属性属强24点
             db_save_one["L" + get_row("14150")] = 24  # 工作服腰带
+            # 天劫上衣增加冰属性强化12点
+            db_save_one["L" + get_row("11570")] = 12 # 天劫上衣
+            # 天御之灾腰带在冰属性攻击时会增加冰属性属强24点
+            db_save_one["L" + get_row("14530")] = 24  # 天御之灾腰带
         elif ele_type == '光':
             # 工作服鞋子在光属性攻击时会增加光属性属强24点
             db_save_one["L" + get_row("15150")] = 24  # 工作服鞋子
+            # 天劫头肩增加光属性强化12点
+            db_save_one["L" + get_row("13570")] = 12 # 天劫头肩
+            # 天御之灾上衣增加光属性强化24点
+            db_save_one["L" + get_row("11530")] = 24 # 天御之灾上衣
         elif ele_type == '暗':
             # 工作服裤子在暗属性攻击时会增加暗属性属强24点
             db_save_one["L" + get_row("12150")] = 24  # 工作服裤子
+            # 天劫腰带增加暗属性强化12点
+            db_save_one["L" + get_row("14570")] = 12 # 天劫腰带
+            # 天御之灾头肩增加暗属性强化24点
+            db_save_one["L" + get_row("13530")] = 24 # 天御之灾头肩
 
         # 冷却补正比例
         db_custom1['B2'] = float(cool_con)
@@ -2477,7 +2501,7 @@ if __name__ == '__main__':
 
         index = row_value[0]
         realname = row_value[1]
-        need_save = row_value[-1] == 1
+        need_save = row_value[48] == 1
 
         name_one[index] = row_value
         equip_index_to_realname[index] = realname
