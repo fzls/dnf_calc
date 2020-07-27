@@ -20,7 +20,12 @@ from .const import *
 
 
 def multiply_entry(old_inc_percent, add_inc_percent):
-    return (old_inc_percent / 100 + 1) * (add_inc_percent / 100 + 1) * 100 - 100
+    if add_inc_percent > 0:
+        return (old_inc_percent / 100 + 1) * (add_inc_percent / 100 + 1) * 100 - 100
+    elif add_inc_percent < 0:
+        return (old_inc_percent / 100 + 1) / (-add_inc_percent / 100 + 1) * 100 - 100
+    else:
+        return old_inc_percent
 
 
 # 获取国服特殊加成属性, job_type = "buf" or "deal"

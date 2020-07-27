@@ -318,7 +318,7 @@ def fix_base_array_for_equip_or_set_requirement(base_array, equips, set_on, conf
         # 攻击时，额外增加30%的伤害增加量
         base_array[index_deal_extra_percent_attack_damage] -= 30
         # 技能攻击力+28
-        base_array[index_deal_extra_percent_skill_attack_power] -= 28
+        base_array[index_deal_extra_percent_skill_attack_power] = multiply_entry(base_array[index_deal_extra_percent_skill_attack_power], -28)
         # 所有属性强化+42
         base_array[index_deal_extra_all_element_strength] -= 42
 
@@ -334,7 +334,7 @@ def fix_base_array_for_equip_or_set_requirement(base_array, equips, set_on, conf
         # 所有职业100所有技能lv+2
         base_array[index_deal_extra_active_skill_lv_100] -= 2
         # 技能攻击力+18%
-        base_array[index_deal_extra_percent_skill_attack_power] -= 18
+        base_array[index_deal_extra_percent_skill_attack_power] = multiply_entry(base_array[index_deal_extra_percent_skill_attack_power], -18)
 
     # 22400250	杀戮之决（项链）                    1523	杀意决5
     if '22400250' in equips and '1523' not in set_on:
@@ -364,7 +364,7 @@ def fix_base_array_for_equip_or_set_requirement(base_array, equips, set_on, conf
 
         # 五阶段
         # 技能攻击力+42%
-        base_array[index_deal_extra_percent_skill_attack_power] -= 42
+        base_array[index_deal_extra_percent_skill_attack_power] = multiply_entry(base_array[index_deal_extra_percent_skill_attack_power], -42)
         # 增加10%最终伤害
         base_array[index_deal_extra_percent_final_damage] -= 10
 
@@ -383,7 +383,7 @@ def fix_base_array_for_equip_or_set_requirement(base_array, equips, set_on, conf
         # 所有属性强化+50
         base_array[index_deal_extra_all_element_strength] -= 50
         # 技能攻击力+20%
-        base_array[index_deal_extra_percent_skill_attack_power] -= 20
+        base_array[index_deal_extra_percent_skill_attack_power] = multiply_entry(base_array[index_deal_extra_percent_skill_attack_power], -20)
         # 三攻+32%
         base_array[index_deal_extra_percent_physical_magical_independent_attack_power] -= 32
 
@@ -408,7 +408,7 @@ def fix_base_array_for_equip_or_set_requirement(base_array, equips, set_on, conf
 
         # 三阶段
         # 技能攻击力+30%
-        base_array[index_deal_extra_percent_skill_attack_power] -= 30
+        base_array[index_deal_extra_percent_skill_attack_power] = multiply_entry(base_array[index_deal_extra_percent_skill_attack_power], -30)
         # 暴击时，额外增加38%的伤害增加量
         base_array[index_deal_extra_percent_crit_damage] -= 38
 
@@ -443,7 +443,7 @@ def fix_base_array_for_equip_or_set_requirement(base_array, equips, set_on, conf
         # 攻击时额外增加22%的伤害增加量
         base_array[index_deal_extra_percent_attack_damage] -= 22
         # 技能攻击力+28%
-        base_array[index_deal_extra_percent_skill_attack_power] -= 28
+        base_array[index_deal_extra_percent_skill_attack_power] = multiply_entry(base_array[index_deal_extra_percent_skill_attack_power], -28)
 
         # 五阶段
         # 力智增加63%
@@ -489,7 +489,7 @@ def fix_base_array_for_equip_or_set_requirement(base_array, equips, set_on, conf
 
         # 五阶段
         # 技能攻击力+10%
-        base_array[index_deal_extra_percent_skill_attack_power] -= 10
+        base_array[index_deal_extra_percent_skill_attack_power] = multiply_entry(base_array[index_deal_extra_percent_skill_attack_power], -10)
 
     # 31400850	战术之王的战术指挥棒（辅助装备）     1583	 战术之王的御敌5
     if '31400850' in equips and '1583' not in set_on:
@@ -509,11 +509,11 @@ def fix_base_array_for_equip_or_set_requirement(base_array, equips, set_on, conf
         # 三攻+30%
         base_array[index_deal_extra_percent_physical_magical_independent_attack_power] -= 30
         # 技能攻击力+20%
-        base_array[index_deal_extra_percent_skill_attack_power] -= 20
+        base_array[index_deal_extra_percent_skill_attack_power] = multiply_entry(base_array[index_deal_extra_percent_skill_attack_power], -20)
 
         # 五阶段
         # 技能攻击力+10%
-        base_array[index_deal_extra_percent_skill_attack_power] -= 10
+        base_array[index_deal_extra_percent_skill_attack_power] = multiply_entry(base_array[index_deal_extra_percent_skill_attack_power], -10)
 
     if '31400850' not in equips:
         # 当没有对应智慧产物时，由于对应的提升15级效果没有，所以85的一些光环效果不能生效
@@ -559,7 +559,7 @@ def fix_base_array_for_equip_or_set_requirement(base_array, equips, set_on, conf
         # 力智增加20%
         base_array[index_deal_extra_percent_strength_and_intelligence] -= 20
         # 技能攻击力+20%
-        base_array[index_deal_extra_percent_skill_attack_power] -= 20
+        base_array[index_deal_extra_percent_skill_attack_power] = multiply_entry(base_array[index_deal_extra_percent_skill_attack_power], -20)
         # 攻击时额外增加10%的伤害增加量
         base_array[index_deal_extra_percent_attack_damage] -= 10
 
@@ -586,7 +586,7 @@ def fix_base_array_for_equip_or_set_requirement(base_array, equips, set_on, conf
         # 力智增加15%
         base_array[index_deal_extra_percent_strength_and_intelligence] -= 15
         # 技能攻击力+20%
-        base_array[index_deal_extra_percent_skill_attack_power] -= 20
+        base_array[index_deal_extra_percent_skill_attack_power] = multiply_entry(base_array[index_deal_extra_percent_skill_attack_power], -20)
         # 攻击时，附加25%的伤害
         base_array[index_deal_extra_percent_addtional_damage] -= 25
 
@@ -611,13 +611,13 @@ def fix_base_array_for_equip_or_set_requirement(base_array, equips, set_on, conf
         # 三攻+10%
         base_array[index_deal_extra_percent_physical_magical_independent_attack_power] -= 10
         # 技能攻击力+20%
-        base_array[index_deal_extra_percent_skill_attack_power] -= 20
+        base_array[index_deal_extra_percent_skill_attack_power] = multiply_entry(base_array[index_deal_extra_percent_skill_attack_power], -20)
         # 力智增加33%
         base_array[index_deal_extra_percent_strength_and_intelligence] -= 33
 
         # 五阶段
         # 技能攻击力+40%
-        base_array[index_deal_extra_percent_skill_attack_power] -= 40
+        base_array[index_deal_extra_percent_skill_attack_power] = multiply_entry(base_array[index_deal_extra_percent_skill_attack_power], -40)
         # 增加8%最终伤害
         base_array[index_deal_extra_percent_final_damage] -= 8
 
@@ -652,7 +652,7 @@ def fix_base_array_for_equip_or_set_requirement(base_array, equips, set_on, conf
 
         # 三阶段
         # 技能攻击力+15%
-        base_array[index_deal_extra_percent_skill_attack_power] -= 15
+        base_array[index_deal_extra_percent_skill_attack_power] = multiply_entry(base_array[index_deal_extra_percent_skill_attack_power], -15)
         # 力智增加22%
         base_array[index_deal_extra_percent_strength_and_intelligence] -= 22
         # 增加28%最终伤害
@@ -788,7 +788,7 @@ def fix_base_array_for_equip_or_set_requirement(base_array, equips, set_on, conf
             # 每10点暗属性抗性，暴击时额外增加5 % 的伤害增加量。（最多增加35 %）
             base_array[index_deal_extra_percent_crit_damage] -= get_delta(dr, 10, 5, 35)
             # 每10点暗属性抗性，增加1 % 的技能攻击力。（最多增加7 %）
-            base_array[index_deal_extra_percent_skill_attack_power] -= get_delta(dr, 10, 1, 7)
+            base_array[index_deal_extra_percent_skill_attack_power] = multiply_entry(base_array[index_deal_extra_percent_skill_attack_power], -get_delta(dr, 10, 1, 7))
         # 黑魔法2件套1241
         if "1241" in set_on or "1242" in set_on:
             # 暗属性抗性高于76时，攻击时额外增加12%的伤害增加量
@@ -796,7 +796,7 @@ def fix_base_array_for_equip_or_set_requirement(base_array, equips, set_on, conf
                 base_array[index_deal_extra_percent_attack_damage] -= 12
             # 暗属性抗性高于76时，技能攻击力+10%
             if dr < 76:
-                base_array[index_deal_extra_percent_skill_attack_power] -= 10
+                base_array[index_deal_extra_percent_skill_attack_power] = multiply_entry(base_array[index_deal_extra_percent_skill_attack_power], -10)
         # 黑魔法3件套1242
         if "1242" in set_on:
             # 每16点暗属性抗性，增加2%的物理、魔法暴击率。（最多增加10%）
@@ -837,7 +837,7 @@ def fix_base_array_for_equip_or_set_requirement(base_array, equips, set_on, conf
         # 求道者3件套1322
         if "1322" in set_on:
             # 每7点暗属性抗性，增加4%的技能攻击力。（最多增加16%）
-            base_array[index_deal_extra_percent_skill_attack_power] -= get_delta(dr, 7, 4, 16)
+            base_array[index_deal_extra_percent_skill_attack_power] = multiply_entry(base_array[index_deal_extra_percent_skill_attack_power], -get_delta(dr, 7, 4, 16))
             # 每7点暗属性抗性，增加10点所有属性强化。（最大增加40点）
             base_array[index_deal_extra_all_element_strength] -= get_delta(dr, 7, 10, 40)
 
