@@ -2418,7 +2418,6 @@ def display_realtime_counting_info():
             time.sleep(1)
         except Exception as e:
             logger.warning("display_realtime_counting_info except: {}".format(e))
-            raise e
 
 
 # 启动时自动读取第一个配置
