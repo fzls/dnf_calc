@@ -138,6 +138,10 @@ def get_set_name(equip):
 def is_god(equip):
     return int(equip[-1]) == 1
 
+# 武器编号固定为6位，且前三位限定为111，如111001表示夜雨黑瞳武器
+def is_weapon(equip):
+    return len(equip) == 6 and equip[0:3] == "111"
+
 
 # not_set_list = ['136', '137', '138', '139', '140', '144', '145', '146', '147', '148', '149']
 not_set_list = ['139', '140']

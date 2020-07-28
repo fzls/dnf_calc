@@ -2594,7 +2594,7 @@ if __name__ == '__main__':
     db_job = load_excel1["lvl"]
     # 角色可以使用的武器类型列表
     opt_job_allowed_weapon_types = {}
-    all_job_can_use_weapon_types = ["夜雨黑瞳武器"]
+    all_job_can_use_weapon_types = ["夜雨黑瞳武器", "原初之梦武器（输出改5/奶系改3）"]
     # 角色的属强信息：0-属强，1-树强成长
     opt_job_ele = {}
     # 角色的数据
@@ -3124,12 +3124,11 @@ if __name__ == '__main__':
 
     wep_list = []
     wep_name_to_index = {}
-    for i in range(0, 76):
-        wep_index = name_one[str(i + 111001)][0]
-        wep_name = name_one[str(i + 111001)][1]
-
-        wep_list.append(wep_name)
-        wep_name_to_index[wep_name] = wep_index
+    for equip_index, name in equip_index_to_realname.items():
+        if not is_weapon(str(equip_index)):
+            continue
+        wep_list.append(name)
+        wep_name_to_index[name] = equip_index
 
     # 输出时间
     shuchu_times = ['20秒(觉醒占比↑)', '60秒(觉醒占比↓)']
