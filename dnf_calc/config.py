@@ -694,12 +694,12 @@ class MiscConfig(ConfigInterface):
         self.check_dayouhun_dark_resistance = True
         # 是否检查军神的移速要求
         self.check_junshen_moving_speed = True
-        # 是否启用负数的装备补正配置，默认打开
+        # 是否启用负数的装备补正配置，默认关闭
         # 可设置相关装备的补正信息，如与满品级差的力智、三攻等，以及神话词条的差距。
         # 关闭时可以将所有装备都当做满属性处理，忽视自定义特色中设置的负补正属性，正的属性将继续应用。前者如比满品级少2点智力，后者如设置各个不同武器的不同打造，比如+13的法杖和+12的魔杖
-        self.use_negative_equip_fixup_setting = True
-        # 是否启用换装槽位补正配置，默认打开
-        self.use_huanzhuang_slot_fixup = True
+        self.use_negative_equip_fixup_setting = False
+        # 是否启用换装槽位补正配置，默认关闭
+        self.use_huanzhuang_slot_fixup = False
 
 
 class Config(ConfigInterface):
