@@ -27,6 +27,9 @@ def multiply_entry(old_inc_percent, add_inc_percent):
     else:
         return old_inc_percent
 
+def use_max_entry(old_inc_percent, add_inc_percent):
+    return max(old_inc_percent, add_inc_percent)
+
 
 # 获取国服特殊加成属性, job_type = "buf" or "deal"
 def add_bonus_attributes_to_base_array(job_type, base_array, style, creature, save_name, equip_fixup, equip_index_to_realname, huanzhuang_slot_fixup):
@@ -61,6 +64,9 @@ def add_bonus_attributes_to_base_array(job_type, base_array, style, creature, sa
                         if entry_index in deal_multiply_entry_indexes:
                             # 需要乘算
                             base_array[entry_index] = multiply_entry(base_array[entry_index], entry_value)
+                        elif entry_index in deal_use_max_entry_indexes:
+                            # 输出词条取最高值的词条，如黄字和爆伤，最终效果为所有该词条中最大的那个值
+                            base_array[entry_index] = use_max_entry(base_array[entry_index], entry_value)
                         else:
                             # 其余加算
                             if name == "extra_all_job_all_active_skill_lv_1_30" and entry_index == index_deal_extra_active_skill_lv_1_45:

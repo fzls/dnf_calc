@@ -96,8 +96,15 @@ index_deal_extra_percent_moving_speed = 29  # 29-AV-moving_speed-移速
 index_deal_increase_percent_attack_damage = 30  # 30-AX-attack_damage-攻击时，增加X%的伤害（黄字）
 index_deal_increase_percent_crit_damage = 31  # 31-AY-crit_damage-暴击时，增加X%的伤害（爆伤）
 
+# 输出职业乘算的词条
 deal_multiply_entry_indexes = [
     index_deal_extra_percent_skill_attack_power
+]
+
+# 输出词条取最高值的词条，如黄字和爆伤，最终效果为所有该词条中最大的那个值
+deal_use_max_entry_indexes = [
+    index_deal_increase_percent_attack_damage,
+    index_deal_increase_percent_crit_damage,
 ]
 
 deal_entry_index_to_name = {
@@ -165,6 +172,7 @@ index_buf_bless_extra_physical_attack_power = 25  # 25-AB-仅用于辟邪玉:[�
 index_buf_bless_extra_magical_attack_power = 26  # 26-AC-仅用于辟邪玉:[荣誉祝福]、[勇气祝福]、[禁忌诅咒]魔法攻击力增加量 +X
 index_buf_bless_extra_independent_attack_power = 27  # 27-AD-仅用于辟邪玉:[荣誉祝福]、[勇气祝福]、[禁忌诅咒]独立攻击力增加量 +X
 
+# 奶系职业乘算的词条
 buf_multiply_entry_indexes = [
     index_buf_bless_extra_percent_strength_and_intelligence,
     index_buf_bless_extra_percent_physical_attack_power,

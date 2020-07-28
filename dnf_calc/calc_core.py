@@ -35,6 +35,9 @@ def process_deal(step: CalcStepData):
         base_array = data.base_array_with_deal_bonus_attributes.copy()
         # 获取加成后的技攻
         skiper = base_array[index_deal_extra_percent_skill_attack_power]
+        # 取最高值的词条：黄字和爆伤
+        attack_damage = base_array[index_deal_increase_percent_attack_damage]
+        crit_damage = base_array[index_deal_increase_percent_crit_damage]
         # 计算加算词条和乘算词条最终值
         for idx in range(len(for_calc)):
             # 获取装备属性
@@ -45,14 +48,22 @@ def process_deal(step: CalcStepData):
             base_array = base_array + cut
             # 乘算部分
             skiper = multiply_entry(skiper, cut[index_deal_extra_percent_skill_attack_power])
+            # 取最高值的词条
+            attack_damage = use_max_entry(attack_damage, cut[index_deal_increase_percent_attack_damage])
+            crit_damage = use_max_entry(crit_damage, cut[index_deal_increase_percent_crit_damage])
 
         # 为乘算的词条赋最终值
         base_array[index_deal_extra_percent_skill_attack_power] = skiper  # 技能攻击力 +X%
+        # 取最高值的词条
+        base_array[index_deal_increase_percent_attack_damage] = attack_damage
+        base_array[index_deal_increase_percent_crit_damage] = crit_damage
 
         #################################计算各种特殊条件触发的属性#################################
         fix_base_array_for_equip_or_set_requirement(base_array, equips, set_on, step.config)
 
         #################################核心计算公式#################################
+        final_attack_damage = base_array[index_deal_increase_percent_attack_damage] + base_array[index_deal_extra_percent_attack_damage]
+        final_crit_damage = base_array[index_deal_increase_percent_crit_damage] + base_array[index_deal_extra_percent_crit_damage]
 
         real_bon = (base_array[index_deal_extra_percent_addtional_damage] +  # 攻击时，附加X%的伤害，也就是白字
                     base_array[index_deal_extra_percent_elemental_damage] *  # 攻击时，附加X%的属性伤害
@@ -70,8 +81,8 @@ def process_deal(step: CalcStepData):
                   ((100 + base_array[index_deal_extra_passive_second_awaken_skill] * data.job_pas2) / 100) *  # 增加二觉被动的等级
                   ((100 + base_array[index_deal_extra_passive_third_awaken_skill] * data.job_pas3) / 100)  # 增加三觉被动的等级
                   )
-        damage = ((base_array[index_deal_extra_percent_attack_damage] / 100 + 1) *  # 攻击时额外增加X%的伤害增加量
-                  (base_array[index_deal_extra_percent_crit_damage] / 100 + 1) *  # 暴击时，额外增加X%的伤害增加量
+        damage = ((final_attack_damage / 100 + 1) *  # 攻击时额外增加X%的伤害增加量
+                  (final_crit_damage / 100 + 1) *  # 暴击时，额外增加X%的伤害增加量
                   (real_bon / 100 + 1) *  # 白字与属强的最终综合值
                   (base_array[index_deal_extra_percent_final_damage] / 100 + 1) *  # 最终伤害+X%
                   (base_array[index_deal_extra_percent_physical_magical_independent_attack_power] / 100 + 1) *  # 物理/魔法/独立攻击力 +X%
