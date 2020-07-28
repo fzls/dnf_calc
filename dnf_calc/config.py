@@ -129,6 +129,337 @@ class LayoutConfig(ConfigInterface):
                 equip_block_info_config.auto_update_config(cfg)
                 self.equip_block_infos.append(equip_block_info_config)
 
+    def use_default_equip_block_infos(self):
+        self.equip_block_infos = []
+
+        b1 = EquipBlockInfoConfig()
+        b1.name = "各类智慧产物及85ss和95鸟背特殊首饰"
+        b1.type = EquipBlockType_Nested
+        b1.topleft_x = 302
+        b1.topleft_y = 510
+        b1.set_index = "139"
+        b1.show_on_startup = True
+        b1.nested_block = LayoutConfig()
+        b1.nested_block.title = "各类智慧产物及85ss和95鸟背特殊首饰"
+        b1.nested_block.window_width = 560
+        b1.nested_block.window_height = 310
+        b1.nested_block.window_x_offset = 750
+        b1.nested_block.window_y_offset = 0
+        b1.nested_block.window_width_resizable = True
+        b1.nested_block.window_height_resizable = True
+        b11 = EquipBlockInfoConfig()
+        b11.name = "普通智慧产物"
+        b11.type = EquipBlockType_Single
+        b11.topleft_x = 10
+        b11.topleft_y = 5
+        b11.set_icon_width = 102
+        b11.set_equip_icon_height = 30
+        b11.equip_icon_width = 31
+        b11.set_index = "139"
+        b11.equips = [13390150, 22390240, 21390340, 23390450, 31390540, 32390650, 33390750, 11390850, 12390950, 13391050, 14391150, 15391250]
+        b1.nested_block.equip_block_infos.append(b11)
+        b11 = EquipBlockInfoConfig()
+        b11.name = "85ss智慧产物"
+        b11.type = EquipBlockType_Single
+        b11.topleft_x = 10
+        b11.topleft_y = 45
+        b11.set_icon_width = 102
+        b11.set_equip_icon_height = 30
+        b11.equip_icon_width = 31
+        b11.set_index = "140"
+        b11.equips = [22400150, 22400250, 22400350, 22400450, 22400550, 21400640, 31400750, 31400850, 31400950, 31401050, 31401150, 32401240, 32401340, 32401440]
+        b1.nested_block.equip_block_infos.append(b11)
+        b11 = EquipBlockInfoConfig()
+        b11.name = "85ss-防具A"
+        b11.type = EquipBlockType_Set
+        b11.topleft_x = 10
+        b11.topleft_y = 85
+        b11.set_icon_width = 102
+        b11.set_equip_icon_height = 30
+        b11.equip_icon_width = 31
+        b11.set_code_start = 51
+        b11.set_code_end = 55
+        b11.slot_orders = [(11, 0), (13, 0), (12, 0), (15, 0), (14, 0)]
+        b1.nested_block.equip_block_infos.append(b11)
+        b11 = EquipBlockInfoConfig()
+        b11.name = "万物的生灭"
+        b11.type = EquipBlockType_Set
+        b11.topleft_x = 10
+        b11.topleft_y = 245
+        b11.set_icon_width = 102
+        b11.set_equip_icon_height = 30
+        b11.equip_icon_width = 31
+        b11.set_code_start = 56
+        b11.set_code_end = 56
+        b11.slot_orders = [(31, 0), (32, 0), (33, 0)]
+        b1.nested_block.equip_block_infos.append(b11)
+        b11 = EquipBlockInfoConfig()
+        b11.name = "85ss-防具B"
+        b11.type = EquipBlockType_Set
+        b11.topleft_x = 290
+        b11.topleft_y = 85
+        b11.set_icon_width = 102
+        b11.set_equip_icon_height = 30
+        b11.equip_icon_width = 31
+        b11.set_code_start = 57
+        b11.set_code_end = 61
+        b11.slot_orders = [(11, 0), (13, 0), (12, 0), (15, 0), (14, 0)]
+        b1.nested_block.equip_block_infos.append(b11)
+        b11 = EquipBlockInfoConfig()
+        b11.name = "85ss-首饰"
+        b11.type = EquipBlockType_Set
+        b11.topleft_x = 290
+        b11.topleft_y = 245
+        b11.set_icon_width = 102
+        b11.set_equip_icon_height = 30
+        b11.equip_icon_width = 31
+        b11.set_code_start = 62
+        b11.set_code_end = 63
+        b11.slot_orders = [(22, 0), (21, 0), (23, 0)]
+        b1.nested_block.equip_block_infos.append(b11)
+        b11 = EquipBlockInfoConfig()
+        b11.name = "江山如画"
+        b11.type = EquipBlockType_Set
+        b11.topleft_x = 10
+        b11.topleft_y = 275
+        b11.set_icon_width = 102
+        b11.set_equip_icon_height = 30
+        b11.equip_icon_width = 31
+        b11.set_code_start = 64
+        b11.set_code_end = 64
+        b11.slot_orders = [(22, 0), (21, 0), (23, 0)]
+        b1.nested_block.equip_block_infos.append(b11)
+        self.equip_block_infos.append(b1)
+
+        b1 = EquipBlockInfoConfig()
+        b1.name = "轮回系列"
+        b1.type = EquipBlockType_Nested
+        b1.topleft_x = 410
+        b1.topleft_y = 510
+        b1.set_index = "141"
+        b1.show_on_startup = True
+        b1.nested_block = LayoutConfig()
+        b1.nested_block.title = "轮回系列"
+        b1.nested_block.window_width = 560
+        b1.nested_block.window_height = 120
+        b1.nested_block.window_x_offset = 750
+        b1.nested_block.window_y_offset = 350
+        b1.nested_block.window_width_resizable = True
+        b1.nested_block.window_height_resizable = True
+        b11 = EquipBlockInfoConfig()
+        b11.name = "轮回防具"
+        b11.type = EquipBlockType_Single
+        b11.topleft_x = 10
+        b11.topleft_y = 5
+        b11.set_icon_width = 102
+        b11.set_equip_icon_height = 30
+        b11.equip_icon_width = 31
+        b11.set_index = "141"
+        b11.equips = [11410100, 11410110, 11410120, 11410130, 11410140, 11410150, 13410, 12410, 15410, 14410]
+        b1.nested_block.equip_block_infos.append(b11)
+        b11 = EquipBlockInfoConfig()
+        b11.name = "轮回首饰"
+        b11.type = EquipBlockType_Single
+        b11.topleft_x = 10
+        b11.topleft_y = 45
+        b11.set_icon_width = 102
+        b11.set_equip_icon_height = 30
+        b11.equip_icon_width = 31
+        b11.set_index = "142"
+        b11.equips = [21420100, 21420110, 21420120, 21420130, 21420140, 21420150, 22420, 23420]
+        b1.nested_block.equip_block_infos.append(b11)
+        b11 = EquipBlockInfoConfig()
+        b11.name = "轮回特殊装备"
+        b11.type = EquipBlockType_Single
+        b11.topleft_x = 10
+        b11.topleft_y = 85
+        b11.set_icon_width = 102
+        b11.set_equip_icon_height = 30
+        b11.equip_icon_width = 31
+        b11.set_index = "143"
+        b11.equips = [33430100, 33430110, 33430120, 33430130, 33430140, 33430150, 31430, 32430]
+        b1.nested_block.equip_block_infos.append(b11)
+        self.equip_block_infos.append(b1)
+
+        b1 = EquipBlockInfoConfig()
+        b1.name = "时空系列"
+        b1.type = EquipBlockType_Nested
+        b1.topleft_x = 518
+        b1.topleft_y = 510
+        b1.set_index = "144"
+        b1.show_on_startup = True
+        b1.nested_block = LayoutConfig()
+        b1.nested_block.title = "时空系列"
+        b1.nested_block.window_width = 275
+        b1.nested_block.window_height = 120
+        b1.nested_block.window_x_offset = 750
+        b1.nested_block.window_y_offset = 510
+        b1.nested_block.window_width_resizable = True
+        b1.nested_block.window_height_resizable = True
+        b11 = EquipBlockInfoConfig()
+        b11.name = "时空防具"
+        b11.type = EquipBlockType_Set
+        b11.topleft_x = 10
+        b11.topleft_y = 5
+        b11.set_icon_width = 102
+        b11.set_equip_icon_height = 30
+        b11.equip_icon_width = 31
+        b11.set_code_start = 44
+        b11.set_code_end = 44
+        b11.slot_orders = [(11, 0), (13, 0), (12, 0), (15, 0), (14, 0)]
+        b1.nested_block.equip_block_infos.append(b11)
+        b11 = EquipBlockInfoConfig()
+        b11.name = "时空首饰"
+        b11.type = EquipBlockType_Set
+        b11.topleft_x = 10
+        b11.topleft_y = 45
+        b11.set_icon_width = 102
+        b11.set_equip_icon_height = 30
+        b11.equip_icon_width = 31
+        b11.set_code_start = 45
+        b11.set_code_end = 45
+        b11.slot_orders = [(22, 0), (21, 0), (23, 0)]
+        b1.nested_block.equip_block_infos.append(b11)
+        b11 = EquipBlockInfoConfig()
+        b11.name = "时空特殊装备"
+        b11.type = EquipBlockType_Set
+        b11.topleft_x = 10
+        b11.topleft_y = 85
+        b11.set_icon_width = 102
+        b11.set_equip_icon_height = 30
+        b11.equip_icon_width = 31
+        b11.set_code_start = 46
+        b11.set_code_end = 46
+        b11.slot_orders = [(31, 0), (32, 0), (33, 0)]
+        b1.nested_block.equip_block_infos.append(b11)
+        self.equip_block_infos.append(b1)
+
+        b1 = EquipBlockInfoConfig()
+        b1.name = "超界普雷"
+        b1.type = EquipBlockType_Nested
+        b1.topleft_x = 302
+        b1.topleft_y = 540
+        b1.set_index = "147"
+        b1.show_on_startup = True
+        b1.nested_block = LayoutConfig()
+        b1.nested_block.title = "超界普雷系列"
+        b1.nested_block.window_width = 275
+        b1.nested_block.window_height = 120
+        b1.nested_block.window_x_offset = 1035
+        b1.nested_block.window_y_offset = 510
+        b1.nested_block.window_width_resizable = True
+        b1.nested_block.window_height_resizable = True
+        b11 = EquipBlockInfoConfig()
+        b11.name = "超界板甲"
+        b11.type = EquipBlockType_Set
+        b11.topleft_x = 10
+        b11.topleft_y = 5
+        b11.set_icon_width = 102
+        b11.set_equip_icon_height = 30
+        b11.equip_icon_width = 31
+        b11.set_code_start = 47
+        b11.set_code_end = 47
+        b11.slot_orders = [(11, 0), (13, 0), (12, 0), (15, 0), (14, 0)]
+        b1.nested_block.equip_block_infos.append(b11)
+        b11 = EquipBlockInfoConfig()
+        b11.name = "普雷首饰"
+        b11.type = EquipBlockType_Set
+        b11.topleft_x = 10
+        b11.topleft_y = 45
+        b11.set_icon_width = 102
+        b11.set_equip_icon_height = 30
+        b11.equip_icon_width = 31
+        b11.set_code_start = 48
+        b11.set_code_end = 48
+        b11.slot_orders = [(22, 0), (21, 0), (23, 0)]
+        b1.nested_block.equip_block_infos.append(b11)
+        b11 = EquipBlockInfoConfig()
+        b11.name = "普雷特殊"
+        b11.type = EquipBlockType_Set
+        b11.topleft_x = 10
+        b11.topleft_y = 85
+        b11.set_icon_width = 102
+        b11.set_equip_icon_height = 30
+        b11.equip_icon_width = 31
+        b11.set_code_start = 49
+        b11.set_code_end = 49
+        b11.slot_orders = [(31, 0), (32, 0), (33, 0)]
+        b1.nested_block.equip_block_infos.append(b11)
+        self.equip_block_infos.append(b1)
+
+        b1 = EquipBlockInfoConfig()
+        b1.name = "防具五件套"
+        b1.type = EquipBlockType_Set
+        b1.topleft_x = 29
+        b1.topleft_y = 100
+        b1.set_icon_width = 71
+        b1.set_equip_icon_height = 30
+        b1.equip_icon_width = 31
+        b1.set_code_start = 1
+        b1.set_code_end = 15
+        b1.slot_orders = [(11, 1), (11, 0), (13, 0), (12, 0), (15, 0), (14, 0)]
+        self.equip_block_infos.append(b1)
+        b1 = EquipBlockInfoConfig()
+        b1.name = "首饰"
+        b1.type = EquipBlockType_Set
+        b1.topleft_x = 287
+        b1.topleft_y = 100
+        b1.set_icon_width = 71
+        b1.set_equip_icon_height = 30
+        b1.equip_icon_width = 31
+        b1.set_code_start = 16
+        b1.set_code_end = 19
+        b1.slot_orders = [(21, 1), (22, 0), (21, 0), (23, 0)]
+        self.equip_block_infos.append(b1)
+        b1 = EquipBlockInfoConfig()
+        b1.name = "特殊装备"
+        b1.type = EquipBlockType_Set
+        b1.topleft_x = 483
+        b1.topleft_y = 100
+        b1.set_icon_width = 71
+        b1.set_equip_icon_height = 30
+        b1.equip_icon_width = 31
+        b1.set_code_start = 20
+        b1.set_code_end = 23
+        b1.slot_orders = [(33, 1), (31, 0), (32, 0), (33, 0)]
+        self.equip_block_infos.append(b1)
+        b1 = EquipBlockInfoConfig()
+        b1.name = "散件（中）"
+        b1.type = EquipBlockType_Set
+        b1.topleft_x = 225
+        b1.topleft_y = 570
+        b1.set_icon_width = 71
+        b1.set_equip_icon_height = 30
+        b1.equip_icon_width = 31
+        b1.set_code_start = 24
+        b1.set_code_end = 27
+        b1.slot_orders = [(21, 1), (12, 0), (21, 0), (32, 0)]
+        self.equip_block_infos.append(b1)
+        b1 = EquipBlockInfoConfig()
+        b1.name = "散件（左）"
+        b1.type = EquipBlockType_Set
+        b1.topleft_x = 29
+        b1.topleft_y = 570
+        b1.set_icon_width = 71
+        b1.set_equip_icon_height = 30
+        b1.equip_icon_width = 31
+        b1.set_code_start = 28
+        b1.set_code_end = 31
+        b1.slot_orders = [(11, 1), (11, 0), (22, 0), (31, 0)]
+        self.equip_block_infos.append(b1)
+        b1 = EquipBlockInfoConfig()
+        b1.name = "散件（右）"
+        b1.type = EquipBlockType_Set
+        b1.topleft_x = 421
+        b1.topleft_y = 570
+        b1.set_icon_width = 71
+        b1.set_equip_icon_height = 30
+        b1.equip_icon_width = 31
+        b1.set_code_start = 32
+        b1.set_code_end = 35
+        b1.slot_orders = [(33, 1), (15, 0), (23, 0), (33, 0)]
+        self.equip_block_infos.append(b1)
+
 
 EquipBlockType_Set = "set_block"  # 套装区域
 EquipBlockType_Single = "single_block"  # 散件区域
@@ -447,6 +778,10 @@ def load_config(config_path="config.toml"):
     try:
         raw_config = toml.load(config_path)
         g_config.auto_update_config(raw_config)
+
+        # 由于新版本调整了ui布局的实现方式，因此必须要有默认布局，避免使用旧版本配置文件的时候启动不了
+        if len(g_config.ui.layout.equip_block_infos) == 0:
+            g_config.ui.layout.use_default_equip_block_infos()
     except UnicodeDecodeError as error:
         notify_error(logger, "{}的编码格式有问题，应为utf-8，如果使用系统自带记事本的话，请下载vscode或notepad++等文本编辑器\n错误信息：{}\n".format(config_path, error))
         sys.exit(0)
