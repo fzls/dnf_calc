@@ -119,7 +119,7 @@ title = "智慧产物"
 # 界面宽度
 window_width = 560
 # 界面高度
-window_height = 80
+window_height = 310
 # 界面左上角与主屏幕左上角的偏移x
 window_x_offset = 750
 # 界面左上角与主屏幕左上角的偏移y
@@ -166,6 +166,106 @@ set_index = "140"
 # 装备列表
 equips = "[22400150, 22400250, 22400350, 22400450, 22400550, 21400640, 31400750, 31400850, 31400950, 31401050, 31401150, 32401240, 32401340, 32401440]"
 
+[[ui.layout.equip_block_infos.nested_block.equip_block_infos]]
+# 区域名称，仅用来方便理解
+name = "85ss"
+# 装备区域类型，目前支持三类，1. set_block 套装区域 2. single_block 散件区域 3. nested_block 嵌套区域
+type = "set_block"
+# 左上角的坐标
+topleft_x = 10
+topleft_y = 85
+# 套装图标的宽度，为0时表示无套装图标
+set_icon_width = 102
+# 套装及装备图标的高度
+set_equip_icon_height = 30
+# 装备图标的宽度
+equip_icon_width = 31
+# 适用套装范围（两侧均包含）
+set_code_start = 51
+set_code_end = 55
+# 装备顺序信息 防具五件套（1-15） 上衣（神话）、上衣、头肩、下装、鞋、腰带
+slot_orders = "[(11, 0), (13, 0), (12, 0), (15, 0), (14, 0)]"
+
+[[ui.layout.equip_block_infos.nested_block.equip_block_infos]]
+# 区域名称，仅用来方便理解
+name = "85ss"
+# 装备区域类型，目前支持三类，1. set_block 套装区域 2. single_block 散件区域 3. nested_block 嵌套区域
+type = "set_block"
+# 左上角的坐标
+topleft_x = 10
+topleft_y = 245
+# 套装图标的宽度，为0时表示无套装图标
+set_icon_width = 102
+# 套装及装备图标的高度
+set_equip_icon_height = 30
+# 装备图标的宽度
+equip_icon_width = 31
+# 适用套装范围（两侧均包含）
+set_code_start = 56
+set_code_end = 56
+# 装备顺序信息 特殊装备（20-23） 耳环（神话）、辅助装备、魔法石、耳环
+slot_orders = "[(31, 0), (32, 0), (33, 0)]"
+
+[[ui.layout.equip_block_infos.nested_block.equip_block_infos]]
+# 区域名称，仅用来方便理解
+name = "85ss"
+# 装备区域类型，目前支持三类，1. set_block 套装区域 2. single_block 散件区域 3. nested_block 嵌套区域
+type = "set_block"
+# 左上角的坐标
+topleft_x = 290
+topleft_y = 85
+# 套装图标的宽度，为0时表示无套装图标
+set_icon_width = 102
+# 套装及装备图标的高度
+set_equip_icon_height = 30
+# 装备图标的宽度
+equip_icon_width = 31
+# 适用套装范围（两侧均包含）
+set_code_start = 57
+set_code_end = 61
+# 装备顺序信息 防具五件套（1-15） 上衣（神话）、上衣、头肩、下装、鞋、腰带
+slot_orders = "[(11, 0), (13, 0), (12, 0), (15, 0), (14, 0)]"
+
+[[ui.layout.equip_block_infos.nested_block.equip_block_infos]]
+# 区域名称，仅用来方便理解
+name = "85ss"
+# 装备区域类型，目前支持三类，1. set_block 套装区域 2. single_block 散件区域 3. nested_block 嵌套区域
+type = "set_block"
+# 左上角的坐标
+topleft_x = 290
+topleft_y = 245
+# 套装图标的宽度，为0时表示无套装图标
+set_icon_width = 102
+# 套装及装备图标的高度
+set_equip_icon_height = 30
+# 装备图标的宽度
+equip_icon_width = 31
+# 适用套装范围（两侧均包含）
+set_code_start = 62
+set_code_end = 63
+# 装备顺序信息 首饰（16-19） 手镯（神话）、项链、手镯、戒指
+slot_orders = "[(22, 0), (21, 0), (23, 0)]"
+
+[[ui.layout.equip_block_infos.nested_block.equip_block_infos]]
+# 区域名称，仅用来方便理解
+name = "85ss"
+# 装备区域类型，目前支持三类，1. set_block 套装区域 2. single_block 散件区域 3. nested_block 嵌套区域
+type = "set_block"
+# 左上角的坐标
+topleft_x = 10
+topleft_y = 280
+# 套装图标的宽度，为0时表示无套装图标
+set_icon_width = 102
+# 套装及装备图标的高度
+set_equip_icon_height = 30
+# 装备图标的宽度
+equip_icon_width = 31
+# 适用套装范围（两侧均包含）
+set_code_start = 64
+set_code_end = 64
+# 装备顺序信息 首饰（16-19） 手镯（神话）、项链、手镯、戒指
+slot_orders = "[(22, 0), (21, 0), (23, 0)]"
+
 
 [[ui.layout.equip_block_infos]]
 # 区域名称，仅用来方便理解
@@ -188,7 +288,7 @@ window_height = 120
 # 界面左上角与主屏幕左上角的偏移x
 window_x_offset = 750
 # 界面左上角与主屏幕左上角的偏移y
-window_y_offset = 120
+window_y_offset = 350
 # 界面是否可以拉伸
 window_width_resizable = true
 window_height_resizable = true
@@ -272,7 +372,7 @@ window_height = 120
 # 界面左上角与主屏幕左上角的偏移x
 window_x_offset = 750
 # 界面左上角与主屏幕左上角的偏移y
-window_y_offset = 280
+window_y_offset = 510
 # 界面是否可以拉伸
 window_width_resizable = true
 window_height_resizable = true
@@ -356,7 +456,7 @@ window_height = 120
 # 界面左上角与主屏幕左上角的偏移x
 window_x_offset = 1035
 # 界面左上角与主屏幕左上角的偏移y
-window_y_offset = 280
+window_y_offset = 510
 # 界面是否可以拉伸
 window_width_resizable = true
 window_height_resizable = true
