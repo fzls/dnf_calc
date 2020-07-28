@@ -1127,8 +1127,8 @@ def show_result(rank_list, job_type, ele_skill):
                 "暗抗={dark_resistance}\n"
                 "移速={moving_speed}%"
             ).format(
-                zengsu=int(rss[rank][index_deal_extra_percent_attack_damage]),
-                baoshang=int(rss[rank][index_deal_extra_percent_crit_damage]),
+                zengsu=int(rss[rank][index_deal_extra_percent_attack_damage] + rss[rank][index_deal_increase_percent_attack_damage]),
+                baoshang=int(rss[rank][index_deal_extra_percent_crit_damage] + rss[rank][index_deal_increase_percent_crit_damage]),
                 baizi=int(rss[rank][index_deal_extra_percent_addtional_damage]),
                 suogong=int(rss[rank][index_deal_extra_percent_final_damage]),
                 sangong=int(rss[rank][index_deal_extra_percent_physical_magical_independent_attack_power]),
