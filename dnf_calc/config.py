@@ -138,7 +138,7 @@ class LayoutConfig(ConfigInterface):
         b1.topleft_x = 302
         b1.topleft_y = 510
         b1.set_index = "139"
-        b1.show_on_startup = True
+        b1.show_on_startup = False
         b1.nested_block = LayoutConfig()
         b1.nested_block.title = "各类智慧产物及85ss和95鸟背特殊首饰"
         b1.nested_block.window_width = 560
@@ -237,7 +237,7 @@ class LayoutConfig(ConfigInterface):
         b1.topleft_x = 410
         b1.topleft_y = 510
         b1.set_index = "141"
-        b1.show_on_startup = True
+        b1.show_on_startup = False
         b1.nested_block = LayoutConfig()
         b1.nested_block.title = "轮回系列"
         b1.nested_block.window_width = 560
@@ -287,7 +287,7 @@ class LayoutConfig(ConfigInterface):
         b1.topleft_x = 518
         b1.topleft_y = 510
         b1.set_index = "144"
-        b1.show_on_startup = True
+        b1.show_on_startup = False
         b1.nested_block = LayoutConfig()
         b1.nested_block.title = "时空系列"
         b1.nested_block.window_width = 275
@@ -340,7 +340,7 @@ class LayoutConfig(ConfigInterface):
         b1.topleft_x = 302
         b1.topleft_y = 540
         b1.set_index = "147"
-        b1.show_on_startup = True
+        b1.show_on_startup = False
         b1.nested_block = LayoutConfig()
         b1.nested_block.title = "超界普雷系列"
         b1.nested_block.window_width = 275
@@ -503,7 +503,7 @@ class EquipBlockInfoConfig(ConfigInterface):
         # 套装图标的编码
         self.set_index = "136"  # 示例为136-传说
         # 是否在启动时就打开嵌套区域
-        self.show_on_startup = True
+        self.show_on_startup = False
         # 嵌套ui界面相关配置
         self.nested_block = LayoutConfig()
 
