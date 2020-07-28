@@ -952,7 +952,7 @@ info,name,stat,att,damper,criper,bonper,elebon,allper,attper,staper,ele,sloper,s
 23390450,+5 骸麒之戒（戒指）,150,0,0,0,58,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,0,0,1,0,0
 31390540,+4 青面修罗的面具（辅助装备）,0,0,0,0,0,0,0,0,13,32,0,0,0,8,0,0,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,2,2,2,2,0,2,0,8,1,0,0
 32390650,+5 赤鬼的次元石（魔法石）,0,0,14,20,0,0,0,18,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,0,0,1,0,0
-33390750,+5 窥视未来耳环（耳环）,0,200,40,0,0,0,0,0,0,40,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,0,0,1,0,0
+33390750,+5 窥视未来耳环（耳环）,0,200,0,0,0,0,0,0,0,40,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,0,0,1,40,0
 1401,赤鬼与青面或噙毒二件套,0,0,0,0,7,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,0,0,0,0,0
 22400150,逝魔之痕（项链）,500,0,30,10,0,0,35,0,40,42,0,51.04,0,0,0,0,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,2,2,2,2,0,2,0,0,1,0,0
 22400250,杀戮之决（项链）,500,0,30,39,0,0,20,38,13,50,0,42,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,3,0,3,0,1,0,0,1,0,0
@@ -961,9 +961,9 @@ info,name,stat,att,damper,criper,bonper,elebon,allper,attper,staper,ele,sloper,s
 22400550,全能霸域（项链）,500,0,22,0,0,0,10,40,82,50,0,28,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,2,2,2,0,2,0,0,1,0,0
 21400640,天衍万物（手镯）,300,0,0,8,13,0,0,25,37,60,0,0,0,10,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,1,1,1,1,0,0,0,0,1,0,0
 31400750,全元素水晶（辅助装备）,500,0,0,20,0,35,36,0,40,0,0,10,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,0,0,1,0,0
-31400850,战术之王的战术指挥棒（辅助装备）,500,0,0,0,0,0,32,40,0,0,0,32,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,3,0,0,0,0,0,1,0,0
+31400850,战术之王的战术指挥棒（辅助装备）,500,0,0,0,0,0,32,40,0,0,0,32,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,3,0,0,0,0,0,1,0,42
 31400950,最佳球手之球（辅助装备）,500,0,30,35,65,0,45,0,30,0,0,20,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,0,0,1,0,0
-31401050,禁断契约书（辅助装备）,500,0,10,50,25,0,42,0,50,0,0,20,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,0,0,1,0,0
+31401050,禁断契约书（辅助装备）,500,0,10,50,25,0,42,0,50,0,0,20,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,0,0,1,0,45
 31401150,聚魔漩涡（辅助装备）,500,0,0,40,35,0,18,10,33,0,0,68,0,0,0,0,0,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,1.5,2,2,2,0,0,0,0,1,0,0
 32401240,冰雪公主结晶（魔法石）,300,0,25,8,0,0,86,0,22,0,0,15,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,0,0,0,0,0,0,0,0,1,0,0
 32401340,扭曲的异界魔石（魔法石）,300,0,21,22,0,0,20,40,0,57,0,0,0,0,0,0,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,2,2,2,2,0,2,0,0,1,0,0
@@ -1043,12 +1043,12 @@ info,name,stat,att,damper,criper,bonper,elebon,allper,attper,staper,ele,sloper,s
 14391150,+5 无我之轮（腰带）,0,0,0,0,10,0,10,31,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,무아의 고리,None,0,0,0,0,0,0,0,5,1,0,0
 15391250,+5 无言的罪恶（鞋）,0,0,0,0,0,0,30,0,22,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,무언의 죄악,None,0,0,0,0,0,0,0,24,1,0,0
 11510,逝魔之力-上衣,-107,0,0,0,0,0,0,15,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1,0,0
-12510,逝魔之力-裤子,-107,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1,0,0
+12510,逝魔之力-裤子,-107,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1,0,15
 13510,逝魔之力-头肩,-105,0,0,0,0,0,0,12,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1,0,0
 14510,逝魔之力-腰带,-104,0,0,0,0,0,0,0,0,0,0,0,0,0,20,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1,0,0
 15510,逝魔之力-鞋子,-104,0,0,0,0,0,0,0,0,20,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,16,1,0,0
 1513,逝魔之力5,0,550,0,0,0,0,0,0,18,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,0,0,0
-11520,杀意决-上衣,-57,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1,0,0
+11520,杀意决-上衣,-57,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1,18,0
 12520,杀意决-裤子,-57,121,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1,0,0
 13520,杀意决-头肩,-72,66,0,0,0,0,0,0,0,0,0,0,0,15,10,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1,0,0
 14520,杀意决-腰带,-72,116,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1,0,0
@@ -1065,10 +1065,10 @@ info,name,stat,att,damper,criper,bonper,elebon,allper,attper,staper,ele,sloper,s
 13540,千蛛碎影-头肩,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,1,0,0,0,0,0,0,1,0,0
 14540,千蛛碎影-腰带,6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,1,0,0,0,0,0,0,1,0,0
 15540,千蛛碎影-鞋子,6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,1,0,0,0,0,0,6,1,0,0
-1543,千蛛碎影5,0,0,0,0,0,0,0,12,0,0,0,0,0,0,10,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,0,0,0
+1543,千蛛碎影5,0,0,0,0,0,0,0,12,0,0,0,0,0,0,10,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,0,45,0
 11550,霸域英豪-上衣,-51,100,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1,0,0
 12550,霸域英豪-裤子,-51,100,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1,0,0
-13550,霸域英豪-头肩,-105,0,0,0,0,0,0,0,0,0,0,0,0,0,7,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1,0,0
+13550,霸域英豪-头肩,-105,0,0,0,0,0,0,0,0,0,0,0,0,0,7,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1,0,15
 14550,霸域英豪-腰带,60,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1,0,0
 15550,霸域英豪-鞋子,-105,0,0,0,0,0,0,0,0,0,0,0,0,32,10,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,36,1,0,0
 1553,霸域英豪5,220,300,0,0,40,0,0,0,0,0,0,0,0,5,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,5,0,0,0
@@ -1089,7 +1089,7 @@ info,name,stat,att,damper,criper,bonper,elebon,allper,attper,staper,ele,sloper,s
 15580,战术之王的御敌-鞋子,48,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,4,1,0,0
 1583,战术之王的御敌5,620,0,0,0,55,0,0,0,0,0,0,0,0,20,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,20,0,0,0
 11590,最佳球手的绝杀-上衣,-14,149,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1,0,0
-12590,最佳球手的绝杀-裤子,-107,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1,0,0
+12590,最佳球手的绝杀-裤子,-107,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1,0,18
 13590,最佳球手的绝杀-头肩,225,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1,0,0
 14590,最佳球手的绝杀-腰带,-104,138,0,0,0,0,0,0,0,0,0,0,0,0,15,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1,0,0
 15590,最佳球手的绝杀-鞋子,-104,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,106,1,0,0
@@ -1099,8 +1099,8 @@ info,name,stat,att,damper,criper,bonper,elebon,allper,attper,staper,ele,sloper,s
 13600,誓血之盟-头肩,-23,116,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1,0,0
 14600,誓血之盟-腰带,-104,100,0,0,0,0,0,5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1,0,0
 15600,誓血之盟-鞋子,-104,100,0,0,0,0,0,0,0,14,0,0,0,5,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,9,1,0,0
-1603,誓血之盟5,0,0,0,0,0,0,0,30,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,0,0,0
-11610,魔战无双-上衣,-106,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4.199999999999999,12,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1,0,0
+1603,誓血之盟5,0,0,0,0,0,0,0,30,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,0,0,20
+11610,魔战无双-上衣,-106,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4.199999999999999,12,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1,10,0
 12610,魔战无双-裤子,-106,0,0,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,0,0,0,0,3.5,10,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,1,0,0,0,5,1,0,0
 13610,魔战无双-头肩,-105,0,0,0,0,0,0,0,0,0,0,0,0,12,0,0,0,1,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,2,0,0,0,0,0,0,12,1,0,0
 14610,魔战无双-腰带,-105,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,3.5,10,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,2,0,0,0,0,0,1,0,0
@@ -1111,7 +1111,7 @@ info,name,stat,att,damper,criper,bonper,elebon,allper,attper,staper,ele,sloper,s
 23620,冰雪公主的霜语-戒指,-109,0,0,0,0,0,0,0,0,30,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1,0,0
 1622,冰雪公主的霜语3,0,0,0,0,18,0,0,0,0,50,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,0,0,0
 21630,精炼的异界魔石-手镯,-51,0,0,0,0,0,0,0,0,0,0,7,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1,0,0
-22630,精炼的异界魔石-项链,-106,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1,0,0
+22630,精炼的异界魔石-项链,-106,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1,20,0
 23630,精炼的异界魔石-戒指,-109,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,0,1,0,0
 1632,精炼的异界魔石3,0,0,0,0,20,0,0,0,0,18,0,0,0,0,12,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,-23,0,0,0,0
 21640,江山如画-手镯,-102,0,0,0,0,0,0,0,18,16,0,0,0,5,0,0,0,0,0,0,0,0,0,0,None,None,None,None,None,None,None,None,None,None,0,None,None,None,0,0,0,0,0,0,0,5,1,0,0
