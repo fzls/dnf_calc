@@ -1956,7 +1956,9 @@ def save_custom(ele_type, cool_con, cus1, cus2, cus3, cus4, cus6, cus7, cus8, cu
             b_style_lvl, c_style_lvl, b_plt, b_cri, ele1, ele2, ele3, ele4, ele5, ele6
         ])))
     except Exception as error:
-        tkinter.messagebox.showerror("错误", "{}\n请关闭文件后重试".format(error), parent=self)
+        msg = "保存统一自定义出现错误，err={}".format(error)
+        logger.error(msg)
+        tkinter.messagebox.showerror("错误", msg, parent=self)
 
 
 if __name__ == '__main__':
@@ -2083,7 +2085,9 @@ def load_checklist_noconfirm(account_index):
         g_save_name_index_on_last_load_or_save = account_index
         logger.info("load_checklist({}) success".format(save_name_list[account_index]))
     except Exception as error:
-        tkinter.messagebox.showerror("错误", "请关闭preset.xlsx之后重试, err={}".format(error), parent=self)
+        msg = "读档出现错误，err={}".format(error)
+        logger.error(msg)
+        tkinter.messagebox.showerror("错误", msg, parent=self)
 
 
 def transfer_old_custom_save(sheet_one):
@@ -2319,7 +2323,9 @@ def save_checklist():
             g_save_name_index_on_last_load_or_save = current_save_name_index
             logger.info("save_checklist({}) success".format(save_name_list[current_save_name_index]))
     except PermissionError as error:
-        tkinter.messagebox.showerror("错误", "请关闭preset.xlsx之后重试, err={}".format(error), parent=self)
+        msg = "存档出现错误，err={}".format(error)
+        logger.error(msg)
+        tkinter.messagebox.showerror("错误", msg, parent=self)
 
 
 # 修改当前存档的存档名为新输入的名称
@@ -2357,7 +2363,9 @@ def change_save_name():
         tkinter.messagebox.showinfo("通知", "保存完成", parent=self)
         logger.info("change save name {} => {}".format(old_save_name, new_save_name))
     except PermissionError as error:
-        tkinter.messagebox.showerror("错误", "请关闭preset.xlsx之后重试, err={}".format(error), parent=self)
+        msg = "更改存档名出现错误，err={}".format(error)
+        logger.error(msg)
+        tkinter.messagebox.showerror("错误", msg, parent=self)
 
 
 def update_count():
