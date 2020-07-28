@@ -255,7 +255,7 @@ name = "85ss"
 type = "set_block"
 # 左上角的坐标
 topleft_x = 10
-topleft_y = 280
+topleft_y = 275
 # 套装图标的宽度，为0时表示无套装图标
 set_icon_width = 102
 # 套装及装备图标的高度
