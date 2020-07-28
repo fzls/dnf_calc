@@ -522,7 +522,19 @@ entry_name_to_indexes = {
         "deal": [
             index_deal_extra_percent_moving_speed,
         ]
-    }
+    },
+    # 攻击时，增加X%的伤害（黄字）
+    "increase_percent_attack_damage": {
+        "deal": [
+            index_deal_increase_percent_attack_damage,
+        ]
+    },
+    # 暴击时，增加X%的伤害（爆伤）
+    "increase_percent_crit_damage": {
+        "deal": [
+            index_deal_increase_percent_crit_damage,
+        ]
+    },
 }
 
 entry_name_to_name = {
@@ -574,6 +586,8 @@ entry_name_to_name = {
     "extra_taiyang_percent_strength_and_intelligence": "[天启之珠]、[圣光天启]、[开幕！人偶剧场]力量、智力增加量 +X%",
     "extra_dark_resistance": "暗属性抗性 +X",
     "extra_percent_moving_speed": "移动速度 +X%",
+    "increase_percent_attack_damage": "攻击时，增加X%的伤害（黄字）",
+    "increase_percent_crit_damage": "暴击时，增加X%的伤害（爆伤）",
 }
 
 # 预计算的buff等级最大等级
