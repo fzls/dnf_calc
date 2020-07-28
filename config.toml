@@ -112,6 +112,8 @@ topleft_x = 302
 topleft_y = 510
 # 套装图标的编码
 set_index = "139"
+# 是否在启动时就打开嵌套区域
+show_on_startup = true
 # 嵌套ui界面相关配置
 [ui.layout.equip_block_infos.nested_block]
 # 界面标题
@@ -277,6 +279,8 @@ topleft_x = 410
 topleft_y = 510
 # 套装图标的编码
 set_index = "141"
+# 是否在启动时就打开嵌套区域
+show_on_startup = true
 # 嵌套ui界面相关配置
 [ui.layout.equip_block_infos.nested_block]
 # 界面标题
@@ -361,6 +365,8 @@ topleft_x = 518
 topleft_y = 510
 # 套装图标的编码
 set_index = "144"
+# 是否在启动时就打开嵌套区域
+show_on_startup = true
 # 嵌套ui界面相关配置
 [ui.layout.equip_block_infos.nested_block]
 # 界面标题
@@ -445,6 +451,8 @@ topleft_x = 302
 topleft_y = 540
 # 套装图标的编码
 set_index = "147"
+# 是否在启动时就打开嵌套区域
+show_on_startup = true
 # 嵌套ui界面相关配置
 [ui.layout.equip_block_infos.nested_block]
 # 界面标题

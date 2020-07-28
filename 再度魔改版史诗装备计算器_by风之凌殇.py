@@ -2085,7 +2085,7 @@ def load_checklist_noconfirm(account_index):
         g_save_name_index_on_last_load_or_save = account_index
         logger.info("load_checklist({}) success".format(save_name_list[account_index]))
     except Exception as error:
-        tkinter.messagebox.showerror("错误", "请关闭preset.xlsx之后重试", parent=self)
+        tkinter.messagebox.showerror("错误", "请关闭preset.xlsx之后重试, err={}".format(error), parent=self)
 
 
 def transfer_old_custom_save(sheet_one):
@@ -2321,7 +2321,7 @@ def save_checklist():
             g_save_name_index_on_last_load_or_save = current_save_name_index
             logger.info("save_checklist({}) success".format(save_name_list[current_save_name_index]))
     except PermissionError as error:
-        tkinter.messagebox.showerror("错误", "请关闭preset.xlsx之后重试", parent=self)
+        tkinter.messagebox.showerror("错误", "请关闭preset.xlsx之后重试, err={}".format(error), parent=self)
 
 
 # 修改当前存档的存档名为新输入的名称
@@ -2359,7 +2359,7 @@ def change_save_name():
         tkinter.messagebox.showinfo("通知", "保存完成", parent=self)
         logger.info("change save name {} => {}".format(old_save_name, new_save_name))
     except PermissionError as error:
-        tkinter.messagebox.showerror("错误", "请关闭preset.xlsx之后重试", parent=self)
+        tkinter.messagebox.showerror("错误", "请关闭preset.xlsx之后重试, err={}".format(error), parent=self)
 
 
 def update_count():
@@ -3257,7 +3257,7 @@ if __name__ == '__main__':
     set_index_2_equip_indexes = {}
 
 
-    def create_ui_layout(master, layout_cfg):
+    def create_ui_layout(master, layout_cfg, is_startup=False):
         """
         根据布局配置创建ui配置
         :type master: Tk
@@ -3304,10 +3304,7 @@ if __name__ == '__main__':
 
                         exec("""global select_{0}; select_{0} = select_btn""".format(equip_index))
 
-                        equip_index_2_set_index[equip_index] = set_index
-                        if set_index not in set_index_2_equip_indexes:
-                            set_index_2_equip_indexes[set_index] = []
-                        set_index_2_equip_indexes[set_index].append(equip_index)
+                        init_equip(equip_index, set_index)
 
                     check_set(set_index)
 
@@ -3343,10 +3340,7 @@ if __name__ == '__main__':
 
                     exec("""global select_{0}; select_{0} = select_btn""".format(equip_index))
 
-                    equip_index_2_set_index[equip_index] = block_info.set_index
-                    if block_info.set_index not in set_index_2_equip_indexes:
-                        set_index_2_equip_indexes[block_info.set_index] = []
-                    set_index_2_equip_indexes[block_info.set_index].append(equip_index)
+                    init_equip(equip_index, block_info.set_index)
 
                 check_set(block_info.set_index)
 
@@ -3355,13 +3349,23 @@ if __name__ == '__main__':
                                             command=lambda block_info=block_info: open_nested_block(block_info))
                 nested_btn.place(x=block_info.topleft_x, y=block_info.topleft_y)
                 exec("""global nested_btn_{0}; nested_btn_{0} = nested_btn""".format(block_info.set_index))
-                open_nested_block(block_info)
+                open_nested_block(block_info, is_startup=is_startup)
             else:
                 notify_error(logger, "ui布局配置有误，不支持类型为{}的block".format(block_info.type))
                 sys.exit(0)
 
 
-    def open_nested_block(block_info):
+    def init_equip(equip_index, set_index):
+        equip_index = str(equip_index)
+
+        equip_index_2_set_index[equip_index] = set_index
+        if set_index not in set_index_2_equip_indexes:
+            set_index_2_equip_indexes[set_index] = []
+        if equip_index not in set_index_2_equip_indexes[set_index]:
+            set_index_2_equip_indexes[set_index].append(equip_index)
+
+
+    def open_nested_block(block_info, is_startup=False):
         """
         创建一个新的窗口，并绘制对应装备
         :type block_info: EquipBlockInfoConfig
@@ -3373,6 +3377,8 @@ if __name__ == '__main__':
         except Exception as error:
             pass
 
+        dont_show = is_startup and not block_info.show_on_startup
+
         nested_block = block_info.nested_block
         nested_window = tkinter.Toplevel(self)
         nested_window.title(nested_block.title)
@@ -3381,13 +3387,16 @@ if __name__ == '__main__':
         nested_window.attributes("-topmost", True)
         nested_window.focus_force()
         nested_window.configure(bg=dark_main)
+        if dont_show:
+            nested_window.withdraw()
 
         exec("""global nested_window_{0};nested_window_{0} = nested_window;""".format(block_info.name))
 
         create_ui_layout(nested_window, nested_block)
 
 
-    create_ui_layout(self, layout_cfg)
+    # 根据布局信息创建ui并初始化装备相关信息
+    create_ui_layout(self, layout_cfg, is_startup=True)
 
     donate_image = PhotoImage(file='ext_img/donate.png')
     donate_bt = tkinter.Button(self, image=donate_image, command=donate, borderwidth=0, bg=dark_main,

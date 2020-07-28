@@ -170,7 +170,9 @@ class EquipBlockInfoConfig(ConfigInterface):
 
         # --------------嵌套区域相关配置--------------
         # 套装图标的编码
-        self.set_index = "136" # 示例为136-传说
+        self.set_index = "136"  # 示例为136-传说
+        # 是否在启动时就打开嵌套区域
+        self.show_on_startup = True
         # 嵌套ui界面相关配置
         self.nested_block = LayoutConfig()
 
@@ -178,7 +180,6 @@ class EquipBlockInfoConfig(ConfigInterface):
         super().auto_update_config(raw_config)
         self.slot_orders = eval(self.slot_orders)
         self.equips = eval(self.equips)
-
 
 
 class ShowEquipTipsConfig(ConfigInterface):
