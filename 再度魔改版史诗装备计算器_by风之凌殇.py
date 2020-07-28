@@ -2716,10 +2716,13 @@ def check_equipment():
     for equip_index, set_index in equip_index_2_set_index.items():
         equip_btn_index = 'tg{}'.format(equip_index)
         btn = eval('select_{}'.format(equip_index))
-        if select_item[equip_btn_index] == 1:
-            btn['image'] = image_list[equip_index]
-        else:
-            btn['image'] = image_list2[equip_index]
+        try:
+            if select_item[equip_btn_index] == 1:
+                btn['image'] = image_list[equip_index]
+            else:
+                btn['image'] = image_list2[equip_index]
+        except Exception as error:
+            logger.error(str(error))
 
 
 def click_set(code):
@@ -2758,10 +2761,16 @@ def click_set(code):
         equip_btn_index = 'tg{}'.format(equip_index)
         btn = eval('select_{}'.format(equip_index))
 
-        btn["image"] = _image_list[equip_index]
+        try:
+            btn["image"] = _image_list[equip_index]
+        except Exception as error:
+            logger.error(str(error))
         select_item[equip_btn_index] = select_result
     set_btn = eval('set{}'.format(code))
-    set_btn["image"] = _image_list_set[code]
+    try:
+        set_btn["image"] = _image_list_set[code]
+    except Exception as error:
+        logger.error(str(error))
 
 
 def check_set(code):
@@ -2790,10 +2799,13 @@ def check_set(code):
         all_checked = len(selected_equips) == len(equips)
 
     set_btn = eval('set{}'.format(code))
-    if all_checked:
-        set_btn["image"] = image_list_set[code]
-    else:
-        set_btn["image"] = image_list_set2[code]
+    try:
+        if all_checked:
+            set_btn["image"] = image_list_set[code]
+        else:
+            set_btn["image"] = image_list_set2[code]
+    except Exception as error:
+        logger.error(str(error))
 
 
 def donate():
