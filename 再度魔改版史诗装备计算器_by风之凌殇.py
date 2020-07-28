@@ -272,8 +272,6 @@ def calc():
     try:
         for weapon_name in weapon_names:
             weapon_indexs.append(wep_name_to_index[weapon_name])
-        if not check_weapons(job_name, weapon_indexs):
-            valid_weapon = False
     except:
         valid_weapon = False
     if len(weapon_indexs) == 0:

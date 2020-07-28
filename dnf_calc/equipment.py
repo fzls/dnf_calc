@@ -40,44 +40,6 @@ def reverse_modify_slots_order_(slots):
         slots[0], slots[1], slots[2], slots[3], slots[4], slots[5], slots[6], slots[7], slots[8], slots[9], slots[10]
 
 
-weapon_rules = [
-    {
-        "job_names": [
-            "(奶系)神思者",
-            "(奶系)炽天使",
-        ],
-        "valid_weapons": [
-            "111001",  # 夜语黑瞳
-            "111043",  # 十字架-圣者的慈悲
-            "111044",  # 十字架-闪耀的神威
-        ],
-    },
-
-    {
-        "job_names": [
-            "(奶系)冥月女神",
-        ],
-        "valid_weapons": [
-            "111001",  # 夜语黑瞳
-            "111041",  # 扫把-世界树之精灵
-            "111042",  # 扫把-纯白的祈祷
-        ],
-    },
-    # 其他职业的暂时没空加，有兴趣的可以自行添加
-]
-
-
-# is_shuchu_job = job_name not in ["(奶系)神思者", "(奶系)炽天使", "(奶系)冥月女神"]
-def check_weapons(job_name, weapon_indexs):
-    for rule in weapon_rules:
-        if job_name in rule["job_names"]:
-            for weapon in weapon_indexs:
-                if weapon not in rule["valid_weapons"]:
-                    return False
-
-    return True
-
-
 # 获取最后一个拥有神话的装备槽位的下标，以计算时的装备槽位顺序为准。若未找到，则返回-1。在搜索时，判断后续是否可能出现神话装备，可以通过判断下标是否小于等于该值
 def get_last_god_slot(items):
     for slot in range(10, -1, -1):
@@ -137,6 +99,7 @@ def get_set_name(equip):
 # 装备编号的最后一位表示是否是神话装备，eg：33341
 def is_god(equip):
     return int(equip[-1]) == 1
+
 
 # 武器编号固定为6位，且前三位限定为111，如111001表示夜雨黑瞳武器
 def is_weapon(equip):
