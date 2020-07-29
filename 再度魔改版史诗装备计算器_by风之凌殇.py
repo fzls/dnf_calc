@@ -1389,6 +1389,7 @@ def show_result(rank_list, job_type, ele_skill):
     res_txt_weapon = canvas_res.create_text(122, 20, text=wep_name, font=guide_font, fill='white')
     res_img_weapon = canvas_res.create_image(219, 27, image=wep_image)  # 武器
     gif_image_ids.append(res_img_weapon)
+    bind_tip_on_canvas_area(CanvasTipInfo(result_window, canvas_res, res_img_weapon, wep_name, 219, 27, 28, 28, 30, -30))
     canvas_res.create_text(122, 50, text="<职业>", font=guide_font, fill='white')
     canvas_res.create_text(122, 87, text=job_name, font=guide_font, fill='white')
 
@@ -1461,6 +1462,7 @@ def change_rank(now, job_type):
         current_equips = g_rank_equips[now][1:]
         canvas_res.itemconfig(res_txt_weapon, text=equip_index_to_realname[current_weapon])
         canvas_res.itemconfig(res_img_weapon, image=image_changed['weapon'])
+        replace_tip(result_window, canvas_res, res_img_weapon, equip_index_to_realname[current_weapon])
         change_readable_result_area(current_weapon, current_equips, False)
 
     elif job_type == 'buf':
@@ -1521,6 +1523,7 @@ def change_rank(now, job_type):
         current_equips = g_rank_equips[g_current_buff_type][now][1:]
         canvas_res.itemconfig(res_txt_weapon, text=equip_index_to_realname[current_weapon])
         canvas_res.itemconfig(res_img_weapon, image=image_changed['weapon'])
+        replace_tip(result_window, canvas_res, res_img_weapon, equip_index_to_realname[current_weapon])
         change_readable_result_area(current_weapon, current_equips, False, hz_equips)
 
 
@@ -1622,6 +1625,7 @@ def change_rank_type(in_type):
     current_equips = g_rank_equips[g_current_buff_type][0][1:]
     canvas_res.itemconfig(res_txt_weapon, text=equip_index_to_realname[current_weapon])
     canvas_res.itemconfig(res_img_weapon, image=image_changed['weapon'])
+    replace_tip(result_window, canvas_res, res_img_weapon, equip_index_to_realname[current_weapon])
     change_readable_result_area(current_weapon, current_equips, False, hz_equips)
 
 
@@ -2462,7 +2466,7 @@ def gif_ticker():
                         btn["image"] = frames[frame_index % len(frames)]
                     except Exception as err:
                         invalid_btns.append(btn)
-                        logger.error("gif_ticker will remove btn={}, 可能由于关闭了额外可选的窗口，如超界普雷, err={}".format(btn, err))
+                        logger.debug("gif_ticker will remove btn={}, 可能由于关闭了额外可选的窗口，如超界普雷, err={}".format(btn, err))
 
                 for btn in invalid_btns:
                     gif_buttons.remove(btn)
@@ -2477,7 +2481,7 @@ def gif_ticker():
                         canvas_res.itemconfig(image_id, image=frames[frame_index % len(frames)])
                     except Exception as err:
                         invalid_image_ids.append(image_id)
-                        logger.error("gif_ticker will remove image_id={}, 可能由于关闭了结果界面, err={}".format(image_id, err))
+                        logger.debug("gif_ticker will remove image_id={}, 可能由于关闭了结果界面, err={}".format(image_id, err))
 
                 for image_id in invalid_image_ids:
                     gif_image_ids.remove(image_id)
@@ -3015,8 +3019,7 @@ if __name__ == '__main__':
         btn.unbind("<Leave>")
 
 
-    def get_canvas_tips(btn):
-        root_window = btn.winfo_toplevel()
+    def get_canvas_tips(root_window):
         if root_window not in toplevel_2_canvas_tips_dict:
             canvas_tips = Canvas(root_window, width=78, height=20, bd=0, bg=dark_main)
             canvas_tips.create_image(0, 0, image=tips_image, anchor='nw')
@@ -3029,36 +3032,107 @@ if __name__ == '__main__':
 
     def show_equip_name_tip(btn, tip, x, y, x_offset, y_offset):
         def _show_equip_name_tip(event):
-            if not cfg.ui.show_equip_tips.enable:
-                return
-
-            lines = tip.split("\n")
-            height = 20 * len(lines)
-            width = 15
-            for line in lines:
-                width = max(width, 15 * len(line))
-
-            canvas_tips = get_canvas_tips(btn)
-            canvas_tips.config(width=width, height=height)
-            canvas_tips.create_text(width / 2, height / 2, text=tip, tags=('mouse_overlap'), font=guide_font, fill='white')
-            _x = x + x_offset + 5
-            _y = y + y_offset
-            if _x + width >= btn.winfo_toplevel().winfo_width():
-                _x = x - width - 5
-            if _y + height <= 0:
-                _y = y
-            canvas_tips.place(x=_x, y=_y)
+            _show_tip(btn.winfo_toplevel(), tip, x, y, x_offset, y_offset)
 
         return _show_equip_name_tip
 
 
     def hide_equip_name_tip(btn):
         def _hide_equip_name_tip(event):
-            canvas_tips = get_canvas_tips(btn)
+            canvas_tips = get_canvas_tips(btn.winfo_toplevel())
             canvas_tips.delete("mouse_overlap")
             canvas_tips.place(x=-200, y=-200)
 
         return _hide_equip_name_tip
+
+
+    # 对某个window上的某个canvas的特定区域添加tips
+    class CanvasTipInfo:
+        def __init__(self, window, canvas, item_id, tip, center_x, center_y, width, height, tip_x_offset, tip_y_offset):
+            self.window = window
+            self.canvas = canvas
+            self.item_id = item_id
+            self.center_x = center_x
+            self.center_y = center_y
+            self.width = width
+            self.height = height
+
+            self.tip = tip
+            self.tip_x_offset = tip_x_offset
+            self.tip_y_offset = tip_y_offset
+
+
+    allCanvasTipInfoList = []  # type: list[CanvasTipInfo]
+
+
+    def bind_tip_on_canvas_area(canvasTipInfo: CanvasTipInfo):
+        allCanvasTipInfoList.append(canvasTipInfo)
+
+        canvasTipInfo.canvas.bind("<Motion>", on_move_mouse_on_canvas(canvasTipInfo.window, canvasTipInfo.canvas, canvasTipInfo.item_id))
+        canvasTipInfo.window.bind("<Destroy>", unbind_canvas_tip(canvasTipInfo.window))
+
+
+    def unbind_canvas_tip(window):
+        def _destroy(event):
+            global allCanvasTipInfoList
+            allCanvasTipInfoList = [tipInfo for tipInfo in allCanvasTipInfoList if tipInfo.window != window]
+
+        return _destroy
+
+    def replace_tip(window, canvas, item_id, tip):
+        for info in allCanvasTipInfoList:
+            if info.window == window or info.canvas == canvas or info.item_id == item_id:
+                info.tip = tip
+
+
+    def on_move_mouse_on_canvas(window, canvas, item_id):
+        def _move(event):
+            if not cfg.ui.show_equip_tips.enable:
+                return
+
+            x, y = event.x, event.y
+
+            for info in allCanvasTipInfoList:
+                if info.window != window or info.canvas != canvas or info.item_id != item_id:
+                    continue
+                # 仅处理在对应窗口对应canvas内的事件
+                if info.center_x - info.width / 2 <= x <= info.center_x + info.width / 2 and info.center_y - info.height / 2 <= y <= info.center_y + info.height / 2:
+                    # 在对应区域内，则按照提示弹出tip
+                    _show_tip(info.window, info.tip, info.center_x - info.width / 2, info.center_y - info.height / 2, info.tip_x_offset, info.tip_y_offset)
+                else:
+                    # 否则，移除tip
+                    _hide_tip(info.window)
+            pass
+
+        return _move
+
+
+    def _show_tip(root_window, tip, x, y, x_offset, y_offset):
+        if not cfg.ui.show_equip_tips.enable:
+            return
+
+        lines = tip.split("\n")
+        height = 20 * len(lines)
+        width = 15
+        for line in lines:
+            width = max(width, 15 * len(line))
+
+        canvas_tips = get_canvas_tips(root_window)
+        canvas_tips.config(width=width, height=height)
+        canvas_tips.create_text(width / 2, height / 2, text=tip, tags=('mouse_overlap'), font=guide_font, fill='white')
+        _x = x + x_offset + 5
+        _y = y + y_offset
+        if _x + width >= root_window.winfo_width():
+            _x = x - width - 5
+        if _y <= 0:
+            _y = y
+        canvas_tips.place(x=_x, y=_y)
+
+
+    def _hide_tip(root_window):
+        canvas_tips = get_canvas_tips(root_window)
+        canvas_tips.delete("mouse_overlap")
+        canvas_tips.place(x=-200, y=-200)
 
 
     font_cfg = cfg.ui.fonts
