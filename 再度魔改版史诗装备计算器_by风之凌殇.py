@@ -2446,32 +2446,46 @@ def gif_ticker():
         try:
             cfg = config().gif
             if cfg.enable:
+                invalid_btns = []
                 for btn in gif_buttons:
-                    image_filename = tkimage_name_2_filename[btn["image"]]
-                    if not image_filename.endswith(".gif"):
-                        continue
-                    # 处理一个因时序产生的问题，若在重置装备时，恰巧这里也切换了gif帧，可能使前者失效，导致图片继续为gif
-                    equip_index = image_filename[:-5]
-                    if select_item["tg{}".format(equip_index)] == 0:
-                        btn["image"] = image_list2[equip_index]
-                        continue
+                    try:
+                        image_filename = tkimage_name_2_filename[btn["image"]]
+                        if not image_filename.endswith(".gif"):
+                            continue
+                        # 处理一个因时序产生的问题，若在重置装备时，恰巧这里也切换了gif帧，可能使前者失效，导致图片继续为gif
+                        equip_index = image_filename[:-5]
+                        if select_item["tg{}".format(equip_index)] == 0:
+                            btn["image"] = image_list2[equip_index]
+                            continue
 
-                    frames = gif_frames[image_filename]
-                    btn["image"] = frames[frame_index % len(frames)]
+                        frames = gif_frames[image_filename]
+                        btn["image"] = frames[frame_index % len(frames)]
+                    except Exception as err:
+                        invalid_btns.append(btn)
+                        logger.error("gif_ticker will remove btn={}, 可能由于关闭了额外可选的窗口，如超界普雷, err={}".format(btn, err))
 
-                try:
-                    for image_id in gif_image_ids:
+                for btn in invalid_btns:
+                    gif_buttons.remove(btn)
+
+                invalid_image_ids = []
+                for image_id in gif_image_ids:
+                    try:
                         image_filename = tkimage_name_2_filename[canvas_res.itemcget(image_id, "image")]
                         if not image_filename.endswith(".gif"):
                             continue
                         frames = gif_frames[image_filename]
                         canvas_res.itemconfig(image_id, image=frames[frame_index % len(frames)])
-                except Exception as error:
-                    pass
+                    except Exception as err:
+                        invalid_image_ids.append(image_id)
+                        logger.error("gif_ticker will remove image_id={}, 可能由于关闭了结果界面, err={}".format(image_id, err))
+
+                for image_id in invalid_image_ids:
+                    gif_image_ids.remove(image_id)
 
             frame_index += 1
             time.sleep(1.0 / cfg.frame_rate)
-        except:
+        except Exception as err:
+            logger.error("gif_ticker err={}".format(err))
             time.sleep(1.0)
             continue
     pass
