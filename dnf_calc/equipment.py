@@ -24,6 +24,10 @@ def modify_slots_order(items, not_select_items, work_uniforms_items, transfer_sl
     modify_slots_order_(transfer_slots_equips)
 
 
+# 需要与reverse_modify_slots_order_最终调整回的顺序一致
+default_ordered_slots = ['11', '12', '13', '14', '15', '21', '22', '23', '31', '32', '33']
+
+
 def modify_slots_order_(slots):
     # 默认槽位顺序为11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33
     # 这种情况下，神话分布在第一位、第六位、第十一位，由于不能同时搭配两个神话，会导致额外多计算很多搭配
@@ -172,6 +176,18 @@ def get_slot_names(equip_index_to_realname, equip_indexes):
     reverse_modify_slots_order_(ordered_equip_indexes)
 
     return [equip_index_to_realname[index] for index in ordered_equip_indexes]
+
+
+def get_slot_names_dict(equip_index_to_realname, equip_indexes):
+    slot_names_list = get_slot_names(equip_index_to_realname, equip_indexes)
+
+    slot_names_dict = {}
+    for idx, slot_name in enumerate(slot_names_list):
+        slot_index = default_ordered_slots[idx]
+
+        slot_names_dict[slot_index] = slot_name
+
+    return slot_names_dict
 
 
 # 根据各个槽位的装备编码列表获得各个槽位的装备编码与名称列表，方便查bug

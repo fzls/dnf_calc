@@ -1070,7 +1070,7 @@ def show_result(rank_list, job_type, ele_skill):
 
     if job_type == 'deal':  ###########################
 
-        global result_image_on, rank_dam, rank_stat, rank_stat2, req_cool, res_dam, res_stat, res_stat2
+        global result_image_on, rank_dam, rank_stat, rank_stat2, req_cool, res_dam, res_stat, res_stat2, rank_baibiaoguai, rank_setting
         total_count = len(rank_list)
         rank_baibiaoguai = [0 for x in range(total_count)]
         rank_not_owned_equips = [0 for x in range(total_count)]
@@ -1197,22 +1197,44 @@ def show_result(rank_list, job_type, ele_skill):
         gif_image_ids.extend([res_img11, res_img12, res_img13, res_img14, res_img15])
         gif_image_ids.extend([res_img21, res_img22, res_img23])
         gif_image_ids.extend([res_img31, res_img32, res_img33])
+
+        slot_equip_name_dict = get_slot_names_dict(equip_index_to_realname, rank_setting[0][1:])
+        bind_tip_on_canvas_area(CanvasTipInfo(canvas_res, res_img11, slot_equip_name_dict['11'], 57, 57))
+        bind_tip_on_canvas_area(CanvasTipInfo(canvas_res, res_img12, slot_equip_name_dict['12'], 27, 87))
+        bind_tip_on_canvas_area(CanvasTipInfo(canvas_res, res_img13, slot_equip_name_dict['13'], 27, 57))
+        bind_tip_on_canvas_area(CanvasTipInfo(canvas_res, res_img14, slot_equip_name_dict['14'], 57, 87))
+        bind_tip_on_canvas_area(CanvasTipInfo(canvas_res, res_img15, slot_equip_name_dict['15'], 27, 117))
+        bind_tip_on_canvas_area(CanvasTipInfo(canvas_res, res_img21, slot_equip_name_dict['21'], 189, 57))
+        bind_tip_on_canvas_area(CanvasTipInfo(canvas_res, res_img22, slot_equip_name_dict['22'], 219, 57))
+        bind_tip_on_canvas_area(CanvasTipInfo(canvas_res, res_img23, slot_equip_name_dict['23'], 219, 87))
+        bind_tip_on_canvas_area(CanvasTipInfo(canvas_res, res_img31, slot_equip_name_dict['31'], 189, 87))
+        bind_tip_on_canvas_area(CanvasTipInfo(canvas_res, res_img32, slot_equip_name_dict['32'], 219, 117))
+        bind_tip_on_canvas_area(CanvasTipInfo(canvas_res, res_img33, slot_equip_name_dict['33'], 189, 117))
+
         res_txtbbgs = [None, None, None, None, None, None]  # 0-4 => 右边的展示区间， 5 => 左边的那个百变怪
         res_imgbbgs = [None, None, None, None, None, None]  # 0-4 => 右边的展示区间， 5 => 左边的那个百变怪
         if 'bbg' in result_image_on[0]:
             res_txtbbgs[5] = canvas_res.create_text(178, 147, text="百变怪=>", font=guide_font, fill='white')
             res_imgbbgs[5] = canvas_res.create_image(219, 147, image=result_image_on[0]['bbg'])  # 百变怪
+            bind_tip_on_canvas_area(CanvasTipInfo(canvas_res, res_imgbbgs[5], equip_index_to_realname[rank_baibiaoguai[0]], 219, 147))
         cn1 = 0
         for rank in range(total_count):
+            slot_equip_name_dict = get_slot_names_dict(equip_index_to_realname, rank_setting[rank][1:])
             for equip_slot_index in [11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33]:
-                res_img = canvas_res.create_image(268 + cn1 * 29, 67 + 78 * rank, image=result_image_on[rank][str(equip_slot_index)])
+                x, y = 268 + cn1 * 29, 67 + 78 * rank
+                res_img = canvas_res.create_image(x, y, image=result_image_on[rank][str(equip_slot_index)])
                 gif_image_ids.append(res_img)
+                bind_tip_on_canvas_area(CanvasTipInfo(canvas_res, res_img, slot_equip_name_dict[str(equip_slot_index)], x, y))
                 cn1 = cn1 + 1
-            res_img = canvas_res.create_image(268 + 1 * 29 + 4, 37 + 78 * rank, image=result_image_on[rank]['weapon'])
+            x, y = 268 + 1 * 29 + 4, 37 + 78 * rank
+            res_img = canvas_res.create_image(x, y, image=result_image_on[rank]['weapon'])
             gif_image_ids.append(res_img)
+            bind_tip_on_canvas_area(CanvasTipInfo(canvas_res, res_img, equip_index_to_realname[rank_setting[rank][0]], x, y))
             if 'bbg' in result_image_on[rank]:
                 # res_txtbbgs[j] = canvas_res.create_text(268 + 5 * 29 + 14, 38 + 78 * j, text="百变怪=>", font=guide_font, fill='white')
-                res_imgbbgs[rank] = canvas_res.create_image(268 + 7 * 29 + 40, 37 + 78 * rank, image=result_image_on[rank]['bbg'])
+                x, y = 268 + 7 * 29 + 40, 37 + 78 * rank
+                res_imgbbgs[rank] = canvas_res.create_image(x, y, image=result_image_on[rank]['bbg'])
+                bind_tip_on_canvas_area(CanvasTipInfo(canvas_res, res_imgbbgs[rank], equip_index_to_realname[rank_baibiaoguai[rank]], x, y))
             cn1 = 0
             canvas_res.create_text(366 + 44, 34 + 78 * rank, text=rank_dam[rank], font=mid_font, fill='white')
 
@@ -1230,7 +1252,7 @@ def show_result(rank_list, job_type, ele_skill):
         length = total_count
 
     elif job_type == 'buf':  ##########################
-        global result_image_ons, rank_bufs, rank_type_buf, res_buf, res_img_list, res_buf_list, res_buf_exs, rank_buf_exs, res_buf_type_what, rank_huanzhuang_equips, rank_not_owned_equipss, rank_baibiaoguais
+        global result_image_ons, rank_bufs, rank_type_buf, res_buf, res_img_list, res_buf_list, res_buf_exs, rank_buf_exs, res_buf_type_what, rank_huanzhuang_equips, rank_not_owned_equipss, rank_baibiaoguais, rank_settings
         rank_type_buf = 3
         ## rank_setting[rank]=rank_list[a][rank][b][c]
         ## a: 0=祝福,1=크오,2=합계
@@ -1328,26 +1350,48 @@ def show_result(rank_list, job_type, ele_skill):
         gif_image_ids.extend([res_img11, res_img12, res_img13, res_img14, res_img15])
         gif_image_ids.extend([res_img21, res_img22, res_img23])
         gif_image_ids.extend([res_img31, res_img32, res_img33])
+
+        slot_equip_name_dict = get_slot_names_dict(equip_index_to_realname, rank_settings[2][0][1:])
+        bind_tip_on_canvas_area(CanvasTipInfo(canvas_res, res_img11, slot_equip_name_dict['11'], 57, 57))
+        bind_tip_on_canvas_area(CanvasTipInfo(canvas_res, res_img12, slot_equip_name_dict['12'], 27, 87))
+        bind_tip_on_canvas_area(CanvasTipInfo(canvas_res, res_img13, slot_equip_name_dict['13'], 27, 57))
+        bind_tip_on_canvas_area(CanvasTipInfo(canvas_res, res_img14, slot_equip_name_dict['14'], 57, 87))
+        bind_tip_on_canvas_area(CanvasTipInfo(canvas_res, res_img15, slot_equip_name_dict['15'], 27, 117))
+        bind_tip_on_canvas_area(CanvasTipInfo(canvas_res, res_img21, slot_equip_name_dict['21'], 189, 57))
+        bind_tip_on_canvas_area(CanvasTipInfo(canvas_res, res_img22, slot_equip_name_dict['22'], 219, 57))
+        bind_tip_on_canvas_area(CanvasTipInfo(canvas_res, res_img23, slot_equip_name_dict['23'], 219, 87))
+        bind_tip_on_canvas_area(CanvasTipInfo(canvas_res, res_img31, slot_equip_name_dict['31'], 189, 87))
+        bind_tip_on_canvas_area(CanvasTipInfo(canvas_res, res_img32, slot_equip_name_dict['32'], 219, 117))
+        bind_tip_on_canvas_area(CanvasTipInfo(canvas_res, res_img33, slot_equip_name_dict['33'], 189, 117))
+
         res_txtbbgs = [None, None, None, None, None, None]  # 0-4 => 右边的展示区间， 5 => 左边的那个百变怪
         res_imgbbgs = [None, None, None, None, None, None]  # 0-4 => 右边的展示区间， 5 => 左边的那个百变怪
         if 'bbg' in result_image_ons[2][0]:
             res_txtbbgs[5] = canvas_res.create_text(178, 147, text="百变怪=>", font=guide_font, fill='white')
             res_imgbbgs[5] = canvas_res.create_image(219, 147, image=result_image_ons[2][0]['bbg'])  # 百变怪
+            bind_tip_on_canvas_area(CanvasTipInfo(canvas_res, res_imgbbgs[5], equip_index_to_realname[rank_baibiaoguais[2][0]], 219, 147))
         cn1 = 0
         res_img_list = {}
         res_buf_list = {}
         for rank in range(len(rank_list[2])):
+            slot_equip_name_dict = get_slot_names_dict(equip_index_to_realname, rank_settings[2][rank][1:])
             for equip_slot_index in [11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33]:
-                temp_res = canvas_res.create_image(268 + cn1 * 29, 67 + 78 * rank, image=result_image_ons[2][rank][str(equip_slot_index)])
+                x, y = 268 + cn1 * 29, 67 + 78 * rank
+                temp_res = canvas_res.create_image(x, y, image=result_image_ons[2][rank][str(equip_slot_index)])
                 res_img_list[str(rank) + str(equip_slot_index)] = temp_res
                 gif_image_ids.append(temp_res)
+                bind_tip_on_canvas_area(CanvasTipInfo(canvas_res, temp_res, slot_equip_name_dict[str(equip_slot_index)], x, y))
                 cn1 = cn1 + 1
-            temp_res = canvas_res.create_image(268 + 1 * 29 + 4, 37 + 78 * rank, image=result_image_ons[2][rank]['weapon'])
+            x, y = 268 + 1 * 29 + 4, 37 + 78 * rank
+            temp_res = canvas_res.create_image(x, y, image=result_image_ons[2][rank]['weapon'])
             res_img_list[str(rank) + 'weapon'] = temp_res
             gif_image_ids.append(temp_res)
+            bind_tip_on_canvas_area(CanvasTipInfo(canvas_res, temp_res, equip_index_to_realname[rank_settings[2][rank][0]], x, y))
             if 'bbg' in result_image_ons[2][rank]:
+                x, y = 268 + 7 * 29 + 40, 37 + 78 * rank
                 res_txtbbgs[rank] = canvas_res.create_text(268 + 5 * 29 + 14 + 40, 38 + 78 * rank, text="百变怪=>", font=guide_font, fill='white')
-                res_imgbbgs[rank] = canvas_res.create_image(268 + 7 * 29 + 40, 37 + 78 * rank, image=result_image_ons[2][rank]['bbg'])
+                res_imgbbgs[rank] = canvas_res.create_image(x, y, image=result_image_ons[2][rank]['bbg'])
+                bind_tip_on_canvas_area(CanvasTipInfo(canvas_res, res_imgbbgs[rank], equip_index_to_realname[rank_baibiaoguais[2][rank]], x, y))
             cn1 = 0
             temp_buf = canvas_res.create_text(346 + 22, 34 + 78 * rank, text=rank_bufs[2][rank], font=mid_font, fill='white')
             res_buf_list[rank] = temp_buf
@@ -1389,7 +1433,7 @@ def show_result(rank_list, job_type, ele_skill):
     res_txt_weapon = canvas_res.create_text(122, 20, text=wep_name, font=guide_font, fill='white')
     res_img_weapon = canvas_res.create_image(219, 27, image=wep_image)  # 武器
     gif_image_ids.append(res_img_weapon)
-    bind_tip_on_canvas_area(CanvasTipInfo(result_window, canvas_res, res_img_weapon, wep_name, 219, 27, 28, 28, 30, -30))
+    bind_tip_on_canvas_area(CanvasTipInfo(canvas_res, res_img_weapon, wep_name, 219, 27))
     canvas_res.create_text(122, 50, text="<职业>", font=guide_font, fill='white')
     canvas_res.create_text(122, 87, text=job_name, font=guide_font, fill='white')
 
@@ -1431,7 +1475,7 @@ def change_rank(now, job_type):
 
     global image_list, canvas_res, res_img_weapon, res_img11, res_img12, res_img13, res_img14, res_img15, res_img21, res_img22, res_img23, res_img31, res_img32, res_img33, res_txtbbgs, res_imgbbgs
     if job_type == 'deal':
-        global res_dam, res_stat, res_stat2, rank_stat, rank_stat2, result_image_on
+        global res_dam, res_stat, res_stat2, rank_stat, rank_stat2, result_image_on, rank_baibiaoguai, rank_setting
         image_changed = result_image_on[now]
         canvas_res.itemconfig(res_img11, image=image_changed['11'])
         canvas_res.itemconfig(res_img12, image=image_changed['12'])
@@ -1444,13 +1488,29 @@ def change_rank(now, job_type):
         canvas_res.itemconfig(res_img31, image=image_changed['31'])
         canvas_res.itemconfig(res_img32, image=image_changed['32'])
         canvas_res.itemconfig(res_img33, image=image_changed['33'])
+
+        slot_equip_name_dict = get_slot_names_dict(equip_index_to_realname, rank_setting[now][1:])
+        replace_tip(canvas_res, res_img11, slot_equip_name_dict['11'])
+        replace_tip(canvas_res, res_img12, slot_equip_name_dict['12'])
+        replace_tip(canvas_res, res_img13, slot_equip_name_dict['13'])
+        replace_tip(canvas_res, res_img14, slot_equip_name_dict['14'])
+        replace_tip(canvas_res, res_img15, slot_equip_name_dict['15'])
+        replace_tip(canvas_res, res_img21, slot_equip_name_dict['21'])
+        replace_tip(canvas_res, res_img22, slot_equip_name_dict['22'])
+        replace_tip(canvas_res, res_img23, slot_equip_name_dict['23'])
+        replace_tip(canvas_res, res_img31, slot_equip_name_dict['31'])
+        replace_tip(canvas_res, res_img32, slot_equip_name_dict['32'])
+        replace_tip(canvas_res, res_img33, slot_equip_name_dict['33'])
+
         if res_txtbbgs[5] is not None:
             canvas_res.delete(res_txtbbgs[5])
         if res_imgbbgs[5] is not None:
             canvas_res.delete(res_imgbbgs[5])
+            replace_tip(canvas_res, res_imgbbgs[5], "")
         if 'bbg' in image_changed:
             res_txtbbgs[5] = canvas_res.create_text(178, 147, text="百变怪=>", fill='white')
             res_imgbbgs[5] = canvas_res.create_image(219, 147, image=image_changed['bbg'])  # 百变怪
+            replace_tip(canvas_res, res_imgbbgs[5], equip_index_to_realname[rank_baibiaoguai[now]])
         else:
             res_txtbbgs[5] = None
             res_imgbbgs[5] = None
@@ -1462,11 +1522,11 @@ def change_rank(now, job_type):
         current_equips = g_rank_equips[now][1:]
         canvas_res.itemconfig(res_txt_weapon, text=equip_index_to_realname[current_weapon])
         canvas_res.itemconfig(res_img_weapon, image=image_changed['weapon'])
-        replace_tip(result_window, canvas_res, res_img_weapon, equip_index_to_realname[current_weapon])
+        replace_tip(canvas_res, res_img_weapon, equip_index_to_realname[current_weapon])
         change_readable_result_area(current_weapon, current_equips, False)
 
     elif job_type == 'buf':
-        global result_image_ons, rank_bufs, rank_type_buf, res_buf, res_buf_exs, rank_buf_exs, rank_huanzhuang_equips, rank_not_owned_equipss, rank_baibiaoguais
+        global result_image_ons, rank_bufs, rank_type_buf, res_buf, res_buf_exs, rank_buf_exs, rank_huanzhuang_equips, rank_not_owned_equipss, rank_baibiaoguais, rank_settings
 
         rank_type_index = rank_type_buf - 1
 
@@ -1508,13 +1568,29 @@ def change_rank(now, job_type):
         canvas_res.itemconfig(res_img31, image=image_changed['31'])
         canvas_res.itemconfig(res_img32, image=image_changed['32'])
         canvas_res.itemconfig(res_img33, image=image_changed['33'])
+
+        slot_equip_name_dict = get_slot_names_dict(equip_index_to_realname, rank_settings[rank_type_index][now][1:])
+        replace_tip(canvas_res, res_img11, slot_equip_name_dict['11'])
+        replace_tip(canvas_res, res_img12, slot_equip_name_dict['12'])
+        replace_tip(canvas_res, res_img13, slot_equip_name_dict['13'])
+        replace_tip(canvas_res, res_img14, slot_equip_name_dict['14'])
+        replace_tip(canvas_res, res_img15, slot_equip_name_dict['15'])
+        replace_tip(canvas_res, res_img21, slot_equip_name_dict['21'])
+        replace_tip(canvas_res, res_img22, slot_equip_name_dict['22'])
+        replace_tip(canvas_res, res_img23, slot_equip_name_dict['23'])
+        replace_tip(canvas_res, res_img31, slot_equip_name_dict['31'])
+        replace_tip(canvas_res, res_img32, slot_equip_name_dict['32'])
+        replace_tip(canvas_res, res_img33, slot_equip_name_dict['33'])
+
         if res_txtbbgs[5] is not None:
             canvas_res.delete(res_txtbbgs[5])
         if res_imgbbgs[5] is not None:
             canvas_res.delete(res_imgbbgs[5])
+            replace_tip(canvas_res, res_imgbbgs[5], "")
         if 'bbg' in image_changed:
             res_txtbbgs[5] = canvas_res.create_text(178, 147, text="百变怪=>", fill='white')
             res_imgbbgs[5] = canvas_res.create_image(219, 147, image=image_changed['bbg'])  # 百变怪
+            replace_tip(canvas_res, res_imgbbgs[5], equip_index_to_realname[rank_baibiaoguais[rank_type_index][0]])
         else:
             res_txtbbgs[5] = None
             res_imgbbgs[5] = None
@@ -1523,7 +1599,7 @@ def change_rank(now, job_type):
         current_equips = g_rank_equips[g_current_buff_type][now][1:]
         canvas_res.itemconfig(res_txt_weapon, text=equip_index_to_realname[current_weapon])
         canvas_res.itemconfig(res_img_weapon, image=image_changed['weapon'])
-        replace_tip(result_window, canvas_res, res_img_weapon, equip_index_to_realname[current_weapon])
+        replace_tip(canvas_res, res_img_weapon, equip_index_to_realname[current_weapon])
         change_readable_result_area(current_weapon, current_equips, False, hz_equips)
 
 
@@ -1532,7 +1608,7 @@ def change_rank_type(in_type):
     g_current_rank = 0
     global g_current_buff_type
     global image_list, canvas_res, res_img_weapon, res_img11, res_img12, res_img13, res_img14, res_img15, res_img21, res_img22, res_img23, res_img31, res_img32, res_img33, res_txtbbgs, res_imgbbgs
-    global result_image_ons, rank_bufs, rank_type_buf, res_img_list, res_buf_list, res_buf_exs, rank_buf_exs, res_buf_type_what, rank_huanzhuang_equips, rank_not_owned_equipss, rank_baibiaoguais
+    global result_image_ons, rank_bufs, rank_type_buf, res_img_list, res_buf_list, res_buf_exs, rank_buf_exs, res_buf_type_what, rank_huanzhuang_equips, rank_not_owned_equipss, rank_baibiaoguais, rank_settings
 
     rank_type_index = in_type - 1
 
@@ -1589,31 +1665,52 @@ def change_rank_type(in_type):
     canvas_res.itemconfig(res_img31, image=image_changed['31'])
     canvas_res.itemconfig(res_img32, image=image_changed['32'])
     canvas_res.itemconfig(res_img33, image=image_changed['33'])
+
+    slot_equip_name_dict = get_slot_names_dict(equip_index_to_realname, rank_settings[rank_type_index][0][1:])
+    replace_tip(canvas_res, res_img11, slot_equip_name_dict['11'])
+    replace_tip(canvas_res, res_img12, slot_equip_name_dict['12'])
+    replace_tip(canvas_res, res_img13, slot_equip_name_dict['13'])
+    replace_tip(canvas_res, res_img14, slot_equip_name_dict['14'])
+    replace_tip(canvas_res, res_img15, slot_equip_name_dict['15'])
+    replace_tip(canvas_res, res_img21, slot_equip_name_dict['21'])
+    replace_tip(canvas_res, res_img22, slot_equip_name_dict['22'])
+    replace_tip(canvas_res, res_img23, slot_equip_name_dict['23'])
+    replace_tip(canvas_res, res_img31, slot_equip_name_dict['31'])
+    replace_tip(canvas_res, res_img32, slot_equip_name_dict['32'])
+    replace_tip(canvas_res, res_img33, slot_equip_name_dict['33'])
+
     if res_txtbbgs[5] is not None:
         canvas_res.delete(res_txtbbgs[5])
     if res_imgbbgs[5] is not None:
         canvas_res.delete(res_imgbbgs[5])
+        replace_tip(canvas_res, res_imgbbgs[5], "")
     if 'bbg' in image_changed:
         res_txtbbgs[5] = canvas_res.create_text(178, 147, text="百变怪=>", fill='white')
         res_imgbbgs[5] = canvas_res.create_image(219, 147, image=image_changed['bbg'])  # 百变怪
+        replace_tip(canvas_res, res_imgbbgs[5], equip_index_to_realname[rank_baibiaoguais[rank_type_index][0]])
     else:
         res_txtbbgs[5] = None
         res_imgbbgs[5] = None
 
     cn2 = 0
     for rank in range(len(rank_changed)):
+        slot_equip_name_dict = get_slot_names_dict(equip_index_to_realname, rank_settings[rank_type_index][rank][1:])
         for equip_slot_index in [11, 12, 13, 14, 15, 21, 22, 23, 31, 32, 33]:
             canvas_res.itemconfig(res_img_list[str(rank) + str(equip_slot_index)], image=image_changed_all[rank][str(equip_slot_index)])
+            replace_tip(canvas_res, res_img_list[str(rank) + str(equip_slot_index)], slot_equip_name_dict[str(equip_slot_index)])
             cn2 = cn2 + 2
         canvas_res.itemconfig(res_img_list[str(rank) + 'weapon'], image=image_changed_all[rank]['weapon'])
+        replace_tip(canvas_res, res_img_list[str(rank) + 'weapon'], equip_index_to_realname[rank_settings[rank_type_index][rank][0]])
 
         if res_txtbbgs[rank] is not None:
             canvas_res.delete(res_txtbbgs[rank])
         if res_imgbbgs[rank] is not None:
             canvas_res.delete(res_imgbbgs[rank])
+            replace_tip(canvas_res, res_imgbbgs[rank], "")
         if 'bbg' in image_changed_all[rank]:
             res_txtbbgs[rank] = canvas_res.create_text(268 + 5 * 29 + 14 + 40, 38 + 78 * rank, text="百变怪=>", font=guide_font, fill='white')
             res_imgbbgs[rank] = canvas_res.create_image(268 + 7 * 29 + 40, 37 + 78 * rank, image=image_changed_all[rank]['bbg'])
+            replace_tip(canvas_res, res_imgbbgs[rank], equip_index_to_realname[rank_baibiaoguais[rank_type_index][rank]])
         else:
             res_txtbbgs[rank] = None
             res_imgbbgs[rank] = None
@@ -1625,7 +1722,7 @@ def change_rank_type(in_type):
     current_equips = g_rank_equips[g_current_buff_type][0][1:]
     canvas_res.itemconfig(res_txt_weapon, text=equip_index_to_realname[current_weapon])
     canvas_res.itemconfig(res_img_weapon, image=image_changed['weapon'])
-    replace_tip(result_window, canvas_res, res_img_weapon, equip_index_to_realname[current_weapon])
+    replace_tip(canvas_res, res_img_weapon, equip_index_to_realname[current_weapon])
     change_readable_result_area(current_weapon, current_equips, False, hz_equips)
 
 
@@ -3048,8 +3145,8 @@ if __name__ == '__main__':
 
     # 对某个window上的某个canvas的特定区域添加tips
     class CanvasTipInfo:
-        def __init__(self, window, canvas, item_id, tip, center_x, center_y, width, height, tip_x_offset, tip_y_offset):
-            self.window = window
+        def __init__(self, canvas, item_id, tip, center_x, center_y, width=28, height=28, tip_x_offset=28, tip_y_offset=-28):
+            self.window = canvas.winfo_toplevel()
             self.canvas = canvas
             self.item_id = item_id
             self.center_x = center_x
@@ -3063,45 +3160,56 @@ if __name__ == '__main__':
 
 
     allCanvasTipInfoList = []  # type: list[CanvasTipInfo]
+    regsiteredCanvas = set([])
+    regsiteredWindows = set([])
 
 
     def bind_tip_on_canvas_area(canvasTipInfo: CanvasTipInfo):
         allCanvasTipInfoList.append(canvasTipInfo)
 
-        canvasTipInfo.canvas.bind("<Motion>", on_move_mouse_on_canvas(canvasTipInfo.window, canvasTipInfo.canvas, canvasTipInfo.item_id))
-        canvasTipInfo.window.bind("<Destroy>", unbind_canvas_tip(canvasTipInfo.window))
+        if canvasTipInfo.canvas not in regsiteredCanvas:
+            canvasTipInfo.canvas.bind("<Motion>", _on_move_mouse_on_canvas(canvasTipInfo.window, canvasTipInfo.canvas))
+            regsiteredCanvas.add(canvasTipInfo.canvas)
+        if canvasTipInfo.window not in regsiteredWindows:
+            canvasTipInfo.window.bind("<Destroy>", _unbind_canvas_tip(canvasTipInfo.window))
+            regsiteredWindows.add(canvasTipInfo.window)
 
 
-    def unbind_canvas_tip(window):
+    def replace_tip(canvas, item_id, tip):
+        for info in allCanvasTipInfoList:
+            if info.window == canvas.winfo_toplevel() and info.canvas == canvas and info.item_id == item_id:
+                info.tip = tip
+                break
+
+
+    def _unbind_canvas_tip(window):
         def _destroy(event):
             global allCanvasTipInfoList
             allCanvasTipInfoList = [tipInfo for tipInfo in allCanvasTipInfoList if tipInfo.window != window]
 
         return _destroy
 
-    def replace_tip(window, canvas, item_id, tip):
-        for info in allCanvasTipInfoList:
-            if info.window == window or info.canvas == canvas or info.item_id == item_id:
-                info.tip = tip
 
-
-    def on_move_mouse_on_canvas(window, canvas, item_id):
+    def _on_move_mouse_on_canvas(window, canvas):
         def _move(event):
             if not cfg.ui.show_equip_tips.enable:
                 return
 
             x, y = event.x, event.y
 
+            hide = True
             for info in allCanvasTipInfoList:
-                if info.window != window or info.canvas != canvas or info.item_id != item_id:
+                if info.window != window or info.canvas != canvas or info.tip == "":
                     continue
                 # 仅处理在对应窗口对应canvas内的事件
                 if info.center_x - info.width / 2 <= x <= info.center_x + info.width / 2 and info.center_y - info.height / 2 <= y <= info.center_y + info.height / 2:
                     # 在对应区域内，则按照提示弹出tip
                     _show_tip(info.window, info.tip, info.center_x - info.width / 2, info.center_y - info.height / 2, info.tip_x_offset, info.tip_y_offset)
-                else:
-                    # 否则，移除tip
-                    _hide_tip(info.window)
+                    hide = False
+
+            if hide:
+                # 否则，移除tip
+                _hide_tip(window)
             pass
 
         return _move
@@ -3110,6 +3218,8 @@ if __name__ == '__main__':
     def _show_tip(root_window, tip, x, y, x_offset, y_offset):
         if not cfg.ui.show_equip_tips.enable:
             return
+
+        _hide_tip(root_window)
 
         lines = tip.split("\n")
         height = 20 * len(lines)
