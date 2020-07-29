@@ -1430,10 +1430,10 @@ def show_result(rank_list, job_type, ele_skill):
 
     wep_name = equip_index_to_realname[wep_index]
     job_name = jobup_select.get()
-    res_txt_weapon = canvas_res.create_text(122, 20, text=wep_name, font=guide_font, fill='white')
-    res_img_weapon = canvas_res.create_image(219, 27, image=wep_image)  # 武器
+    res_txt_weapon = canvas_res.create_text(122, 20, text="(●—●)", font=guide_font, fill='white')
+    res_img_weapon = canvas_res.create_image(189, 27, image=wep_image)  # 武器
     gif_image_ids.append(res_img_weapon)
-    bind_tip_on_canvas_area(CanvasTipInfo(canvas_res, res_img_weapon, wep_name, 219, 27))
+    bind_tip_on_canvas_area(CanvasTipInfo(canvas_res, res_img_weapon, wep_name, 189, 27))
     canvas_res.create_text(122, 50, text="<职业>", font=guide_font, fill='white')
     canvas_res.create_text(122, 87, text=job_name, font=guide_font, fill='white')
 
@@ -1520,7 +1520,7 @@ def change_rank(now, job_type):
 
         current_weapon = g_rank_equips[now][0]
         current_equips = g_rank_equips[now][1:]
-        canvas_res.itemconfig(res_txt_weapon, text=equip_index_to_realname[current_weapon])
+        # canvas_res.itemconfig(res_txt_weapon, text=equip_index_to_realname[current_weapon])
         canvas_res.itemconfig(res_img_weapon, image=image_changed['weapon'])
         replace_tip(canvas_res, res_img_weapon, equip_index_to_realname[current_weapon])
         change_readable_result_area(current_weapon, current_equips, False)
@@ -1597,7 +1597,7 @@ def change_rank(now, job_type):
 
         current_weapon = g_rank_equips[g_current_buff_type][now][0]
         current_equips = g_rank_equips[g_current_buff_type][now][1:]
-        canvas_res.itemconfig(res_txt_weapon, text=equip_index_to_realname[current_weapon])
+        # canvas_res.itemconfig(res_txt_weapon, text=equip_index_to_realname[current_weapon])
         canvas_res.itemconfig(res_img_weapon, image=image_changed['weapon'])
         replace_tip(canvas_res, res_img_weapon, equip_index_to_realname[current_weapon])
         change_readable_result_area(current_weapon, current_equips, False, hz_equips)
@@ -1720,7 +1720,7 @@ def change_rank_type(in_type):
 
     current_weapon = g_rank_equips[g_current_buff_type][0][0]
     current_equips = g_rank_equips[g_current_buff_type][0][1:]
-    canvas_res.itemconfig(res_txt_weapon, text=equip_index_to_realname[current_weapon])
+    # canvas_res.itemconfig(res_txt_weapon, text=equip_index_to_realname[current_weapon])
     canvas_res.itemconfig(res_img_weapon, image=image_changed['weapon'])
     replace_tip(canvas_res, res_img_weapon, equip_index_to_realname[current_weapon])
     change_readable_result_area(current_weapon, current_equips, False, hz_equips)
