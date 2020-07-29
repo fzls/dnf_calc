@@ -1259,10 +1259,10 @@ def get_bless_huanzhuang_equips_list(step: CalcStepData):
                     if target_setcode in step.owned_set_2_equips_map and target_equip_god in step.owned_set_2_equips_map[target_setcode]:
                         # 已拥有神话装备
                         replaced_is_god = is_god(replaced_equip)
-                        if not replaced_is_god or step.calc_data.huan_zhuang.include_manual_huanzhuang:
+                        if not step.has_god or (step.calc_data.huan_zhuang.include_manual_huanzhuang and replaced_is_god):
                             # 若换入的装备为神话，此时只考虑两种情况
-                            # 1. 被替换的部位不是神话
-                            # 2. 被替换的部位是神话，且配置允许祝福和太阳装各有一个不同的神话
+                            # 1. 太阳换装无神话
+                            # 2. 太阳换装有神话，且神话部位是当前被替换的这个部位，同时配置考虑手动切装，因为只切一件的时候只有这种方式可以手动切双神话
                             huanzhuang_equips = list_replace(step.calc_data.selected_combination.copy(), replaced_equip, target_equip_god)
                             bless_huanzhuang_equips_list.append(BlessHuanZhuang(huanzhuang_equips, [target_equip_god], None, [], []))
 
