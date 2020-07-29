@@ -93,4 +93,4 @@ for idx, version_info in enumerate(old_version_infos):
 patch_oldest_version = version_str(old_version_infos[0].version)
 patch_newest_version = version_str(old_version_infos[-1].version)
 patch_7z_file = "再度魔改版史诗装备计算器_v{}_by风之凌殇_增量更新文件_v{}_to_v{}.7z".format(latest_version_str, patch_oldest_version, patch_newest_version)
-os.system('bc c -y -r -aoa -fmt:7z -l:9 "{}" "{}" "_apply_patch.bat" "hpatchz.exe"'.format(patch_7z_file, patches_dir))
+os.system('bz c -y -r -aoa -fmt:7z -l:9 "{}" "{}" "_apply_patch.bat" "hpatchz.exe"'.format(patch_7z_file, patches_dir))

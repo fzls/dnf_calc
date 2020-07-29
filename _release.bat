@@ -116,7 +116,7 @@ echo.
 cd ..
 set target_7z=再度魔改版史诗装备计算器_v%version%_by风之凌殇.7z
 set source_dir=再度魔改版史诗装备计算器_v%version%_by风之凌殇
-bc c -y -r -aoa -fmt:7z -l:9 "%target_7z%" "%source_dir%"
+bz c -y -r -aoa -fmt:7z -l:9 "%target_7z%" "%source_dir%"
 
 echo.
 echo [提示]: 创建增量更新补丁
