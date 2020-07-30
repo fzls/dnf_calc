@@ -486,11 +486,11 @@
     - physical_and_mental_strength: 38 # 四维(体精)+38
 
     ## 项链
-    # 增幅+10
-    - strength_and_intelligence: 44 # 异次元智力+44
+    # 增幅+11
+    - strength_and_intelligence: 79 # 异次元智力+79
     # 附魔
-    - strength_and_intelligence: 42  # 四维(力智)+42
-    - physical_and_mental_strength: 38 # 四维(体精)+38
+    - strength_and_intelligence: 70  # 四维(力智)+70
+    - physical_and_mental_strength: 70 # 四维(体精)+70
 
     ## 戒指
     # 红色徽章(上)
@@ -669,7 +669,7 @@
       - index_buf_intelligence: -1 # 品级
     # 鞋子=130（满智力）
     15050: # CEO鞋子
-      - index_buf_intelligence: -2 # 品级
+      - index_buf_intelligence: 0 # 品级
     # 手镯=100（满智力）
     # 神话手镯=100（满智力）
     21251: # 时空神话手镯
@@ -686,12 +686,12 @@
     23180: # 幸运三角戒指
       - index_buf_intelligence: -1 # 品级
     23330: # 次元戒指
-      - index_buf_intelligence: -6 # 品级
+      - index_buf_intelligence: -1 # 品级
     # 辅助装备=146（满智力）
     31200: # 军神辅助装备
       - index_buf_intelligence: -4 # 品级
     31280: # 深渊辅助装备
-      - index_buf_intelligence: -3 # 品级
+      - index_buf_intelligence: -1 # 品级
     # 魔法石=169（满智力）
     32250: # 时空魔法石
       - index_buf_intelligence: -1 # 品级
@@ -700,7 +700,7 @@
     33200: # 军神耳环
       - index_buf_intelligence: -3 # 品级
     33330: # 次元耳环
-      - index_buf_intelligence: -4 # 品级
+      - index_buf_intelligence: -2 # 品级
 
   huanzhuang_slot_fixup:
     12: # 裤子
