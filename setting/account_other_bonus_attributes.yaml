@@ -529,9 +529,9 @@
     - physical_and_mental_strength: 60 # 四维(体精)+60
 
     ## 耳环
-    # 增幅+10
-    - physical_magical_independent_attack_power: 48 # 三攻+48
-    - strength_and_intelligence: 44 # 异次元智力+44
+    # 增幅+13
+    - physical_magical_independent_attack_power: 152 # 三攻+152
+    - strength_and_intelligence: 153 # 异次元智力+153
     # 附魔
     - strength_and_intelligence: 150  # 四维(力智)+150
     - physical_and_mental_strength: 150 # 四维(体精)+150
