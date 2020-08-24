@@ -150,8 +150,8 @@ def extract_buf_rank_cols(ele_skill, job_name, cool, equip_index_to_realname, cu
     # 上衣 裤子 头肩 腰带 鞋子 手镯 项链 戒指 辅助装备 魔法石 耳环
     cols.extend(get_slot_names(equip_index_to_realname, equip_indexes))
     huanzhuang = ""
-    if huanzhuang_equip != "":
-        huanzhuang = equip_index_to_realname[huanzhuang_equip]
+    if len(huanzhuang_equip) != 0:
+        huanzhuang = "|".join([equip_index_to_realname[equip] for equip in huanzhuang_equip])
     cols.append(huanzhuang)  # 祝福切装
     bbg = ""  # 百变怪
     if baibianguai is not None:
