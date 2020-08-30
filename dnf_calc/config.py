@@ -773,8 +773,9 @@ g_config = Config()
 
 
 # 读取程序config
-def load_config(config_path="config.toml"):
+def load_config(config_path="config.toml", local_config_path="config.toml.local"):
     global g_config
+    # 首先尝试读取config.toml（受版本管理系统控制）
     try:
         raw_config = toml.load(config_path)
         g_config.auto_update_config(raw_config)
@@ -793,11 +794,18 @@ def load_config(config_path="config.toml"):
         notify_error(logger, "读取{}文件出错，是否直接在压缩包中打开了？\n具体出错为：{}".format(config_path, error))
         sys.exit(-1)
 
+    # 然后尝试读取本地文件（不受版本管理系统控制）
+    try:
+        raw_config = toml.load(local_config_path)
+        g_config.auto_update_config(raw_config)
+    except:
+        pass
+
 
 def config():
     return g_config
 
 
 if __name__ == '__main__':
-    load_config("../config.toml")
+    load_config("../config.toml", "../config.toml.local")
     logger.info("ui cfg={}".format(g_config.ui))
