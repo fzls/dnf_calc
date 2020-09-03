@@ -13,6 +13,8 @@ echo.
 
 :: 增加版本标签
 git tag -d v%version%
+git push origin :refs/tags/v%version%
+
 git tag -a v%version% -m "release v%version%"
 
 :: 发布前将代码推送到github
