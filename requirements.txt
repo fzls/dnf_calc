@@ -8,3 +8,4 @@ bugsnag
 pypiwin32
 wmi
 pillow
+colorlog
