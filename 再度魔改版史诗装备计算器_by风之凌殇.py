@@ -2924,7 +2924,7 @@ def check_set(code):
 
 
 def donate():
-    webbrowser.open('https://twip.kr/dawnclass16')
+    os.popen("支持一下.png")
 
 
 def dunfaoff():
