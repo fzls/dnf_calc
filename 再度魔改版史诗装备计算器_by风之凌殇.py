@@ -3615,6 +3615,120 @@ if __name__ == '__main__':
     # 根据布局信息创建ui并初始化装备相关信息
     create_ui_layout(self, layout_cfg, is_startup=True)
 
+
+    # 希洛克武器词条
+    def update_inv(event):
+        global inv_tg
+        if inv_mod.get() == "无" or inv_mod.get() == "自动择优":
+            if inv_mod.get() == "无":
+                inv_tg = 0
+            elif inv_mod.get() == "自动择优":
+                inv_tg = 2
+            inv_select1_1['state'] = 'disabled'
+            inv_select1_2['state'] = 'disabled'
+            inv_select2_1['state'] = 'disabled'
+            inv_select2_2['state'] = 'disabled'
+            inv_select3_1['state'] = 'disabled'
+            inv_select3_2['state'] = 'disabled'
+            inv_select4_1['state'] = 'disabled'
+            inv_select4_2['state'] = 'disabled'
+        elif inv_mod.get() == "手动选择":
+            inv_tg = 1
+            inv_select1_1['state'] = 'normal'
+            inv_select1_2['state'] = 'normal'
+            inv_select2_1['state'] = 'normal'
+            inv_select2_2['state'] = 'normal'
+            inv_select3_1['state'] = 'normal'
+            inv_select3_2['state'] = 'normal'
+            inv_select4_1['state'] = 'normal'
+            inv_select4_2['state'] = 'normal'
+
+
+    inv_select3_2_values = [
+        ['3%/60', '3%/40', '3%/20'],
+        ['4%/3%', '3%/3%', '2%/3%'],
+        ['4%/25', '3%/25', '2%/25'],
+        ['3%/3%', '3%/2%', '3%/1%'],
+        ['+185', '+155', '+125'],
+        ['3%/+1', '2%/+1', '1%/+1'],
+    ]
+
+
+    def update_inv_buf(event):
+        new_index = inv_select3_1.current()
+        values = inv_select3_2_values[new_index]
+        inv_select3_2['values'] = values
+        inv_select3_2.set(values[0])
+
+
+    inv_select4_2_values = [
+        ['3%/40', '3%/30', '3%/20'],
+        ['4%/2%', '3%/2%', '2%/2%'],
+        ['3%/25', '2%/25', '1%/25'],
+        ['2%/3%', '2%/2%', '2%/1%'],
+        ['+145', '+115', '+85'],
+        ['+1/30', '+1/20', '+1/10'],
+    ]
+
+
+    def update_inv_buf2(event):
+        new_index = inv_select4_1.current()
+        values = inv_select4_2_values[new_index]
+        inv_select4_2['values'] = values
+        inv_select4_2.set(values[0])
+
+
+    tkinter.Label(self, text="希洛克武器词条", font=big_font, fg="white", bg=dark_sub).place(x=740, y=220)
+
+    tkinter.Label(self, text="输出职业", font=guide_font, fg="white", bg=dark_sub).place(x=780, y=260)
+
+    inv_left_x = 715
+    inv_top_y = 285
+    inv_mod_list = ["无", "手动选择", "自动择优"]
+    inv_mod = tkinter.ttk.Combobox(self, width=10, values=inv_mod_list)
+    inv_mod.place(x=inv_left_x + 60, y=inv_top_y)
+    inv_mod.set("无")
+    inv_mod.bind("<<ComboboxSelected>>", update_inv)
+
+    inv_type_list = ["攻击时，增加X%的伤害（黄字）", "暴击时，增加X%的伤害（爆伤）", "攻击时，附加X%的伤害（白字）", "最终伤害+X%", "力智+X%", "三攻+X%"]
+    inv_value_list1 = [6, 8, 10]
+    inv_value_list2 = [3, 4, 5]
+    inv_select1_1 = tkinter.ttk.Combobox(self, width=23, values=inv_type_list)
+    inv_select1_1.place(x=inv_left_x, y=inv_top_y + 30)
+    inv_select1_1.set(inv_type_list[0])
+    inv_select1_2 = tkinter.ttk.Combobox(self, width=2, values=inv_value_list1)
+    inv_select1_2.place(x=inv_left_x + 185, y=inv_top_y + 30)
+    inv_select1_2.set(10)
+    inv_select2_1 = tkinter.ttk.Combobox(self, width=23, values=inv_type_list)
+    inv_select2_1.place(x=inv_left_x, y=inv_top_y + 30 * 2)
+    inv_select2_1.set(inv_type_list[0])
+    inv_select2_2 = tkinter.ttk.Combobox(self, width=2, values=inv_value_list2)
+    inv_select2_2.place(x=inv_left_x + 185, y=inv_top_y + 30 * 2)
+    inv_select2_2.set(5)
+
+    tkinter.Label(self, text="奶系职业", font=guide_font, fg="white", bg=dark_sub).place(x=780, y=375)
+
+    inv_top_y = 400
+    inv_type_list2 = ["祝福力智+X%/太阳力智+X", "祝福力智+X%/太阳力智+X%", "祝福三攻+X%/太阳力智+X", "祝福三攻+X%/太阳力智+X%", "Lv15转职被动四维+X", "祝福力智+X%/太阳Lv+X"]
+    inv_type_list2_1 = ["祝福力智+X%/太阳力智+X", "祝福力智+X%/太阳力智+X%", "祝福三攻+X%/太阳力智+X", "祝福三攻+X%/太阳力智+X%", "Lv15转职被动四维+X", "祝福Lv+X/太阳力智+X"]
+    inv_value_list3 = inv_select3_2_values[0]
+    inv_value_list3_1 = inv_select4_2_values[0]
+    inv_select3_1 = tkinter.ttk.Combobox(self, width=28, values=inv_type_list2)
+    inv_select3_1.place(x=inv_left_x, y=inv_top_y)
+    inv_select3_1.set(inv_type_list2[0])
+    inv_select3_2 = tkinter.ttk.Combobox(self, width=28, values=inv_value_list3)
+    inv_select3_2.place(x=inv_left_x, y=inv_top_y + 30)
+    inv_select3_2.set(inv_value_list3[0])
+    inv_select4_1 = tkinter.ttk.Combobox(self, width=28, values=inv_type_list2_1)
+    inv_select4_1.place(x=inv_left_x, y=inv_top_y + 30 * 2)
+    inv_select4_1.set(inv_type_list2_1[0])
+    inv_select4_2 = tkinter.ttk.Combobox(self, width=28, values=inv_value_list3_1)
+    inv_select4_2.place(x=inv_left_x, y=inv_top_y + 30 * 3)
+    inv_select4_2.set(inv_value_list3_1[0])
+    inv_select3_1.bind("<<ComboboxSelected>>", update_inv_buf)
+    inv_select4_1.bind("<<ComboboxSelected>>", update_inv_buf2)
+    update_inv(0)
+
     donate_image = PhotoImage(file='ext_img/donate.png')
     donate_bt = tkinter.Button(self, image=donate_image, command=donate, borderwidth=0, bg=dark_main,
                                activebackground=dark_main)
