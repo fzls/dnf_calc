@@ -91,7 +91,7 @@ blue = [29, 30, 36]
 # 界面标题
 title = "史诗搭配计算器火力全开Plus版-ver$version$ 魔改by风之凌殇 原创by黎明工作室（韩服）dawnclass16"
 # 界面宽度
-window_width = 710
+window_width = 940
 # 界面高度
 window_height = 720
 # 界面左上角与主屏幕左上角的偏移x
@@ -651,6 +651,26 @@ set_code_start = 32
 set_code_end = 35
 # 装备顺序信息 散件（右）（32-35） 耳环（神话）、鞋、戒指、耳环
 slot_orders = "[(33, 1), (15, 0), (23, 0), (33, 0)]"
+
+[[ui.layout.equip_block_infos]]
+# 区域名称，仅用来方便理解
+name = "希洛克装备"
+# 装备区域类型，目前支持三类，1. set_block 套装区域 2. single_block 散件区域 3. nested_block 嵌套区域
+type = "set_block"
+# 左上角的坐标
+topleft_x = 730
+topleft_y = 540
+# 套装图标的宽度，为0时表示无套装图标
+set_icon_width = 102
+# 套装及装备图标的高度
+set_equip_icon_height = 30
+# 装备图标的宽度
+equip_icon_width = 31
+# 适用套装范围（两侧均包含）
+set_code_start = 65
+set_code_end = 69
+# 装备顺序信息 希洛克装备（65-69） 裤子、戒指、魔法石
+slot_orders = "[(41, 0), (42, 0), (43, 0)]"
 
 # 是否显示装备提示
 [ui.show_equip_tips]
