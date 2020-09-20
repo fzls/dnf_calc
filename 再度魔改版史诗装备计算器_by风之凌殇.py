@@ -652,6 +652,7 @@ def get_equips():
     list11, list12, list13, list14, list15 = [[] for i in range(5)]
     list21, list22, list23 = [[] for i in range(3)]
     list31, list32, list33 = [[] for i in range(3)]
+    list41, list42, list43 = [[] for i in range(3)]
     # 套装
     list_setcode = []
     set_has_god = {}
@@ -659,6 +660,7 @@ def get_equips():
     listns11, listns12, listns13, listns14, listns15 = [[] for i in range(5)]
     listns21, listns22, listns23 = [[] for i in range(3)]
     listns31, listns32, listns33 = [[] for i in range(3)]
+    listns41, listns42, listns43 = [[] for i in range(3)]
 
     local_vals = locals()
 
@@ -700,7 +702,7 @@ def get_equips():
 
     _get_equips(config().ui.layout)
 
-    equip_slot_indexes = ['11', '12', '13', '14', '15', '21', '22', '23', '31', '32', '33']
+    equip_slot_indexes = ['11', '12', '13', '14', '15', '21', '22', '23', '31', '32', '33', '41', '42', '43']
     if select_speed.get() == speed_quick:
         for set_code, count in collections.Counter(list_setcode).items():
             if count > 1:
