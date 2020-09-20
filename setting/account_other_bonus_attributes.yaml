@@ -705,3 +705,318 @@
   huanzhuang_slot_fixup:
     12: # 裤子
       - index_buf_intelligence: -5 # 绿色徽章为10，比太阳换装15少5
+
+
+- names:
+    - "剑帝"
+  entries:
+    ### 物品栏
+
+    ## 头肩
+    #    # 增幅+10
+    #    - strength_and_intelligence: 44 # 异次元力量+44
+    # 附魔
+    #    - physical_magical_independent_attack_power: 20 # 三攻+20
+    #    - strength_and_intelligence: 75  # 四维(力智)+75
+    #    - physical_and_mental_strength: 75 # 四维(体精)+75
+    - extra_all_job_all_active_skill_lv_1_50: 1 # 所有职业Lv1~50全部主动技能Lv+1（特性技能除外）
+
+    ## 上衣
+    # 绿色徽章(上)
+    - extra_percent_magic_physical_crit_rate: 3 # 物理暴击率 +3%
+    # 绿色徽章(下)
+    - extra_percent_magic_physical_crit_rate: 2.2 # 物理暴击率 +2.2%
+    #    # 增幅+10
+    #    - strength_and_intelligence: 47 # 异次元力量+47
+    # 附魔
+    - physical_magical_independent_attack_power: 45 # 物理攻击力 +45
+    #    - strength_and_intelligence: 20  # 力量+20
+
+    ## 下装
+    # 绿色徽章(上)
+    - strength_and_intelligence: 20  # 力量+20
+    # 绿色徽章(下)
+    - strength_and_intelligence: 15  # 力量+15
+    - extra_percent_magic_physical_crit_rate: 1.5 # 物理暴击率 +1.5%
+    #    # 增幅+10
+    #    - strength_and_intelligence: 44 # 异次元力量+44
+    # 附魔
+    - physical_magical_independent_attack_power: 45 # 物理攻击力 +45
+    - strength_and_intelligence: 15  # 力量+15
+
+    ## 腰带
+    # 红色徽章(上)
+    - strength_and_intelligence: 17  # 力量+17
+    # 红色徽章(下)
+    - strength_and_intelligence: 17  # 力量+17
+    #    # 增幅+10
+    #    - strength_and_intelligence: 44 # 异次元力量+44
+    # 附魔
+    #    - physical_magical_independent_attack_power: 36 # 三攻+36
+    - extra_all_job_all_active_skill_lv_1_50: 1 # 所有职业Lv1~50全部主动技能Lv+1（特性技能除外）
+
+    ## 鞋子
+    # 蓝色徽章(上)
+    - physical_magical_independent_attack_power: 10  # 三攻+10
+    # 蓝色徽章(下)
+    - physical_magical_independent_attack_power: 10  # 三攻+10
+    #    # 增幅+10
+    #    - strength_and_intelligence: 44 # 异次元力量+44
+    # 附魔
+    #    - physical_magical_independent_attack_power: 36 # 三攻+36
+    - extra_all_job_all_active_skill_lv_1_30: 1 # 所有职业Lv1~30全部主动技能Lv+1（特性技能除外）
+
+    ## 武器
+    # 由于有多把武器，所以将武器的打造改为在对应武器的补正上处理，从而可以处理多个武器打造不同的情况
+
+    ## 副武器
+    - physical_magical_independent_attack_power: 111 # 物理攻击力+111
+    # 强化+10
+    - physical_magical_independent_attack_power: 42 # 物理攻击力+42
+    - strength_and_intelligence: 8 # 力量+8
+
+
+    ## 辟邪玉
+    # 冰属性攻击
+
+    ## 称号
+    # 称号基础属性已在称号表中添加,无需处理
+    # 附魔
+    - physical_magical_independent_attack_power: 40 # 物理攻击力+40
+    - extra_all_element_strength: 15 # 所有属性强化 +15
+    - extra_all_job_all_active_skill_lv_1_50: 1 # 所有职业Lv1~50全部主动技能Lv+1（特性技能除外）
+
+    ## 手镯
+    # 蓝色徽章(上)
+    - physical_magical_independent_attack_power: 10  # 三攻+10
+    # 蓝色徽章(下)
+    - physical_magical_independent_attack_power: 10  # 三攻+10
+    #    # 增幅+10
+    #    - strength_and_intelligence: 44 # 异次元力量+44
+    # 附魔
+    - extra_all_element_strength: 23 # 冰属性强化 +23
+
+    ## 项链
+    #    # 增幅+10
+    #    - strength_and_intelligence: 44 # 异次元力量+44
+    # 附魔
+    - extra_all_element_strength: 23 # 冰属性强化 +23
+
+    ## 戒指
+    # 红色徽章(上)
+    - strength_and_intelligence: 17  # 力量+17
+    # 红色徽章(下)
+    - strength_and_intelligence: 17  # 力量+17
+    # 增幅+9
+    - strength_and_intelligence: 35 # 异次元力量+35
+    # 附魔
+    - extra_all_element_strength: 23 # 冰属性强化 +23
+
+    ## 辅助装备
+    #    # 白金徽章
+    #    - strength_and_intelligence: 8  # 四维(力智)+8
+    #    - physical_and_mental_strength: 8 # 四维(体精)+8
+    #    - extra_deal_passive_transfer_skill: 1  # 输出职业转职被动技能Lv+X(召唤兽强化)
+    # 强化+7
+    - strength_and_intelligence: 19  # 强化+10 四维(力智)+19
+    - physical_and_mental_strength: 19 # 强化+10 四维(体精)+19
+    # 附魔
+    - physical_magical_independent_attack_power: 60 # 三攻+60
+
+    ## 物理石
+    # 白金徽章
+    - strength_and_intelligence: 8  # 四维(力智)+8
+    - physical_and_mental_strength: 8 # 四维(体精)+8
+    # 强化+7
+    - strength_and_intelligence: 19  # 强化+10 四维(力智)+19
+    - physical_and_mental_strength: 19 # 强化+10 四维(体精)+19
+    # 附魔
+    - extra_all_element_strength: 18 # 所有属性强化 +18
+
+    ## 耳环
+    # 强化+9
+    - physical_magical_independent_attack_power: 37 # 三攻+37
+    # 附魔
+    - strength_and_intelligence: 100  # 四维(力智)+100
+    - physical_and_mental_strength: 100 # 四维(体精)+100
+
+    #    ## 快捷栏装备
+    #    - extra_percent_attack_speed: 5 # 攻速+5%
+    #    - extra_percent_moving_speed: 5 # 快捷栏装备[完美妆粉]增加的5%移速
+    #    - strength_and_intelligence: 30  # 四维(力智)+30, 仅在地下城内生效
+
+
+    ## 换装
+    # buff称号
+    #    - extra_deal_buff_skill: 2  # 召唤兽狂化技能+2, ps: 输出职业buff技能提升,暂时不知道对应现在哪个词条,最接近的是1-45主动技能,但是会影响到其他很多技能,先不处理了
+    #    - extra_all_job_all_skill_lv_25_30: 1 # 所有职业Lv25~30全部技能Lv+1（特性技能除外）
+    # 上衣装扮
+    #- extra_deal_buff_skill: 1  # 召唤兽狂化技能+1, ps: 输出职业buff技能提升,暂时不知道对应现在哪个词条,最接近的是1-45主动技能,但是会影响到其他很多技能,先不处理了
+
+    ### 装扮栏
+
+    #    ## 武器装扮
+    #    # 自带属性
+    #    - extra_percent_attack_speed: 4 # 三速 +4%
+    #    - extra_percent_moving_speed: 4 # 三速 +4%
+    #    # 红色徽章(上)
+    #    - strength_and_intelligence: 17  # 力量+17
+    #    # 红色徽章(下)
+    #    - strength_and_intelligence: 17  # 力量+17
+
+    #    ## 光环
+    #    # 自带属性
+    #    - physical_magical_independent_attack_power: 15 # 三攻+15
+    #    - strength_and_intelligence: 50  # 四维(力智)+50
+    #    - physical_and_mental_strength: 50 # 四维(体精)+50
+    #    # 红色徽章(上)
+    #    - strength_and_intelligence: 25  # 力量+25
+    #    # 红色徽章(下)
+    #    - strength_and_intelligence: 25  # 力量+25
+    #    # 技能词条
+    #    - extra_all_job_all_skill_lv_1_50: 1 # 所有职业Lv1~50全部技能Lv+1（特性技能除外）
+
+    #    ## 头部装扮
+    #    - strength_and_intelligence: 55 # 力量+55
+    #    ## 帽子装扮
+    #    - strength_and_intelligence: 55 # 力量+55
+    ## 脸部装扮
+    - extra_percent_attack_speed: 5.5
+    ## 胸部装扮
+    - extra_percent_attack_speed: 5.5
+    ## 上衣装扮
+    # 直接穿
+    #    - extra_deal_passive_second_awaken_skill: 1 # 二觉被动技能Lv+X(蚀月附灵)
+    ## 腰部装扮
+    - strength_and_intelligence: 45
+    ## 下装装扮
+    ## 鞋装扮
+    - strength_and_intelligence: 45
+    #    ## 装扮3件套
+    #    - strength_and_intelligence: 40  # 四维(力智)+40
+    #    - physical_and_mental_strength: 40 # 四维(体精)+40
+    #    - extra_percent_attack_speed: 2 # 三速+2%
+    #    - extra_percent_moving_speed: 2 # 三速+2%
+    #    ## 装扮5件套(无有效属性)
+    #    ## 装扮8件套
+    #    - strength_and_intelligence: 40  # 四维(力智)+40
+    #    - physical_and_mental_strength: 40 # 四维(体精)+40
+    #    - extra_percent_attack_speed: 2 # 三速+2%
+    #    - extra_percent_moving_speed: 2 # 三速+2%
+    #    - extra_dark_resistance: 15 # 所有属性抗性+15
+    #    - extra_all_element_strength: 6 # 所有属性强化 +6
+    #    ## 皮肤装扮
+    #    - extra_all_element_strength: 6 # 所有属性强化 +6
+    #    # 红色徽章(上)
+    #    - strength_and_intelligence: 17  # 力量+17
+    #    # 红色徽章(下)
+    #    - strength_and_intelligence: 17  # 力量+17
+
+    ## 职业基础
+    - extra_dark_resistance: 32 # 所有装备脱光后的暗抗
+
+    ## 其他
+    # 技能[唤醒]
+    - extra_percent_moving_speed: 8 # 移速增加8%
+    - extra_dark_resistance: 11 # 所有属性抗性增加11
+
+    ### 宠物栏
+    ## 宠物
+    # 宠物基础属性已在宠物表中添加,无需处理
+    # 附魔
+    - extra_all_element_strength: 16 # 冰属性强化 +16
+
+    ## 红色 宠物装备
+    - extra_percent_addtional_damage: 6 # 攻击时，附加6%的伤害
+
+    ## 蓝色 宠物装备
+    - strength_and_intelligence: 16  # 四维(力智)+16
+    - physical_and_mental_strength: 16 # 四维(体精)+16
+    - extra_percent_attack_speed: 3 # 三速+3%
+    - extra_percent_moving_speed: 3 # 三速+3%
+    - extra_percent_magic_physical_crit_rate: 4 # 物理、物理暴击率 +4%
+
+    ## 绿色 宠物装备
+    - physical_magical_independent_attack_power: 30 # 三攻+30
+    - extra_all_element_strength: 16 # 所有属性强化 +16
+
+
+    #    ### 护石栏
+    #    ## 护石(上)
+    #    - other_rate_like_extra_percent_skill_attack_power: 0.108 * 25 # 伊伽贝拉的魂龛,dps占比10.8%，技能提升大概25%
+    #    ## 护石(下)
+    #    - other_rate_like_extra_percent_skill_attack_power: 0.107 * (17 + 6) # 牛头王的觉醒,dps占比10.7%，技能提升大概23%
+
+
+    ### 勋章栏
+    ## 勋章
+    # 强化+6
+    - strength_and_intelligence: 11  # 四维(力智)+11
+    - physical_and_mental_strength: 11 # 四维(体精)+11
+    # 自身属性
+    - physical_magical_independent_attack_power: 30 # 物理攻击力+30
+    - strength_and_intelligence: 48  # 力量+48
+
+    ## 守护珠
+    - extra_all_element_strength: 5 # 冰属性强化 +5
+    - extra_percent_moving_speed: 2.4 # 移速+2.4%
+    - extra_percent_magic_physical_crit_rate: 1.1 # 物理、物理暴击率 +1.1%
+
+
+    ### 其他属性
+    ## 结婚
+    # 戒指
+    - strength_and_intelligence: 15  # 四维(力智)+15
+    - physical_and_mental_strength: 10 # 四维(体精)+10
+    # 婚房装饰
+    - extra_all_element_strength: 1 # 所有属性强化 +1
+  #    - physical_magical_independent_attack_power: 10 # 物理攻击力+10
+  # 111002	光剑-星之海：巴德纳尔
+  #111003	光剑-赤光剑路易纳斯
+  #111004	短剑-战场的热血：安格巴迪
+  #111005	短剑-信念徽章：自由
+  #111006	钝器-骚动的冥焰
+  #111007	钝器-哈蒂-赎月者
+  #111008	太刀-太极天帝剑（阴）
+  #111009	太刀-太极天帝剑（阳）
+  #111010	太刀-前瞻守卫者
+  #111011	巨剑-神之意象
+  #111012	巨剑-卡西姆的大剑
+  deal_equip_fixup:
+    111002: # 光剑-星之海：巴德纳尔
+      # 强化+11
+      - index_deal_physical_magical_independent_attack_power: 607 # 物理攻击力+607
+      # 附魔
+      - index_deal_extra_all_element_strength: 12 # 冰属性强化 +12
+    111003: # 光剑-赤光剑路易纳斯
+      # 强化+11
+      - index_deal_physical_magical_independent_attack_power: 607 # 物理攻击力+607
+      # 附魔
+      - index_deal_extra_all_element_strength: 12 # 冰属性强化 +12
+    111011: # 巨剑-神之意象
+      # 强化+11
+      - index_deal_physical_magical_independent_attack_power: 622 # 物理攻击力+622
+      # 附魔
+      - index_deal_extra_all_element_strength: 12 # 冰属性强化 +12
+    111012: # 巨剑-卡西姆的大剑
+      # 强化+11
+      - index_deal_physical_magical_independent_attack_power: 622 # 物理攻击力+622
+      # 附魔
+      - index_deal_extra_all_element_strength: 12 # 冰属性强化 +12
+    # 修正大恍惚系列的增幅差异
+    #    21171: # 破晓-神话手镯
+    #      # 增幅10
+    #      - index_deal_extra_percent_skill_attack_power: 10  # 额外增加10%技攻
+    #      # 全身红十+13武器=123
+    #      - index_deal_extra_percent_magic_physical_crit_rate: 123 // 6 * 0.5
+    #      - index_deal_extra_percent_attack_speed: 123 // 6 * 0.8
+    #      - index_deal_extra_percent_moving_speed: 123 // 6 * 0.8
+    21170: # 破晓-手镯
+      # 增幅0
+      - index_deal_extra_percent_skill_attack_power: 0  # 额外增加0%技攻
+    22170: # 破晓-项链
+      # 增幅0
+      - index_deal_extra_percent_strength_and_intelligence: 0  # 额外增加0%力智
+    23170: # 破晓-戒指
+      # 增幅9
+      - index_deal_extra_percent_attack_damage: 9  # 攻击时，额外增加9%伤害
