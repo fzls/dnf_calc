@@ -703,8 +703,41 @@
       - index_buf_intelligence: -2 # 品级
 
   huanzhuang_slot_fixup:
+    11: # 上衣
+      # 绿色徽章(上)
+      - index_buf_intelligence: -15  # 智力+15
+      # 绿色徽章(下)
+      - index_buf_intelligence: -15  # 智力+15
+      # 增幅+10
+      - index_buf_intelligence: -44 # 异次元智力+44
     12: # 裤子
       - index_buf_intelligence: -5 # 绿色徽章为10，比太阳换装15少5
+    13: # 头肩
+      # 增幅+10
+      - index_buf_intelligence: -44 # 异次元智力+44
+      # 附魔
+      - index_buf_intelligence: -75  # 四维(力智)+75
+      - index_buf_physical_and_mental_strength: -75 # 四维(体精)+75
+      - index_buf_bless_lv30: -1 # 所有职业Lv1~50全部主动技能Lv+1（特性技能除外）
+      - index_buf_taiyang_lv50: -1 # 所有职业Lv1~50全部主动技能Lv+1（特性技能除外）
+      - index_buf_naiba_protect_badge_lv25: -1 # 所有职业Lv1~50全部主动技能Lv+1（特性技能除外）
+    14: # 腰带
+      # 红色徽章(上)
+      - index_buf_intelligence: -8  # 智力+25
+      # 红色徽章(下)
+      - index_buf_intelligence: -8  # 智力+25
+      # 增幅+10
+      - index_buf_intelligence: -44 # 异次元智力+44
+      # 附魔
+      - index_buf_bless_lv30: -1 # 所有职业Lv1~50全部主动技能Lv+1（特性技能除外）
+      - index_buf_taiyang_lv50: -1 # 所有职业Lv1~50全部主动技能Lv+1（特性技能除外）
+      - index_buf_naiba_protect_badge_lv25: -1 # 所有职业Lv1~50全部主动技能Lv+1（特性技能除外）
+    15: # 鞋子
+      # 增幅+10
+      - index_buf_intelligence: -44 # 异次元智力+44
+      # 附魔
+      - index_buf_bless_lv30: -1 # 所有职业Lv1~30全部主动技能Lv+1（特性技能除外）
+      - index_buf_naiba_protect_badge_lv25: -1 # 所有职业Lv1~30全部主动技能Lv+1（特性技能除外）
 
 
 - names:
