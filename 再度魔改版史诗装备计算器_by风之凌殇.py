@@ -171,7 +171,7 @@ def calc():
         name = row_value[0]
         row_value_cut = row_value[2:]
 
-        opt_one[name] = row_value_cut[0:20] + row_value_cut[22:23] + row_value_cut[34:35] + row_value_cut[38:46] + row_value_cut[47:49]
+        opt_one[name] = row_value_cut[0:20] + row_value_cut[22:23] + row_value_cut[34:35] + row_value_cut[38:46] + row_value_cut[47:52]
 
     db_set = load_excel["set"]
     opt_set = {}
