@@ -177,6 +177,8 @@ index_buf_bless_extra_strength_and_intelligence = 24  # 24-AA-仅用于辟邪玉
 index_buf_bless_extra_physical_attack_power = 25  # 25-AB-仅用于辟邪玉:[荣誉祝福]、[勇气祝福]、[禁忌诅咒]物理攻击力增加量 +X
 index_buf_bless_extra_magical_attack_power = 26  # 26-AC-仅用于辟邪玉:[荣誉祝福]、[勇气祝福]、[禁忌诅咒]魔法攻击力增加量 +X
 index_buf_bless_extra_independent_attack_power = 27  # 27-AD-仅用于辟邪玉:[荣誉祝福]、[勇气祝福]、[禁忌诅咒]独立攻击力增加量 +X
+index_buf_bless_extra_percent_continued_damage = 28  # 28-AE-一二觉赋予队友持续伤害buff 30秒内所受伤害的X%，持续5秒
+index_buf_bless_extra_all_skill_lv_100 = 29  # 29-AF-100级所有 技能等级+X
 
 # 奶系职业乘算的词条
 buf_multiply_entry_indexes = [
@@ -216,6 +218,8 @@ buf_entry_index_to_name = {
     index_buf_bless_extra_physical_attack_power: "25-AB-仅用于辟邪玉:[荣誉祝福]、[勇气祝福]、[禁忌诅咒]物理攻击力增加量 +X",
     index_buf_bless_extra_magical_attack_power: "26-AC-仅用于辟邪玉:[荣誉祝福]、[勇气祝福]、[禁忌诅咒]魔法攻击力增加量 +X",
     index_buf_bless_extra_independent_attack_power: "27-AD-仅用于辟邪玉:[荣誉祝福]、[勇气祝福]、[禁忌诅咒]独立攻击力增加量 +X",
+    index_buf_bless_extra_percent_continued_damage: "28-AE-一二觉赋予队友持续伤害buff 30秒内所受伤害的X%，持续5秒",
+    index_buf_bless_extra_all_skill_lv_100: "29-AF-100级所有 技能等级+X",
 }
 
 job_to_base_array_index_range_and_index_to_name_dict = {
@@ -226,7 +230,7 @@ job_to_base_array_index_range_and_index_to_name_dict = {
     },
     "buf": {
         "index_begin": index_buf_physical_and_mental_strength,
-        "index_end": index_buf_bless_extra_independent_attack_power,
+        "index_end": index_buf_bless_extra_all_skill_lv_100,
         "index_to_name_dict": buf_entry_index_to_name,
     },
 }
