@@ -64,7 +64,7 @@ for dirpath in os.listdir("."):
 
     old_version_infos.append(VersionInfo(version, dirpath))
 
-create_patch_for_latest_n_version = 8
+create_patch_for_latest_n_version = 3
 old_version_infos = sorted(old_version_infos)[-create_patch_for_latest_n_version:]
 print(old_version_infos)
 
