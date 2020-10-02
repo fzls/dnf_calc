@@ -104,7 +104,7 @@ class BackgroundConfig(ConfigInterface):
 class LayoutConfig(ConfigInterface):
     def __init__(self):
         # 界面标题
-        self.title = "史诗搭配计算器火力全开Plus版-ver$version$ 魔改by风之凌殇 原创by黎明工作室（韩服）dawnclass16"
+        self.title = "史诗搭配计算器最终版-ver$version$ 魔改by风之凌殇 原创by黎明工作室（韩服）dawnclass16"
         # 界面宽度
         self.window_width = 710
         # 界面高度
