@@ -1,3 +1,6 @@
+# 停止维护声明
+因韩服计算器的计算模型有些不太好调整，加上个人精力有限，故而魔改版本决定只同步更新到希洛克版本之前的内容。如需计算希洛克相关内容，可选择使用[纸飞机计算器](https://github.com/wxh0402/DNFCalculating) 。
+
 # 前言
 本计算器基于[韩服dawnclass-黎明工作室](https://github.com/dawnclass/DF_Calculator) 所写计算器v2.3.1、[韩械](https://space.bilibili.com/4952736) 汉化并加入国服特色的一键史诗搭配计算器，在其上进行了一些性能优化、扩展功能、易用性改动及bugfix。
 
