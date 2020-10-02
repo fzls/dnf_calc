@@ -739,7 +739,6 @@
       - index_buf_bless_lv30: -1 # 所有职业Lv1~30全部主动技能Lv+1（特性技能除外）
       - index_buf_naiba_protect_badge_lv25: -1 # 所有职业Lv1~30全部主动技能Lv+1（特性技能除外）
 
-
 - names:
     - "剑帝"
   entries:
@@ -1027,13 +1026,13 @@
       # 附魔
       - index_deal_extra_all_element_strength: 12 # 冰属性强化 +12
     111011: # 巨剑-神之意象
-      # 强化+11
-      - index_deal_physical_magical_independent_attack_power: 622 # 物理攻击力+622
+      # 强化+12
+      - index_deal_physical_magical_independent_attack_power: 849 # 物理攻击力+849
       # 附魔
       - index_deal_extra_all_element_strength: 12 # 冰属性强化 +12
     111012: # 巨剑-卡西姆的大剑
-      # 强化+11
-      - index_deal_physical_magical_independent_attack_power: 622 # 物理攻击力+622
+      # 强化+12
+      - index_deal_physical_magical_independent_attack_power: 849 # 物理攻击力+849
       # 附魔
       - index_deal_extra_all_element_strength: 12 # 冰属性强化 +12
     # 修正大恍惚系列的增幅差异
