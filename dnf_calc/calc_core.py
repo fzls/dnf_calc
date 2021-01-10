@@ -931,72 +931,86 @@ def process_buf(step: CalcStepData):
             not_owned_equips.append(equip)
 
         for bless_huanzhuang in bless_huanzhuang_list:
-            # 武器、装备列表
-            bless_calc_wep = (wep_num,) + tuple(bless_huanzhuang.equips)
-            # 加上适用的套装属性列表
-            bless_for_calc = tuple(get_set_on(bless_huanzhuang.equips)) + bless_calc_wep
+            bless_weapon_indexs = [wep_num]
+            if step.calc_data.huan_zhuang.enable:
+                bless_weapon_indexs = data.weapon_indexs
 
-            huanzhuang_slot_fixups = []
-            # 获取换装槽位配置的槽位补正信息
-            for hz in bless_huanzhuang.huanzhuang_equips:
-                slot_index = get_slot_index(hz)
-                if slot_index in step.calc_data.huanzhuang_slot_fixup:
-                    huanzhuang_slot_fixups.append(step.calc_data.huanzhuang_slot_fixup[slot_index])
+            for bless_wea_num in data.weapon_indexs:
+                # 武器、装备列表
+                bless_calc_wep = (bless_wea_num,) + tuple(bless_huanzhuang.equips)
+                # 加上适用的套装属性列表
+                bless_for_calc = tuple(get_set_on(bless_huanzhuang.equips)) + bless_calc_wep
 
-            # 计算buf装的属性
-            bless_score, _, _, bless_overview, _, _, \
-            _, _, bless_final_increase_strength_and_intelligence, bless_final_increase_attack_power_average \
-                = calc_buf(data, bless_for_calc, True, huanzhuang_slot_fixups)
+                huanzhuang_slot_fixups = []
+                # 获取换装槽位配置的槽位补正信息
+                for hz in bless_huanzhuang.huanzhuang_equips:
+                    slot_index = get_slot_index(hz)
+                    if slot_index in step.calc_data.huanzhuang_slot_fixup:
+                        huanzhuang_slot_fixups.append(step.calc_data.huanzhuang_slot_fixup[slot_index])
+                if len(step.calc_data.huanzhuang_weapon_fixup) != 0:
+                    huanzhuang_slot_fixups.append(step.calc_data.huanzhuang_weapon_fixup)
 
-            # 奶妈/奶萝增加站街预估
-            if data.job_name != "(奶系)神思者":
-                bless_overview += " 站街面板 = {street_intelligence}".format(
-                    street_intelligence=int(taiyang_mianban) - data.const.naima_nailuo_mianban_delta
+                # 计算buf装的属性
+                bless_score, _, _, bless_overview, _, _, \
+                _, _, bless_final_increase_strength_and_intelligence, bless_final_increase_attack_power_average \
+                    = calc_buf(data, bless_for_calc, True, huanzhuang_slot_fixups)
+
+                # 奶妈/奶萝增加站街预估
+                if data.job_name != "(奶系)神思者":
+                    bless_overview += " 站街面板 = {street_intelligence}".format(
+                        street_intelligence=int(taiyang_mianban) - data.const.naima_nailuo_mianban_delta
+                    )
+
+                #################################准备排行数据#################################
+                # 3 综合得分
+                total_score = ((15000 + first_awaken_increase_physical_and_mental_strength_or_intelligence + taiyang_final_increase_strength_and_intelligence + bless_final_increase_strength_and_intelligence) / 250 + 1) \
+                              * (2650 + bless_final_increase_attack_power_average)
+
+                # 统计数据
+                all_score_str = "{}/{}/{}".format(
+                    int(bless_score / 10),
+                    int(taiyang_score / 10),
+                    int(total_score / 10),
                 )
+                baibianguai = data.baibianguai
+                if bless_huanzhuang.baibianguai is not None:
+                    baibianguai = bless_huanzhuang.baibianguai
+                noe = not_owned_equips.copy()
+                noe.extend(bless_huanzhuang.upgrade_work_uniforms)
+                noe.extend(bless_huanzhuang.transfered)
+                total_increase_strength_and_intelligence = taiyang_final_increase_strength_and_intelligence + bless_final_increase_strength_and_intelligence
+                total_increase_attack_power_average = bless_final_increase_attack_power_average
 
-            #################################准备排行数据#################################
-            # 3 综合得分
-            total_score = ((15000 + first_awaken_increase_physical_and_mental_strength_or_intelligence + taiyang_final_increase_strength_and_intelligence + bless_final_increase_strength_and_intelligence) / 250 + 1) \
-                          * (2650 + bless_final_increase_attack_power_average)
+                hzs = bless_huanzhuang.huanzhuang_equips
+                if bless_wea_num != wep_num or step.calc_data.huan_zhuang.enable and len(step.calc_data.huanzhuang_weapon_fixup) != 0:
+                    # 如果祝福武器与太阳武器不一样，加入换装列表
+                    # 或者武器一样，但是启用了换装功能，且配置了武器槽位的换装补正，也就是两把相同武器，不同打造的情况，也加入换装列表
+                    hzs = hzs.insert(0, bless_wea_num)
 
-            # 统计数据
-            all_score_str = "{}/{}/{}".format(
-                int(bless_score / 10),
-                int(taiyang_score / 10),
-                int(total_score / 10),
-            )
-            baibianguai = data.baibianguai
-            if bless_huanzhuang.baibianguai is not None:
-                baibianguai = bless_huanzhuang.baibianguai
-            noe = not_owned_equips.copy()
-            noe.extend(bless_huanzhuang.upgrade_work_uniforms)
-            noe.extend(bless_huanzhuang.transfered)
-            total_increase_strength_and_intelligence = taiyang_final_increase_strength_and_intelligence + bless_final_increase_strength_and_intelligence
-            total_increase_attack_power_average = bless_final_increase_attack_power_average
-            save_data = [taiyang_calc_wep, [bless_overview, taiyang_overview, first_awaken_passive_overview, all_score_str, total_increase_strength_and_intelligence, total_increase_attack_power_average],
-                         baibianguai, tuple(noe), bless_huanzhuang.huanzhuang_equips]
+                save_data = [taiyang_calc_wep, [bless_overview, taiyang_overview, first_awaken_passive_overview, all_score_str, total_increase_strength_and_intelligence, total_increase_attack_power_average],
+                             baibianguai, tuple(noe), bless_huanzhuang.huanzhuang_equips]
 
-            # 加入排序
-            unique_index = random.random()
-            res = [
-                (bless_score, unique_index, copy.deepcopy(save_data)),
-                (taiyang_score, unique_index, copy.deepcopy(save_data)),
-                (total_score, unique_index, copy.deepcopy(save_data)),
-                (taiyang_mianban, unique_index, copy.deepcopy(save_data)),
-            ]
-            for idx, rank_data in enumerate(res):
-                data.minheaps[idx].add(rank_data)
-                data.minheaps[idx].processed_result_count += 1
+                # 加入排序
+                unique_index = random.random()
+                res = [
+                    (bless_score, unique_index, copy.deepcopy(save_data)),
+                    (taiyang_score, unique_index, copy.deepcopy(save_data)),
+                    (total_score, unique_index, copy.deepcopy(save_data)),
+                    (taiyang_mianban, unique_index, copy.deepcopy(save_data)),
+                ]
+                for idx, rank_data in enumerate(res):
+                    data.minheaps[idx].add(rank_data)
+                    data.minheaps[idx].processed_result_count += 1
 
-                # 批量同步
-                if data.minheaps[idx].processed_result_count >= data.minheaps[idx].batch_size:
-                    # 动态调整批量大小
-                    if data.minheap_queues[idx].qsize() > step.config.data_transfer.expected_qsize:
-                        data.minheaps[idx].update_batch_size(step.config.data_transfer)
-                    # 同步
-                    data.minheap_queues[idx].put(copy.deepcopy(data.minheaps[idx]))
-                    # 重置
-                    data.minheaps[idx].reset()
+                    # 批量同步
+                    if data.minheaps[idx].processed_result_count >= data.minheaps[idx].batch_size:
+                        # 动态调整批量大小
+                        if data.minheap_queues[idx].qsize() > step.config.data_transfer.expected_qsize:
+                            data.minheaps[idx].update_batch_size(step.config.data_transfer)
+                        # 同步
+                        data.minheap_queues[idx].put(copy.deepcopy(data.minheaps[idx]))
+                        # 重置
+                        data.minheaps[idx].reset()
 
 
 def calc_buf(data, for_calc, is_bless, huanzhuang_slot_fixups=None):

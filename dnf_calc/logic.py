@@ -32,7 +32,7 @@ def use_max_entry(old_inc_percent, add_inc_percent):
 
 
 # 获取国服特殊加成属性, job_type = "buf" or "deal"
-def add_bonus_attributes_to_base_array(job_type, base_array, style, creature, save_name, equip_fixup, equip_index_to_realname, huanzhuang_slot_fixup):
+def add_bonus_attributes_to_base_array(job_type, base_array, style, creature, save_name, equip_fixup, equip_index_to_realname, huanzhuang_slot_fixup, huanzhuang_weapon_fixup):
     cfg = config()
 
     original_base_array = base_array.copy()
@@ -142,8 +142,19 @@ def add_bonus_attributes_to_base_array(job_type, base_array, style, creature, sa
                             if slot_index not in huanzhuang_slot_fixup:
                                 huanzhuang_slot_fixup[slot_index] = np.array([0.0 for idx in range(len(buf_entry_index_to_name))])
                             huanzhuang_slot_fixup[slot_index][entry_index] += entry_value
+            if "huanzhuang_weapon_fixup" in save_setting:
+                for entry in save_setting["huanzhuang_weapon_fixup"]:
+                    for name, value in entry.items():
+                        entry_index = eval(name)
+                        entry_value = eval(str(value))
+
+                        if len(huanzhuang_weapon_fixup) == 0:
+                            huanzhuang_weapon_fixup.extend([0.0 for idx in range(len(buf_entry_index_to_name))])
+                        huanzhuang_weapon_fixup[entry_index] += entry_value
 
             logger.info("最终换装槽位补正数据为:\n")
+            if len(huanzhuang_weapon_fixup) != 0:
+                logger.info("武器\n{}".format(format_base_array(job_type, np.array(huanzhuang_weapon_fixup))))
             for slot_index, ba in huanzhuang_slot_fixup.items():
                 logger.info("{}-{}\n{}".format(slot_index, slot_index_to_realname[slot_index], format_base_array(job_type, ba)))
 

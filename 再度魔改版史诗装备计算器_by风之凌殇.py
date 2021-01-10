@@ -430,7 +430,7 @@ def calc():
         deal_equip_fixup = {}
 
         # 加入输出职业的特色加成
-        add_bonus_attributes_to_base_array("deal", base_array_with_deal_bonus_attributes, style_select.get(), creature_select.get(), save_name_list[current_save_name_index], deal_equip_fixup, equip_index_to_realname, {})
+        add_bonus_attributes_to_base_array("deal", base_array_with_deal_bonus_attributes, style_select.get(), creature_select.get(), save_name_list[current_save_name_index], deal_equip_fixup, equip_index_to_realname, {}, [])
 
         # 补正装备
         for equip_index, ba in deal_equip_fixup.items():
@@ -539,9 +539,12 @@ def calc():
         buf_equip_fixup = {}
         # 当前存档的buff换装槽位补正信息 slot_index => list(attribute_index_str => fixup_value)
         huanzhuang_slot_fixup = {}
+        # 当前存档的buff换装武器补正信息
+        huanzhuang_weapon_fixup = []
 
         # 增加奶系的国服特色
-        add_bonus_attributes_to_base_array("buf", base_array_with_buf_bonus_attributes, style_select.get(), creature_select.get(), save_name_list[current_save_name_index], buf_equip_fixup, equip_index_to_realname, huanzhuang_slot_fixup)
+        add_bonus_attributes_to_base_array("buf", base_array_with_buf_bonus_attributes, style_select.get(), creature_select.get(), save_name_list[current_save_name_index], buf_equip_fixup, equip_index_to_realname, huanzhuang_slot_fixup, huanzhuang_weapon_fixup)
+        huanzhuang_weapon_fixup = np.array(huanzhuang_weapon_fixup)
 
         # 补正装备
         for equip_index, ba in buf_equip_fixup.items():
@@ -565,6 +568,7 @@ def calc():
         calc_data.const = cfg.const
         calc_data.huan_zhuang = cfg.huan_zhuang
         calc_data.huanzhuang_slot_fixup = huanzhuang_slot_fixup
+        calc_data.huanzhuang_weapon_fixup = huanzhuang_weapon_fixup
         calc_data.opt_buf = opt_buf
         calc_data.opt_buflvl = opt_buflvl
         calc_data.base_job_passive_lv15_bless = base_job_passive_lv15_bless
