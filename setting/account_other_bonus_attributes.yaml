@@ -425,7 +425,7 @@
     - strength_and_intelligence: 15  # 智力+15
     - extra_percent_magic_physical_crit_rate: 1.5 # 魔法暴击率 +1.5%
     # 绿色徽章(下)
-    - strength_and_intelligence: 15  # 智力+15
+    - strength_and_intelligence: 20  # 智力+20
     # 增幅+10
     - strength_and_intelligence: 44 # 异次元智力+44
     # 附魔
@@ -463,8 +463,10 @@
     ## 武器
     # 锻造+8
     - physical_magical_independent_attack_power: 494 # 独立攻击力+494
-    # 增幅+10
-    - strength_and_intelligence: 42 # 异次元智力+42
+    # 增幅+11
+    - strength_and_intelligence: 79 # 异次元智力+79
+    # 锻造+8
+    - strength_and_intelligence: 52 # 奶系四维+52
     # 附魔
     - strength_and_intelligence: 75  # 智力+75
 
@@ -479,8 +481,8 @@
     - physical_and_mental_strength: 35 # 四维(体精)+35
 
     ## 手镯
-    # 增幅+10
-    - strength_and_intelligence: 44 # 异次元智力+44
+    # 增幅+11
+    - strength_and_intelligence: 79 # 异次元智力+79
     # 附魔
     - strength_and_intelligence: 42  # 四维(力智)+42
     - physical_and_mental_strength: 38 # 四维(体精)+38
@@ -497,8 +499,8 @@
     - strength_and_intelligence: 25  # 智力+25
     # 红色徽章(下)
     - strength_and_intelligence: 25  # 智力+25
-    # 增幅+10
-    - strength_and_intelligence: 44 # 异次元智力+44
+    # 增幅+11
+    - strength_and_intelligence: 79 # 异次元智力+79
     # 附魔
     - strength_and_intelligence: 42  # 四维(力智)+42
     - physical_and_mental_strength: 38 # 四维(体精)+38
@@ -508,10 +510,10 @@
     - strength_and_intelligence: 8  # 四维(力智)+8
     - physical_and_mental_strength: 8 # 四维(体精)+8
     - extra_bless_skill: 1  # 勇气祝福+1
-    # 增幅+10
-    - strength_and_intelligence: 28  # 强化+10 四维(力智)+28
-    - physical_and_mental_strength: 28 # 强化+10 四维(体精)+28
-    - strength_and_intelligence: 44 # 异次元智力+44
+    # 增幅+11
+    - strength_and_intelligence: 53  # 强化+11 四维(力智)+53
+    - physical_and_mental_strength: 53 # 强化+11 四维(体精)+53
+    - strength_and_intelligence: 79 # 异次元智力+79
     # 附魔
     - strength_and_intelligence: 80  # 四维(力智)+80
     - physical_and_mental_strength: 80 # 四维(体精)+80
