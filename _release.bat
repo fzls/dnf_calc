@@ -120,11 +120,11 @@ set target_7z=再度魔改版史诗装备计算器_v%version%_by风之凌殇.7z
 set source_dir=再度魔改版史诗装备计算器_v%version%_by风之凌殇
 bz c -y -r -aoa -fmt:7z -l:9 "%target_7z%" "%source_dir%"
 
-echo.
-echo [提示]: 创建增量更新补丁
-echo.
+REM echo.
+REM echo [提示]: 创建增量更新补丁
+REM echo.
 
-call _create_patch.py v%version%
+REM call _create_patch.py v%version%
 
 echo 打包完毕
 echo 开始时间：%run_start_time%
