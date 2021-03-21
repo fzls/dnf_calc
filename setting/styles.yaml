@@ -51,6 +51,59 @@
 # extra_percent_physical_magical_independent_attack_power: 物理/魔法/独立攻击力 +X%
 
 - names:
+    - "安徒恩的烈焰"
+  entries:
+    - strength_and_intelligence: 60  # 四维(力智)+60
+    - physical_and_mental_strength: 60 # 四维(体精)+60
+    - extra_all_element_strength: 15  # 所有属性强化+15
+    - extra_percent_magic_physical_crit_rate: 12  # 物理、魔法暴击率+12%
+    - extra_percent_attack_speed: 3  # 攻击速度+3%
+    - extra_percent_moving_speed: 3  # 移动速度+3%
+    - extra_all_element_strength: 10  # 攻击时，3%概率所有属性强化+10，持续30s，冷却40s
+    - extra_percent_attack_speed: 3  # 攻击时，3%概率攻击速度+3%，持续30s，冷却40s
+    - extra_percent_moving_speed: 3  # 攻击时，3%概率移动速度+3%，持续30s，冷却40s
+    - increase_percent_attack_damage: 15 # 攻击时，增加15%的伤害（黄字）
+- names:
+    - "卢克的创造"
+  entries:
+    - strength_and_intelligence: 60  # 四维(力智)+60
+    - physical_and_mental_strength: 60 # 四维(体精)+60
+    - extra_all_element_strength: 15  # 所有属性强化+15
+    - extra_percent_magic_physical_crit_rate: 12  # 物理、魔法暴击率+12%
+    - extra_percent_attack_speed: 3  # 攻击速度+3%
+    - extra_percent_moving_speed: 3  # 移动速度+3%
+    - extra_all_element_strength: 10  # 攻击时，3%概率所有属性强化+10，持续30s，冷却40s
+    - extra_percent_attack_speed: 3  # 攻击时，3%概率攻击速度+3%，持续30s，冷却40s
+    - extra_percent_moving_speed: 3  # 攻击时，3%概率移动速度+3%，持续30s，冷却40s
+    - extra_percent_crit_damage: 15  # 暴击时，额外增加15%的伤害增加量。（决斗场中，适用一般效果）
+- names:
+    - "伊希斯的天空"
+  entries:
+    - strength_and_intelligence: 60  # 四维(力智)+60
+    - physical_and_mental_strength: 60 # 四维(体精)+60
+    - extra_all_element_strength: 15  # 所有属性强化+15
+    - extra_percent_magic_physical_crit_rate: 12  # 物理、魔法暴击率+12%
+    - extra_percent_attack_speed: 3  # 攻击速度+3%
+    - extra_percent_moving_speed: 3  # 移动速度+3%
+    - extra_all_element_strength: 10  # 攻击时，3%概率所有属性强化+10，持续30s，冷却40s
+    - extra_percent_attack_speed: 3  # 攻击时，3%概率攻击速度+3%，持续30s，冷却40s
+    - extra_percent_moving_speed: 3  # 攻击时，3%概率移动速度+3%，持续30s，冷却40s
+    - extra_percent_physical_magical_independent_attack_power: 15 # 物理/魔法/独立攻击力 +15%
+
+- names:
+    - "希洛克的悲鸣"
+  entries:
+    - strength_and_intelligence: 60  # 四维(力智)+60
+    - physical_and_mental_strength: 60 # 四维(体精)+60
+    - extra_all_element_strength: 15  # 所有属性强化+15
+    - extra_percent_magic_physical_crit_rate: 12  # 物理、魔法暴击率+12%
+    - extra_percent_attack_speed: 3  # 攻击速度+3%
+    - extra_percent_moving_speed: 3  # 移动速度+3%
+    - extra_all_element_strength: 10  # 攻击时，3%概率所有属性强化+10，持续30s，冷却40s
+    - extra_percent_attack_speed: 3  # 攻击时，3%概率攻击速度+3%，持续30s，冷却40s
+    - extra_percent_moving_speed: 3  # 攻击时，3%概率移动速度+3%，持续30s，冷却40s
+    - extra_percent_final_damage: 15 # 最终伤害增加15%
+- names:
     - "使徒降临"
   entries:
     - physical_magical_independent_attack_power: 60  # 三攻+60
