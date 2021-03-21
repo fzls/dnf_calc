@@ -2002,7 +2002,7 @@ def save_custom(ele_type, cool_con, cus1, cus2, cus3, cus4, cus6, cus7, cus8, cu
             db_save_one['N' + get_row("13060")] = 34  # 龙血玄黄-头肩
             db_save_one['L' + get_row("14060")] = 68  # 龙血玄黄-腰带
             db_save_one['K' + get_row("15060")] = 34  # 龙血玄黄-鞋子
-            db_save_one['G' + get_row("1063")] = 40  # 龙血玄黄5
+            db_save_one['G' + get_row("1063")] = 28  # 龙血玄黄5
         else:
             # 英雄↑
             db_save_one['J' + get_row("11060")] = 35  # 龙血玄黄-上衣
@@ -2010,7 +2010,7 @@ def save_custom(ele_type, cool_con, cus1, cus2, cus3, cus4, cus6, cus7, cus8, cu
             db_save_one['N' + get_row("13060")] = 35  # 龙血玄黄-头肩
             db_save_one['L' + get_row("14060")] = 72  # 龙血玄黄-腰带
             db_save_one['K' + get_row("15060")] = 35  # 龙血玄黄-鞋子
-            db_save_one['G' + get_row("1063")] = 41  # 龙血玄黄5
+            db_save_one['G' + get_row("1063")] = 29  # 龙血玄黄5
         # 恍惚增幅等级
         db_custom1['B13'] = cus4
         db_save_one['N' + get_row("21170")] = int(cus4) + 4  # 破晓-手镯
