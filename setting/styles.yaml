@@ -51,6 +51,59 @@
 # extra_percent_physical_magical_independent_attack_power: 物理/魔法/独立攻击力 +X%
 
 - names:
+    - "永恒追猎"
+  entries:
+    - strength_and_intelligence: 80  # 四维(力智)+80
+    - physical_and_mental_strength: 80 # 四维(体精)+80
+    - physical_magical_independent_attack_power: 60  # 三攻+60
+    - extra_percent_magic_physical_crit_rate: 12  # 物理、魔法暴击率+12%
+    - extra_all_element_strength: 15  # 所有属性强化+15
+    - extra_percent_attack_speed: 3  # 攻击速度+3%
+    - extra_percent_moving_speed: 3  # 移动速度+3%
+    - strength_and_intelligence_when_attack: 35  # 攻击时，3%概率增加35点四维，持续20s，冷却30s
+    - extra_percent_magic_physical_crit_rate: 5  # 释放技能时，5%概率增加5%物理、魔法暴击率，持续20s，冷却30s
+    - extra_percent_attack_damage: 15  # 攻击时额外增加15%的伤害增加量
+- names:
+    - "永恒判罪"
+  entries:
+    - strength_and_intelligence: 80  # 四维(力智)+80
+    - physical_and_mental_strength: 80 # 四维(体精)+80
+    - physical_magical_independent_attack_power: 60  # 三攻+60
+    - extra_percent_magic_physical_crit_rate: 12  # 物理、魔法暴击率+12%
+    - extra_all_element_strength: 15  # 所有属性强化+15
+    - extra_percent_attack_speed: 3  # 攻击速度+3%
+    - extra_percent_moving_speed: 3  # 移动速度+3%
+    - strength_and_intelligence_when_attack: 35  # 攻击时，3%概率增加35点四维，持续20s，冷却30s
+    - extra_percent_magic_physical_crit_rate: 5  # 释放技能时，5%概率增加5%物理、魔法暴击率，持续20s，冷却30s
+    - extra_percent_crit_damage: 15  # 暴击时，额外增加15%的伤害增加量。（决斗场中，适用一般效果）
+- names:
+    - "永恒战吼"
+  entries:
+    - strength_and_intelligence: 80  # 四维(力智)+80
+    - physical_and_mental_strength: 80 # 四维(体精)+80
+    - physical_magical_independent_attack_power: 60  # 三攻+60
+    - extra_percent_magic_physical_crit_rate: 12  # 物理、魔法暴击率+12%
+    - extra_all_element_strength: 15  # 所有属性强化+15
+    - extra_percent_attack_speed: 3  # 攻击速度+3%
+    - extra_percent_moving_speed: 3  # 移动速度+3%
+    - strength_and_intelligence_when_attack: 35  # 攻击时，3%概率增加35点四维，持续20s，冷却30s
+    - extra_percent_magic_physical_crit_rate: 5  # 释放技能时，5%概率增加5%物理、魔法暴击率，持续20s，冷却30s
+    - extra_percent_strength_and_intelligence: 15 # 增加15%的力量、智力
+- names:
+    - "穿越星空的祈愿"
+  entries:
+    - strength_and_intelligence: 100  # 四维(力智)+100
+    - physical_and_mental_strength: 100 # 四维(体精)+100
+    - physical_magical_independent_attack_power: 65  # 三攻+65
+    - extra_percent_magic_physical_crit_rate: 15  # 物理、魔法暴击率+15%
+    - extra_all_element_strength: 22  # 所有属性强化+22
+    - extra_percent_attack_speed: 4  # 攻击速度+4%
+    - extra_percent_moving_speed: 4  # 移动速度+4%
+    - strength_and_intelligence_when_attack: 35  # 攻击时，3%概率增加35点四维，持续20s，冷却30s
+    - extra_percent_magic_physical_crit_rate: 5  # 释放技能时，5%概率增加5%物理、魔法暴击率，持续20s，冷却30s
+    - extra_percent_physical_magical_independent_attack_power: 12 # 物理/魔法/独立攻击力 +12%
+    - extra_percent_addtional_damage: 10 # 攻击时，附加10%的伤害
+- names:
     - "安徒恩的烈焰"
   entries:
     - strength_and_intelligence: 60  # 四维(力智)+60
@@ -89,7 +142,6 @@
     - extra_percent_attack_speed: 3  # 攻击时，3%概率攻击速度+3%，持续30s，冷却40s
     - extra_percent_moving_speed: 3  # 攻击时，3%概率移动速度+3%，持续30s，冷却40s
     - extra_percent_physical_magical_independent_attack_power: 15 # 物理/魔法/独立攻击力 +15%
-
 - names:
     - "希洛克的悲鸣"
   entries:
