@@ -52,6 +52,44 @@
 # extra_all_job_all_skill_lv_1_80:                  所有职业Lv1~80全部技能Lv+1（特性技能除外）
 
 - names:
+    - "骑士 蕾切尔"
+    - "精灵使 璘"
+  entries:
+    # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
+    - creature_increase_owner_attack_power: 10  # 宠物技能+10%攻击力，持续10s，冷却30s
+    - extra_percent_attack_speed: 5  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
+    - extra_percent_moving_speed: 5  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
+    - strength_and_intelligence: 150  # 四维(力智)+150
+    - physical_and_mental_strength: 150 # 四维(体精)+150
+    - extra_percent_attack_speed: 5  # 三速+5%
+    - extra_percent_moving_speed: 5  # 三速+5%
+    - extra_all_element_strength: 25  # 所有属强+25
+    - extra_percent_magic_physical_crit_rate: 10  # 暴击率+10%
+    - extra_all_job_all_skill_lv_1_80: 1 # 所有职业Lv1~80全部技能Lv+1（特性技能除外）
+    - extra_percent_physical_magical_independent_attack_power: 12 # 物理/魔法/独立攻击力 +12%
+    - extra_percent_addtional_damage: 10  # 攻击时，附加10%的伤害
+    - cool_correction: 5*0.35  # 冷却矫正系数（仅输出职业），技能冷却每减1%，冷却矫正系数增加0.35，若修改了自定义配置中的基准冷却矫正系数，这里自行修正，若修改了自定义配置中的冷却矫正系数，这里自行修正
+    - reduce_percent_cool: 5 # 冷却减少时间-X%（仅奶系职业）
+- names:
+    - "火神的化身 蕾切尔"
+    - "火神的化身 璘"
+  entries:
+    # 考虑到这个10%技攻是直接最终乘算，且一般队友也有这个，能保证始终有这个加成，所以改为视作10%技攻
+    - creature_increase_owner_attack_power: 10  # 宠物技能+10%攻击力，持续10s，冷却30s
+    - extra_percent_attack_speed: 5  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
+    - extra_percent_moving_speed: 5  # 宠物技能+5%三速，只考虑普通技能，持续10s，冷却30s
+    - strength_and_intelligence: 160  # 四维(力智)+160
+    - physical_and_mental_strength: 160 # 四维(体精)+160
+    - extra_percent_attack_speed: 5  # 三速+5%
+    - extra_percent_moving_speed: 5  # 三速+5%
+    - extra_all_element_strength: 25  # 所有属强+25
+    - extra_percent_magic_physical_crit_rate: 10  # 暴击率+10%
+    - extra_all_job_all_skill_lv_1_80: 1 # 所有职业Lv1~80全部技能Lv+1（特性技能除外）
+    - extra_percent_crit_damage: 20  # 暴击时，额外增加20%的伤害增加量。（决斗场中，适用一般效果）
+    - extra_percent_strength_and_intelligence: 12 # 增加12%的力量、智力
+    - cool_correction: 5*0.35  # 冷却矫正系数（仅输出职业），技能冷却每减1%，冷却矫正系数增加0.35，若修改了自定义配置中的基准冷却矫正系数，这里自行修正，若修改了自定义配置中的冷却矫正系数，这里自行修正
+    - reduce_percent_cool: 5 # 冷却减少时间-X%（仅奶系职业）
+- names:
     - "弓手维多利亚"
     - "神官格洛丽亚"
   entries:
