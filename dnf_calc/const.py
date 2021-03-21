@@ -551,6 +551,23 @@ entry_name_to_indexes = {
             index_deal_extra_percent_physical_magical_independent_attack_power,
         ]
     },
+    # 所有职业Lv1~80全部技能Lv+1（特性技能除外）
+    "extra_all_job_all_skill_lv_1_80": {
+        "deal": [
+            index_deal_extra_passive_transfer_skill,
+            index_deal_extra_passive_first_awaken_skill,
+            index_deal_extra_active_skill_lv_1_45,
+            index_deal_extra_active_skill_lv_50,
+            index_deal_extra_active_skill_lv_60_80,
+        ],
+        "buf": [
+            index_buf_bless_lv30,
+            index_buf_taiyang_lv50,
+            index_buf_job_passive_lv15,
+            index_buf_naiba_protect_badge_lv25,
+            index_buf_first_awaken_passive_lv48,
+        ]
+    },
 }
 
 entry_name_to_name = {
@@ -605,6 +622,7 @@ entry_name_to_name = {
     "increase_percent_attack_damage": "攻击时，增加X%的伤害（黄字）",
     "increase_percent_crit_damage": "暴击时，增加X%的伤害（爆伤）",
     "extra_percent_physical_magical_independent_attack_power": "物理/魔法/独立攻击力 +X%",
+    "extra_all_job_all_skill_lv_1_80": "所有职业Lv1~80全部技能Lv+1（特性技能除外）",
 }
 
 # 预计算的buff等级最大等级

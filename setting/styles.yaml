@@ -49,6 +49,7 @@
 # increase_percent_attack_damage:                   攻击时，增加X%的伤害（黄字）
 # increase_percent_crit_damage:                     暴击时，增加X%的伤害（爆伤）
 # extra_percent_physical_magical_independent_attack_power: 物理/魔法/独立攻击力 +X%
+# extra_all_job_all_skill_lv_1_80:                  所有职业Lv1~80全部技能Lv+1（特性技能除外）
 
 - names:
     - "永恒追猎"
