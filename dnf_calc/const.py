@@ -545,6 +545,12 @@ entry_name_to_indexes = {
             index_deal_increase_percent_crit_damage,
         ]
     },
+    # 物理/魔法/独立攻击力 +X%
+    "extra_percent_physical_magical_independent_attack_power": {
+        "deal": [
+            index_deal_extra_percent_physical_magical_independent_attack_power,
+        ]
+    },
 }
 
 entry_name_to_name = {
@@ -598,6 +604,7 @@ entry_name_to_name = {
     "extra_percent_moving_speed": "移动速度 +X%",
     "increase_percent_attack_damage": "攻击时，增加X%的伤害（黄字）",
     "increase_percent_crit_damage": "暴击时，增加X%的伤害（爆伤）",
+    "extra_percent_physical_magical_independent_attack_power": "物理/魔法/独立攻击力 +X%",
 }
 
 # 预计算的buff等级最大等级
