@@ -2013,10 +2013,10 @@ def save_custom(ele_type, cool_con, cus1, cus2, cus3, cus4, cus6, cus7, cus8, cu
             db_save_one['G' + get_row("1063")] = 29  # 龙血玄黄5
         # 恍惚增幅等级
         db_custom1['B13'] = cus4
-        db_save_one['N' + get_row("21170")] = int(cus4) + 4  # 破晓-手镯
-        db_save_one['N' + get_row("21171")] = int(cus4) + 4  # 破晓-神话手镯
-        db_save_one['K' + get_row("22170")] = int(cus4) + 4  # 破晓-项链
-        db_save_one['E' + get_row("23170")] = int(cus4) + 4  # 破晓-戒指
+        db_save_one['N' + get_row("21170")] = int(cus4) + 5  # 破晓-手镯
+        db_save_one['N' + get_row("21171")] = int(cus4) + 5  # 破晓-神话手镯
+        db_save_one['K' + get_row("22170")] = int(cus4) + 5  # 破晓-项链
+        db_save_one['E' + get_row("23170")] = int(cus4) + 5  # 破晓-戒指
 
         #########################################################
         #                     奶量增幅相关                       #

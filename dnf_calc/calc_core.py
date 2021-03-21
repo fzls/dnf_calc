@@ -767,8 +767,9 @@ def fix_base_array_for_equip_or_set_requirement(base_array, equips, set_on, conf
             base_array[index_deal_extra_percent_strength_and_intelligence] -= get_delta(dr, 13, 10, 40)
         # 深渊辅助装备31280
         if "31280" in equips:
-            # 每7点暗属性抗性，增加6%的物理、魔法、独立攻击力。（最多增加42%）
-            base_array[index_deal_extra_percent_physical_magical_independent_attack_power] -= get_delta(dr, 7, 6, 42)
+            # 物理、魔法、独立攻击力+18%
+            # 每3点暗属性抗性，增加6%的物理、魔法、独立攻击力。(最多增加24%)
+            base_array[index_deal_extra_percent_physical_magical_independent_attack_power] -= get_delta(dr, 3, 6, 24)
         # 深渊2件套1281
         if "1281" in set_on or "1282" in set_on:
             # 每28点暗属性抗性，所有职业lv1~48所有技能Lv+1（特性技能除外；最多叠加2次）
@@ -786,12 +787,13 @@ def fix_base_array_for_equip_or_set_requirement(base_array, equips, set_on, conf
                 base_array[index_deal_extra_active_skill_lv_100] -= 1
         # 黑魔法下装12240
         if "12240" in equips:
-            # 每14点暗属性抗性，攻击时额外增加7%的伤害增加量。（最多增加35%）
-            base_array[index_deal_extra_percent_attack_damage] -= get_delta(dr, 14, 7, 35)
+            # 攻击时，额外增加21%的伤害增加量
+            # 每35点暗属性抗性，攻击时额外增加7%的伤害增加量。(最多增加14%)
+            base_array[index_deal_extra_percent_attack_damage] -= get_delta(dr, 35, 7, 14)
         # 黑魔法手镯21240、黑魔法神话手镯21241
         if "21240" in equips or "21241" in equips:
-            # 每18点暗属性抗性，增加7%的最终伤害（最多增加28%）
-            base_array[index_deal_extra_percent_final_damage] -= get_delta(dr, 18, 7, 28)
+            # 每18点暗属性抗性，增加5%的最终伤害。(最多增加20%)
+            base_array[index_deal_extra_percent_final_damage] -= get_delta(dr, 18, 5, 20)
             # 每18点暗属性抗性，增加10点所有属性强化（最多增加40点）
             base_array[index_deal_extra_all_element_strength] -= get_delta(dr, 18, 10, 40)
         # 黑魔法魔法石32240
@@ -831,8 +833,10 @@ def fix_base_array_for_equip_or_set_requirement(base_array, equips, set_on, conf
                 base_array[index_deal_extra_active_skill_lv_100] -= 1
         # 求道者戒指23320
         if "23320" in equips:
-            # 每4点暗属性抗性，暴击时额外增加10%的伤害增加。（最多增加40%）
-            base_array[index_deal_extra_percent_crit_damage] -= get_delta(dr, 4, 10, 40)
+            # 暴击时，额外增加20%的伤害增加量
+            # 每3点暗属性抗性，暴击时额外增加4%的伤害增加量
+            # (最多增加20%)
+            base_array[index_deal_extra_percent_crit_damage] -= get_delta(dr, 3, 4, 20)
         # 求道者耳环33320、求道者神话耳环33321
         if "33320" in equips or "33321" in equips:
             # 每3点暗属性抗性，增加7%的最终伤害。（最多增加42%）
