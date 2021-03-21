@@ -821,7 +821,7 @@ def get_can_upgrade_work_unifrom_nums():
 
 
 def get_can_transfer_nums():
-    # 用户配置的当前可升级的工作服数目
+    # 用户配置的当前可跨界的装备数目
     can_transfer_nums = 0
     if can_transfer_nums_select.get() in can_transfer_nums_str_2_int:
         can_transfer_nums = can_transfer_nums_str_2_int[
@@ -873,7 +873,7 @@ def get_transfer_slots_equips(items, sheet):
                 try:
                     slot_index = slot_name_to_index[equip_index[:2]]
                     # 如果该装备当前账号未拥有，且之前的账户中未添加过，则加入备选集
-                    if equip_index not in items[slot_index] and equip_index not in transfer_slots_equips[slot_index] and not is_god(equip_index):
+                    if equip_index not in items[slot_index] and equip_index not in transfer_slots_equips[slot_index] and (not is_god(equip_index) or config().misc.can_transfer_god_equipment):
                         transfer_slots_equips[slot_index].add(equip_index)
                 except KeyError as error:
                     pass

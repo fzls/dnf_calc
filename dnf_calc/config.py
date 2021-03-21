@@ -700,6 +700,8 @@ class MiscConfig(ConfigInterface):
         self.use_negative_equip_fixup_setting = False
         # 是否启用换装槽位补正配置，默认关闭
         self.use_huanzhuang_slot_fixup = False
+        # 是否允许跨界神话装备（神话传送石）
+        self.can_transfer_god_equipment = False
 
 
 class Config(ConfigInterface):

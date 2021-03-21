@@ -800,3 +800,5 @@ check_junshen_moving_speed = false
 use_negative_equip_fixup_setting = false
 # 是否启用换装槽位补正配置，默认关闭
 use_huanzhuang_slot_fixup = false
+# 是否允许跨界神话装备（神话传送石）
+can_transfer_god_equipment = false
